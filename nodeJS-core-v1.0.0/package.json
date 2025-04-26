@@ -1,12 +1,12 @@
 {
-  "name": "phucshoe2",
+  "name": "phuc-som-su",
   "version": "1.0.0",
   "main": "Server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./src/Server.js"
   },
-  "author": "PhucShoe2",
+  "author": "phuc-som-su",
   "license": "ISC",
   "description": "",
   "dependencies": {
