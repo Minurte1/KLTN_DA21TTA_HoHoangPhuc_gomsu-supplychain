@@ -25,7 +25,20 @@ const DynamicTable = ({ data, columns }) => {
             <TableRow key={index}>
               {columns.map((column) => (
                 <TableCell key={column.key} align="left">
-                  {row[column.key]}
+                  {column.type === "image" ? (
+                    <img
+                      src={row[column.key]}
+                      alt={column.label}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                      }}
+                    />
+                  ) : (
+                    row[column.key]
+                  )}
                 </TableCell>
               ))}
             </TableRow>
@@ -37,3 +50,13 @@ const DynamicTable = ({ data, columns }) => {
 };
 
 export default DynamicTable;
+
+// const columns = [
+//   { key: "name", label: "Tên" },
+//   { key: "image", label: "Ảnh", type: "image" }, // type image để render ảnh
+// ];
+
+// const data = [
+//   { name: "Sản phẩm A", image: "https://via.placeholder.com/100" },
+//   { name: "Sản phẩm B", image: "https://via.placeholder.com/100" },
+// ];

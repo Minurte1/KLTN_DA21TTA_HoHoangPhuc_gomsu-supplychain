@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const DynamicFileUpload = () => {
+const DynamicFileUpload = ({ onFilesChange }) => {
   const [files, setFiles] = useState([]);
   const [dragOver, setDragOver] = useState(false);
 
@@ -21,6 +21,15 @@ const DynamicFileUpload = () => {
   const handleDragLeave = () => {
     setDragOver(false);
   };
+  const addFiles = (newFiles) => {
+    setFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles, ...newFiles];
+      if (onFilesChange) {
+        onFilesChange(updatedFiles.map((f) => f.file)); // chỉ truyền raw file
+      }
+      return updatedFiles;
+    });
+  };
 
   // Xử lý khi thả file
   const handleDrop = (event) => {
@@ -33,7 +42,7 @@ const DynamicFileUpload = () => {
       file,
       preview: URL.createObjectURL(file),
     }));
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    addFiles(newFiles);
   };
 
   // Xử lý khi chọn file qua input
@@ -45,15 +54,18 @@ const DynamicFileUpload = () => {
       file,
       preview: URL.createObjectURL(file),
     }));
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    addFiles(newFiles);
   };
 
   // Xóa file khỏi danh sách
   const handleRemoveFile = (index) => {
     setFiles((prevFiles) => {
       const updatedFiles = [...prevFiles];
-      URL.revokeObjectURL(updatedFiles[index].preview); // Giải phóng URL preview
+      URL.revokeObjectURL(updatedFiles[index].preview);
       updatedFiles.splice(index, 1);
+      if (onFilesChange) {
+        onFilesChange(updatedFiles.map((f) => f.file));
+      }
       return updatedFiles;
     });
   };
@@ -138,3 +150,24 @@ const DynamicFileUpload = () => {
 };
 
 export default DynamicFileUpload;
+
+// import React, { useState } from "react";
+// import DynamicFileUpload from "./DynamicFileUpload";
+
+// const ParentComponent = () => {
+//   const [uploadedFiles, setUploadedFiles] = useState([]);
+
+//   const handleFilesChange = (files) => {
+//     console.log("Danh sách file từ component con:", files);
+//     setUploadedFiles(files);
+//   };
+
+//   return (
+//     <div>
+//       <h2>Upload ảnh</h2>
+//       <DynamicFileUpload onFilesChange={handleFilesChange} />
+//     </div>
+//   );
+// };
+
+// export default ParentComponent;
