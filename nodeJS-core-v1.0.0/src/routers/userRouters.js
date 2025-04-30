@@ -21,9 +21,9 @@ const {
   sendBirthdayWish,
   registerUser,
   loginUser,
-} = require("../../controllers/nguoiDungController/userController");
-const { checkUserJWT } = require("../../middleware/JWTaction");
-const upload = require("../../config/multerConfig");
+} = require("../controllers/userController");
+const { checkUserJWT } = require("../middleware/JWTaction");
+const upload = require("../config/multerConfig");
 
 router.get("/user", getAllUser_Admin);
 router.get("/user/:id", getUser_ById);
