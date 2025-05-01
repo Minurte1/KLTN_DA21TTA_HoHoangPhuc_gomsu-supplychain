@@ -74,250 +74,74 @@ const NavBarAdmin = () => {
           Quản lý hệ thống
         </Typography>
         <List component="nav">
-          <ListItem
-            button
-            component={Link}
-            to="/admin"
-            sx={{
-              borderRadius: "12px",
-              color: "#1f1f1f",
-              cursor: "pointer",
-              userSelect: "none",
-              backgroundColor:
-                location.pathname === "/admin" ? "#8aad51" : "transparent", // Kiểm tra nếu đang ở trang này
-              "&:hover": { backgroundColor: "#8aad51" },
-            }}
-          >
-            <ListItemIcon>
-              {" "}
-              <BarChartIcon sx={{ color: "#1f1f1f" }} />
-            </ListItemIcon>
+          {adminMenuConfig.map((item, index) => {
+            const isOpen = openSection === index;
 
-            <ListItemText primary="Thống kê cơ bản" />
-          </ListItem>
-          {/* //----------------------- */}
-          <List>
-            {/* Quản lý người dùng */}
-            <ListItem
-              button
-              component={Link}
-              to="/admin/nguoi-dung"
-              sx={{
-                borderRadius: "12px",
-                color: "#1f1f1f",
-                cursor: "pointer",
-                userSelect: "none",
-                backgroundColor:
-                  location.pathname === "/admin/nguoi-dung"
-                    ? "#8aad51"
-                    : "transparent", // Kiểm tra nếu đang ở trang này
-                "&:hover": { backgroundColor: "#8aad51" },
-              }}
-            >
-              <ListItemIcon>
-                {" "}
-                <PersonIcon sx={{ color: "#1f1f1f" }} />
-              </ListItemIcon>
-
-              <ListItemText primary="Quản lý người dùng" />
-            </ListItem>
-
-            {/* Quản lý sản phẩm */}
-            <ListItem
-              button
-              onClick={() => toggleSection("sanPham")}
-              sx={{
-                borderRadius: "12px",
-                color: "#1f1f1f",
-                cursor: "pointer",
-                userSelect: "none",
-              }}
-            >
-              <ListItemIcon>
-                <InventoryIcon sx={{ color: "#1f1f1f" }} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Quản lý sản phẩm"
-                sx={{ color: "#1f1f1f" }}
-              />
-              {openSection === "sanPham" ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse
-              in={openSection === "sanPham"}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
+            if (!item.children) {
+              return (
                 <ListItem
+                  key={index}
                   button
                   component={Link}
-                  to="/admin/san-pham"
+                  to={item.path}
                   sx={{
-                    pl: 4,
+                    borderRadius: "12px",
                     color: "#1f1f1f",
-                    borderRadius: "13px",
                     backgroundColor:
-                      location.pathname === "/admin/san-pham"
+                      location.pathname === item.path
                         ? "#8aad51"
-                        : "transparent", // Kiểm tra nếu đang ở trang này
+                        : "transparent",
                     "&:hover": { backgroundColor: "#8aad51" },
                   }}
                 >
-                  <ListItemText primary="Thêm sản phẩm" />
-                </ListItem>{" "}
-                <List>
-                  <ListItem
-                    button
-                    component={Link}
-                    to="/admin/san-pham/danh-muc"
-                    sx={{
-                      pl: 4,
-                      color: "#1f1f1f",
-                      borderRadius: "13px",
-                      backgroundColor:
-                        location.pathname === "/admin/san-pham/danh-muc"
-                          ? "#8aad51"
-                          : "transparent", // Kiểm tra nếu đang ở trang này
-                      "&:hover": { backgroundColor: "#8aad51" },
-                    }}
-                  >
-                    <ListItemText primary="Danh mục sản phẩm" />
-                  </ListItem>{" "}
-                </List>
-              </List>
-            </Collapse>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.label} />
+                </ListItem>
+              );
+            }
 
-            {/* Quản lý đơn hàng */}
-            <ListItem
-              button
-              onClick={() => toggleSection("donHang")}
-              sx={{
-                color: "#1f1f1f",
-                borderRadius: "13px",
-                cursor: "pointer",
-              }}
-            >
-              <ListItemIcon>
-                <ShoppingCartIcon sx={{ color: "#1f1f1f" }} />
-              </ListItemIcon>
-              <ListItemText primary="Quản lý đơn hàng" />
-              {openSection === "donHang" ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse
-              in={openSection === "donHang"}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
+            // Với mục có children
+            return (
+              <React.Fragment key={index}>
                 <ListItem
                   button
-                  component={Link}
-                  to="/admin/don-hang/tat-ca"
+                  onClick={() => toggleSection(index)}
                   sx={{
-                    pl: 4,
+                    borderRadius: "12px",
                     color: "#1f1f1f",
-                    mt: 1,
-                    mb: 1,
-                    borderRadius: "13px",
-                    backgroundColor:
-                      location.pathname === "/admin/don-hang/tat-ca"
-                        ? "#8aad51"
-                        : "transparent", // Kiểm tra nếu đang ở trang này
-                    "&:hover": {
-                      backgroundColor: "#8aad51",
-                    },
                   }}
                 >
-                  <ListItemText primary="Tất cả đơn hàng" />
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.label} />
+                  {isOpen ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/don-hang/dang-xu-ly"
-                  sx={{
-                    pl: 4,
-                    color: "#1f1f1f",
-                    mt: 1,
-                    mb: 1,
-                    borderRadius: "13px",
-                    backgroundColor:
-                      location.pathname ===
-                      "/admin/san-pham/don-hang/dang-xu-ly"
-                        ? "#8aad51"
-                        : "transparent", // Kiểm tra nếu đang ở trang này
-                    "&:hover": {
-                      backgroundColor: "#8aad51",
-                    },
-                  }}
-                >
-                  <ListItemText primary="Đơn hàng đang xử lý" />
-                </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/don-hang/da-huy"
-                  sx={{
-                    pl: 4,
-                    color: "#1f1f1f",
-                    mt: 1,
-                    mb: 1,
-                    borderRadius: "13px",
-                    backgroundColor:
-                      location.pathname === "/admin/don-hang/da-huy"
-                        ? "#8aad51"
-                        : "transparent", // Kiểm tra nếu đang ở trang này
-                    "&:hover": {
-                      backgroundColor: "#8aad51",
-                    },
-                  }}
-                >
-                  <ListItemText primary="Đơn hàng đã hủy" />
-                </ListItem>{" "}
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/don-hang/hoan-tat"
-                  sx={{
-                    pl: 4,
-                    color: "#1f1f1f",
-                    mt: 1,
-                    mb: 1,
-                    borderRadius: "13px",
-                    backgroundColor:
-                      location.pathname === "/admin/don-hang/hoan-tat"
-                        ? "#8aad51"
-                        : "transparent", // Kiểm tra nếu đang ở trang này
-                    "&:hover": {
-                      backgroundColor: "#8aad51",
-                    },
-                  }}
-                >
-                  <ListItemText primary="Đơn hàng đã thanh toán" />
-                </ListItem>{" "}
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/khuyen-mai"
-                  sx={{
-                    pl: 4,
-                    color: "#1f1f1f",
-                    mt: 1,
-                    mb: 1,
-                    borderRadius: "13px",
-                    backgroundColor:
-                      location.pathname === "/admin/khuyen-mai"
-                        ? "#8aad51"
-                        : "transparent", // Kiểm tra nếu đang ở trang này
-                    "&:hover": {
-                      backgroundColor: "#8aad51",
-                    },
-                  }}
-                >
-                  <ListItemText primary="Quản lý khuyến mãi" />
-                </ListItem>{" "}
-              </List>
-            </Collapse>
-          </List>
+                <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {item.children.map((child, childIndex) => (
+                      <ListItem
+                        key={childIndex}
+                        button
+                        component={Link}
+                        to={child.path}
+                        sx={{
+                          pl: 4,
+                          color: "#1f1f1f",
+                          borderRadius: "12px",
+                          backgroundColor:
+                            location.pathname === child.path
+                              ? "#8aad51"
+                              : "transparent",
+                          "&:hover": { backgroundColor: "#8aad51" },
+                        }}
+                      >
+                        <ListItemText primary={child.label} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Collapse>
+              </React.Fragment>
+            );
+          })}
         </List>
       </Box>{" "}
     </>
