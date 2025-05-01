@@ -9,20 +9,12 @@ import {
   Divider,
   Collapse, // Đừng quên import Collapse
 } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import EmailIcon from "@mui/icons-material/Email";
-import PaymentIcon from "@mui/icons-material/Payment";
-import LockIcon from "@mui/icons-material/Lock";
-import StarIcon from "@mui/icons-material/Star";
-import PeopleIcon from "@mui/icons-material/People"; // Quản lý người dùng
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"; // Quản lý đơn hàng
-import InventoryIcon from "@mui/icons-material/Inventory"; // Quản lý sản phẩm
-import GroupIcon from "@mui/icons-material/Group"; // Tương tác người dùng
+
 import ExpandLess from "@mui/icons-material/ExpandLess"; // Import đúng từ đây
 import ExpandMore from "@mui/icons-material/ExpandMore"; // Import đúng từ đây
-import BarChartIcon from "@mui/icons-material/BarChart";
+
 import { Link, useLocation } from "react-router-dom";
-import PersonIcon from "@mui/icons-material/Person";
+
 const NavBarAdmin = () => {
   const [openSection, setOpenSection] = useState(null);
   const location = useLocation();
