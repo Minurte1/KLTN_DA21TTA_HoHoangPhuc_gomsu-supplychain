@@ -18,12 +18,11 @@ import {
   Storefront,
 } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
-
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { logout } from "../../redux/authSlice"; // Action từ Redux slice
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
 import Cookies from "js-cookie";
 import axios from "axios";
+
 const HeaderAdmin = () => {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -33,44 +32,36 @@ const HeaderAdmin = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    setAnchorEl(null); // Đặt lại anchorEl
-    setIsOpen(false); // Đặt lại trạng thái menu
+    setAnchorEl(null);
+    setIsOpen(false);
   }, [isAuthenticated]);
 
-  // Mở menu
   const handleMenuOpen = (event) => {
     if (!isAuthenticated) return;
     setAnchorEl(event.currentTarget);
     setIsOpen(true);
   };
 
-  // Đóng menu
   const handleMenuClose = () => {
     console.log("handleMenuClose");
     setAnchorEl(null);
     setIsOpen(false);
   };
-  console.log("isOpen", isOpen);
-  // Xử lý đăng xuất
+
   const handleLogout = async () => {
     try {
-      // Gọi API để clear session trên backend
       await axios.post(`${api}/logout`);
-
-      // Clear cookies và Redux state
       Cookies.remove("accessToken");
       dispatch(logout());
-
-      // Điều hướng về trang đăng nhập
       navigate("/login");
     } catch (error) {
       console.error("Error during logout:", error);
     }
   };
+
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#8aad51" }}>
+    <AppBar position="static" sx={{ backgroundColor: "#f5f7fa" }}>
       <Toolbar>
-        {/* Left section: Logo and other items */}
         <Box
           sx={{
             display: "flex",
@@ -86,27 +77,22 @@ const HeaderAdmin = () => {
               fontWeight: "bold",
               fontSize: "1.5rem",
               marginRight: 2,
-              color: "white",
+              color: "#333333",
               textDecoration: "none",
             }}
-          >
-            <img
-              src={`https://image.cocoonvietnam.com/uploads/vegan_society_41cc2b390a.svg`}
-              alt=""
-              style={{ width: "40px", marginTop: "10px" }}
-            />
-          </Typography>
+          ></Typography>
         </Box>
 
-        {/* Middle section: Phone number */}
-
-        {/* Right section: User and Cart */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           {isAuthenticated ? (
             <>
               <Button
                 variant="text"
-                sx={{ padding: 2, color: "#fff" }}
+                sx={{
+                  padding: 2,
+                  color: "#333333",
+                  "&:hover": { backgroundColor: "#ff6f61", color: "#fff" },
+                }}
                 onClick={handleMenuOpen}
               >
                 {userInfo.AVATAR ? (
@@ -115,44 +101,57 @@ const HeaderAdmin = () => {
                     alt={userInfo.AVATAR}
                   />
                 ) : (
-                  <AccountCircle />
+                  <AccountCircle sx={{ color: "#333333" }} />
                 )}
-                <Typography variant="body2" sx={{ ml: 2, color: "white" }}>
+                <Typography variant="body2" sx={{ ml: 2, color: "#333333" }}>
                   {userInfo.TENNGUOIDUNG || "Người dùng"}
                 </Typography>
               </Button>
-              {/* Menu các tùy chọn */}
               <Menu
                 anchorEl={anchorEl}
                 open={isOpen}
                 onClose={handleMenuClose}
                 sx={{ mt: 1 }}
               >
-                <MenuItem component={Link} to="/profile">
+                <MenuItem
+                  component={Link}
+                  to="/profile"
+                  sx={{
+                    color: "#333333",
+                    "&:hover": { backgroundColor: "#ff6f61", color: "#fff" },
+                  }}
+                >
                   Thông tin cá nhân
                 </MenuItem>
-
-                {/* Option: Đăng xuất */}
-                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                <MenuItem
+                  onClick={handleLogout}
+                  sx={{
+                    color: "#333333",
+                    "&:hover": { backgroundColor: "#ff6f61", color: "#fff" },
+                  }}
+                >
+                  Đăng xuất
+                </MenuItem>
               </Menu>
             </>
           ) : (
-            <>
-              {" "}
-              <IconButton
-                component={Link} // Sử dụng Link làm component
-                to="/login" // Đường dẫn đến trang tài khoản
-                sx={{
-                  color: "white",
-                  textDecoration: "none", // Xóa underline mặc định của Link
-                }}
+            <IconButton
+              component={Link}
+              to="/login"
+              sx={{
+                color: "#333333",
+                textDecoration: "none",
+                "&:hover": { backgroundColor: "#ff6f61", color: "#fff" },
+              }}
+            >
+              <AccountCircle />
+              <Typography
+                variant="body2"
+                sx={{ marginLeft: 1, color: "#333333" }}
               >
-                <AccountCircle />
-                <Typography variant="body2" sx={{ marginLeft: 1 }}>
-                  Đăng nhập
-                </Typography>
-              </IconButton>
-            </>
+                Đăng nhập
+              </Typography>
+            </IconButton>
           )}
         </Box>
       </Toolbar>

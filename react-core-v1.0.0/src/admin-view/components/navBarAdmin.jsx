@@ -6,13 +6,11 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
-  Collapse, // Đừng quên import Collapse
+  Collapse,
 } from "@mui/material";
-
-import ExpandLess from "@mui/icons-material/ExpandLess"; // Import đúng từ đây
-import ExpandMore from "@mui/icons-material/ExpandMore"; // Import đúng từ đây
-
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import { adminMenuConfig } from "../../share-service/menu-admin";
 import { Link, useLocation } from "react-router-dom";
 
 const NavBarAdmin = () => {
@@ -22,121 +20,119 @@ const NavBarAdmin = () => {
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
-  const [openCategory, setOpenCategory] = useState(false);
 
-  const handleClick = () => {
-    setOpenCategory(!openCategory);
-  };
   return (
-    <>
-      {" "}
-      <Box
-        sx={{
-          width: "250px",
-          backgroundColor: "#fff",
-          padding: "30px 20px",
-          borderRight: "1px solid #ddd",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          height: "100vh",
-          overflowY: "auto",
-          "&::-webkit-scrollbar": {
-            width: "1px",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "#0d1117",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "#888",
-            borderRadius: "4px",
-          },
-          "&::-webkit-scrollbar-thumb:hover": {
-            background: "#fff",
-          },
+    <Box
+      sx={{
+        width: "250px",
+        background: "linear-gradient(180deg, #f5f7fa 0%, #e8ecef 100%)",
+        padding: "30px 20px",
+        borderRight: "1px solid #d1d5db",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        height: "100vh",
+        overflowY: "auto",
+        "&::-webkit-scrollbar": {
+          width: "6px",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "#e8ecef",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "#ff6f61",
+          borderRadius: "3px",
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+          background: "#e65a50",
+        },
+      }}
+    >
+      <Typography
+        variant="h6"
+        style={{
+          marginBottom: "20px",
+          color: "#333333",
         }}
       >
-        <Typography
-          variant="h6"
-          style={{
-            marginBottom: "20px",
-            color: "#1f1f1f",
-          }}
-        >
-          Quản lý hệ thống
-        </Typography>
-        <List component="nav">
-          {adminMenuConfig.map((item, index) => {
-            const isOpen = openSection === index;
+        Quản lý hệ thống
+      </Typography>
+      <List component="nav">
+        {adminMenuConfig.map((item, index) => {
+          const isOpen = openSection === index;
 
-            if (!item.children) {
-              return (
-                <ListItem
-                  key={index}
-                  button
-                  component={Link}
-                  to={item.path}
-                  sx={{
-                    borderRadius: "12px",
-                    color: "#1f1f1f",
-                    backgroundColor:
-                      location.pathname === item.path
-                        ? "#8aad51"
-                        : "transparent",
-                    "&:hover": { backgroundColor: "#8aad51" },
-                  }}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.label} />
-                </ListItem>
-              );
-            }
-
-            // Với mục có children
+          if (!item.children) {
             return (
-              <React.Fragment key={index}>
-                <ListItem
-                  button
-                  onClick={() => toggleSection(index)}
-                  sx={{
-                    borderRadius: "12px",
-                    color: "#1f1f1f",
-                  }}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.label} />
-                  {isOpen ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {item.children.map((child, childIndex) => (
-                      <ListItem
-                        key={childIndex}
-                        button
-                        component={Link}
-                        to={child.path}
-                        sx={{
-                          pl: 4,
-                          color: "#1f1f1f",
-                          borderRadius: "12px",
-                          backgroundColor:
-                            location.pathname === child.path
-                              ? "#8aad51"
-                              : "transparent",
-                          "&:hover": { backgroundColor: "#8aad51" },
-                        }}
-                      >
-                        <ListItemText primary={child.label} />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Collapse>
-              </React.Fragment>
+              <ListItem
+                key={index}
+                button
+                component={Link}
+                to={item.path}
+                sx={{
+                  borderRadius: "12px",
+                  color: "#333333",
+                  backgroundColor:
+                    location.pathname === item.path ? "#ff6f61" : "transparent",
+                  "&:hover": { backgroundColor: "#ff6f61" },
+                }}
+              >
+                <ListItemIcon sx={{ color: "#333333" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItem>
             );
-          })}
-        </List>
-      </Box>{" "}
-    </>
+          }
+
+          return (
+            <React.Fragment key={index}>
+              <ListItem
+                button
+                onClick={() => toggleSection(index)}
+                sx={{
+                  borderRadius: "12px",
+                  color: "#333333",
+                }}
+              >
+                <ListItemIcon sx={{ color: "#333333" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.label} />
+                {isOpen ? (
+                  <ExpandLess sx={{ color: "#333333" }} />
+                ) : (
+                  <ExpandMore sx={{ color: "#333333" }} />
+                )}
+              </ListItem>
+              <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {item.children.map((child, childIndex) => (
+                    <ListItem
+                      key={childIndex}
+                      button
+                      component={Link}
+                      to={child.path}
+                      sx={{
+                        pl: 4,
+                        color: "#333333",
+                        borderRadius: "12px",
+                        backgroundColor:
+                          location.pathname === child.path
+                            ? "#ff6f61"
+                            : "transparent",
+                        "&:hover": { backgroundColor: "#ff6f61" },
+                      }}
+                    >
+                      <ListItemText primary={child.label} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            </React.Fragment>
+          );
+        })}
+      </List>
+    </Box>
   );
 };
 
