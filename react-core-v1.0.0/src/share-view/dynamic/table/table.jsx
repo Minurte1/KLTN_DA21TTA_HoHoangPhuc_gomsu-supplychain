@@ -9,14 +9,18 @@ import {
   Paper,
   TextField,
   TablePagination,
+  Typography,
+  Box,
+  InputAdornment,
+  alpha,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
-  // Lọc dữ liệu theo từ khóa tìm kiếm
   const filteredData = useMemo(() => {
     return data.filter((row) =>
       columns.some((column) => {
@@ -30,65 +34,166 @@ const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
     );
   }, [data, search, columns]);
 
-  // Xử lý phân trang
   const paginatedData = useMemo(() => {
     const start = page * rowsPerPage;
     return filteredData.slice(start, start + rowsPerPage);
   }, [filteredData, page, rowsPerPage]);
 
-  // Khi thay đổi page
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
 
-  // Khi thay đổi số dòng mỗi trang
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
   return (
-    <Paper>
-      {/* Ô tìm kiếm */}
-      <TextField
-        fullWidth
-        variant="outlined"
-        placeholder="Tìm kiếm..."
-        size="small"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        sx={{ m: 2 }}
-      />
+    <Paper
+      elevation={1}
+      sx={{
+        p: 2,
+        borderRadius: 2,
+        backgroundColor: "#ffffff",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+      }}
+    >
+      {/* Search and Title */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 500,
+            color: "#1a1a1a",
+            fontSize: "1.125rem",
+          }}
+        >
+          Danh sách
+        </Typography>
+        <TextField
+          variant="outlined"
+          placeholder="Tìm kiếm..."
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: "#999", fontSize: 20 }} />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+              backgroundColor: alpha("#f5f5f5", 0.5),
+              "&:hover": {
+                backgroundColor: "#f5f5f5",
+              },
+              "&.Mui-focused": {
+                backgroundColor: "#ffffff",
+                boxShadow: `0 0 0 2px ${alpha("#1976d2", 0.2)}`,
+              },
+            },
+            "& .MuiInputBase-input": {
+              fontSize: "0.875rem",
+              py: 1,
+            },
+          }}
+        />
+      </Box>
 
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="dynamic table">
+        <Table sx={{ minWidth: 650 }}>
           <TableHead>
-            <TableRow>
+            <TableRow
+              sx={{
+                backgroundColor: alpha("#f5f5f5", 0.4),
+                "& th": {
+                  borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+                },
+              }}
+            >
               {columns.map((column) => (
-                <TableCell key={column.key}>{column.label}</TableCell>
+                <TableCell
+                  key={column.key}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "0.85rem",
+                    color: "#333",
+                    py: 1.5,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  {column.label}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {paginatedData.map((row, index) => (
-              <TableRow key={index}>
+            {paginatedData.map((row, rowIndex) => (
+              <TableRow
+                key={rowIndex}
+                hover
+                sx={{
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    backgroundColor: alpha("#e3f2fd", 0.5),
+                    transform: "translateY(-1px)",
+                  },
+                  "& td": {
+                    borderBottom: "1px solid rgba(0, 0, 0, 0.03)",
+                  },
+                }}
+              >
                 {columns.map((column) => (
-                  <TableCell key={column.key}>
+                  <TableCell
+                    key={column.key}
+                    sx={{
+                      py: 1.2,
+                      fontSize: "0.875rem",
+                      color: "#444",
+                    }}
+                  >
                     {column.render ? (
                       column.render(row[column.key], row)
                     ) : column.type === "image" ? (
-                      <img
+                      <Box
+                        component="img"
                         src={row[column.key]}
                         alt={column.label}
-                        style={{
-                          width: 60,
-                          height: 60,
+                        sx={{
+                          width: 40,
+                          height: 40,
                           objectFit: "cover",
-                          borderRadius: 8,
+                          borderRadius: 1,
+                          display: "block",
+                          margin: "0 auto",
+                          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                         }}
                       />
                     ) : (
-                      row[column.key]
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          maxWidth: 250,
+                          fontSize: "0.875rem",
+                        }}
+                      >
+                        {row[column.key]}
+                      </Typography>
                     )}
                   </TableCell>
                 ))}
@@ -98,7 +203,6 @@ const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
         </Table>
       </TableContainer>
 
-      {/* Phân trang */}
       <TablePagination
         component="div"
         count={filteredData.length}
@@ -107,37 +211,26 @@ const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={rowsPerPageOptions}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
+          mt: 1,
+          "& .MuiTablePagination-toolbar": {
+            fontSize: "0.875rem",
+            color: "#555",
+          },
+          "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+            {
+              fontSize: "0.85rem",
+            },
+          "& .MuiTablePagination-actions button": {
+            borderRadius: 1,
+            "&:hover": {
+              backgroundColor: alpha("#1976d2", 0.1),
+            },
+          },
+        }}
       />
     </Paper>
   );
 };
 
 export default DynamicTable;
-{
-  /* <DynamicTable
-  data={roles}
-  columns={[
-    { key: "NAME_ROLE", label: "Tên quyền" },
-    { key: "CODE_NAME", label: "Mã quyền" },
-    {
-      key: "LIST_PERMISSION",
-      label: "Danh sách quyền",
-      render: (value) => value.join(", "),
-    },
-    {
-      key: "actions",
-      label: "Hành động",
-      render: (_, row) => (
-        <>
-          <IconButton onClick={() => handleEdit(row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => handleDelete(row.ID_ROLE)}>
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
-    },
-  ]}
-/>; */
-}

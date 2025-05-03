@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const ROLE_API = "/api/roles";
+const ROLE_API = `${process.env.REACT_APP_URL_SERVER}/role`;
 
 const roleServices = {
   // Lấy danh sách tất cả roles

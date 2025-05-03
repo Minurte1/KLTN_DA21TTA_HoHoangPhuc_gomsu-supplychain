@@ -4,8 +4,8 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { getRoles, deleteRole } from "./roleApi";
 import DynamicTable from "../../share-view/dynamic/table/table";
+import roleServices from "../../services/role-service";
 
 const Role = () => {
   const [roles, setRoles] = useState([]);
@@ -13,7 +13,7 @@ const Role = () => {
   const [selectedRole, setSelectedRole] = useState(null);
 
   const fetchRoles = async () => {
-    const data = await getRoles();
+    const data = await roleServices.getRoles();
     setRoles(data);
   };
 
@@ -27,13 +27,13 @@ const Role = () => {
   };
 
   const handleDelete = async (id) => {
-    await deleteRole(id);
+    await roleServices.deleteRole(id);
     fetchRoles();
   };
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom mt={4}>
         Quản lý Role
       </Typography>
       <Button
@@ -53,11 +53,11 @@ const Role = () => {
         columns={[
           { key: "NAME_ROLE", label: "Tên quyền" },
           { key: "CODE_NAME", label: "Mã quyền" },
-          {
-            key: "LIST_PERMISSION",
-            label: "Danh sách quyền",
-            render: (value) => value.join(", "),
-          },
+          // {
+          //   key: "LIST_PERMISSION",
+          //   label: "Danh sách quyền",
+          //   render: (value) => value.join(", "),
+          // },
           {
             key: "actions",
             label: "Hành động",

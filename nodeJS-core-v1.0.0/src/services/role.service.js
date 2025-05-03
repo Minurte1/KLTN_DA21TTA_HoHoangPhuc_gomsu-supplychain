@@ -12,10 +12,13 @@ const createRole = async ({ NAME_ROLE, LIST_PERMISSION, CODE_NAME }) => {
 // Lấy tất cả role chưa bị xóa mềm
 const getAllRoles = async () => {
   const [rows] = await db.query("SELECT * FROM role WHERE IS_DELETE = FALSE");
-  return rows.map((role) => ({
+  console.log("rows", rows);
+  const result = rows.map((role) => ({
     ...role,
-    LIST_PERMISSION: JSON.parse(role.LIST_PERMISSION),
+    LIST_PERMISION: role.LIST_PERMISION ? JSON.parse(role.LIST_PERMISION) : [],
   }));
+
+  return result;
 };
 
 // Lấy role theo ID
