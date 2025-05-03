@@ -4,11 +4,10 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import RoleFormModal from "./RoleFormModal";
 import { getRoles, deleteRole } from "./roleApi";
 import DynamicTable from "../../share-view/dynamic/table/table";
 
-const RoleList = () => {
+const Role = () => {
   const [roles, setRoles] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
@@ -76,14 +75,14 @@ const RoleList = () => {
         ]}
       />
 
-      <RoleFormModal
+      {/* <RoleFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         role={selectedRole}
         onSuccess={fetchRoles}
-      />
+      /> */}
     </Box>
   );
 };
 
-export default RoleList;
+export default Role;

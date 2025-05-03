@@ -1,6 +1,7 @@
 import { useRoutes, Navigate } from "react-router-dom";
 
 import DashboardAdmin from "./pages/DashboardAdmin";
+import Role from "./pages/role-page";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -10,7 +11,7 @@ const RouterAdmin = () => {
     },
     {
       path: "/phan-quyen",
-      element: <DashboardAdmin />,
+      element: <Role />,
     },
 
     {

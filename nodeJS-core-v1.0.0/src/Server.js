@@ -42,8 +42,9 @@ app.use(bodyParser.json());
 
 //api user
 const userRoute = require("./routers/userRouters.js");
-
+const roleRoute = require("./routers/role.routes.js");
 app.use("/", userRoute);
+app.use("/role", roleRoute);
 //
 
 // Socket.IO logic
