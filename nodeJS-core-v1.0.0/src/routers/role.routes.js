@@ -14,37 +14,41 @@ const {
 } = require("../middleware/JWTaction");
 
 // Lấy tất cả role
-router.get("/", checkUserJWT, checkUserPermission("role", "view"), getRoles);
+router.get(
+  "/",
+  // checkUserJWT, checkUserPermission("role", "view"),
+  getRoles
+);
 
 // Tạo role
 router.post(
   "/",
-  checkUserJWT,
-  checkUserPermission("role", "create"),
+  // checkUserJWT,
+  // checkUserPermission("role", "create"),
   createRole
 );
 
 // Lấy role theo ID
 router.get(
   "/:id",
-  checkUserJWT,
-  checkUserPermission("role", "view"),
+  // checkUserJWT,
+  // checkUserPermission("role", "view"),
   getRoleById
 );
 
 // Cập nhật role
 router.put(
   "/:id",
-  checkUserJWT,
-  checkUserPermission("role", "update"),
+  // checkUserJWT,
+  // checkUserPermission("role", "update"),
   updateRole
 );
 
 // Xóa role
 router.delete(
   "/:id",
-  checkUserJWT,
-  checkUserPermission("role", "delete"),
+  // checkUserJWT,
+  // checkUserPermission("role", "delete"),
   deleteRole
 );
 

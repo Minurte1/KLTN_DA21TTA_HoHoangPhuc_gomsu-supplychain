@@ -6,6 +6,7 @@ const getRoles = async (req, res) => {
     const roles = await RoleService.getAllRoles();
     res.json(roles);
   } catch (error) {
+    console.log("role", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -21,6 +22,7 @@ const createRole = async (req, res) => {
     });
     res.status(201).json({ message: "Role created", id });
   } catch (error) {
+    console.log("role", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -35,6 +37,7 @@ const getRoleById = async (req, res) => {
     }
     res.json(role);
   } catch (error) {
+    console.log("role", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -54,6 +57,7 @@ const updateRole = async (req, res) => {
     }
     res.json({ message: "Role updated" });
   } catch (error) {
+    console.log("role", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -68,6 +72,7 @@ const deleteRole = async (req, res) => {
     }
     res.json({ message: "Role deleted" });
   } catch (error) {
+    console.log("role", error);
     res.status(500).json({ error: error.message });
   }
 };
