@@ -63,10 +63,28 @@ const checkUserJWT = (req, res, next) => {
     });
   }
 };
+const checkUserPermission = (routerName, actionName) => {
+  return (req, res, next) => {
+    const user = req.user;
+
+    if (!user || !Array.isArray(user.LIST_PERMISSION)) {
+      return res.status(403).json({ message: "User không có quyền." });
+    }
+
+    const matched = user.LIST_PERMISSION.find((p) => p.router === routerName);
+    if (!matched || !matched.actions.includes(actionName)) {
+      return res.status(403).json({
+        message: `Bạn không có quyền '${actionName}' trong '${routerName}'.`,
+      });
+    }
+
+    next();
+  };
+};
 
 module.exports = {
   createJWT,
   verifyToken,
   checkUserJWT,
-  // checkUserPermission,
+  checkUserPermission,
 };
