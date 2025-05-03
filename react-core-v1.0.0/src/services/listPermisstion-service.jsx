@@ -1,3 +1,5 @@
+import axiosInstance from "../authentication/axiosInstance";
+const API = `${process.env.REACT_APP_URL_SERVER}/api/permissions/base-list`;
 export const permissionService = {
   /**
    * Kiểm tra xem có quyền thực hiện hành động trên router không
@@ -55,5 +57,9 @@ export const permissionService = {
     );
 
     return found ? found.actions : [];
+  },
+  getPermission: async () => {
+    const res = await axiosInstance.get(API);
+    return res.data;
   },
 };

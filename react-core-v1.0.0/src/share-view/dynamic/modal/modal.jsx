@@ -12,6 +12,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+import Typography from "@mui/material/Typography";
 
 const DynamicModal = ({
   open,
