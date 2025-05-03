@@ -17,6 +17,11 @@ export const adminMenuConfig = [
     icon: <BarChartIcon />,
   },
   {
+    label: "Phân quyền & vai trò",
+    path: "/admin/phan-quyen",
+    icon: <AdminPanelSettingsIcon />,
+  },
+  {
     label: "Quản lý người dùng",
     path: "/admin/nguoi-dung",
     icon: <PersonIcon />,
@@ -76,11 +81,7 @@ export const adminMenuConfig = [
     path: "/admin/nha-cung-cap",
     icon: <LocalShippingIcon />,
   },
-  {
-    label: "Phân quyền & vai trò",
-    path: "/admin/phan-quyen",
-    icon: <AdminPanelSettingsIcon />,
-  },
+
   {
     label: "Báo cáo & thống kê",
     path: "/admin/bao-cao",

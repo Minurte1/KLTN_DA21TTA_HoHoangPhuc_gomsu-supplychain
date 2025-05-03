@@ -8,6 +8,10 @@ const RouterAdmin = () => {
       path: "/",
       element: <DashboardAdmin />,
     },
+    {
+      path: "/phan-quyen",
+      element: <DashboardAdmin />,
+    },
 
     {
       path: "*",
