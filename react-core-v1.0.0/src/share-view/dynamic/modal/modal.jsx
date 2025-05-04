@@ -21,11 +21,13 @@ const DynamicModal = ({
   fields,
   initialData = {},
   title = "Form",
+  renderActions,
+  onChange, // New prop to notify parent of input changes
 }) => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
 
-  // Khởi tạo formData từ initialData khi modal mở
+  // Initialize formData from initialData when modal opens
   useEffect(() => {
     if (open) {
       setFormData(initialData);
@@ -33,23 +35,20 @@ const DynamicModal = ({
     }
   }, [open, initialData]);
 
-  // Xử lý thay đổi input
+  // Handle input change
   const handleChange = (key) => (event, newValue) => {
-    let value;
-    if (newValue !== undefined) {
-      // Autocomplete cung cấp newValue
-      value = newValue;
-    } else {
-      // TextField và Select sử dụng event.target.value
-      value = event.target.value;
+    let value = newValue !== undefined ? newValue : event.target.value;
+    const updatedFormData = { ...formData, [key]: value };
+    setFormData(updatedFormData);
+    if (onChange) {
+      onChange(updatedFormData); // Notify parent of changes
     }
-    setFormData({ ...formData, [key]: value });
     if (errors[key]) {
       setErrors({ ...errors, [key]: "" });
     }
   };
 
-  // Xử lý submit form
+  // Handle form submission
   const handleSubmit = () => {
     const newErrors = {};
     fields.forEach((field) => {
@@ -66,11 +65,11 @@ const DynamicModal = ({
       return;
     }
 
-    onSubmit(formData);
+    onSubmit(formData); // Pass updated formData to parent
     onClose();
   };
 
-  // Render input dựa trên inputType
+  // Render input based on inputType
   const renderInput = (field) => {
     switch (field.inputType) {
       case "select":
@@ -138,6 +137,18 @@ const DynamicModal = ({
     }
   };
 
+  // Default actions if renderActions is not provided
+  const defaultActions = (
+    <>
+      <Button onClick={onClose} color="secondary">
+        Hủy
+      </Button>
+      <Button onClick={handleSubmit} variant="contained" color="primary">
+        Lưu
+      </Button>
+    </>
+  );
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{title}</DialogTitle>
@@ -149,65 +160,12 @@ const DynamicModal = ({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          Hủy
-        </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
-          Lưu
-        </Button>
+        {renderActions
+          ? renderActions({ handleSubmit, onClose })
+          : defaultActions}
       </DialogActions>
     </Dialog>
   );
 };
 
 export default DynamicModal;
-
-// import React, { useState } from 'react';
-// import DynamicModal from './DynamicModal';
-
-// const ExampleUsage = () => {
-//   const [open, setOpen] = useState(false);
-
-//   const fields = [
-//     { key: 'name', label: 'Tên', required: true },
-//     { key: 'age', label: 'Tuổi', inputType: 'text', type: 'number' },
-//     {
-//       key: 'gender',
-//       label: 'Giới tính',
-//       inputType: 'select',
-//       options: [
-//         { value: 'male', label: 'Nam' },
-//         { value: 'female', label: 'Nữ' }
-//       ],
-//     },
-//     {
-//       key: 'city',
-//       label: 'Thành phố',
-//       inputType: 'autocomplete',
-//       options: [
-//         { value: 'hn', label: 'Hà Nội' },
-//         { value: 'hcm', label: 'TP HCM' },
-//         { value: 'dn', label: 'Đà Nẵng' }
-//       ],
-//     },
-//   ];
-
-//   const handleSubmit = (data) => {
-//     console.log('Dữ liệu submit:', data);
-//   };
-
-//   return (
-//     <>
-//       <button onClick={() => setOpen(true)}>Mở Modal</button>
-//       <DynamicModal
-//         open={open}
-//         onClose={() => setOpen(false)}
-//         onSubmit={handleSubmit}
-//         fields={fields}
-//         title="Thông tin người dùng"
-//       />
-//     </>
-//   );
-// };
-
-// export default ExampleUsage;
