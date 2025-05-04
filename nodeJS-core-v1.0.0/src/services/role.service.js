@@ -18,7 +18,7 @@ const getAllRoles = async () => {
     ...role,
     LIST_PERMISION: role.LIST_PERMISION ? JSON.parse(role.LIST_PERMISION) : [],
   }));
-
+  console.log("result", result);
   return result;
 };
 

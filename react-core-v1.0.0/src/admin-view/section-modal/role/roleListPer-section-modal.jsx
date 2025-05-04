@@ -170,7 +170,6 @@ const PermissionManagerModal = ({
     }));
   };
 
-  console.log("translatedPermissions", translatedPermissions);
   return (
     <Modal open={open} onClose={onClose}>
       <Box
