@@ -14,7 +14,7 @@ const getAllUser_Admin = async (req, res) => {
   try {
     // Check if the user already exists in the database
 
-    const [rows] = await pool.query("SELECT * FROM NGUOI_DUNG ");
+    const [rows] = await pool.query("SELECT * FROM users");
     const results = rows;
     return res.status(200).json({
       EM: "Lấy thông tin tất cả người dùng thành công",
@@ -35,10 +35,9 @@ const getUser_ById = async (req, res) => {
     const { id } = req.params;
     // Check if the user already exists in the database
 
-    const [rows] = await pool.query(
-      "SELECT * FROM NGUOI_DUNG where ID_NGUOI_DUNG =? ",
-      [id]
-    );
+    const [rows] = await pool.query("SELECT * FROM users where ID_USERS =? ", [
+      id,
+    ]);
     const results = rows;
     return res.status(200).json({
       EM: "Lấy thông tin tất cả người dùng thành công",
@@ -136,13 +135,11 @@ const updateUserById_User = async (req, res) => {
     EMAIL,
     HO_TEN,
     SO_DIEN_THOAI,
-    NGAY_SINH,
     VAI_TRO,
     DIA_CHI_Provinces,
     DIA_CHI_Districts,
     DIA_CHI_Wards,
     DIA_CHI_STREETNAME,
-    DIA_CHI,
     TRANG_THAI_USER,
   } = req.body;
 
@@ -160,7 +157,7 @@ const updateUserById_User = async (req, res) => {
   try {
     // Kiểm tra xem người dùng có tồn tại không
     const [existingUser] = await pool.execute(
-      "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+      "SELECT * FROM users WHERE ID_USERS = ?",
       [id]
     );
 
@@ -175,18 +172,7 @@ const updateUserById_User = async (req, res) => {
     // Cập nhật các trường không phải null
     let updateFields = [];
     let updateValues = [];
-    if (DIA_CHI !== undefined && DIA_CHI !== null && DIA_CHI !== "") {
-      updateFields.push("DIA_CHI = ?");
-      updateValues.push(DIA_CHI);
-    }
-    if (
-      TRANG_THAI_USER !== undefined &&
-      TRANG_THAI_USER !== null &&
-      TRANG_THAI_USER !== ""
-    ) {
-      updateFields.push("TRANG_THAI_USER = ?");
-      updateValues.push(TRANG_THAI_USER);
-    }
+
     if (EMAIL !== undefined && EMAIL !== null && EMAIL !== "") {
       updateFields.push("EMAIL = ?");
       updateValues.push(EMAIL);
@@ -194,10 +180,6 @@ const updateUserById_User = async (req, res) => {
     if (HO_TEN !== undefined && HO_TEN !== null && HO_TEN !== "") {
       updateFields.push("HO_TEN = ?");
       updateValues.push(HO_TEN);
-    }
-    if (VAI_TRO !== undefined && VAI_TRO !== null && VAI_TRO !== "") {
-      updateFields.push("VAI_TRO = ?");
-      updateValues.push(VAI_TRO);
     }
     if (
       SO_DIEN_THOAI !== undefined &&
@@ -207,10 +189,21 @@ const updateUserById_User = async (req, res) => {
       updateFields.push("SO_DIEN_THOAI = ?");
       updateValues.push(SO_DIEN_THOAI);
     }
-    if (NGAY_SINH !== undefined && NGAY_SINH !== null && NGAY_SINH !== "") {
-      const formattedNgaySinh = dayjs(NGAY_SINH).format("YYYY-MM-DD"); // Sử dụng dayjs để chuyển đổi
-      updateFields.push("NGAY_SINH = ?");
-      updateValues.push(formattedNgaySinh);
+    if (VAI_TRO !== undefined && VAI_TRO !== null && VAI_TRO !== "") {
+      // Kiểm tra xem VAI_TRO có tồn tại trong bảng roles
+      const [roleCheck] = await pool.execute(
+        "SELECT ID_ROLE FROM roles WHERE ID_ROLE = ? AND IS_DELETE = 0",
+        [VAI_TRO]
+      );
+      if (roleCheck.length === 0) {
+        return res.status(400).json({
+          EM: "Vai trò không hợp lệ",
+          EC: 0,
+          DT: [],
+        });
+      }
+      updateFields.push("VAI_TRO = ?");
+      updateValues.push(VAI_TRO);
     }
     if (
       DIA_CHI_Provinces !== undefined &&
@@ -244,6 +237,15 @@ const updateUserById_User = async (req, res) => {
       updateFields.push("DIA_CHI_STREETNAME = ?");
       updateValues.push(DIA_CHI_STREETNAME);
     }
+    if (
+      TRANG_THAI_USER !== undefined &&
+      TRANG_THAI_USER !== null &&
+      TRANG_THAI_USER !== "" &&
+      ["ACTIVE", "INACTIVE", "DELETED"].includes(TRANG_THAI_USER)
+    ) {
+      updateFields.push("TRANG_THAI_USER = ?");
+      updateValues.push(TRANG_THAI_USER);
+    }
 
     // Thêm trường ngày cập nhật
     const ngayCapNhat = new Date();
@@ -261,9 +263,9 @@ const updateUserById_User = async (req, res) => {
 
     // Cập nhật thông tin người dùng
     const updateQuery = `
-      UPDATE NGUOI_DUNG 
+      UPDATE users 
       SET ${updateFields.join(", ")}
-      WHERE ID_NGUOI_DUNG = ?
+      WHERE ID_USERS = ?
     `;
 
     // Thêm ID người dùng vào cuối giá trị để xác định người dùng cần cập nhật
@@ -272,21 +274,34 @@ const updateUserById_User = async (req, res) => {
     const [updateResult] = await pool.execute(updateQuery, updateValues);
 
     if (updateResult.affectedRows > 0) {
-      // Lấy lại thông tin mới nhất của người dùng sau khi cập nhật
+      // Lấy lại thông tin mới nhất của người dùng sau khi cập nhật, bao gồm thông tin vai trò
       const [updatedUser] = await pool.execute(
-        "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+        `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
+         FROM users u 
+         LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+         WHERE u.ID_USERS = ? AND r.IS_DELETE = 0`,
         [id]
       );
-      console.log("updatedUser[0]", updatedUser[0]);
+
+      if (updatedUser.length === 0) {
+        return res.status(404).json({
+          EM: "Không tìm thấy người dùng sau khi cập nhật",
+          EC: 0,
+          DT: [],
+        });
+      }
+
       const user = updatedUser[0];
+      console.log("updatedUser[0]", user);
+
+      // Tạo JWT token
       const token = jwt.sign(
         {
-          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
           VAI_TRO: user.VAI_TRO,
           HO_TEN: user.HO_TEN,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-          DIA_CHI: user.DIA_CHI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
@@ -295,14 +310,35 @@ const updateUserById_User = async (req, res) => {
           DIA_CHI_Districts: user.DIA_CHI_Districts,
           DIA_CHI_Wards: user.DIA_CHI_Wards,
           DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+          LIST_PERMISION: user.LIST_PERMISION,
+          NAME_ROLE: user.NAME_ROLE,
+          CODE_NAME: user.CODE_NAME,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
       );
+
       return res.status(200).json({
         EM: "Cập nhật thông tin thành công",
         EC: 1,
-        DT: updatedUser[0],
+        DT: {
+          ID_USERS: user.ID_USERS,
+          EMAIL: user.EMAIL,
+          HO_TEN: user.HO_TEN,
+          VAI_TRO: user.VAI_TRO,
+          SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+          TRANG_THAI_USER: user.TRANG_THAI_USER,
+          NGAY_TAO_USER: user.NGAY_TAO_USER,
+          NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+          AVATAR: user.AVATAR,
+          DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+          DIA_CHI_Districts: user.DIA_CHI_Districts,
+          DIA_CHI_Wards: user.DIA_CHI_Wards,
+          DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+          LIST_PERMISION: user.LIST_PERMISION,
+          NAME_ROLE: user.NAME_ROLE,
+          CODE_NAME: user.CODE_NAME,
+        },
         accessToken: token,
       });
     } else {
@@ -325,9 +361,10 @@ const updateUserById_User = async (req, res) => {
 const loginUserGoogle = async (req, res) => {
   const { email, HO_TEN } = req.body;
   console.log("req.body loginUserGoogle", req.body);
+
   if (!email) {
     return res.status(401).json({
-      EM: "email is missing",
+      EM: "Email is missing",
       EC: 401,
       DT: [],
     });
@@ -335,32 +372,35 @@ const loginUserGoogle = async (req, res) => {
 
   try {
     // Check if the user already exists in the database
-
     const [rows] = await pool.query(
-      "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
+      `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
+       FROM users u 
+       LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+       WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
 
     if (rows.length > 0) {
       const user = rows[0];
       console.log("user", user);
-      // Kiểm tra nếu tài khoản bị khóa
-      if (user.TRANG_THAI_USER == 0) {
+
+      // Check if the account is not active
+      if (user.TRANG_THAI_USER !== "ACTIVE") {
         return res.status(403).json({
-          EM: "Tài khoản bị khóa, không thể đăng nhập",
+          EM: "Tài khoản không hoạt động, không thể đăng nhập",
           EC: 0,
-          DT: "Account is disabled",
+          DT: "Account is not active",
         });
       }
-      console.log(user);
+
+      // Create JWT token
       const token = jwt.sign(
         {
-          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
           VAI_TRO: user.VAI_TRO,
           HO_TEN: user.HO_TEN,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-          DIA_CHI: user.DIA_CHI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
@@ -369,6 +409,9 @@ const loginUserGoogle = async (req, res) => {
           DIA_CHI_Districts: user.DIA_CHI_Districts,
           DIA_CHI_Wards: user.DIA_CHI_Wards,
           DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+          LIST_PERMISION: user.LIST_PERMISION,
+          NAME_ROLE: user.NAME_ROLE,
+          CODE_NAME: user.CODE_NAME,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
@@ -380,47 +423,54 @@ const loginUserGoogle = async (req, res) => {
         DT: {
           accessToken: token,
           userInfo: {
-            ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+            ID_USERS: user.ID_USERS,
             EMAIL: user.EMAIL,
             HO_TEN: user.HO_TEN,
             VAI_TRO: user.VAI_TRO,
             SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-            DIA_CHI: user.DIA_CHI,
             TRANG_THAI_USER: user.TRANG_THAI_USER,
             NGAY_TAO_USER: user.NGAY_TAO_USER,
             NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
             AVATAR: user.AVATAR,
-            THEMES: user.THEMES,
-            LANGUAGE: user.LANGUAGE,
             DIA_CHI_Provinces: user.DIA_CHI_Provinces,
             DIA_CHI_Districts: user.DIA_CHI_Districts,
             DIA_CHI_Wards: user.DIA_CHI_Wards,
             DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+            LIST_PERMISION: user.LIST_PERMISION,
+            NAME_ROLE: user.NAME_ROLE,
+            CODE_NAME: user.CODE_NAME,
           },
         },
       });
     } else {
-      const VAI_TRO = "0";
-      const TRANG_THAI_USER = "1";
-      const [insertResult] = await pool.query(
-        "INSERT INTO NGUOI_DUNG (EMAIL, VAI_TRO, HO_TEN, TRANG_THAI_USER,NGAY_TAO_USER,NGAY_CAP_NHAT_USER) VALUES (?,?,?,?,NOW(),NOW())",
+      // Insert new user with default role and active status
+      const VAI_TRO = 1; // Assuming 1 is a valid ID_ROLE in roles table
+      const TRANG_THAI_USER = "ACTIVE";
+      await pool.query(
+        `INSERT INTO users (EMAIL, VAI_TRO, HO_TEN, TRANG_THAI_USER, NGAY_TAO_USER, NGAY_CAP_NHAT_USER) 
+         VALUES (?, ?, ?, ?, NOW(), NOW())`,
         [email, VAI_TRO, HO_TEN, TRANG_THAI_USER]
       );
-      const [rows] = await pool.query(
-        "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
+
+      // Fetch the newly created user with role details
+      const [newRows] = await pool.query(
+        `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
+         FROM users u 
+         LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+         WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
         [email]
       );
-      const user = rows[0];
-      const newUserId = insertResult.insertId;
 
+      const user = newRows[0];
+
+      // Create JWT token for new user
       const token = jwt.sign(
         {
-          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
           VAI_TRO: user.VAI_TRO,
           HO_TEN: user.HO_TEN,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-          DIA_CHI: user.DIA_CHI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
@@ -428,6 +478,10 @@ const loginUserGoogle = async (req, res) => {
           DIA_CHI_Provinces: user.DIA_CHI_Provinces,
           DIA_CHI_Districts: user.DIA_CHI_Districts,
           DIA_CHI_Wards: user.DIA_CHI_Wards,
+          DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+          LIST_PERMISION: user.LIST_PERMISION,
+          NAME_ROLE: user.NAME_ROLE,
+          CODE_NAME: user.CODE_NAME,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
@@ -439,12 +493,11 @@ const loginUserGoogle = async (req, res) => {
         DT: {
           accessToken: token,
           userInfo: {
-            ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+            ID_USERS: user.ID_USERS,
             EMAIL: user.EMAIL,
-            VAI_TRO: user.VAI_TRO,
             HO_TEN: user.HO_TEN,
+            VAI_TRO: user.VAI_TRO,
             SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-            DIA_CHI: user.DIA_CHI,
             TRANG_THAI_USER: user.TRANG_THAI_USER,
             NGAY_TAO_USER: user.NGAY_TAO_USER,
             NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
@@ -453,6 +506,9 @@ const loginUserGoogle = async (req, res) => {
             DIA_CHI_Districts: user.DIA_CHI_Districts,
             DIA_CHI_Wards: user.DIA_CHI_Wards,
             DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+            LIST_PERMISION: user.LIST_PERMISION,
+            NAME_ROLE: user.NAME_ROLE,
+            CODE_NAME: user.CODE_NAME,
           },
         },
       });
@@ -479,15 +535,18 @@ const loginUser = async (req, res) => {
   }
 
   try {
-    // Kiểm tra xem người dùng có tồn tại trong cơ sở dữ liệu không
+    // Kiểm tra người dùng và lấy thông tin vai trò
     const [rows] = await pool.query(
-      "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
+      `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
+       FROM users u 
+       LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+       WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
 
     if (rows.length === 0) {
       return res.status(404).json({
-        EM: "Người dùng không tồn tại",
+        EM: "Người dùng không tồn tại hoặc vai trò không hợp lệ",
         EC: 0,
         DT: [],
       });
@@ -495,17 +554,20 @@ const loginUser = async (req, res) => {
 
     const user = rows[0];
 
-    // Kiểm tra nếu tài khoản bị khóa
-    if (user.TRANG_THAI_USER == 0) {
+    // Kiểm tra nếu tài khoản bị khóa hoặc bị xóa
+    if (user.TRANG_THAI_USER !== "ACTIVE") {
       return res.status(403).json({
-        EM: "Tài khoản bị khóa, không thể đăng nhập",
+        EM: "Tài khoản không hoạt động, không thể đăng nhập",
         EC: 0,
-        DT: "Account is disabled",
+        DT: "Account is not active",
       });
     }
 
     // Kiểm tra mật khẩu
-    const isPasswordValid = await bcrypt.compare(password, user.MAT_KHAU); // So sánh mật khẩu
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user._PASSWORD_HASH_USERS
+    );
     if (!isPasswordValid) {
       return res.status(401).json({
         EM: "Mật khẩu không đúng",
@@ -517,12 +579,11 @@ const loginUser = async (req, res) => {
     // Tạo JWT token
     const token = jwt.sign(
       {
-        ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+        ID_USERS: user.ID_USERS,
         EMAIL: user.EMAIL,
         VAI_TRO: user.VAI_TRO,
         HO_TEN: user.HO_TEN,
         SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-        DIA_CHI: user.DIA_CHI,
         TRANG_THAI_USER: user.TRANG_THAI_USER,
         NGAY_TAO_USER: user.NGAY_TAO_USER,
         NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
@@ -531,6 +592,9 @@ const loginUser = async (req, res) => {
         DIA_CHI_Districts: user.DIA_CHI_Districts,
         DIA_CHI_Wards: user.DIA_CHI_Wards,
         DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+        LIST_PERMISION: user.LIST_PERMISION,
+        NAME_ROLE: user.NAME_ROLE,
+        CODE_NAME: user.CODE_NAME,
       },
       JWT_SECRET,
       { expiresIn: "5h" }
@@ -543,22 +607,22 @@ const loginUser = async (req, res) => {
       DT: {
         accessToken: token,
         userInfo: {
-          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
           HO_TEN: user.HO_TEN,
           VAI_TRO: user.VAI_TRO,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-          DIA_CHI: user.DIA_CHI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
           AVATAR: user.AVATAR,
-          THEMES: user.THEMES,
-          LANGUAGE: user.LANGUAGE,
           DIA_CHI_Provinces: user.DIA_CHI_Provinces,
           DIA_CHI_Districts: user.DIA_CHI_Districts,
           DIA_CHI_Wards: user.DIA_CHI_Wards,
           DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+          LIST_PERMISION: user.LIST_PERMISION,
+          NAME_ROLE: user.NAME_ROLE,
+          CODE_NAME: user.CODE_NAME,
         },
       },
     });
@@ -574,6 +638,7 @@ const loginUser = async (req, res) => {
 const verifyAdmin = async (req, res) => {
   const { token } = req.body;
   console.log("token", token);
+
   if (!token) {
     return res.status(401).json({
       EM: "Token is missing",
@@ -586,48 +651,71 @@ const verifyAdmin = async (req, res) => {
     // Giải mã token
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const ID_NGUOI_DUNG = decoded.ID_NGUOI_DUNG;
+    const ID_USERS = decoded.ID_USERS;
     console.log("id", decoded);
-    // Truy vấn để lấy thông tin user từ database
+
+    // Truy vấn để lấy thông tin user và role từ database
     const [rows] = await pool.query(
-      "SELECT VAI_TRO FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
-      [ID_NGUOI_DUNG]
+      `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
+       FROM users u 
+       LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+       WHERE u.ID_USERS = ? AND u.TRANG_THAI_USER = 'ACTIVE' AND r.IS_DELETE = 0`,
+      [ID_USERS]
     );
 
     if (rows.length > 0) {
       const user = rows[0];
 
-      // Kiểm tra vai trò của người dùng
-      if (user.VAI_TRO == "1") {
+      // Kiểm tra vai trò của người dùng (giả sử CODE_NAME = 'ADMIN' là admin)
+      if (user.CODE_NAME === "ADMIN") {
         return res.status(200).json({
           EM: "User is admin",
           EC: 200,
-          DT: { isAdmin: true }, // Người dùng là admin
+          DT: {
+            isAdmin: true,
+            userInfo: {
+              ID_USERS: user.ID_USERS,
+              EMAIL: user.EMAIL,
+              HO_TEN: user.HO_TEN,
+              VAI_TRO: user.VAI_TRO,
+              SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+              TRANG_THAI_USER: user.TRANG_THAI_USER,
+              NGAY_TAO_USER: user.NGAY_TAO_USER,
+              NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+              AVATAR: user.AVATAR,
+              DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+              DIA_CHI_Districts: user.DIA_CHI_Districts,
+              DIA_CHI_Wards: user.DIA_CHI_Wards,
+              DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+              LIST_PERMISION: user.LIST_PERMISION,
+              NAME_ROLE: user.NAME_ROLE,
+              CODE_NAME: user.CODE_NAME,
+            },
+          },
         });
       } else {
         return res.status(403).json({
           EM: "User is not admin",
           EC: 403,
-          DT: { isAdmin: false }, // Người dùng không phải admin
+          DT: { isAdmin: false },
         });
       }
     } else {
       return res.status(404).json({
-        EM: "User not found",
+        EM: "User not found or inactive",
         EC: 404,
-        DT: { isAdmin: false }, // Người dùng không tìm thấy
+        DT: { isAdmin: false },
       });
     }
   } catch (error) {
     console.error("Error decoding token or querying database:", error);
     return res.status(401).json({
-      EM: `Invalid token: ${error.message}`, // Thông báo lỗi token không hợp lệ
+      EM: `Invalid token: ${error.message}`,
       EC: 401,
-      DT: { isAdmin: false }, // Token không hợp lệ, trả về false
+      DT: { isAdmin: false },
     });
   }
 };
-
 const registerUser = async (req, res) => {
   const {
     password,

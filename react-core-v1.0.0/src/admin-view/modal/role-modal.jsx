@@ -68,8 +68,6 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
         LIST_PERMISSION: JSON.stringify(formData.LIST_PERMISSION), // Use LIST_PERMISSION from state
       };
 
-      console.log("Data to submit:", dataToSubmit); // Debug log
-
       if (role) {
         await roleServices.updateRole(role.ID_ROLE, dataToSubmit);
       } else {
@@ -112,7 +110,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
       </Button>
     </>
   );
-  console.log(formData);
+
   return (
     <>
       <DynamicModal
