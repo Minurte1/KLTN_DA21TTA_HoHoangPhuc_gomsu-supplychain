@@ -38,7 +38,7 @@ const getRoleById = async (id) => {
 // Cập nhật role
 const updateRole = async (id, { NAME_ROLE, LIST_PERMISSION, CODE_NAME }) => {
   const [result] = await db.query(
-    `UPDATE role SET NAME_ROLE = ?, LIST_PERMISSION = ?, CODE_NAME = ? WHERE ID_ROLE = ? AND IS_DELETE = FALSE`,
+    `UPDATE role SET NAME_ROLE = ?, LIST_PERMISION = ?, CODE_NAME = ? WHERE ID_ROLE = ? AND IS_DELETE = FALSE`,
     [NAME_ROLE, JSON.stringify(LIST_PERMISSION), CODE_NAME, id]
   );
   return result.affectedRows > 0;
