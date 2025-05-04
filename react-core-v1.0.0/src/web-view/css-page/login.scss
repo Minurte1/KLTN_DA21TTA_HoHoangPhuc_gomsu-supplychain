@@ -1,0 +1,22 @@
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f1f5f9;
+}
+
+.login-paper {
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+}
+
+.register-link {
+    color: #1976d2;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
