@@ -190,9 +190,9 @@ const updateUserById_User = async (req, res) => {
       updateValues.push(SO_DIEN_THOAI);
     }
     if (VAI_TRO !== undefined && VAI_TRO !== null && VAI_TRO !== "") {
-      // Kiểm tra xem VAI_TRO có tồn tại trong bảng roles
+      // Kiểm tra xem VAI_TRO có tồn tại trong bảng role
       const [roleCheck] = await pool.execute(
-        "SELECT ID_ROLE FROM roles WHERE ID_ROLE = ? AND IS_DELETE = 0",
+        "SELECT ID_ROLE FROM role WHERE ID_ROLE = ? AND IS_DELETE = 0",
         [VAI_TRO]
       );
       if (roleCheck.length === 0) {
@@ -278,7 +278,7 @@ const updateUserById_User = async (req, res) => {
       const [updatedUser] = await pool.execute(
         `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
          FROM users u 
-         LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+         LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
          WHERE u.ID_USERS = ? AND r.IS_DELETE = 0`,
         [id]
       );
@@ -375,7 +375,7 @@ const loginUserGoogle = async (req, res) => {
     const [rows] = await pool.query(
       `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
        FROM users u 
-       LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+       LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
        WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
@@ -444,7 +444,7 @@ const loginUserGoogle = async (req, res) => {
       });
     } else {
       // Insert new user with default role and active status
-      const VAI_TRO = 1; // Assuming 1 is a valid ID_ROLE in roles table
+      const VAI_TRO = 1; // Assuming 1 is a valid ID_ROLE in role table
       const TRANG_THAI_USER = "ACTIVE";
       await pool.query(
         `INSERT INTO users (EMAIL, VAI_TRO, HO_TEN, TRANG_THAI_USER, NGAY_TAO_USER, NGAY_CAP_NHAT_USER) 
@@ -456,7 +456,7 @@ const loginUserGoogle = async (req, res) => {
       const [newRows] = await pool.query(
         `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
          FROM users u 
-         LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+         LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
          WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
         [email]
       );
@@ -539,7 +539,7 @@ const loginUser = async (req, res) => {
     const [rows] = await pool.query(
       `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
        FROM users u 
-       LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+       LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
        WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
@@ -658,7 +658,7 @@ const verifyAdmin = async (req, res) => {
     const [rows] = await pool.query(
       `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
        FROM users u 
-       LEFT JOIN roles r ON u.VAI_TRO = r.ID_ROLE 
+       LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
        WHERE u.ID_USERS = ? AND u.TRANG_THAI_USER = 'ACTIVE' AND r.IS_DELETE = 0`,
       [ID_USERS]
     );
