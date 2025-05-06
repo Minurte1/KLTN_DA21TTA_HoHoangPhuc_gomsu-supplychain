@@ -9,6 +9,8 @@ import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturi
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ApartmentIcon from "@mui/icons-material/Apartment";
+import BusinessIcon from "@mui/icons-material/Business";
 
 export const adminMenuConfig = [
   {
@@ -20,6 +22,20 @@ export const adminMenuConfig = [
     label: "Phân quyền & vai trò",
     path: "/admin/phan-quyen",
     icon: <AdminPanelSettingsIcon />,
+  },
+  {
+    label: "Quản lý công ty",
+    icon: <ApartmentIcon />,
+    children: [
+      {
+        label: "Danh sách công ty",
+        path: "/admin/cong-ty",
+      },
+      {
+        label: "Loại công ty",
+        path: "/admin/loai-cong-ty",
+      },
+    ],
   },
   {
     label: "Quản lý người dùng",
