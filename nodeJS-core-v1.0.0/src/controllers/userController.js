@@ -364,18 +364,18 @@ const loginUserGoogle = async (req, res) => {
 
   if (!email) {
     return res.status(401).json({
-      EM: "Email is missing",
+      EM: "Thiếu email",
       EC: 401,
       DT: [],
     });
   }
 
   try {
-    // Check if the user already exists in the database
+    // Kiểm tra xem người dùng đã tồn tại trong cơ sở dữ liệu chưa
     const [rows] = await pool.query(
       `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
        FROM users u 
-       LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
+       LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE 
        WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
@@ -384,21 +384,21 @@ const loginUserGoogle = async (req, res) => {
       const user = rows[0];
       console.log("user", user);
 
-      // Check if the account is not active
+      // Kiểm tra trạng thái tài khoản
       if (user.TRANG_THAI_USER !== "ACTIVE") {
         return res.status(403).json({
           EM: "Tài khoản không hoạt động, không thể đăng nhập",
           EC: 0,
-          DT: "Account is not active",
+          DT: "Tài khoản không hoạt động",
         });
       }
 
-      // Create JWT token
+      // Tạo JWT token
       const token = jwt.sign(
         {
           ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
-          VAI_TRO: user.VAI_TRO,
+          ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
           HO_TEN: user.HO_TEN,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
@@ -418,7 +418,7 @@ const loginUserGoogle = async (req, res) => {
       );
 
       return res.status(200).json({
-        EM: "Login successful",
+        EM: "Đăng nhập thành công",
         EC: 200,
         DT: {
           accessToken: token,
@@ -426,7 +426,7 @@ const loginUserGoogle = async (req, res) => {
             ID_USERS: user.ID_USERS,
             EMAIL: user.EMAIL,
             HO_TEN: user.HO_TEN,
-            VAI_TRO: user.VAI_TRO,
+            ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
             SO_DIEN_THOAI: user.SO_DIEN_THOAI,
             TRANG_THAI_USER: user.TRANG_THAI_USER,
             NGAY_TAO_USER: user.NGAY_TAO_USER,
@@ -443,32 +443,32 @@ const loginUserGoogle = async (req, res) => {
         },
       });
     } else {
-      // Insert new user with default role and active status
-      const VAI_TRO = 1; // Assuming 1 is a valid ID_ROLE in role table
+      // Thêm người dùng mới với vai trò mặc định và trạng thái hoạt động
+      const ID_ROLE = 4; // Giả sử 1 là ID_ROLE hợp lệ trong bảng role
       const TRANG_THAI_USER = "ACTIVE";
       await pool.query(
-        `INSERT INTO users (EMAIL, VAI_TRO, HO_TEN, TRANG_THAI_USER, NGAY_TAO_USER, NGAY_CAP_NHAT_USER) 
+        `INSERT INTO users (EMAIL, ID_ROLE, HO_TEN, TRANG_THAI_USER, NGAY_TAO_USER, NGAY_CAP_NHAT_USER) 
          VALUES (?, ?, ?, ?, NOW(), NOW())`,
-        [email, VAI_TRO, HO_TEN, TRANG_THAI_USER]
+        [email, ID_ROLE, HO_TEN, TRANG_THAI_USER]
       );
 
-      // Fetch the newly created user with role details
+      // Lấy thông tin người dùng mới tạo
       const [newRows] = await pool.query(
         `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
          FROM users u 
-         LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
+         LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE 
          WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
         [email]
       );
 
       const user = newRows[0];
 
-      // Create JWT token for new user
+      // Tạo JWT token cho người dùng mới
       const token = jwt.sign(
         {
           ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
-          VAI_TRO: user.VAI_TRO,
+          ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
           HO_TEN: user.HO_TEN,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
@@ -488,7 +488,7 @@ const loginUserGoogle = async (req, res) => {
       );
 
       return res.status(200).json({
-        EM: "New user created and logged in successfully",
+        EM: "Tạo người dùng mới và đăng nhập thành công",
         EC: 200,
         DT: {
           accessToken: token,
@@ -496,7 +496,7 @@ const loginUserGoogle = async (req, res) => {
             ID_USERS: user.ID_USERS,
             EMAIL: user.EMAIL,
             HO_TEN: user.HO_TEN,
-            VAI_TRO: user.VAI_TRO,
+            ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
             SO_DIEN_THOAI: user.SO_DIEN_THOAI,
             TRANG_THAI_USER: user.TRANG_THAI_USER,
             NGAY_TAO_USER: user.NGAY_TAO_USER,
@@ -514,9 +514,9 @@ const loginUserGoogle = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error in loginUserGoogle:", error);
+    console.error("Lỗi trong loginUserGoogle:", error);
     return res.status(500).json({
-      EM: `Error: ${error.message}`,
+      EM: `Lỗi: ${error.message}`,
       EC: 500,
       DT: [],
     });
