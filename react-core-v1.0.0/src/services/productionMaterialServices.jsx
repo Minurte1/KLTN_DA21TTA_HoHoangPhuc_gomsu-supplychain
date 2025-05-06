@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const PRODUCTION_MATERIAL_API = `${process.env.REACT_APP_URL_SERVER}/production_materials`;
+const PRODUCTION_MATERIAL_API = `${process.env.REACT_APP_URL_SERVER}/production-materials`;
 
 const productionMaterialServices = {
   // Lấy danh sách tất cả nguyên liệu sản xuất

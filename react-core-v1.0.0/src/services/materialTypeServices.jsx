@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const MATERIAL_TYPE_API = `${process.env.REACT_APP_URL_SERVER}/material_types`;
+const MATERIAL_TYPE_API = `${process.env.REACT_APP_URL_SERVER}/material-types`;
 
 const materialTypeServices = {
   // Lấy danh sách tất cả các loại nguyên vật liệu

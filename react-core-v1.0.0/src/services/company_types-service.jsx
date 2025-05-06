@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const COMPANY_TYPE_API = `${process.env.REACT_APP_URL_SERVER}/company_types`;
+const COMPANY_TYPE_API = `${process.env.REACT_APP_URL_SERVER}/company-types`;
 
 const companyTypeServices = {
   // Lấy danh sách tất cả loại công ty

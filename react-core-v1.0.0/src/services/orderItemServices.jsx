@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const ORDER_ITEM_API = `${process.env.REACT_APP_URL_SERVER}/order_items`;
+const ORDER_ITEM_API = `${process.env.REACT_APP_URL_SERVER}/order-items`;
 
 const orderItemServices = {
   // Lấy danh sách tất cả các mặt hàng trong đơn hàng

@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const MATERIAL_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/material_orders`;
+const MATERIAL_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/material-orders`;
 
 const materialOrderServices = {
   // Lấy danh sách tất cả các đơn hàng nguyên liệu

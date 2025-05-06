@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const QUALITY_CONTROL_API = `${process.env.REACT_APP_URL_SERVER}/quality_control`;
+const QUALITY_CONTROL_API = `${process.env.REACT_APP_URL_SERVER}/quality-control`;
 
 const qualityControlServices = {
   // Lấy danh sách tất cả kiểm định chất lượng

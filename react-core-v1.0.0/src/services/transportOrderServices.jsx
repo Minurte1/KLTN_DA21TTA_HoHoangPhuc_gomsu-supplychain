@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const TRANSPORT_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/transport_orders`;
+const TRANSPORT_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/transport-orders`;
 
 const transportOrderServices = {
   // Lấy danh sách tất cả đơn vận chuyển

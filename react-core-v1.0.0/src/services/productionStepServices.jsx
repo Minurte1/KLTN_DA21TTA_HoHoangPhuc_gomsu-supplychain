@@ -1,6 +1,6 @@
 import axiosInstance from "../authentication/axiosInstance";
 
-const PRODUCTION_STEP_API = `${process.env.REACT_APP_URL_SERVER}/production_steps`;
+const PRODUCTION_STEP_API = `${process.env.REACT_APP_URL_SERVER}/production-steps`;
 
 const productionStepServices = {
   // Lấy danh sách tất cả các bước sản xuất
