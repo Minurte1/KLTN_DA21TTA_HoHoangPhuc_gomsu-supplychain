@@ -41,12 +41,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //api user
-const userRoute = require("./routers/userRouters.js");
-const roleRoute = require("./routers/role.routes.js");
-const permissionRoutes = require("./routers/permission.route.js");
-app.use("/api/permissions", permissionRoutes);
-app.use("/", userRoute);
-app.use("/role", roleRoute);
+// const userRoute = require("./routers/userRouters.js");
+// const roleRoute = require("./routers/role.routes.js");
+// const permissionRoutes = require("./routers/permission.route.js");
+// app.use("/api/permissions", permissionRoutes);
+// app.use("/", userRoute);
+// app.use("/role", roleRoute);
+
+const apiRoutes = require("./routers/apiRoutes.js");
+app.use("/api", apiRoutes);
+
 //
 
 // Socket.IO logic

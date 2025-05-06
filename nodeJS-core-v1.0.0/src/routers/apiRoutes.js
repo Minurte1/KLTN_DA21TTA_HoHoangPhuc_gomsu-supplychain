@@ -1,0 +1,48 @@
+const express = require("express");
+const router = express.Router();
+
+// Các router riêng lẻ
+const userRoute = require("./userRouters.js");
+const roleRoute = require("./role.routes.js");
+const permissionRoutes = require("./permission.route.js");
+const transportOrdersRoute = require("./transport_order.route.js");
+const companyTypesRoute = require("./companyType.router.js");
+const companiesRoute = require("./company.route.js");
+const qualityControlRoute = require("./quality_control.route.js");
+const orderItemsRoute = require("./order_items.route.js");
+const ordersRoute = require("./orders.route.js");
+const productionMaterialsRoute = require("./production_materials.route.js");
+const productionStepsRoute = require("./production_steps.route.js");
+const productionPlansRoute = require("./production_plans.route.js");
+const categoriesRoute = require("./categories.route.js");
+const productsRoute = require("./products.route.js");
+const cartRoute = require("./cart.route.js");
+const materialOrdersRoute = require("./materialOrder.route.js");
+const suppliersRoute = require("./suppliers.route.js");
+const inventoryRoute = require("./inventory.route.js");
+const materialsRoute = require("./materials.route.js");
+const materialTypesRoute = require("./material_types.route.js");
+
+// Kết nối tất cả các router
+router.use("/api/permissions", permissionRoutes);
+router.use("/", userRoute);
+router.use("/role", roleRoute);
+router.use("/transport-orders", transportOrdersRoute);
+router.use("/company-types", companyTypesRoute);
+router.use("/companies", companiesRoute);
+router.use("/quality-control", qualityControlRoute);
+router.use("/order-items", orderItemsRoute);
+router.use("/orders", ordersRoute);
+router.use("/production-materials", productionMaterialsRoute);
+router.use("/production-steps", productionStepsRoute);
+router.use("/production-plans", productionPlansRoute);
+router.use("/categories", categoriesRoute);
+router.use("/products", productsRoute);
+router.use("/cart", cartRoute);
+router.use("/material-orders", materialOrdersRoute);
+router.use("/suppliers", suppliersRoute);
+router.use("/inventory", inventoryRoute);
+router.use("/materials", materialsRoute);
+router.use("/material-types", materialTypesRoute);
+
+module.exports = router;
