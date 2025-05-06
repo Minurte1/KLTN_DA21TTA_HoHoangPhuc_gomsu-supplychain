@@ -358,6 +358,7 @@ const updateUserById_User = async (req, res) => {
   }
 };
 
+// SSS
 const loginUserGoogle = async (req, res) => {
   const { email, HO_TEN } = req.body;
   console.log("req.body loginUserGoogle", req.body);
@@ -716,6 +717,7 @@ const verifyAdmin = async (req, res) => {
     });
   }
 };
+
 const registerUser = async (req, res) => {
   const {
     password,
