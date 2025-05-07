@@ -5,8 +5,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import categoryServices from "../../services/category-service";
+// import categoryServices from "../../services/category-service";
 import CategoryFormModal from "../modal/category-modal";
+import categoryServices from "../../services/categoryServices";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);

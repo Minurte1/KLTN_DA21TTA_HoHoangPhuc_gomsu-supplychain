@@ -1,0 +1,3 @@
+Dựa vào đoạn code mẫu của "role" bạn hãy viết lại cho " company_types " biết Bảng company_types gồm : ID_COMPANY_TYPE INT PRIMARY KEY AUTO_INCREMENT,NAME_COMPANY_TYPE VARCHAR(50) NOT NULL
+
+đoạn code mẫu role là 
