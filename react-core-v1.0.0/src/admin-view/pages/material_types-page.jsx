@@ -5,8 +5,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import materialTypeServices from "../../services/material-type-service";
-import MaterialTypeFormModal from "../modal/material-type-modal";
+import materialTypeServices from "../../services/materialTypeServices";
+
+// import MaterialTypeFormModal from "../modal/material-type-modal";
 
 const MaterialType = () => {
   const [materialTypes, setMaterialTypes] = useState([]);
@@ -70,12 +71,12 @@ const MaterialType = () => {
         ]}
       />
 
-      <MaterialTypeFormModal
+      {/* <MaterialTypeFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         materialType={selectedMaterialType}
         onSuccess={fetchMaterialTypes}
-      />
+      /> */}
     </Box>
   );
 };

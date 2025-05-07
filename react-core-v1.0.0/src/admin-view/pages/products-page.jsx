@@ -5,8 +5,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import productServices from "../../services/product-service";
-import ProductFormModal from "../modal/product-modal";
+
+import productServices from "../../services/productServices";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -84,12 +84,12 @@ const Product = () => {
         ]}
       />
 
-      <ProductFormModal
+      {/* <ProductFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         product={selectedProduct}
         onSuccess={fetchProducts}
-      />
+      /> */}
     </Box>
   );
 };

@@ -5,8 +5,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import supplierServices from "../../services/supplier-service";
-import SupplierFormModal from "../modal/supplier-modal";
+
+import supplierServices from "../../services/supplierServices";
 
 const Supplier = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -74,12 +74,12 @@ const Supplier = () => {
         ]}
       />
 
-      <SupplierFormModal
+      {/* <SupplierFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         supplier={selectedSupplier}
         onSuccess={fetchSuppliers}
-      />
+      /> */}
     </Box>
   );
 };

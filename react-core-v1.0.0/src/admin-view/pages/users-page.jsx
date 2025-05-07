@@ -5,8 +5,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import userServices from "../../services/user-service";
-import UserFormModal from "../modal/user-modal";
+// import userServices from "../../services/user-service";
+// import UserFormModal from "../modal/user-modal";
 
 const User = () => {
   const [users, setUsers] = useState([]);
@@ -14,8 +14,8 @@ const User = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const fetchUsers = async () => {
-    const data = await userServices.getUsers();
-    setUsers(data);
+    //  const data = await userServices.getUsers();
+    // setUsers(data);
   };
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const User = () => {
   };
 
   const handleDelete = async (id) => {
-    await userServices.deleteUser(id);
+    // await userServices.deleteUser(id);
     fetchUsers();
   };
 
@@ -76,13 +76,13 @@ const User = () => {
           },
         ]}
       />
-
+      {/* 
       <UserFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         user={selectedUser}
         onSuccess={fetchUsers}
-      />
+      /> */}
     </Box>
   );
 };

@@ -5,8 +5,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import companyTypeServices from "../../services/company-type-service";
-import CompanyTypeFormModal from "../modal/company-type-modal";
+
+// import CompanyTypeFormModal from "../modal/company-type-modal";
+import companyTypeServices from "../../services/company_types-service";
 
 const CompanyType = () => {
   const [companyTypes, setCompanyTypes] = useState([]);
@@ -70,12 +71,12 @@ const CompanyType = () => {
         ]}
       />
 
-      <CompanyTypeFormModal
+      {/* <CompanyTypeFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         companyType={selectedCompanyType}
         onSuccess={fetchCompanyTypes}
-      />
+      /> */}
     </Box>
   );
 };

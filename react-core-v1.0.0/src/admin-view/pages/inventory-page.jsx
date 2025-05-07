@@ -5,8 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import inventoryServices from "../../services/inventory-service";
-import InventoryFormModal from "../modal/inventory-modal";
+import inventoryServices from "../../services/inventoryServices";
 
 const Inventory = () => {
   const [inventoryItems, setInventoryItems] = useState([]);
@@ -73,12 +72,12 @@ const Inventory = () => {
         ]}
       />
 
-      <InventoryFormModal
+      {/* <InventoryFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         inventoryItem={selectedInventoryItem}
         onSuccess={fetchInventoryItems}
-      />
+      /> */}
     </Box>
   );
 };

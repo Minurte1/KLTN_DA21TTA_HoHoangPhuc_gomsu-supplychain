@@ -5,8 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import companyServices from "../../services/company-service";
-import CompanyFormModal from "../modal/company-modal";
+import companyServices from "../../services/companies-service";
 
 const Company = () => {
   const [companies, setCompanies] = useState([]);
@@ -78,12 +77,12 @@ const Company = () => {
         ]}
       />
 
-      <CompanyFormModal
+      {/* <CompanyFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         company={selectedCompany}
         onSuccess={fetchCompanies}
-      />
+      /> */}
     </Box>
   );
 };
