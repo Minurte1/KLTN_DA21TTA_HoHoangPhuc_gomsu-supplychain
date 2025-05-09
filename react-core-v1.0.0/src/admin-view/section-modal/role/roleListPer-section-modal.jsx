@@ -32,7 +32,27 @@ const PermissionManagerModal = ({
 }) => {
   // Định nghĩa mapping từ tiếng Anh sang tiếng Việt
   const permissionTranslations = {
-    // Actions chung
+    // Router translations
+    dashboard: "Bảng điều khiển",
+    role: "Vai trò",
+    user: "Người dùng",
+    company: "Công ty",
+    company_type: "Loại công ty",
+    product: "Sản phẩm",
+    category: "Danh mục",
+    material: "Nguyên vật liệu",
+    material_type: "Loại nguyên vật liệu",
+    material_order: "Đơn đặt nguyên vật liệu",
+    supplier: "Nhà cung cấp",
+    inventory: "Kho hàng",
+    order: "Đơn hàng",
+    order_item: "Chi tiết đơn hàng",
+    production_plan: "Kế hoạch sản xuất",
+    production_step: "Bước sản xuất",
+    production_material: "Nguyên liệu sản xuất",
+    quality_control: "Kiểm tra chất lượng",
+    transport_order: "Đơn vận chuyển",
+    cart: "Giỏ hàng",
   };
 
   const [selectedRole, setSelectedRole] = useState(0);
