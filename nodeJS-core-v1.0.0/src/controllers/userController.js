@@ -449,20 +449,21 @@ const loginUserGoogle = async (req, res) => {
       const ID_ROLE = 4; // Giả sử 1 là ID_ROLE hợp lệ trong bảng role
       const TRANG_THAI_USER = "ACTIVE";
       await pool.query(
-        `INSERT INTO users (EMAIL, ID_ROLE, HO_TEN, TRANG_THAI_USER, NGAY_TAO_USER, NGAY_CAP_NHAT_USER) 
-         VALUES (?, ?, ?, ?, NOW(), NOW())`,
-        [email, ID_ROLE, HO_TEN, TRANG_THAI_USER]
+        `INSERT INTO users (EMAIL, ID_ROLE, HO_TEN, TRANG_THAI_USER, NGAY_TAO_USER, NGAY_CAP_NHAT_USER, IS_DELETE_USERS) 
+         VALUES (?, ?, ?, ?, NOW(), NOW(), ?)`,
+        [email, ID_ROLE, HO_TEN, TRANG_THAI_USER, 0]
       );
 
       // Lấy thông tin người dùng mới tạo
       const [newRows] = await pool.query(
         `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
          FROM users u 
-         LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE 
-         WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
+         LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE AND r.IS_DELETE = 0
+         WHERE u.EMAIL = ?`,
         [email]
       );
 
+      console.log("newRows", newRows);
       const user = newRows[0];
 
       // Tạo JWT token cho người dùng mới
