@@ -446,7 +446,32 @@ const loginUserGoogle = async (req, res) => {
       });
     } else {
       // Thêm người dùng mới với vai trò mặc định và trạng thái hoạt động
-      const ID_ROLE = 4; // Giả sử 1 là ID_ROLE hợp lệ trong bảng role
+      // Kiểm tra xem role 'customer' đã tồn tại chưa
+      let [roleRows] = await pool.query(
+        `SELECT ID_ROLE FROM role WHERE CODE_NAME = 'CUSTOMER' AND IS_DELETE = 0`
+      );
+
+      let ID_ROLE;
+      if (roleRows.length > 0) {
+        // Nếu role đã tồn tại
+        ID_ROLE = roleRows[0].ID_ROLE;
+      } else {
+        // Nếu chưa có, tạo mới role
+        const NAME_ROLE = "Khách hàng";
+        const CODE_NAME = "CUSTOMER";
+        const LIST_PERMISION = JSON.stringify([]); // Gán danh sách quyền trống hoặc mặc định
+        await pool.query(
+          `INSERT INTO role (NAME_ROLE, CODE_NAME, LIST_PERMISION, IS_DELETE) VALUES (?, ?, ?, ?)`,
+          [NAME_ROLE, CODE_NAME, LIST_PERMISION, 0]
+        );
+
+        // Lấy ID_ROLE vừa tạo
+        [roleRows] = await pool.query(
+          `SELECT ID_ROLE FROM role WHERE CODE_NAME = 'CUSTOMER' AND IS_DELETE = 0`
+        );
+        ID_ROLE = roleRows[0].ID_ROLE;
+      }
+
       const TRANG_THAI_USER = "ACTIVE";
       await pool.query(
         `INSERT INTO users (EMAIL, ID_ROLE, HO_TEN, TRANG_THAI_USER, NGAY_TAO_USER, NGAY_CAP_NHAT_USER, IS_DELETE_USERS) 

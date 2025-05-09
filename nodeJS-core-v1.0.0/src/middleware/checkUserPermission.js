@@ -2,7 +2,7 @@
 
 const baseListPermission = [
   {
-    router: "cms",
+    router: "dashboard",
     actions: ["access"],
   },
   {
@@ -17,10 +17,7 @@ const baseListPermission = [
     router: "product",
     actions: ["view", "create", "update", "delete"],
   },
-  {
-    router: "dashboard",
-    actions: ["access"],
-  },
+
   {
     router: "order",
     actions: ["view", "update", "ship"],
