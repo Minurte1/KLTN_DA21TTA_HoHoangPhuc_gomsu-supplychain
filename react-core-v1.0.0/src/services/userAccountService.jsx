@@ -91,7 +91,7 @@ export const verifyAdmin = async (accessToken) => {
   }
 
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${process.env.REACT_APP_URL_SERVER}/verify-admin`,
       {
         token: accessToken,

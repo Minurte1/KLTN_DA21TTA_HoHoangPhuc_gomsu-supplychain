@@ -2,6 +2,10 @@
 
 const baseListPermission = [
   {
+    router: "cms",
+    actions: ["access"],
+  },
+  {
     router: "role",
     actions: ["view", "create", "update", "delete"],
   },

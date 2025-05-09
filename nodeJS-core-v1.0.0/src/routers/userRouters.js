@@ -22,14 +22,22 @@ const {
   registerUser,
   loginUser,
 } = require("../controllers/userController");
-const { checkUserJWT } = require("../middleware/JWTaction");
-const upload = require("../config/multerConfig");
 
+const upload = require("../config/multerConfig");
+const {
+  checkUserPermission,
+  checkUserJWT,
+} = require("../middleware/JWTaction");
 router.get("/user", getAllUser_Admin);
 router.get("/user/:id", getUser_ById);
 router.post("/logout", logoutUser);
 router.post("/login/google", loginUserGoogle);
-router.post("/verify-admin", verifyAdmin);
+router.post(
+  "/verify-admin",
+  checkUserJWT,
+  checkUserPermission("dashboard", "access"),
+  verifyAdmin
+);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.put("/user/:id/avatar", upload.single("images"), updateAvatarController);

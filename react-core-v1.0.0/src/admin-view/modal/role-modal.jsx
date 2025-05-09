@@ -11,7 +11,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
     CODE_NAME: "",
     LIST_PERMISSION: [],
   });
-
+  console.log("role", role);
   // Initialize form data when role prop changes or modal opens
   useEffect(() => {
     if (open) {
@@ -21,7 +21,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
               NAME_ROLE: role.NAME_ROLE || "",
               CODE_NAME: role.CODE_NAME || "",
               LIST_PERMISSION: role.LIST_PERMISION
-                ? JSON.parse(role.LIST_PERMISION)
+                ? role.LIST_PERMISION
                 : [] || [],
             }
           : {

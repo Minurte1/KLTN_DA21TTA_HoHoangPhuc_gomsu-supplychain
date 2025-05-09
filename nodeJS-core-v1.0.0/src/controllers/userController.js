@@ -9,6 +9,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const otpStorage = new Map();
+const { checkUserPermission } = require("../middleware/JWTaction");
 
 const getAllUser_Admin = async (req, res) => {
   try {
@@ -380,7 +381,7 @@ const loginUserGoogle = async (req, res) => {
        WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
-
+    console.log("rows", rows);
     if (rows.length > 0) {
       const user = rows[0];
       console.log("user", user);
@@ -636,6 +637,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 const verifyAdmin = async (req, res) => {
   const { token } = req.body;
   console.log("token", token);
@@ -663,7 +665,7 @@ const verifyAdmin = async (req, res) => {
        WHERE u.ID_USERS = ? AND u.TRANG_THAI_USER = 'ACTIVE' AND r.IS_DELETE = 0`,
       [ID_USERS]
     );
-
+    console.log("rows", rows);
     if (rows.length > 0) {
       const user = rows[0];
 

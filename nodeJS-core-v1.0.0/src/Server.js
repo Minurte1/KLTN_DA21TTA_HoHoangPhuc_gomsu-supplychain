@@ -49,7 +49,7 @@ app.use(bodyParser.json());
 // app.use("/role", roleRoute);
 
 const apiRoutes = require("./routers/apiRoutes.js");
-app.use("/api", apiRoutes);
+app.use("/", apiRoutes);
 
 //
 

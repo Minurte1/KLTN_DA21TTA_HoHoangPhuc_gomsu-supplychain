@@ -39,7 +39,7 @@ const checkUserJWT = (req, res, next) => {
   if (nonSercurePaths.includes(req.path)) return next();
   let cookie = req.cookies;
   let tokenFromHeader = extractToken(req);
-
+  console.log("cookie", cookie);
   if ((cookie && cookie.jwt) || tokenFromHeader) {
     let token = cookie && cookie.jwt ? cookie.jwt : tokenFromHeader;
     let decoded = verifyToken(token);
@@ -66,7 +66,7 @@ const checkUserJWT = (req, res, next) => {
 const checkUserPermission = (routerName, actionName) => {
   return (req, res, next) => {
     const user = req.user;
-
+    console.log("user", user);
     if (!user || !Array.isArray(user.LIST_PERMISSION)) {
       return res.status(403).json({ message: "User không có quyền." });
     }
