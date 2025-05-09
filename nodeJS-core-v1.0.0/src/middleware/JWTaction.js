@@ -15,7 +15,7 @@ const createJWT = (payload) => {
 };
 //--
 const verifyToken = (token) => {
-  let key = "phucfixne";
+  let key = process.env.JWT_SECRET;
   let decoded = null;
   try {
     decoded = jwt.verify(token, key);
@@ -66,12 +66,26 @@ const checkUserJWT = (req, res, next) => {
 const checkUserPermission = (routerName, actionName) => {
   return (req, res, next) => {
     const user = req.user;
-    console.log("user", user);
-    if (!user || !Array.isArray(user.LIST_PERMISSION)) {
-      return res.status(403).json({ message: "User không có quyền." });
+
+    // Parse LIST_PERMISION nếu đang là chuỗi
+    let listPermission = user.LIST_PERMISION;
+    try {
+      if (typeof listPermission === "string") {
+        listPermission = JSON.parse(listPermission); // parse 1
+        if (typeof listPermission === "string") {
+          listPermission = JSON.parse(listPermission); // parse 2 nếu còn là chuỗi
+        }
+      }
+    } catch (error) {
+      return res.status(400).json({ message: "Lỗi xử lý LIST_PERMISION." });
     }
 
-    const matched = user.LIST_PERMISSION.find((p) => p.router === routerName);
+    // Kiểm tra quyền
+    if (!Array.isArray(listPermission)) {
+      return res.status(402).json({ message: "User không có quyền." });
+    }
+
+    const matched = listPermission.find((p) => p.router === routerName);
     if (!matched || !matched.actions.includes(actionName)) {
       return res.status(403).json({
         message: `Bạn không có quyền '${actionName}' trong '${routerName}'.`,

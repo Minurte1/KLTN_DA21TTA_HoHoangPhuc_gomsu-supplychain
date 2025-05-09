@@ -651,26 +651,25 @@ const verifyAdmin = async (req, res) => {
   }
 
   try {
-    // Giải mã token
     const decoded = jwt.verify(token, JWT_SECRET);
-
     const ID_USERS = decoded.ID_USERS;
-    console.log("id", decoded);
 
-    // Truy vấn để lấy thông tin user và role từ database
     const [rows] = await pool.query(
-      `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
-       FROM users u 
-       LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
-       WHERE u.ID_USERS = ? AND u.TRANG_THAI_USER = 'ACTIVE' AND r.IS_DELETE = 0`,
+      `SELECT 
+        u.ID_USERS, u.HO_TEN, u.EMAIL, u.ID_ROLE, u.SO_DIEN_THOAI,
+        u.TRANG_THAI_USER, u.NGAY_TAO_USER, u.NGAY_CAP_NHAT_USER, u.AVATAR,
+        u.DIA_CHI_Provinces, u.DIA_CHI_Districts, u.DIA_CHI_Wards, u.DIA_CHI_STREETNAME,
+        r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME
+      FROM users u
+      LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE
+      WHERE u.ID_USERS = ? AND u.TRANG_THAI_USER = 'ACTIVE' AND u.IS_DELETE_USERS = 0 AND r.IS_DELETE = 0`,
       [ID_USERS]
     );
     console.log("rows", rows);
     if (rows.length > 0) {
       const user = rows[0];
 
-      // Kiểm tra vai trò của người dùng (giả sử CODE_NAME = 'ADMIN' là admin)
-      if (user.CODE_NAME === "ADMIN") {
+      if (user) {
         return res.status(200).json({
           EM: "User is admin",
           EC: 200,
@@ -680,7 +679,7 @@ const verifyAdmin = async (req, res) => {
               ID_USERS: user.ID_USERS,
               EMAIL: user.EMAIL,
               HO_TEN: user.HO_TEN,
-              VAI_TRO: user.VAI_TRO,
+              ID_ROLE: user.ID_ROLE,
               SO_DIEN_THOAI: user.SO_DIEN_THOAI,
               TRANG_THAI_USER: user.TRANG_THAI_USER,
               NGAY_TAO_USER: user.NGAY_TAO_USER,
