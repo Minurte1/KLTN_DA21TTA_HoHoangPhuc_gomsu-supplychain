@@ -18,7 +18,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     AVATAR: "",
     SLUG: "",
     STATUS: "ACTIVE",
-    ID_COMPANY_TYPE: "",
+    ID_COMPANY_TYPE: 0,
   });
 
   const [companyTypes, setCompanyTypes] = useState([]);
@@ -140,7 +140,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
       optionsLabel: "NAME_COMPANY_TYPE",
     },
   ];
-
+  console.log("123:", companyTypes);
   // Nút custom trong modal
   const customActions = ({ handleSubmit, onClose }) => (
     <>

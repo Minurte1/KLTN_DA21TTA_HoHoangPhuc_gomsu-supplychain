@@ -120,7 +120,7 @@ const DynamicModal = ({
             }
             value={
               field.options.find(
-                (opt) => String(opt.value) === String(formData[field.key])
+                (opt) => String(opt[field.key]) === String(formData[field.key])
               ) || null
             }
             onChange={(event, newValue) =>
