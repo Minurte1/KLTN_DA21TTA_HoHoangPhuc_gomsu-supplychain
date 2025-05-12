@@ -113,15 +113,20 @@ const DynamicModal = ({
         return (
           <Autocomplete
             options={field.options}
-            getOptionLabel={(option) => option.label || ""}
+            getOptionLabel={(option) =>
+              typeof option === "string"
+                ? option
+                : option[field.optionsLabel] || ""
+            }
             value={
-              field.options.find((opt) => opt.value === formData[field.key]) ||
-              null
+              field.options.find(
+                (opt) => String(opt.value) === String(formData[field.key])
+              ) || null
             }
             onChange={(event, newValue) =>
               handleChange(field.key, true)(
                 event,
-                newValue ? newValue.value : ""
+                newValue ? newValue[field.key] : ""
               )
             }
             disabled={field.disabled}

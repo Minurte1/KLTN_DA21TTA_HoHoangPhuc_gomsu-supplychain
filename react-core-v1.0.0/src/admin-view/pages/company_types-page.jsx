@@ -11,10 +11,9 @@ import companyTypeServices from "../../services/company_types-service";
 import CompanyTypeFormModal from "../modal/company_types-modal";
 
 const CompanyType = () => {
-  const [companyTypes, setCompanyTypes] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedCompanyType, setSelectedCompanyType] = useState(null);
-
+  const [companyTypes, setCompanyTypes] = useState([]);
   const fetchCompanyTypes = async () => {
     const data = await companyTypeServices.getCompanyTypes();
     setCompanyTypes(data);
