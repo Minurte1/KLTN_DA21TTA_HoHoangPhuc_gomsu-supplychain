@@ -53,8 +53,14 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
   const handleFormChange = (updatedFormData) => {
     setFormData((prev) => ({
       ...prev,
-      NAME_ROLE: updatedFormData.NAME_ROLE || prev.NAME_ROLE,
-      CODE_NAME: updatedFormData.CODE_NAME || prev.CODE_NAME,
+      NAME_ROLE:
+        updatedFormData.NAME_ROLE !== undefined
+          ? updatedFormData.NAME_ROLE
+          : prev.NAME_ROLE,
+      CODE_NAME:
+        updatedFormData.CODE_NAME !== undefined
+          ? updatedFormData.CODE_NAME
+          : prev.CODE_NAME,
     }));
   };
 

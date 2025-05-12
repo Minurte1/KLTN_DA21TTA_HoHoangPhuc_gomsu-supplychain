@@ -8,6 +8,7 @@ import DynamicTable from "../../share-view/dynamic/table/table";
 
 // import CompanyTypeFormModal from "../modal/company-type-modal";
 import companyTypeServices from "../../services/company_types-service";
+import CompanyTypeFormModal from "../modal/company_types-modal";
 
 const CompanyType = () => {
   const [companyTypes, setCompanyTypes] = useState([]);
@@ -71,12 +72,12 @@ const CompanyType = () => {
         ]}
       />
 
-      {/* <CompanyTypeFormModal
+      <CompanyTypeFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         companyType={selectedCompanyType}
         onSuccess={fetchCompanyTypes}
-      /> */}
+      />
     </Box>
   );
 };

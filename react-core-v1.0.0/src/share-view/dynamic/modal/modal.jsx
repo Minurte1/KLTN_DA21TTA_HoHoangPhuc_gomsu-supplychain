@@ -30,23 +30,37 @@ const DynamicModal = ({
   // Initialize formData from initialData when modal opens
   useEffect(() => {
     if (open) {
-      setFormData(initialData);
+      setFormData({ ...initialData }); // clone
       setErrors({});
     }
   }, [open, initialData]);
 
   // Handle input change
-  const handleChange = (key) => (event, newValue) => {
-    let value = newValue !== undefined ? newValue : event.target.value;
-    const updatedFormData = { ...formData, [key]: value };
-    setFormData(updatedFormData);
-    if (onChange) {
-      onChange(updatedFormData); // Notify parent of changes
-    }
-    if (errors[key]) {
-      setErrors({ ...errors, [key]: "" });
-    }
-  };
+  const handleChange =
+    (key, isAutocomplete = false) =>
+    (eventOrValue, newValue) => {
+      let value;
+
+      if (isAutocomplete) {
+        value = newValue; // newValue là option.value hoặc null
+      } else if (eventOrValue?.target) {
+        value = eventOrValue.target.value;
+      } else {
+        value = eventOrValue;
+      }
+
+      const updatedFormData = { ...formData, [key]: value };
+
+      setFormData(updatedFormData);
+
+      if (onChange) {
+        onChange(updatedFormData);
+      }
+
+      if (errors[key]) {
+        setErrors({ ...errors, [key]: "" });
+      }
+    };
 
   // Handle form submission
   const handleSubmit = () => {
@@ -105,7 +119,10 @@ const DynamicModal = ({
               null
             }
             onChange={(event, newValue) =>
-              handleChange(field.key)(event, newValue ? newValue.value : "")
+              handleChange(field.key, true)(
+                event,
+                newValue ? newValue.value : ""
+              )
             }
             disabled={field.disabled}
             renderInput={(params) => (
@@ -126,7 +143,11 @@ const DynamicModal = ({
             fullWidth
             margin="normal"
             label={field.label}
-            value={formData[field.key] || ""}
+            value={
+              formData[field.key] !== undefined
+                ? String(formData[field.key])
+                : ""
+            }
             onChange={handleChange(field.key)}
             error={!!errors[field.key]}
             helperText={errors[field.key]}
