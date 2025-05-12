@@ -140,7 +140,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
       optionsLabel: "NAME_COMPANY_TYPE",
     },
   ];
-  console.log("123:", companyTypes);
+
   // Nút custom trong modal
   const customActions = ({ handleSubmit, onClose }) => (
     <>
