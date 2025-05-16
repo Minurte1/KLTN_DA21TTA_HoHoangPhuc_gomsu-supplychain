@@ -3,6 +3,7 @@ import roleServices from "../../services/role-service";
 import DynamicModal from "../../share-view/dynamic/modal/modal";
 import PermissionManagerModal from "../section-modal/role/roleListPer-section-modal";
 import { Button } from "@mui/material";
+import spService from "../../share-service/spService";
 
 const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
   // State to manage form data
@@ -11,32 +12,14 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
     CODE_NAME: "",
     LIST_PERMISSION: [],
   });
-
-  const isValidJson = (str) => {
-    try {
-      const parsed = JSON.parse(str);
-      return typeof parsed === "object" && parsed !== null;
-    } catch (e) {
-      return false;
-    }
-  };
-
   useEffect(() => {
     if (open) {
-      const listPermission = role?.LIST_PERMISION;
-      const parsedPermission =
-        typeof listPermission === "string" && isValidJson(listPermission)
-          ? JSON.parse(listPermission)
-          : Array.isArray(listPermission)
-          ? listPermission
-          : [];
-
       setFormData(
         role
           ? {
               NAME_ROLE: role.NAME_ROLE || "",
               CODE_NAME: role.CODE_NAME || "",
-              LIST_PERMISSION: parsedPermission,
+              LIST_PERMISSION: spService.parseJsonIfValid(role.LIST_PERMISION),
             }
           : {
               NAME_ROLE: "",
@@ -46,7 +29,6 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
       );
     }
   }, [open, role]);
-
   // Form fields for DynamicModal
   const fields = [
     {

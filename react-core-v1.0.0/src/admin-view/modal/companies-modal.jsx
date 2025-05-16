@@ -111,12 +111,12 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
       required: true,
       inputType: "text",
     },
-    {
-      key: "TYPE_COMPANY",
-      label: "Loại công ty",
-      required: true,
-      inputType: "text",
-    },
+    // {
+    //   key: "TYPE_COMPANY",
+    //   label: "Loại công ty",
+    //   required: true,
+    //   inputType: "text",
+    // },
     { key: "ADDRESS", label: "Địa chỉ", inputType: "text" },
     { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố", inputType: "text" },
     { key: "DIA_CHI_Districts", label: "Quận/Huyện", inputType: "text" },
@@ -129,8 +129,11 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     {
       key: "STATUS",
       label: "Trạng thái",
-      inputType: "text",
-      options: ["ACTIVE", "INACTIVE"],
+      inputType: "select",
+      options: [
+        { value: "ACTIVE", label: "Hoạt động" },
+        { value: "INACTIVE", label: "Không hoạt động" },
+      ],
     },
     {
       key: "ID_COMPANY_TYPE",
