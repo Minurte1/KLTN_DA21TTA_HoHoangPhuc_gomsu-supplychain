@@ -11,18 +11,32 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
     CODE_NAME: "",
     LIST_PERMISSION: [],
   });
-  console.log("role", role);
-  // Initialize form data when role prop changes or modal opens
+
+  const isValidJson = (str) => {
+    try {
+      const parsed = JSON.parse(str);
+      return typeof parsed === "object" && parsed !== null;
+    } catch (e) {
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (open) {
+      const listPermission = role?.LIST_PERMISION;
+      const parsedPermission =
+        typeof listPermission === "string" && isValidJson(listPermission)
+          ? JSON.parse(listPermission)
+          : Array.isArray(listPermission)
+          ? listPermission
+          : [];
+
       setFormData(
         role
           ? {
               NAME_ROLE: role.NAME_ROLE || "",
               CODE_NAME: role.CODE_NAME || "",
-              LIST_PERMISSION: role.LIST_PERMISION
-                ? JSON.parse(role.LIST_PERMISION)
-                : [] || [],
+              LIST_PERMISSION: parsedPermission,
             }
           : {
               NAME_ROLE: "",
@@ -132,7 +146,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
       <PermissionManagerModal
         open={isOpenAddListPermission}
         onClose={() => setIsOpenAddListPermission(false)}
-        initialPermissions={formData.LIST_PERMISSION || []}
+        initialPermissions={formData?.LIST_PERMISSION || []}
         handleSetListPermissionsForm={handleSetListPermissionsForm}
       />
     </>
