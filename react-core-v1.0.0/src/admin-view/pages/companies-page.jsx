@@ -53,7 +53,7 @@ const Company = () => {
         data={companies}
         columns={[
           { key: "NAME_COMPANY", label: "Tên công ty" },
-          { key: "TYPE_COMPANY", label: "Loại công ty" },
+          // { key: "TYPE_COMPANY", label: "Loại công ty" },
           { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố" },
           { key: "DIA_CHI_Districts", label: "Quận/Huyện" },
           { key: "DIA_CHI_Wards", label: "Phường/Xã" },
