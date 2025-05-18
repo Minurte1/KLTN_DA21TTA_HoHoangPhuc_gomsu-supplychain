@@ -23,7 +23,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
           ? {
               NAME_ROLE: role.NAME_ROLE || "",
               CODE_NAME: role.CODE_NAME || "",
-              DESCRIPTION: "",
+              DESCRIPTION: role.DESCRIPTION,
               ID_COMPANY: role.ID_COMPANY || 0,
 
               LIST_PERMISSION: spService.parseJsonIfValid(role.LIST_PERMISION),
