@@ -80,9 +80,17 @@ const Company = () => {
 
       <CompanyFormModal
         open={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {
+          setOpenModal(false);
+          fetchCompanies();
+          setSelectedCompany(null);
+        }}
         company={selectedCompany}
-        onSuccess={fetchCompanies}
+        onSuccess={() => {
+          setOpenModal(false);
+          fetchCompanies();
+          setSelectedCompany(null);
+        }}
       />
     </Box>
   );

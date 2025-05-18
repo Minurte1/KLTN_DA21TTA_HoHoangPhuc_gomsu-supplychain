@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import DynamicModal from "../../share-view/dynamic/modal/modal";
 import companyServices from "../../services/companies-service";
 import companyTypeServices from "../../services/company_types-service";
+import spService from "../../share-service/spService";
 
 const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -54,6 +55,8 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
           ID_COMPANY_TYPE: company.ID_COMPANY_TYPE || "",
         });
       }
+    } else {
+      setFormData({});
     }
   }, [open, company]);
 
@@ -101,7 +104,12 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
       ...updatedFormData,
     };
 
-    // Nếu có bất kỳ thay đổi nào trong các trường địa chỉ, cập nhật lại trường ADDRESS
+    // Tạo slug từ NAME_COMPANY nếu người dùng nhập
+    if (updatedFormData.NAME_COMPANY) {
+      newFormData.SLUG = spService.createSlug(updatedFormData.NAME_COMPANY);
+    }
+
+    // Tự động tạo địa chỉ từ các trường địa chỉ
     const {
       DIA_CHI_Provinces = "",
       DIA_CHI_Districts = "",
@@ -115,12 +123,12 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
       DIA_CHI_Districts,
       DIA_CHI_Provinces,
     ]
-      .filter(Boolean) // loại bỏ chuỗi rỗng
+      .filter(Boolean)
       .join(", ");
 
     setFormData({
       ...newFormData,
-      ADDRESS: combinedAddress, // tự động cập nhật lại địa chỉ đầy đủ
+      ADDRESS: combinedAddress,
     });
   };
 
@@ -132,12 +140,8 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
       required: true,
       inputType: "text",
     },
-    // {
-    //   key: "TYPE_COMPANY",
-    //   label: "Loại công ty",
-    //   required: true,
-    //   inputType: "text",
-    // },
+    { key: "SLUG", label: "Slug", inputType: "text", disabled: true },
+
     { key: "ADDRESS", label: "Địa chỉ", inputType: "text", disabled: true },
     { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố", inputType: "text" },
     { key: "DIA_CHI_Districts", label: "Quận/Huyện", inputType: "text" },
@@ -146,7 +150,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     { key: "PHONE", label: "Số điện thoại", inputType: "text" },
     { key: "EMAIL", label: "Email", inputType: "email" },
     { key: "AVATAR", label: "Ảnh đại diện", inputType: "text" },
-    { key: "SLUG", label: "Định danh URL", inputType: "text" },
+
     {
       key: "STATUS",
       label: "Trạng thái",
