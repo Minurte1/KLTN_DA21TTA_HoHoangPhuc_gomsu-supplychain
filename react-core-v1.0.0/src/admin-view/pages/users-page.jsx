@@ -5,6 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
+import UsersFormModal from "../modal/users-modal";
 // import userServices from "../../services/user-service";
 // import UserFormModal from "../modal/user-modal";
 
@@ -76,13 +77,13 @@ const User = () => {
           },
         ]}
       />
-      {/* 
-      <UserFormModal
+
+      <UsersFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         user={selectedUser}
         onSuccess={fetchUsers}
-      /> */}
+      />
     </Box>
   );
 };

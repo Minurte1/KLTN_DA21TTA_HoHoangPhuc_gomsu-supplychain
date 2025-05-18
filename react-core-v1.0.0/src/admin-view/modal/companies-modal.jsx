@@ -137,7 +137,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     },
     {
       key: "ID_COMPANY_TYPE",
-      label: "ID Loại công ty",
+      label: "Thể loại công ty",
       inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
       options: companyTypes, // Dữ liệu lựa chọn từ API
       optionsLabel: "NAME_COMPANY_TYPE",
