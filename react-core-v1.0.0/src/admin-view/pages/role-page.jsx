@@ -52,8 +52,10 @@ const Role = () => {
       <DynamicTable
         data={roles}
         columns={[
-          { key: "NAME_ROLE", label: "Tên quyền" },
+          { key: "ID_COMPANY", label: "Mã Công Ty" },
           { key: "CODE_NAME", label: "Mã quyền" },
+          { key: "NAME_ROLE", label: "Tên quyền" },
+          { key: "DESCRIPTION", label: "Mô tả" },
           // {
           //   key: "LIST_PERMISSION",
           //   label: "Danh sách quyền",

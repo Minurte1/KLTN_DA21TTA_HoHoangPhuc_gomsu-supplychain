@@ -14,11 +14,14 @@ const getRoles = async (req, res) => {
 // Tạo vai trò mới
 const createRole = async (req, res) => {
   try {
-    const { NAME_ROLE, LIST_PERMISSION, CODE_NAME } = req.body;
+    const { NAME_ROLE, LIST_PERMISSION, CODE_NAME, ID_COMPANY, DESCRIPTION } =
+      req.body;
     const id = await RoleService.createRole({
       NAME_ROLE,
       LIST_PERMISSION,
       CODE_NAME,
+      ID_COMPANY,
+      DESCRIPTION,
     });
     res.status(201).json({ message: "Role created", id });
   } catch (error) {
@@ -46,11 +49,14 @@ const getRoleById = async (req, res) => {
 const updateRole = async (req, res) => {
   try {
     const { id } = req.params;
-    const { NAME_ROLE, LIST_PERMISSION, CODE_NAME } = req.body;
+    const { NAME_ROLE, LIST_PERMISSION, CODE_NAME, DESCRIPTION, ID_COMPANY } =
+      req.body;
     const updated = await RoleService.updateRole(id, {
       NAME_ROLE,
       LIST_PERMISSION,
       CODE_NAME,
+      ID_COMPANY,
+      DESCRIPTION,
     });
     if (!updated) {
       return res.status(404).json({ message: "Role not found" });

@@ -60,7 +60,7 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
           EMAIL: user.EMAIL || "",
           _PASSWORD_HASH_USERS: "", // Không load mật khẩu cũ
           SO_DIEN_THOAI: user.SO_DIEN_THOAI || "",
-          IS_ACTIVE_USERS: user.IS_ACTIVE_USERS ?? true,
+
           NGAY_TAO_USER: user.NGAY_TAO_USER || "",
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER || "",
           IS_DELETE_USERS: user.IS_DELETE_USERS ?? false,

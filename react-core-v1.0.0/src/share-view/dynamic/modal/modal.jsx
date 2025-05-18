@@ -143,6 +143,7 @@ const DynamicModal = ({
           />
         );
       default:
+        const isMultiline = !!field.rows || !!field.row;
         return (
           <TextField
             fullWidth
@@ -158,6 +159,8 @@ const DynamicModal = ({
             helperText={errors[field.key]}
             disabled={field.disabled}
             type={field.type || "text"}
+            multiline={isMultiline}
+            rows={field.rows || field.row}
           />
         );
     }

@@ -1,11 +1,17 @@
 const db = require("../config/database"); // KHÔNG destructure
 
 // Tạo role
-const createRole = async ({ NAME_ROLE, LIST_PERMISSION, CODE_NAME }) => {
+const createRole = async ({
+  NAME_ROLE,
+  LIST_PERMISSION,
+  CODE_NAME,
+  ID_COMPANY,
+  DESCRIPTION,
+}) => {
   const IS_DELETE = 0;
   const [result] = await db.query(
-    "INSERT INTO role (NAME_ROLE, LIST_PERMISION, CODE_NAME,IS_DELETE) VALUES (?, ?, ?,?)",
-    [NAME_ROLE, LIST_PERMISSION, CODE_NAME, IS_DELETE]
+    "INSERT INTO role (NAME_ROLE, LIST_PERMISION, CODE_NAME,IS_DELETE ,ID_COMPANY ,DESCRIPTION) VALUES (?, ?, ?,?,? ,?)",
+    [NAME_ROLE, LIST_PERMISSION, CODE_NAME, IS_DELETE, ID_COMPANY, DESCRIPTION]
   );
   return result.insertId;
 };
@@ -36,10 +42,20 @@ const getRoleById = async (id) => {
 };
 
 // Cập nhật role
-const updateRole = async (id, { NAME_ROLE, LIST_PERMISSION, CODE_NAME }) => {
+const updateRole = async (
+  id,
+  { NAME_ROLE, LIST_PERMISSION, CODE_NAME, ID_COMPANY, DESCRIPTION }
+) => {
   const [result] = await db.query(
-    `UPDATE role SET NAME_ROLE = ?, LIST_PERMISION = ?, CODE_NAME = ? WHERE ID_ROLE = ? AND IS_DELETE = FALSE`,
-    [NAME_ROLE, JSON.stringify(LIST_PERMISSION), CODE_NAME, id]
+    `UPDATE role SET NAME_ROLE = ?, LIST_PERMISION = ?, CODE_NAME = ? ,ID_COMPANY=? , DESCRIPTION = ? WHERE ID_ROLE = ? AND IS_DELETE = FALSE`,
+    [
+      NAME_ROLE,
+      JSON.stringify(LIST_PERMISSION),
+      CODE_NAME,
+      ID_COMPANY,
+      DESCRIPTION,
+      id,
+    ]
   );
   return result.affectedRows > 0;
 };

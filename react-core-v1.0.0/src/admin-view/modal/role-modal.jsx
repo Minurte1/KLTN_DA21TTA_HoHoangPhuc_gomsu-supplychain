@@ -4,6 +4,7 @@ import DynamicModal from "../../share-view/dynamic/modal/modal";
 import PermissionManagerModal from "../section-modal/role/roleListPer-section-modal";
 import { Button } from "@mui/material";
 import spService from "../../share-service/spService";
+import companyServices from "../../services/companies-service";
 
 const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
   // State to manage form data
@@ -11,7 +12,10 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
     NAME_ROLE: "",
     CODE_NAME: "",
     LIST_PERMISSION: [],
+    ID_COMPANY: 0,
+    DESCRIPTION: "",
   });
+  const [companiesOptions, setCompaniesOptions] = useState([]);
   useEffect(() => {
     if (open) {
       setFormData(
@@ -19,31 +23,32 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
           ? {
               NAME_ROLE: role.NAME_ROLE || "",
               CODE_NAME: role.CODE_NAME || "",
+              DESCRIPTION: "",
+              ID_COMPANY: role.ID_COMPANY || 0,
+
               LIST_PERMISSION: spService.parseJsonIfValid(role.LIST_PERMISION),
             }
           : {
               NAME_ROLE: "",
               CODE_NAME: "",
               LIST_PERMISSION: [],
+              ID_COMPANY: 0,
+              DESCRIPTION: "",
             }
       );
     }
+    fetchCompanies();
   }, [open, role]);
-  // Form fields for DynamicModal
-  const fields = [
-    {
-      key: "NAME_ROLE",
-      label: "Tên quyền",
-      required: true,
-      inputType: "text",
-    },
-    {
-      key: "CODE_NAME",
-      label: "Mã quyền",
-      required: true,
-      inputType: "text",
-    },
-  ];
+
+  const fetchCompanies = async () => {
+    try {
+      const data = await companyServices.getCompanies();
+
+      setCompaniesOptions(data);
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
 
   // Handle form input changes from DynamicModal
   const handleFormChange = (updatedFormData) => {
@@ -57,6 +62,15 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
         updatedFormData.CODE_NAME !== undefined
           ? updatedFormData.CODE_NAME
           : prev.CODE_NAME,
+      ID_COMPANY:
+        updatedFormData.ID_COMPANY !== undefined
+          ? updatedFormData.ID_COMPANY
+          : prev.ID_COMPANY,
+
+      DESCRIPTION:
+        updatedFormData.DESCRIPTION !== undefined
+          ? updatedFormData.DESCRIPTION
+          : prev.DESCRIPTION,
     }));
   };
 
@@ -68,6 +82,8 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
         NAME_ROLE: submittedFormData.NAME_ROLE || formData.NAME_ROLE,
         CODE_NAME: submittedFormData.CODE_NAME || formData.CODE_NAME,
         LIST_PERMISSION: JSON.stringify(formData.LIST_PERMISSION), // Use LIST_PERMISSION from state
+        ID_COMPANY: submittedFormData.ID_COMPANY || formData.ID_COMPANY,
+        DESCRIPTION: submittedFormData.DESCRIPTION || formData.DESCRIPTION,
       };
 
       if (role) {
@@ -93,7 +109,34 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
     }));
     setIsOpenAddListPermission(false);
   };
-
+  const fields = [
+    {
+      key: "ID_COMPANY",
+      label: "Thuộc Công Ty",
+      inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
+      options: companiesOptions, // Dữ liệu lựa chọn từ API
+      optionsLabel: "NAME_COMPANY",
+    },
+    {
+      key: "NAME_ROLE",
+      label: "Tên quyền",
+      required: true,
+      inputType: "text",
+    },
+    {
+      key: "CODE_NAME",
+      label: "Mã quyền",
+      required: true,
+      inputType: "text",
+    },
+    {
+      key: "DESCRIPTION",
+      label: "Mô tả",
+      required: true,
+      inputType: "text",
+      rows: 3,
+    },
+  ];
   // Custom renderActions function
   const customActions = ({ handleSubmit, onClose }) => (
     <>
