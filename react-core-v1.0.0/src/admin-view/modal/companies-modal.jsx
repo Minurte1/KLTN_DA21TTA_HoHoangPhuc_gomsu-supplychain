@@ -57,14 +57,6 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     }
   }, [open, company]);
 
-  // Xử lý thay đổi form
-  const handleFormChange = (updatedFormData) => {
-    setFormData((prev) => ({
-      ...prev,
-      ...updatedFormData,
-    }));
-  };
-
   // Xử lý submit form
   const handleSubmit = async (submittedFormData) => {
     try {
@@ -102,6 +94,35 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
       throw new Error("Có lỗi xảy ra khi lưu. Vui lòng thử lại.");
     }
   };
+  // Xử lý thay đổi form
+  const handleFormChange = (updatedFormData) => {
+    const newFormData = {
+      ...formData,
+      ...updatedFormData,
+    };
+
+    // Nếu có bất kỳ thay đổi nào trong các trường địa chỉ, cập nhật lại trường ADDRESS
+    const {
+      DIA_CHI_Provinces = "",
+      DIA_CHI_Districts = "",
+      DIA_CHI_Wards = "",
+      DIA_CHI_STREETNAME = "",
+    } = newFormData;
+
+    const combinedAddress = [
+      DIA_CHI_STREETNAME,
+      DIA_CHI_Wards,
+      DIA_CHI_Districts,
+      DIA_CHI_Provinces,
+    ]
+      .filter(Boolean) // loại bỏ chuỗi rỗng
+      .join(", ");
+
+    setFormData({
+      ...newFormData,
+      ADDRESS: combinedAddress, // tự động cập nhật lại địa chỉ đầy đủ
+    });
+  };
 
   // Cấu hình các trường input cho DynamicModal
   const fields = [
@@ -117,7 +138,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     //   required: true,
     //   inputType: "text",
     // },
-    { key: "ADDRESS", label: "Địa chỉ", inputType: "text" },
+    { key: "ADDRESS", label: "Địa chỉ", inputType: "text", disabled: true },
     { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố", inputType: "text" },
     { key: "DIA_CHI_Districts", label: "Quận/Huyện", inputType: "text" },
     { key: "DIA_CHI_Wards", label: "Phường/Xã", inputType: "text" },
