@@ -135,6 +135,13 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
   // Cấu hình các trường input cho DynamicModal
   const fields = [
     {
+      key: "ID_COMPANY_TYPE",
+      label: "Thể loại công ty",
+      inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
+      options: companyTypes, // Dữ liệu lựa chọn từ API
+      optionsLabel: "NAME_COMPANY_TYPE",
+    },
+    {
       key: "NAME_COMPANY",
       label: "Tên công ty",
       required: true,
@@ -142,11 +149,11 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     },
     { key: "SLUG", label: "Slug", inputType: "text", disabled: true },
 
-    { key: "ADDRESS", label: "Địa chỉ", inputType: "text", disabled: true },
     { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố", inputType: "text" },
     { key: "DIA_CHI_Districts", label: "Quận/Huyện", inputType: "text" },
     { key: "DIA_CHI_Wards", label: "Phường/Xã", inputType: "text" },
     { key: "DIA_CHI_STREETNAME", label: "Tên đường", inputType: "text" },
+    { key: "ADDRESS", label: "Địa chỉ", inputType: "text", disabled: true },
     { key: "PHONE", label: "Số điện thoại", inputType: "text" },
     { key: "EMAIL", label: "Email", inputType: "email" },
     { key: "AVATAR", label: "Ảnh đại diện", inputType: "text" },
@@ -159,13 +166,6 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
         { value: "ACTIVE", label: "Hoạt động" },
         { value: "INACTIVE", label: "Không hoạt động" },
       ],
-    },
-    {
-      key: "ID_COMPANY_TYPE",
-      label: "Thể loại công ty",
-      inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
-      options: companyTypes, // Dữ liệu lựa chọn từ API
-      optionsLabel: "NAME_COMPANY_TYPE",
     },
   ];
 
