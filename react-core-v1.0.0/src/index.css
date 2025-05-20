@@ -17,41 +17,34 @@ code {
 
 /* Đặt CSS này trong file global của bạn, ví dụ như App.css */
 
+/* Thanh cuộn cho Firefox */
 * {
   scrollbar-width: thin;
-  /* Dành cho Firefox */
-  scrollbar-color: #5a5a5a #1e1e1e;
-  /* Màu của thanh cuộn và nền của nó */
+  scrollbar-color: #c0c0c0 #f0f0f0;
+  /* Màu kéo và nền */
 }
 
-/* Tùy chỉnh thanh cuộn cho Chrome, Edge, và Safari */
+/* Thanh cuộn cho Chrome, Edge, Safari */
 ::-webkit-scrollbar {
   width: 8px;
-  /* Độ rộng của thanh cuộn dọc */
   height: 8px;
-  /* Độ rộng của thanh cuộn ngang */
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e1e1e;
-  /* Màu nền của thanh cuộn */
+  background: #f0f0f0;
+  /* Nền thanh cuộn */
   border-radius: 10px;
-  /* Bo tròn nền thanh cuộn */
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #5a5a5a;
-  /* Màu của thanh kéo */
+  background-color: #c0c0c0;
+  /* Màu kéo */
   border-radius: 10px;
-  /* Bo tròn thanh kéo */
-  border: 2px solid #1e1e1e;
-  /* Độ rộng và màu của viền để tạo khoảng cách */
+  border: 2px solid #f0f0f0;
+  /* Viền để tạo khoảng cách */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #737373;
-  /* Màu thanh kéo khi hover */
+  background-color: #a0a0a0;
+  /* Khi hover */
 }
-
-
-/* src/index.css */
