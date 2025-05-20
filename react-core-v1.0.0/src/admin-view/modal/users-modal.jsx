@@ -16,34 +16,37 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
     EMAIL: "",
     _PASSWORD_HASH_USERS: "",
     SO_DIEN_THOAI: "",
-    IS_ACTIVE_USERS: true,
+    IS_DELETE_USERS: true,
     NGAY_TAO_USER: "",
     NGAY_CAP_NHAT_USER: "",
-    IS_DELETE_USERS: false,
+
     AVATAR: "",
     DIA_CHI_Provinces: "",
     DIA_CHI_Districts: "",
     DIA_CHI_Wards: "",
     DIA_CHI_STREETNAME: "",
     TRANG_THAI_USER: "ACTIVE",
+    ID_COMPANY: 0,
   });
 
   const [roleOptions, setRoleOptions] = useState([]);
   const [companiesOptions, setCompaniesOptions] = useState([]);
-  const fetchRoles = async () => {
-    try {
-      const data = await roleServices.getRoles();
-      console.log("data", data);
-      setRoleOptions(data);
-    } catch (error) {
-      console.error("Error fetching roles:", error);
-    }
-  };
+
   const fetchCompanies = async () => {
     try {
       const data = await companyServices.getCompanies();
       console.log("data", data);
       setCompaniesOptions(data);
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const data = await roleServices.getRoles();
+      console.log("data", data);
+      setRoleOptions(data);
     } catch (error) {
       console.error("Error fetching roles:", error);
     }
@@ -70,6 +73,7 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
           DIA_CHI_Wards: user.DIA_CHI_Wards || "",
           DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME || "",
           TRANG_THAI_USER: user.TRANG_THAI_USER || "ACTIVE",
+          ID_COMPANY: user.ID_COMPANY || 0,
         });
       }
     }
@@ -131,11 +135,11 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       label: "Số điện thoại",
       inputType: "text",
     },
-    {
-      key: "IS_ACTIVE_USERS",
-      label: "Đang hoạt động?",
-      inputType: "switch",
-    },
+    // {
+    //   key: "IS_DELETE_USERS",
+    //   label: "Đang hoạt động?",
+    //   inputType: "switch",
+    // },
     {
       key: "AVATAR",
       label: "Ảnh đại diện",
