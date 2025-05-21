@@ -21,6 +21,7 @@ const {
   sendBirthdayWish,
   registerUser,
   loginUser,
+  createUser,
 } = require("../controllers/userController");
 
 const upload = require("../config/multerConfig");
@@ -30,6 +31,7 @@ const {
 } = require("../middleware/JWTaction");
 router.get("/user", getAllUser_Admin);
 router.get("/user/:id", getUser_ById);
+router.post("/create-users", createUser);
 router.post("/logout", logoutUser);
 router.post("/login/google", loginUserGoogle);
 router.post(

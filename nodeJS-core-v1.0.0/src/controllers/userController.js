@@ -11,6 +11,8 @@ const crypto = require("crypto");
 const otpStorage = new Map();
 const { checkUserPermission } = require("../middleware/JWTaction");
 
+const saltRounds = 10;
+
 const getAllUser_Admin = async (req, res) => {
   try {
     // Check if the user already exists in the database
@@ -351,6 +353,96 @@ const updateUserById_User = async (req, res) => {
     }
   } catch (error) {
     console.error("Lỗi trong updateUserById_User:", error);
+    return res.status(500).json({
+      EM: `Lỗi hệ thống: ${error.message}`,
+      EC: -1,
+      DT: [],
+    });
+  }
+};
+const createUser = async (req, res) => {
+  const {
+    ID_ROLE,
+    HO_TEN,
+    EMAIL,
+    _PASSWORD_HASH_USERS, // mật khẩu người dùng nhập
+    SO_DIEN_THOAI,
+    AVATAR,
+    DIA_CHI_Provinces,
+    DIA_CHI_Districts,
+    DIA_CHI_Wards,
+    DIA_CHI_STREETNAME,
+    TRANG_THAI_USER = "ACTIVE",
+    ID_COMPANY,
+  } = req.body;
+
+  // Kiểm tra đầu vào
+  if (!EMAIL || !_PASSWORD_HASH_USERS || !HO_TEN) {
+    return res.status(400).json({
+      EM: "Vui lòng nhập đầy đủ: Họ tên, Email và Mật khẩu",
+      EC: 0,
+      DT: [],
+    });
+  }
+
+  try {
+    // Kiểm tra Email đã tồn tại chưa
+    const [emailCheck] = await pool.query(
+      "SELECT ID_USERS FROM users WHERE EMAIL = ? AND IS_DELETE_USERS = 0",
+      [EMAIL]
+    );
+
+    if (emailCheck.length > 0) {
+      return res.status(409).json({
+        EM: "Email đã tồn tại trong hệ thống",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Hash mật khẩu
+    const hashPassword = await bcrypt.hash(_PASSWORD_HASH_USERS, saltRounds);
+
+    // Tạo địa chỉ đầy đủ
+    const DIA_CHI = `${DIA_CHI_STREETNAME || ""}, ${DIA_CHI_Wards || ""}, ${
+      DIA_CHI_Districts || ""
+    }, ${DIA_CHI_Provinces || ""}`;
+
+    // Thêm user vào database
+    const [result] = await pool.query(
+      `INSERT INTO users (
+        ID_ROLE, HO_TEN, EMAIL, _PASSWORD_HASH_USERS, SO_DIEN_THOAI,
+        NGAY_TAO_USER, IS_DELETE_USERS, AVATAR,
+        DIA_CHI_Provinces, DIA_CHI_Districts, DIA_CHI_Wards,
+        DIA_CHI_STREETNAME, TRANG_THAI_USER, ID_COMPANY
+      ) VALUES (?, ?, ?, ?, ?, NOW(), 0, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        ID_ROLE,
+        HO_TEN,
+        EMAIL,
+        hashPassword,
+        SO_DIEN_THOAI,
+        AVATAR,
+        DIA_CHI_Provinces,
+        DIA_CHI_Districts,
+        DIA_CHI_Wards,
+        DIA_CHI_STREETNAME,
+        TRANG_THAI_USER,
+        ID_COMPANY,
+      ]
+    );
+
+    return res.status(201).json({
+      EM: "Tạo người dùng thành công",
+      EC: 1,
+      DT: {
+        ID_USERS: result.insertId,
+        EMAIL,
+        HO_TEN,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi khi tạo người dùng:", error);
     return res.status(500).json({
       EM: `Lỗi hệ thống: ${error.message}`,
       EC: -1,
@@ -1253,4 +1345,5 @@ module.exports = {
   sendTeacherDayWish,
   registerUser,
   loginUser,
+  createUser,
 };

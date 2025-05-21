@@ -15,7 +15,11 @@ const AddressSelector = ({
   setSelectedProvince,
   setSelectedDistrict,
   setSelectedWards,
+  //
+  backgroundColor,
+  color,
 }) => {
+  const apiAddress = process.env.SERVER_ADDRESS;
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -32,10 +36,10 @@ const AddressSelector = ({
       setLoadingProvinces(true);
       try {
         const response = await axios.get(
-          "https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1"
+          `http://localhost:3002/address/provinces`
         );
 
-        setProvinces(response.data.data.data || []);
+        setProvinces(response.data.data || []);
       } catch (error) {
         console.error("Error fetching provinces:", error);
       } finally {
@@ -52,9 +56,9 @@ const AddressSelector = ({
         setLoadingDistricts(true);
         try {
           const response = await axios.get(
-            `https://vn-public-apis.fpo.vn/districts/getByProvince?provinceCode=${selectedProvince.code}&limit=-1`
+            `http://localhost:3002/address/districts/${selectedProvince.code}`
           );
-          setDistricts(response.data.data.data || []);
+          setDistricts(response.data.data || []);
         } catch (error) {
           console.error("Error fetching districts:", error);
         } finally {
@@ -74,9 +78,9 @@ const AddressSelector = ({
         setLoadingWards(true);
         try {
           const response = await axios.get(
-            `https://vn-public-apis.fpo.vn/wards/getByDistrict?districtCode=${selectedDistrict.code}&limit=-1`
+            `http://localhost:3002/address/wards/${selectedDistrict.code}`
           );
-          setWards(response.data.data.data || []);
+          setWards(response.data.data || []);
         } catch (error) {
           console.error("Error fetching wards:", error);
         } finally {
@@ -94,7 +98,7 @@ const AddressSelector = ({
       {/* Province Selector */}
       <Autocomplete
         options={provinces}
-        getOptionLabel={(option) => option.name_with_type || option.name || ""}
+        getOptionLabel={(option) => option.full_name || option.name || ""}
         value={selectedProvince}
         onChange={(event, newValue) => {
           setSelectedProvince(newValue);
@@ -107,18 +111,31 @@ const AddressSelector = ({
             {...params}
             label={
               selectedProvince
-                ? selectedProvince.name_with_type || selectedProvince
+                ? selectedProvince.full_name || selectedProvince
                 : "Chọn tỉnh"
             }
             sx={{
-              backgroundColor: "#1f1f1f", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              backgroundColor: "#ffffff", // Màu nền trắng
+              "& .MuiInputLabel-root": {
+                color: "#333333", // Màu chữ của label - xám đậm
+              },
+              "& .MuiInputBase-input": {
+                color: "#000000", // Màu chữ của input - đen
+              },
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+                "& fieldset": {
+                  borderColor: "#cccccc", // Màu viền xám nhạt
+                },
+                "&:hover fieldset": {
+                  borderColor: "#999999", // Màu viền khi hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1976d2", // Màu viền khi focus (xanh dương MUI)
+                },
               },
               "& .MuiInputBase-root": {
-                borderRadius: "4px", // Làm tròn góc nếu muốn
+                borderRadius: "4px", // Giữ lại góc bo
+                backgroundColor: "#ffffff", // Đảm bảo phần input cũng trắng
               },
             }}
             InputProps={{
@@ -137,7 +154,7 @@ const AddressSelector = ({
       {/* District Selector */}
       <Autocomplete
         options={districts}
-        getOptionLabel={(option) => option.name_with_type || option.name || ""}
+        getOptionLabel={(option) => option.full_name || option.name || ""}
         value={selectedDistrict}
         onChange={(event, newValue) => setSelectedDistrict(newValue)}
         loading={loadingDistricts}
@@ -146,18 +163,31 @@ const AddressSelector = ({
             {...params}
             label={
               selectedDistrict
-                ? selectedDistrict.name_with_type || selectedDistrict
+                ? selectedDistrict.full_name || selectedDistrict
                 : "Chọn huyện"
             }
             sx={{
-              backgroundColor: "#1f1f1f", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" },
-              "& .MuiInputBase-input": { color: "#f0ffff" },
+              backgroundColor: "#ffffff", // Màu nền trắng
+              "& .MuiInputLabel-root": {
+                color: "#333333", // Màu chữ của label - xám đậm
+              },
+              "& .MuiInputBase-input": {
+                color: "#000000", // Màu chữ của input - đen
+              },
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#3d444d" },
+                "& fieldset": {
+                  borderColor: "#cccccc", // Màu viền xám nhạt
+                },
+                "&:hover fieldset": {
+                  borderColor: "#999999", // Màu viền khi hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1976d2", // Màu viền khi focus (xanh dương MUI)
+                },
               },
               "& .MuiInputBase-root": {
-                borderRadius: "4px", // Làm tròn góc nếu muốn
+                borderRadius: "4px", // Giữ lại góc bo
+                backgroundColor: "#ffffff", // Đảm bảo phần input cũng trắng
               },
             }}
             InputProps={{
@@ -177,7 +207,7 @@ const AddressSelector = ({
       {/* Ward Selector */}
       <Autocomplete
         options={wards}
-        getOptionLabel={(option) => option.name_with_type || option.name || ""}
+        getOptionLabel={(option) => option.full_name || option.name || ""}
         loading={loadingWards}
         value={selectedWards}
         onChange={(event, newValue) => setSelectedWards(newValue)}
@@ -186,18 +216,31 @@ const AddressSelector = ({
             {...params}
             label={
               selectedWards
-                ? selectedWards.name_with_type || selectedWards
+                ? selectedWards.full_name || selectedWards
                 : "Chọn phường xã"
             }
             sx={{
-              backgroundColor: "#1f1f1f", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" },
-              "& .MuiInputBase-input": { color: "#f0ffff" },
+              backgroundColor: "#ffffff", // Màu nền trắng
+              "& .MuiInputLabel-root": {
+                color: "#333333", // Màu chữ của label - xám đậm
+              },
+              "& .MuiInputBase-input": {
+                color: "#000000", // Màu chữ của input - đen
+              },
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#3d444d" },
+                "& fieldset": {
+                  borderColor: "#cccccc", // Màu viền xám nhạt
+                },
+                "&:hover fieldset": {
+                  borderColor: "#999999", // Màu viền khi hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#1976d2", // Màu viền khi focus (xanh dương MUI)
+                },
               },
               "& .MuiInputBase-root": {
-                borderRadius: "4px", // Làm tròn góc nếu muốn
+                borderRadius: "4px", // Giữ lại góc bo
+                backgroundColor: "#ffffff", // Đảm bảo phần input cũng trắng
               },
             }}
             InputProps={{

@@ -23,6 +23,7 @@ const DynamicModal = ({
   title = "Form",
   renderActions,
   onChange, // New prop to notify parent of input changes
+  renderExtraFields,
 }) => {
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
@@ -186,6 +187,7 @@ const DynamicModal = ({
           {fields.map((field) => (
             <div key={field.key}>{renderInput(field)}</div>
           ))}
+          {renderExtraFields && renderExtraFields()}
         </Box>
       </DialogContent>
       <DialogActions>

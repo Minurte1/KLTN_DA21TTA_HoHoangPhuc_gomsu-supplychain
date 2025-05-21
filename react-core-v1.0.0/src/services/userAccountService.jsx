@@ -28,8 +28,8 @@ export const login = async (account) => {
 // Get List of Users
 export const getAllUsers = async () => {
   try {
-    const response = await axiosInstance.get(`${apiUrl}/users`);
-    if (response.data.EC === 200) {
+    const response = await axiosInstance.get(`${apiUrl}/user`);
+    if (response.data.EC === 1) {
       return response.data.DT; // Returns the list of users
     }
     return [];
@@ -42,7 +42,10 @@ export const getAllUsers = async () => {
 // Create New User
 export const createUser = async (newUser) => {
   try {
-    const response = await axiosInstance.post(`${apiUrl}/users`, newUser);
+    const response = await axiosInstance.post(
+      `${apiUrl}/create-users`,
+      newUser
+    );
     if (response.data.EC === 201) {
       return true; // User created successfully
     }
@@ -57,7 +60,7 @@ export const createUser = async (newUser) => {
 export const updateUserById = async (id, updatedUser) => {
   try {
     const response = await axiosInstance.put(
-      `${apiUrl}/users/update/${id}`,
+      `${apiUrl}/user/update/${id}`,
       updatedUser
     );
     if (response.data.EC === 200) {
@@ -74,7 +77,7 @@ export const updateUserById = async (id, updatedUser) => {
 export const deleteUserById = async (userId) => {
   try {
     const response = await axiosInstance.delete(
-      `${apiUrl}/users/delete/${userId}`
+      `${apiUrl}/user/delete/${userId}`
     );
     if (response.data.EC === 200) {
       return true; // User deleted successfully

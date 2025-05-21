@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
 import UsersFormModal from "../modal/users-modal";
+import { getAllUsers } from "../../services/userAccountService";
 // import userServices from "../../services/user-service";
 // import UserFormModal from "../modal/user-modal";
 
@@ -15,8 +16,8 @@ const User = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const fetchUsers = async () => {
-    //  const data = await userServices.getUsers();
-    // setUsers(data);
+    const data = await getAllUsers();
+    setUsers(data);
   };
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const User = () => {
     // await userServices.deleteUser(id);
     fetchUsers();
   };
-
+  console.log("users", users);
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>

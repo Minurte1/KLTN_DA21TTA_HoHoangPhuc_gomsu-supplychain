@@ -4,10 +4,12 @@ import DynamicModal from "../../share-view/dynamic/modal/modal";
 
 import roleServices from "../../services/role-service";
 import {
+  createUser,
   deleteUserById,
   updateUserById,
 } from "../../services/userAccountService";
 import companyServices from "../../services/companies-service";
+import AddressSelector from "../../components/addressUser";
 
 const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -19,7 +21,6 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
     IS_DELETE_USERS: true,
     NGAY_TAO_USER: "",
     NGAY_CAP_NHAT_USER: "",
-
     AVATAR: "",
     DIA_CHI_Provinces: "",
     DIA_CHI_Districts: "",
@@ -35,17 +36,15 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
   const fetchCompanies = async () => {
     try {
       const data = await companyServices.getCompanies();
-      console.log("data", data);
       setCompaniesOptions(data);
     } catch (error) {
-      console.error("Error fetching roles:", error);
+      console.error("Error fetching companies:", error);
     }
   };
 
   const fetchRoles = async () => {
     try {
       const data = await roleServices.getRoles();
-      console.log("data", data);
       setRoleOptions(data);
     } catch (error) {
       console.error("Error fetching roles:", error);
@@ -63,14 +62,16 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
           EMAIL: user.EMAIL || "",
           _PASSWORD_HASH_USERS: "", // Không load mật khẩu cũ
           SO_DIEN_THOAI: user.SO_DIEN_THOAI || "",
-
           NGAY_TAO_USER: user.NGAY_TAO_USER || "",
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER || "",
           IS_DELETE_USERS: user.IS_DELETE_USERS ?? false,
           AVATAR: user.AVATAR || "",
-          DIA_CHI_Provinces: user.DIA_CHI_Provinces || "",
-          DIA_CHI_Districts: user.DIA_CHI_Districts || "",
-          DIA_CHI_Wards: user.DIA_CHI_Wards || "",
+          DIA_CHI_Provinces:
+            user.DIA_CHI_Provinces?.full_name || user.DIA_CHI_Provinces || "",
+          DIA_CHI_Districts:
+            user.DIA_CHI_Districts?.full_name || user.DIA_CHI_Districts || "",
+          DIA_CHI_Wards:
+            user.DIA_CHI_Wards?.full_name || user.DIA_CHI_Wards || "",
           DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME || "",
           TRANG_THAI_USER: user.TRANG_THAI_USER || "ACTIVE",
           ID_COMPANY: user.ID_COMPANY || 0,
@@ -85,18 +86,34 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       ...updatedFormData,
     }));
   };
-
   const handleSubmit = async (submittedFormData) => {
     try {
+      // Lấy các địa chỉ dưới dạng string
+      const province = submittedFormData?.DIA_CHI_Provinces?.full_name || "";
+      const district = submittedFormData?.DIA_CHI_Districts?.full_name || "";
+      const ward = submittedFormData?.DIA_CHI_Wards?.full_name || "";
+      const street = submittedFormData?.DIA_CHI_STREETNAME || "";
+
+      // Gộp địa chỉ đầy đủ
+      const fullAddress =
+        street && ward && district && province
+          ? `${street}, ${ward}, ${district}, ${province}`
+          : "";
+
+      // Tạo object để gửi lên server
       const dataToSubmit = {
         ...formData,
         ...submittedFormData,
+        DIA_CHI_Provinces: province,
+        DIA_CHI_Districts: district,
+        DIA_CHI_Wards: ward,
+        DIA_CHI: fullAddress,
       };
 
       if (user) {
         await updateUserById(user.ID_USERS, dataToSubmit);
       } else {
-        await deleteUserById(dataToSubmit);
+        await createUser(dataToSubmit);
       }
 
       onSuccess();
@@ -110,16 +127,17 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
     {
       key: "ID_COMPANY",
       label: "Thuộc Công Ty",
-      inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
-      options: companiesOptions, // Dữ liệu lựa chọn từ API
+      inputType: "autocomplete",
+      options: companiesOptions,
       optionsLabel: "NAME_COMPANY",
+      required: true,
     },
     {
       key: "ID_ROLE",
       label: "Vai trò",
       inputType: "autocomplete",
       options: roleOptions,
-      optionsLabel: "NAME_ROLE", // hoặc label phù hợp
+      optionsLabel: "NAME_ROLE",
       required: true,
     },
     { key: "HO_TEN", label: "Họ tên", inputType: "text", required: true },
@@ -135,19 +153,11 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       label: "Số điện thoại",
       inputType: "text",
     },
-    // {
-    //   key: "IS_DELETE_USERS",
-    //   label: "Đang hoạt động?",
-    //   inputType: "switch",
-    // },
     {
       key: "AVATAR",
       label: "Ảnh đại diện",
       inputType: "text",
     },
-    { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố", inputType: "text" },
-    { key: "DIA_CHI_Districts", label: "Quận/Huyện", inputType: "text" },
-    { key: "DIA_CHI_Wards", label: "Phường/Xã", inputType: "text" },
     { key: "DIA_CHI_STREETNAME", label: "Tên đường", inputType: "text" },
     {
       key: "TRANG_THAI_USER",
@@ -181,6 +191,22 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       title={user ? "Sửa người dùng" : "Thêm người dùng"}
       renderActions={customActions}
       onChange={handleFormChange}
+      renderExtraFields={() => (
+        <AddressSelector
+          selectedProvince={formData.DIA_CHI_Provinces}
+          selectedDistrict={formData.DIA_CHI_Districts}
+          selectedWards={formData.DIA_CHI_Wards}
+          setSelectedProvince={(value) =>
+            handleFormChange({ DIA_CHI_Provinces: value || "" })
+          }
+          setSelectedDistrict={(value) =>
+            handleFormChange({ DIA_CHI_Districts: value || "" })
+          }
+          setSelectedWards={(value) =>
+            handleFormChange({ DIA_CHI_Wards: value || "" })
+          }
+        />
+      )}
     />
   );
 };
