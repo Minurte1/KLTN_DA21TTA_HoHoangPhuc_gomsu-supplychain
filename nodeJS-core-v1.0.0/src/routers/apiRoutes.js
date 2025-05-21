@@ -22,7 +22,7 @@ const suppliersRoute = require("./suppliers.route.js");
 const inventoryRoute = require("./inventory.route.js");
 const materialsRoute = require("./materials.route.js");
 const materialTypesRoute = require("./material_types.route.js");
-
+const addressRoute = require("./provincesRoute.js");
 // Kết nối tất cả các router
 router.use("/api/permissions", permissionRoutes);
 router.use("/", userRoute);
@@ -44,5 +44,5 @@ router.use("/suppliers", suppliersRoute);
 router.use("/inventory", inventoryRoute);
 router.use("/materials", materialsRoute);
 router.use("/material-types", materialTypesRoute);
-
+router.use("/address", addressRoute);
 module.exports = router;
