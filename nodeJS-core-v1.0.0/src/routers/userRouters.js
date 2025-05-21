@@ -22,6 +22,7 @@ const {
   registerUser,
   loginUser,
   createUser,
+  deleteUserById,
 } = require("../controllers/userController");
 
 const upload = require("../config/multerConfig");
@@ -29,6 +30,7 @@ const {
   checkUserPermission,
   checkUserJWT,
 } = require("../middleware/JWTaction");
+
 router.get("/user", getAllUser_Admin);
 router.get("/user/:id", getUser_ById);
 router.post("/create-users", createUser);
@@ -57,5 +59,5 @@ router.post("/update-language", updateLanguage);
 
 router.post("/send-teacher", sendTeacherDayWish);
 router.post("/send-birtday", sendBirthdayWish);
-
+router.delete("/user/delete/:id", deleteUserById);
 module.exports = router;

@@ -56,6 +56,7 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       fetchRoles();
       fetchCompanies();
       if (user) {
+        console.log("user", user);
         setFormData({
           ID_ROLE: user.ID_ROLE || "",
           HO_TEN: user.HO_TEN || "",

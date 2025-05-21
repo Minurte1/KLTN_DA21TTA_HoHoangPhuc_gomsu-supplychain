@@ -1325,6 +1325,52 @@ Em luôn trân trọng và biết ơn ${xungHo} rất nhiều! </p>
     });
   }
 };
+const deleteUserById = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Thử xóa thật (hard delete)
+    const [result] = await pool.execute(
+      "DELETE FROM users WHERE ID_USERS = ?",
+      [userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
+
+    // Nếu xóa thành công
+    return res.json({ message: "Xóa người dùng thành công (hard delete)." });
+  } catch (err) {
+    // Nếu lỗi do khóa ngoại (foreign key constraint), chuyển sang xóa mềm
+    if (err.code === "ER_ROW_IS_REFERENCED_" || err.errno === 1451) {
+      try {
+        const [softDeleteResult] = await pool.execute(
+          "UPDATE users SET IS_DELETE_USERS = 1 WHERE ID_USERS = ?",
+          [userId]
+        );
+
+        if (softDeleteResult.affectedRows === 0) {
+          return res
+            .status(404)
+            .json({ message: "Không tìm thấy người dùng." });
+        }
+
+        return res.json({
+          message:
+            "Xóa người dùng thành công (soft delete do ràng buộc khóa ngoại).",
+        });
+      } catch (softDeleteErr) {
+        console.error("Lỗi khi thực hiện xóa mềm:", softDeleteErr);
+        return res.status(500).json({ message: "Lỗi server khi xóa mềm." });
+      }
+    }
+
+    // Các lỗi khác trả về lỗi server
+    console.error("Lỗi xóa người dùng:", err);
+    return res.status(500).json({ message: "Lỗi server." });
+  }
+};
 
 module.exports = {
   loginUserGoogle,
@@ -1346,4 +1392,5 @@ module.exports = {
   registerUser,
   loginUser,
   createUser,
+  deleteUserById,
 };

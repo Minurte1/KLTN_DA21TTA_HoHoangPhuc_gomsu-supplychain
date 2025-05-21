@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
 import UsersFormModal from "../modal/users-modal";
-import { getAllUsers } from "../../services/userAccountService";
+import { deleteUserById, getAllUsers } from "../../services/userAccountService";
 // import userServices from "../../services/user-service";
 // import UserFormModal from "../modal/user-modal";
 
@@ -30,7 +30,7 @@ const User = () => {
   };
 
   const handleDelete = async (id) => {
-    // await userServices.deleteUser(id);
+    await deleteUserById(id);
     fetchUsers();
   };
   console.log("users", users);
