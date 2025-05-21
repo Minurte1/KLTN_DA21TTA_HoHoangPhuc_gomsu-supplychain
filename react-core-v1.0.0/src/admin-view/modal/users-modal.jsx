@@ -88,19 +88,18 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
   };
   const handleSubmit = async (submittedFormData) => {
     try {
-      // Lấy các địa chỉ dưới dạng string
+      // --- Lấy và xử lý địa chỉ ---
       const province = submittedFormData?.DIA_CHI_Provinces?.full_name || "";
       const district = submittedFormData?.DIA_CHI_Districts?.full_name || "";
       const ward = submittedFormData?.DIA_CHI_Wards?.full_name || "";
       const street = submittedFormData?.DIA_CHI_STREETNAME || "";
 
-      // Gộp địa chỉ đầy đủ
       const fullAddress =
         street && ward && district && province
           ? `${street}, ${ward}, ${district}, ${province}`
           : "";
 
-      // Tạo object để gửi lên server
+      // --- Gộp data ---
       const dataToSubmit = {
         ...formData,
         ...submittedFormData,
@@ -110,6 +109,44 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
         DIA_CHI: fullAddress,
       };
 
+      // --- VALIDATE ---
+      const errors = [];
+
+      // Bắt buộc
+      if (!dataToSubmit.HO_TEN?.trim())
+        errors.push("Họ tên không được để trống.");
+      if (!dataToSubmit.EMAIL?.trim()) {
+        errors.push("Email không được để trống.");
+      } else {
+        // Regex kiểm tra định dạng email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(dataToSubmit.EMAIL)) {
+          errors.push("Email không đúng định dạng.");
+        }
+      }
+
+      if (!user && !dataToSubmit._PASSWORD_HASH_USERS?.trim()) {
+        errors.push("Mật khẩu không được để trống.");
+      }
+
+      if (!dataToSubmit.ID_COMPANY) errors.push("Vui lòng chọn công ty.");
+      if (!dataToSubmit.ID_ROLE) errors.push("Vui lòng chọn vai trò.");
+
+      // Kiểm tra số điện thoại (nếu có)
+      if (dataToSubmit.SO_DIEN_THOAI) {
+        const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+        if (!phoneRegex.test(dataToSubmit.SO_DIEN_THOAI)) {
+          errors.push("Số điện thoại không hợp lệ.");
+        }
+      }
+
+      // Nếu có lỗi thì không gửi lên server
+      if (errors.length > 0) {
+        alert(errors.join("\n"));
+        return;
+      }
+
+      // --- Gọi API ---
       if (user) {
         await updateUserById(user.ID_USERS, dataToSubmit);
       } else {
@@ -119,7 +156,6 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       onSuccess();
     } catch (error) {
       console.error("Error saving user:", error);
-      throw new Error("Có lỗi xảy ra khi lưu. Vui lòng thử lại.");
     }
   };
 
