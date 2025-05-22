@@ -60,56 +60,74 @@ const getUser_ById = async (req, res) => {
 // ---------------------------------------------- updateUserById
 const updateUserById_Admin = async (req, res) => {
   const {
-    ID_NGUOI_DUNG,
-    MAT_KHAU,
-    EMAIL,
-    VAI_TRO,
+    ID_ROLE,
     HO_TEN,
+    EMAIL,
+    _PASSWORD_HASH_USERS,
     SO_DIEN_THOAI,
-    DIA_CHI,
-    TRANG_THAI_USER,
-    NGAY_CAP_NHAT_USER,
+
+    IS_DELETE_USERS,
     AVATAR,
+    DIA_CHI_Provinces,
+    DIA_CHI_Districts,
+    DIA_CHI_Wards,
+    DIA_CHI_STREETNAME,
+    TRANG_THAI_USER,
+    ID_COMPANY,
+    DIA_CHI,
   } = req.body;
 
-  // Kiểm tra xem có đủ ID người dùng để cập nhật hay không
-  if (!ID_NGUOI_DUNG) {
+  const { id } = req.params;
+
+  if (!id) {
     return res.status(400).json({
-      EM: "ID_NGUOI_DUNG is missing",
+      EM: "Thiếu ID người dùng",
       EC: 0,
       DT: [],
     });
   }
 
   try {
-    // Cập nhật thông tin người dùng trong database
     const [result] = await pool.query(
-      `UPDATE NGUOI_DUNG 
-         SET MAT_KHAU = ?, 
-             EMAIL = ?, 
-             VAI_TRO = ?, 
-             HO_TEN = ?, 
-             SO_DIEN_THOAI = ?, 
-             DIA_CHI = ?, 
-             TRANG_THAI_USER = ?, 
-             NGAY_CAP_NHAT_USER = ?, 
-             AVATAR = ? 
-         WHERE ID_NGUOI_DUNG = ?`,
+      `UPDATE users 
+       SET 
+         ID_ROLE = ?, 
+         HO_TEN = ?, 
+         EMAIL = ?, 
+         _PASSWORD_HASH_USERS = ?, 
+         SO_DIEN_THOAI = ?, 
+         NGAY_TAO_USER = NOW(), 
+         NGAY_CAP_NHAT_USER =  NOW(), 
+         IS_DELETE_USERS = ?, 
+         AVATAR = ?, 
+         DIA_CHI_Provinces = ?, 
+         DIA_CHI_Districts = ?, 
+         DIA_CHI_Wards = ?, 
+         DIA_CHI_STREETNAME = ?, 
+         TRANG_THAI_USER = ?, 
+         ID_COMPANY = ?
+        
+       WHERE ID_USERS = ?`,
       [
-        MAT_KHAU,
-        EMAIL,
-        VAI_TRO,
+        ID_ROLE,
         HO_TEN,
+        EMAIL,
+        _PASSWORD_HASH_USERS,
         SO_DIEN_THOAI,
-        DIA_CHI,
-        TRANG_THAI_USER,
-        NGAY_CAP_NHAT_USER,
+
+        IS_DELETE_USERS,
         AVATAR,
-        ID_NGUOI_DUNG,
+        DIA_CHI_Provinces,
+        DIA_CHI_Districts,
+        DIA_CHI_Wards,
+        DIA_CHI_STREETNAME,
+        TRANG_THAI_USER,
+        ID_COMPANY,
+
+        id,
       ]
     );
 
-    // Kiểm tra kết quả cập nhật
     if (result.affectedRows === 0) {
       return res.status(404).json({
         EM: "User not found",
@@ -121,10 +139,10 @@ const updateUserById_Admin = async (req, res) => {
     return res.status(200).json({
       EM: "Cập nhật thông tin người dùng thành công",
       EC: 1,
-      DT: { ID_NGUOI_DUNG },
+      DT: { id },
     });
   } catch (error) {
-    console.error("Error in updateUserById:", error);
+    console.error("Error in updateUserById_Admin:", error);
     return res.status(500).json({
       EM: `Error: ${error.message}`,
       EC: -1,
@@ -138,27 +156,29 @@ const updateUserById_User = async (req, res) => {
     EMAIL,
     HO_TEN,
     SO_DIEN_THOAI,
-    VAI_TRO,
+    ID_ROLE,
     DIA_CHI_Provinces,
     DIA_CHI_Districts,
     DIA_CHI_Wards,
     DIA_CHI_STREETNAME,
     TRANG_THAI_USER,
+    ID_COMPANY,
+    AVATAR,
+    IS_DELETE_USERS,
+    _PASSWORD_HASH_USERS,
   } = req.body;
 
   const { id } = req.params;
 
-  // Kiểm tra xem ID người dùng có hợp lệ không
   if (!id) {
     return res.status(400).json({
-      EM: "ID người dùng bị thiếu",
+      EM: "Thiếu ID người dùng",
       EC: 0,
       DT: [],
     });
   }
 
   try {
-    // Kiểm tra xem người dùng có tồn tại không
     const [existingUser] = await pool.execute(
       "SELECT * FROM users WHERE ID_USERS = ?",
       [id]
@@ -172,31 +192,39 @@ const updateUserById_User = async (req, res) => {
       });
     }
 
-    // Cập nhật các trường không phải null
-    let updateFields = [];
-    let updateValues = [];
+    const updateFields = [];
+    const updateValues = [];
 
-    if (EMAIL !== undefined && EMAIL !== null && EMAIL !== "") {
-      updateFields.push("EMAIL = ?");
-      updateValues.push(EMAIL);
-    }
-    if (HO_TEN !== undefined && HO_TEN !== null && HO_TEN !== "") {
-      updateFields.push("HO_TEN = ?");
-      updateValues.push(HO_TEN);
-    }
+    const addField = (field, value) => {
+      if (value !== undefined && value !== null && value !== "") {
+        updateFields.push(`${field} = ?`);
+        updateValues.push(value);
+      }
+    };
+
+    addField("EMAIL", EMAIL);
+    addField("HO_TEN", HO_TEN);
+    addField("SO_DIEN_THOAI", SO_DIEN_THOAI);
+    addField("DIA_CHI_Provinces", DIA_CHI_Provinces);
+    addField("DIA_CHI_Districts", DIA_CHI_Districts);
+    addField("DIA_CHI_Wards", DIA_CHI_Wards);
+    addField("DIA_CHI_STREETNAME", DIA_CHI_STREETNAME);
+    addField("AVATAR", AVATAR);
+    addField("_PASSWORD_HASH_USERS", _PASSWORD_HASH_USERS);
+    addField("ID_COMPANY", ID_COMPANY);
+    addField("IS_DELETE_USERS", IS_DELETE_USERS);
+
     if (
-      SO_DIEN_THOAI !== undefined &&
-      SO_DIEN_THOAI !== null &&
-      SO_DIEN_THOAI !== ""
+      TRANG_THAI_USER !== undefined &&
+      ["ACTIVE", "INACTIVE", "DELETED"].includes(TRANG_THAI_USER)
     ) {
-      updateFields.push("SO_DIEN_THOAI = ?");
-      updateValues.push(SO_DIEN_THOAI);
+      addField("TRANG_THAI_USER", TRANG_THAI_USER);
     }
-    if (VAI_TRO !== undefined && VAI_TRO !== null && VAI_TRO !== "") {
-      // Kiểm tra xem VAI_TRO có tồn tại trong bảng role
+
+    if (ID_ROLE !== undefined && ID_ROLE !== null && ID_ROLE !== "") {
       const [roleCheck] = await pool.execute(
         "SELECT ID_ROLE FROM role WHERE ID_ROLE = ? AND IS_DELETE = 0",
-        [VAI_TRO]
+        [ID_ROLE]
       );
       if (roleCheck.length === 0) {
         return res.status(400).json({
@@ -205,83 +233,37 @@ const updateUserById_User = async (req, res) => {
           DT: [],
         });
       }
-      updateFields.push("VAI_TRO = ?");
-      updateValues.push(VAI_TRO);
-    }
-    if (
-      DIA_CHI_Provinces !== undefined &&
-      DIA_CHI_Provinces !== null &&
-      DIA_CHI_Provinces !== ""
-    ) {
-      updateFields.push("DIA_CHI_Provinces = ?");
-      updateValues.push(DIA_CHI_Provinces);
-    }
-    if (
-      DIA_CHI_Districts !== undefined &&
-      DIA_CHI_Districts !== null &&
-      DIA_CHI_Districts !== ""
-    ) {
-      updateFields.push("DIA_CHI_Districts = ?");
-      updateValues.push(DIA_CHI_Districts);
-    }
-    if (
-      DIA_CHI_Wards !== undefined &&
-      DIA_CHI_Wards !== null &&
-      DIA_CHI_Wards !== ""
-    ) {
-      updateFields.push("DIA_CHI_Wards = ?");
-      updateValues.push(DIA_CHI_Wards);
-    }
-    if (
-      DIA_CHI_STREETNAME !== undefined &&
-      DIA_CHI_STREETNAME !== null &&
-      DIA_CHI_STREETNAME !== ""
-    ) {
-      updateFields.push("DIA_CHI_STREETNAME = ?");
-      updateValues.push(DIA_CHI_STREETNAME);
-    }
-    if (
-      TRANG_THAI_USER !== undefined &&
-      TRANG_THAI_USER !== null &&
-      TRANG_THAI_USER !== "" &&
-      ["ACTIVE", "INACTIVE", "DELETED"].includes(TRANG_THAI_USER)
-    ) {
-      updateFields.push("TRANG_THAI_USER = ?");
-      updateValues.push(TRANG_THAI_USER);
+      updateFields.push("ID_ROLE = ?");
+      updateValues.push(ID_ROLE);
     }
 
-    // Thêm trường ngày cập nhật
-    const ngayCapNhat = new Date();
+    // Cập nhật thời gian
+    const now = new Date();
     updateFields.push("NGAY_CAP_NHAT_USER = ?");
-    updateValues.push(ngayCapNhat);
+    updateValues.push(now);
 
-    // Nếu không có gì cần cập nhật, trả về lỗi
     if (updateFields.length === 0) {
       return res.status(400).json({
-        EM: "Không có thông tin cần cập nhật",
+        EM: "Không có thông tin nào để cập nhật",
         EC: 0,
         DT: [],
       });
     }
 
-    // Cập nhật thông tin người dùng
     const updateQuery = `
       UPDATE users 
       SET ${updateFields.join(", ")}
       WHERE ID_USERS = ?
     `;
-
-    // Thêm ID người dùng vào cuối giá trị để xác định người dùng cần cập nhật
     updateValues.push(id);
 
     const [updateResult] = await pool.execute(updateQuery, updateValues);
 
     if (updateResult.affectedRows > 0) {
-      // Lấy lại thông tin mới nhất của người dùng sau khi cập nhật, bao gồm thông tin vai trò
       const [updatedUser] = await pool.execute(
         `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
          FROM users u 
-         LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
+         LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE 
          WHERE u.ID_USERS = ? AND r.IS_DELETE = 0`,
         [id]
       );
@@ -295,14 +277,12 @@ const updateUserById_User = async (req, res) => {
       }
 
       const user = updatedUser[0];
-      console.log("updatedUser[0]", user);
 
-      // Tạo JWT token
       const token = jwt.sign(
         {
           ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
-          VAI_TRO: user.VAI_TRO,
+          ID_ROLE: user.ID_ROLE,
           HO_TEN: user.HO_TEN,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
@@ -316,37 +296,23 @@ const updateUserById_User = async (req, res) => {
           LIST_PERMISION: user.LIST_PERMISION,
           NAME_ROLE: user.NAME_ROLE,
           CODE_NAME: user.CODE_NAME,
+          ID_COMPANY: user.ID_COMPANY,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
       );
 
       return res.status(200).json({
-        EM: "Cập nhật thông tin thành công",
+        EM: "Cập nhật thành công",
         EC: 1,
         DT: {
-          ID_USERS: user.ID_USERS,
-          EMAIL: user.EMAIL,
-          HO_TEN: user.HO_TEN,
-          VAI_TRO: user.VAI_TRO,
-          SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-          TRANG_THAI_USER: user.TRANG_THAI_USER,
-          NGAY_TAO_USER: user.NGAY_TAO_USER,
-          NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
-          AVATAR: user.AVATAR,
-          DIA_CHI_Provinces: user.DIA_CHI_Provinces,
-          DIA_CHI_Districts: user.DIA_CHI_Districts,
-          DIA_CHI_Wards: user.DIA_CHI_Wards,
-          DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
-          LIST_PERMISION: user.LIST_PERMISION,
-          NAME_ROLE: user.NAME_ROLE,
-          CODE_NAME: user.CODE_NAME,
+          ...user,
         },
         accessToken: token,
       });
     } else {
       return res.status(400).json({
-        EM: "Cập nhật không thành công",
+        EM: "Không thể cập nhật người dùng",
         EC: 0,
         DT: [],
       });
@@ -360,6 +326,7 @@ const updateUserById_User = async (req, res) => {
     });
   }
 };
+
 const createUser = async (req, res) => {
   const {
     ID_ROLE,
