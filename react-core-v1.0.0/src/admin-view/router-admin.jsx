@@ -20,7 +20,11 @@ const RouterAdmin = () => {
     },
     {
       path: "/role",
-      element: <Role />,
+      element: (
+        <PrivateRoute>
+          <Role />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/company",
@@ -32,20 +36,37 @@ const RouterAdmin = () => {
     },
     {
       path: "/company_type",
-      element: <CompanyType />,
+      element: (
+        <PrivateRoute>
+          <CompanyType />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/user",
-      element: <User />,
+      element: (
+        <PrivateRoute>
+          <User />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/product",
-      element: <Product />,
+      element: (
+        <PrivateRoute>
+          <Product />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/category",
-      element: <Category />,
+      element: (
+        <PrivateRoute>
+          <Category />
+        </PrivateRoute>
+      ),
     },
+
     // {
     //   path: "/admin/don-hang/tat-ca",
     //   element: <OrderList />,
