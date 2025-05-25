@@ -27,7 +27,7 @@ const useAuthInit = () => {
         // 1. Decode token để lấy ID_USERS
         const decoded = jwtDecode(token);
         const userId = decoded.ID_USERS;
-        debugger;
+
         // 2. Gọi API để lấy user info mới nhất
         const latestUser = await getUserById(userId);
 

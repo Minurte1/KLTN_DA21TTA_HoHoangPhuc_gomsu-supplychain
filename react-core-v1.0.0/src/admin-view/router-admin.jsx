@@ -18,7 +18,7 @@ const RouterAdmin = () => {
       element: <DashboardAdmin />,
     },
     {
-      path: "/phan-quyen",
+      path: "/role",
       element: <Role />,
     },
     {

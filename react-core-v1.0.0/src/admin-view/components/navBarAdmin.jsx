@@ -12,14 +12,42 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { adminMenuConfig } from "../../share-service/menu-admin";
 import { Link, useLocation } from "react-router-dom";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const NavBarAdmin = () => {
   const [openSection, setOpenSection] = useState(null);
   const location = useLocation();
-
+  const { listPermission } = ReduxExportUseAuthState();
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
+
+  const canAccessMenu = (menuItem, permissions) => {
+    if (permissions.some((p) => p.router === "SYSTEM")) return true;
+
+    // Kiểm tra nếu có path
+    if (menuItem.path && typeof menuItem.path === "string") {
+      const routerFromPath = menuItem.path.split("/")[2]; // Lấy phần sau /admin/
+      return permissions.some((p) => p.router === routerFromPath);
+    }
+
+    // Kiểm tra nếu có children
+    if (Array.isArray(menuItem.children)) {
+      return menuItem.children.some((child) => {
+        if (child.path && typeof child.path === "string") {
+          const routerFromPath = child.path.split("/")[2]; // Lấy phần sau /admin/
+          return permissions.some((p) => p.router === routerFromPath);
+        }
+        return false;
+      });
+    }
+
+    return false;
+  };
+
+  const filteredMenu = adminMenuConfig.filter((menuItem) =>
+    canAccessMenu(menuItem, listPermission)
+  );
 
   return (
     <Box
@@ -58,7 +86,7 @@ const NavBarAdmin = () => {
         Quản lý hệ thống
       </Typography>
       <List component="nav">
-        {adminMenuConfig.map((item, index) => {
+        {filteredMenu.map((item, index) => {
           const isOpen = openSection === index;
 
           if (!item.children) {

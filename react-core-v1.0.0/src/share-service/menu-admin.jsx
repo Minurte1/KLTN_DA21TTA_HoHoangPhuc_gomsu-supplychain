@@ -20,7 +20,7 @@ export const adminMenuConfig = [
   },
   {
     label: "Phân quyền & vai trò",
-    path: "/admin/phan-quyen",
+    path: "/admin/role",
     icon: <AdminPanelSettingsIcon />,
   },
   {
@@ -29,35 +29,35 @@ export const adminMenuConfig = [
     children: [
       {
         label: "Danh sách công ty",
-        path: "/admin/cong-ty",
+        path: "/admin/company",
       },
       {
         label: "Loại công ty",
-        path: "/admin/loai-cong-ty",
+        path: "/admin/company_type",
       },
     ],
   },
   {
     label: "Quản lý người dùng",
-    path: "/admin/nguoi-dung",
+    path: "/admin/user",
     icon: <PersonIcon />,
   },
   {
     label: "Quản lý sản phẩm",
     icon: <InventoryIcon />,
     children: [
-      { label: "Danh sách sản phẩm", path: "/admin/san-pham" },
-      { label: "Danh mục sản phẩm", path: "/admin/san-pham/danh-muc" },
+      { label: "Danh sách sản phẩm", path: "/admin/product" },
+      { label: "Danh mục sản phẩm", path: "/admin/category" },
     ],
   },
   {
     label: "Quản lý đơn hàng",
     icon: <ShoppingCartIcon />,
     children: [
-      { label: "Tất cả đơn hàng", path: "/admin/don-hang/tat-ca" },
-      { label: "Đơn hàng đang xử lý", path: "/admin/don-hang/dang-xu-ly" },
-      { label: "Đơn hàng đã hủy", path: "/admin/don-hang/da-huy" },
-      { label: "Đơn hàng đã thanh toán", path: "/admin/don-hang/hoan-tat" },
+      { label: "Tất cả đơn hàng", path: "/admin/order/tat-ca" },
+      { label: "Đơn hàng đang xử lý", path: "/admin/order/dang-xu-ly" },
+      { label: "Đơn hàng đã hủy", path: "/admin/order/da-huy" },
+      { label: "Đơn hàng đã thanh toán", path: "/admin/order/hoan-tat" },
     ],
   },
   {
