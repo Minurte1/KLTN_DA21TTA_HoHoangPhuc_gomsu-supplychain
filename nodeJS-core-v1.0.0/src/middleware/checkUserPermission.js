@@ -49,16 +49,7 @@ const baseListPermission = [
     router: "material_order",
     actions: ["view", "create", "update", "delete", "approve"],
   },
-  // Supplier: Quản lý nhà cung cấp, chủ yếu dành cho MANUFACTURER (làm việc với SUPPLIER)
-  {
-    router: "supplier",
-    actions: ["view", "create", "update", "delete"],
-  },
-  // Inventory: Quản lý kho, chủ yếu dành cho WAREHOUSE, MANUFACTURER cũng có thể xem để kiểm tra nguyên liệu
-  {
-    router: "inventory",
-    actions: ["view", "update", "check"],
-  },
+
   // Order: Quản lý đơn hàng, chủ yếu dành cho RETAILER (xử lý bán hàng), TRANSPORT có thể xem để sắp xếp vận chuyển
   {
     router: "order",
@@ -71,27 +62,31 @@ const baseListPermission = [
   },
   // Production Plan: Quản lý kế hoạch sản xuất, chỉ dành cho MANUFACTURER
   {
-    router: "production_plan",
+    router: "production_plans",
     actions: ["view", "create", "update", "delete", "start", "complete"],
   },
   // Production Step: Quản lý các bước sản xuất, chỉ dành cho MANUFACTURER
   {
-    router: "production_step",
+    router: "production_steps",
     actions: ["view", "create", "update", "delete", "start", "complete"],
+  },
+  {
+    router: "equipment",
+    actions: ["view", "create", "update", "delete"],
   },
   // Production Material: Quản lý nguyên liệu sản xuất, chỉ dành cho MANUFACTURER
   {
     router: "production_material",
     actions: ["view", "create", "update", "delete"],
   },
-  // Quality Control: Kiểm tra chất lượng, dành cho MANUFACTURER (kiểm tra sản xuất) và WAREHOUSE (kiểm tra kho)
   {
-    router: "quality_control",
-    actions: ["view", "create", "update", "delete", "check"],
+    router: "product_instances",
+    actions: ["view", "create", "update", "delete"],
   },
+
   // Transport Order: Quản lý đơn vận chuyển, chủ yếu dành cho TRANSPORT, MANUFACTURER và RETAILER có thể xem để theo dõi
   {
-    router: "transport_order",
+    router: "transport_orders",
     actions: ["view", "create", "update", "delete", "ship"],
   },
   // Cart: Quản lý giỏ hàng, chủ yếu dành cho RETAILER hoặc người dùng cuối

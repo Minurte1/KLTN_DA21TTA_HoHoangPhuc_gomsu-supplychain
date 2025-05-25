@@ -22,23 +22,23 @@ const RouterAdmin = () => {
       element: <Role />,
     },
     {
-      path: "/cong-ty",
+      path: "/company",
       element: <Company />,
     },
     {
-      path: "/loai-cong-ty",
+      path: "/company_type",
       element: <CompanyType />,
     },
     {
-      path: "/nguoi-dung",
+      path: "/user",
       element: <User />,
     },
     {
-      path: "/san-pham",
+      path: "/product",
       element: <Product />,
     },
     {
-      path: "/san-pham/danh-muc",
+      path: "/category",
       element: <Category />,
     },
     // {
@@ -62,11 +62,11 @@ const RouterAdmin = () => {
     //   element: <Warehouse />,
     // },
     {
-      path: "/loai-vat-lieu",
+      path: "/material_type",
       element: <MaterialType />,
     },
     {
-      path: "/vat-lieu",
+      path: "/material",
       element: <Material />,
     },
     // {
@@ -89,10 +89,7 @@ const RouterAdmin = () => {
     //   path: "/admin/thiet-bi",
     //   element: <Equipment />,
     // },
-    {
-      path: "/nha-cung-cap",
-      element: <Supplier />,
-    },
+
     // {
     //   path: "/admin/bao-cao",
     //   element: <ReportAndStats />,

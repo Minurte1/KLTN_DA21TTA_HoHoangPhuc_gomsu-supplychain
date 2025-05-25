@@ -1,27 +1,40 @@
-import BarChartIcon from "@mui/icons-material/BarChart";
-import PersonIcon from "@mui/icons-material/Person";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import CategoryIcon from "@mui/icons-material/Category";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import EngineeringIcon from "@mui/icons-material/Engineering";
-import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
-import FactCheckIcon from "@mui/icons-material/FactCheck";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import BusinessIcon from "@mui/icons-material/Business";
+import {
+  BarChart as BarChartIcon,
+  AdminPanelSettings as AdminPanelSettingsIcon,
+  Apartment as ApartmentIcon,
+  Inventory as InventoryIcon,
+  LocalShipping as LocalShippingIcon,
+  ShoppingCart as ShoppingCartIcon,
+  PrecisionManufacturing as PrecisionManufacturingIcon,
+  Engineering as EngineeringIcon,
+  Category as CategoryIcon,
+  Assignment as AssignmentIcon,
+  Assessment as AssessmentIcon,
+  Person as PersonIcon,
+  Layers as LayersIcon,
+  ListAlt as ListAltIcon,
+  Store as StoreIcon,
+} from "@mui/icons-material";
 
 export const adminMenuConfig = [
   {
-    label: "Thống kê cơ bản",
+    label: "Thống kê tổng quan",
     path: "/admin",
     icon: <BarChartIcon />,
   },
   {
-    label: "Phân quyền & vai trò",
-    path: "/admin/role",
+    label: "Quản lý hệ thống",
     icon: <AdminPanelSettingsIcon />,
+    children: [
+      {
+        label: "Phân quyền & Vai trò",
+        path: "/admin/role",
+      },
+      {
+        label: "Quản lý người dùng",
+        path: "/admin/user",
+      },
+    ],
   },
   {
     label: "Quản lý công ty",
@@ -37,69 +50,108 @@ export const adminMenuConfig = [
       },
     ],
   },
+
+  // MANUFACTURER
   {
-    label: "Quản lý người dùng",
-    path: "/admin/user",
-    icon: <PersonIcon />,
-  },
-  {
-    label: "Quản lý sản phẩm",
-    icon: <InventoryIcon />,
-    children: [
-      { label: "Danh sách sản phẩm", path: "/admin/product" },
-      { label: "Danh mục sản phẩm", path: "/admin/category" },
-    ],
-  },
-  {
-    label: "Quản lý đơn hàng",
-    icon: <ShoppingCartIcon />,
-    children: [
-      { label: "Tất cả đơn hàng", path: "/admin/order/tat-ca" },
-      { label: "Đơn hàng đang xử lý", path: "/admin/order/dang-xu-ly" },
-      { label: "Đơn hàng đã hủy", path: "/admin/order/da-huy" },
-      { label: "Đơn hàng đã thanh toán", path: "/admin/order/hoan-tat" },
-    ],
-  },
-  {
-    label: "Quản lý kho & vật liệu",
-    icon: <CategoryIcon />,
-    children: [
-      { label: "Kho nguyên vật liệu", path: "/admin/kho" },
-      { label: "Loại vật liệu", path: "/admin/loai-vat-lieu" },
-      { label: "Danh sách vật liệu", path: "/admin/vat-lieu" },
-    ],
-  },
-  {
-    label: "Quản lý đơn đặt vật liệu",
-    path: "/admin/don-vat-lieu",
-    icon: <LocalShippingIcon />,
-  },
-  {
-    label: "Quản lý kế hoạch sản xuất",
+    label: "Sản xuất",
     icon: <PrecisionManufacturingIcon />,
     children: [
-      { label: "Danh sách kế hoạch", path: "/admin/ke-hoach-san-xuat" },
-      { label: "Bước sản xuất", path: "/admin/buoc-san-xuat" },
+      {
+        label: "Kế hoạch sản xuất",
+        path: "/admin/ke-hoach-san-xuat",
+      },
+      {
+        label: "Bước sản xuất",
+        path: "/admin/buoc-san-xuat",
+      },
+      {
+        label: "Vật liệu sản xuất",
+        path: "/admin/production_materials",
+      },
+      {
+        label: "Sản phẩm",
+        path: "/admin/product",
+      },
+      {
+        label: "Danh mục sản phẩm",
+        path: "/admin/category",
+      },
+      {
+        label: "Kho hàng",
+        path: "/admin/inventory",
+      },
+      {
+        label: "Đơn đặt vật liệu",
+        path: "/admin/material_order",
+      },
+      {
+        label: "Thiết bị",
+        path: "/admin/equipment",
+      },
+      {
+        label: "Sản phẩm đã sản xuất",
+        path: "/admin/product_instances",
+      },
     ],
   },
+
+  // SUPPLIER
   {
-    label: "Quản lý chất lượng",
-    path: "/admin/kiem-tra-chat-luong",
-    icon: <FactCheckIcon />,
+    label: "Nhà cung cấp",
+    icon: <LayersIcon />,
+    children: [
+      {
+        label: "Danh mục vật liệu",
+        path: "/admin/material_type",
+      },
+      {
+        label: "Vật liệu",
+        path: "/admin/material",
+      },
+      {
+        label: "Nhà cung cấp",
+        path: "/admin/suppliers",
+      },
+    ],
   },
+
+  // TRANSPORT
   {
-    label: "Quản lý thiết bị",
-    path: "/admin/thiet-bi",
-    icon: <EngineeringIcon />,
-  },
-  {
-    label: "Quản lý nhà cung cấp",
-    path: "/admin/nha-cung-cap",
+    label: "Vận chuyển",
+    path: "/admin/transport_orders",
     icon: <LocalShippingIcon />,
   },
 
+  // RETAILER
   {
-    label: "Báo cáo & thống kê",
+    label: "Bán lẻ & Đơn hàng",
+    icon: <StoreIcon />,
+    children: [
+      {
+        label: "Tất cả đơn hàng",
+        path: "/admin/order/tat-ca",
+      },
+      {
+        label: "Đơn hàng đang xử lý",
+        path: "/admin/order/dang-xu-ly",
+      },
+      {
+        label: "Đơn hàng đã hủy",
+        path: "/admin/order/da-huy",
+      },
+      {
+        label: "Đơn hàng hoàn tất",
+        path: "/admin/order/hoan-tat",
+      },
+      {
+        label: "Giỏ hàng",
+        path: "/admin/cart",
+      },
+    ],
+  },
+
+  {
+    label: "Báo cáo & Thống kê",
     path: "/admin/bao-cao",
     icon: <AssessmentIcon />,
   },
