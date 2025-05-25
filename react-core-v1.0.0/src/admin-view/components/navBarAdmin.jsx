@@ -77,6 +77,7 @@ const NavBarAdmin = () => {
     })
     .filter(Boolean); // Loại bỏ các null
 
+  console.log("listPermission", listPermission);
   return (
     <Box
       sx={{

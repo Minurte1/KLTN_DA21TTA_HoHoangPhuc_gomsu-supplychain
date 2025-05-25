@@ -10,6 +10,7 @@ import Category from "./pages/categories-page";
 import MaterialType from "./pages/material_types-page";
 import Material from "./pages/materials-page";
 import Supplier from "./pages/suppliers-page";
+import PrivateRoute from "../authentication/privateRoute";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -23,7 +24,11 @@ const RouterAdmin = () => {
     },
     {
       path: "/company",
-      element: <Company />,
+      element: (
+        <PrivateRoute>
+          <Company />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/company_type",

@@ -1,58 +1,41 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import reduxStateExport from "../core/redux/redux-share/state-export/redux-state";
-
-// const getRouterKey = (routerPath) => {
-//   if (!routerPath) return "";
-//   const match = routerPath.match(/^\/?admin\/(.+)/);
-//   return match?.[1] || routerPath.replace(/^\/+/, "");
-// };
+import ReduxExportUseAuthState from "../redux/redux-export/useAuthServices";
 
 const getRouterKey = (router) => {
   if (!router) return "";
   const match = router.match(/^\/admin\/([^/]+)/);
   return match?.[1] || router;
 };
-const PrivateRoute = ({ path, children }) => {
+
+const PrivateRoute = ({ children }) => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const { listPermission } = reduxStateExport();
+  const { listPermission } = ReduxExportUseAuthState();
 
   const [isReady, setIsReady] = useState(false);
   const [isAllowed, setIsAllowed] = useState(false);
-  // console.log("listPermission", listPermission);
+  console.log("PrivateRoute");
   useEffect(() => {
-    if (!currentPath || !listPermission?.status) return;
+    if (!currentPath || !listPermission) return;
 
-    // Reset mỗi lần currentPath đổi
     setIsReady(false);
     setIsAllowed(false);
 
     try {
-      const role = listPermission?.value?.role;
+      // Nếu là SYSTEM thì cho phép tất cả
 
-      if (listPermission?.value === "SYSTEM") {
-        // Cho qua tất cả nếu là SYSTEM
-        setIsAllowed(true);
-        setIsReady(true);
-        return;
-      }
+      const listPermissionProcess = listPermission || [];
+      const routerKey = getRouterKey(currentPath).toLowerCase();
 
-      let listPermissionProcess = listPermission?.value?.listPermistions;
+      // Chỉ cho phép nếu có quyền "view" trong actions
+      const hasPermission = listPermissionProcess.some(
+        (perm) =>
+          perm.router.toLowerCase() === routerKey &&
+          perm.actions.includes("view")
+      );
 
-      const allowRouters = listPermissionProcess.flatMap((item) => {
-        if (item.router === "blog") {
-          return ["blog", "blog-approve"];
-        }
-        return [item.router];
-      });
-      const routerKey = getRouterKey(currentPath);
-
-      const allowed = allowRouters
-        .map((r) => r.toLowerCase())
-        .includes(routerKey.toLowerCase());
-
-      setIsAllowed(allowed);
+      setIsAllowed(hasPermission);
     } catch (e) {
       console.error("Không thể parse listPermission", e);
       setIsAllowed(false);
