@@ -25,29 +25,57 @@ const NavBarAdmin = () => {
   const canAccessMenu = (menuItem, permissions) => {
     if (permissions.some((p) => p.router === "SYSTEM")) return true;
 
-    // Kiểm tra nếu có path
-    if (menuItem.path && typeof menuItem.path === "string") {
-      const routerFromPath = menuItem.path.split("/")[2]; // Lấy phần sau /admin/
-      return permissions.some((p) => p.router === routerFromPath);
+    // Hàm lấy router từ path
+    const getRouterFromPath = (path) => {
+      if (typeof path !== "string") return null;
+      const segments = path.split("/");
+      // Tìm phần tử sau 'admin', ví dụ: /admin/order/hoan-tat -> 'order'
+      const adminIndex = segments.indexOf("admin");
+      return adminIndex !== -1 && segments.length > adminIndex + 1
+        ? segments[adminIndex + 1]
+        : null;
+    };
+
+    // Kiểm tra nếu có path trực tiếp
+    if (menuItem.path) {
+      const router = getRouterFromPath(menuItem.path);
+      return permissions.some((p) => p.router === router);
     }
 
-    // Kiểm tra nếu có children
+    // Kiểm tra trong children
     if (Array.isArray(menuItem.children)) {
       return menuItem.children.some((child) => {
-        if (child.path && typeof child.path === "string") {
-          const routerFromPath = child.path.split("/")[2]; // Lấy phần sau /admin/
-          return permissions.some((p) => p.router === routerFromPath);
-        }
-        return false;
+        const router = getRouterFromPath(child.path);
+        return permissions.some((p) => p.router === router);
       });
     }
 
     return false;
   };
 
-  const filteredMenu = adminMenuConfig.filter((menuItem) =>
-    canAccessMenu(menuItem, listPermission)
-  );
+  const filteredMenu = adminMenuConfig
+    .map((menuItem) => {
+      // Nếu có children, lọc lại các mục con theo quyền
+      if (Array.isArray(menuItem.children)) {
+        const filteredChildren = menuItem.children.filter((child) =>
+          canAccessMenu(child, listPermission)
+        );
+
+        // Nếu có ít nhất một mục con được phép, giữ lại menu cha
+        if (filteredChildren.length > 0) {
+          return {
+            ...menuItem,
+            children: filteredChildren,
+          };
+        } else {
+          return null; // Không có quyền cho bất kỳ child nào -> ẩn menu cha
+        }
+      }
+
+      // Không có children, kiểm tra trực tiếp
+      return canAccessMenu(menuItem, listPermission) ? menuItem : null;
+    })
+    .filter(Boolean); // Loại bỏ các null
 
   return (
     <Box
