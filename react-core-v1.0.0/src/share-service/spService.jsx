@@ -15,6 +15,25 @@ const spService = {
       return defaultValue;
     }
   },
+  parsePermissionList: (permissionString) => {
+    if (!permissionString || typeof permissionString !== "string") return [];
+
+    try {
+      // Trường hợp chuỗi có dấu nháy kép bao ngoài
+      const cleaned = permissionString.trim();
+      const parsed = JSON.parse(cleaned);
+
+      // Nếu chuỗi đã được stringify 2 lần, parse lần nữa
+      if (typeof parsed === "string") {
+        return JSON.parse(parsed);
+      }
+
+      return parsed;
+    } catch (error) {
+      console.error("Lỗi parse LIST_PERMISION:", error);
+      return [];
+    }
+  },
 
   createSlug: (str) => {
     return str

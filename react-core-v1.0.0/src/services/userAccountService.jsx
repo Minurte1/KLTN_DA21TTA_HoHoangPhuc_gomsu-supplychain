@@ -38,7 +38,18 @@ export const getAllUsers = async () => {
     return [];
   }
 };
-
+export const getUserById = async (id) => {
+  try {
+    const response = await axiosInstance.get(`${apiUrl}/user/${id}`);
+    if (response.data.EC === 1) {
+      return response.data.DT; // Returns the list of users
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching the list of users:", error);
+    return [];
+  }
+};
 // Create New User
 export const createUser = async (newUser) => {
   try {

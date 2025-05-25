@@ -22,6 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import Cookies from "js-cookie";
 import axios from "axios";
+import useAuthInit from "../../hook/useAuthInit";
 
 const HeaderAdmin = () => {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
@@ -30,6 +31,7 @@ const HeaderAdmin = () => {
   const api = process.env.REACT_APP_URL_SERVER;
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  useAuthInit();
 
   useEffect(() => {
     setAnchorEl(null);

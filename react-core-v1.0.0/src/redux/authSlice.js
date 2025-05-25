@@ -9,6 +9,7 @@ const initialState = {
   accessToken: Cookies.get("accessToken") || null,
   userInfo: token ? jwtDecode(token) : null,
   totalCart: 0, // Thêm state cho tổng tiền trong giỏ hàng
+  listPermission: [],
 };
 
 const authSlice = createSlice({
@@ -34,8 +35,21 @@ const authSlice = createSlice({
     setTotalCart: (state, action) => {
       state.totalCart = action.payload; // Cập nhật tổng tiền giỏ hàng
     },
+    updateUser: (state, action) => {
+      state.userInfo = action.payload;
+    },
+    setListPermission: (state, action) => {
+      state.listPermission = action.payload;
+    },
   },
 });
 
-export const { login, logout, setUserInfo, setTotalCart } = authSlice.actions;
+export const {
+  login,
+  logout,
+  setUserInfo,
+  setTotalCart,
+  updateUser,
+  setListPermission,
+} = authSlice.actions;
 export default authSlice.reducer;
