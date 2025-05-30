@@ -4,9 +4,9 @@ const create = async (data) => {
   try {
     const {
       ID_MATERIAL_TYPES,
-      NAME_MATERIALS,
-      UNIT_MATERIALS,
-      QUANTITY_ORDER_ITEMS,
+      NAME_,
+      UNIT_,
+      QUANTITY,
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
@@ -14,13 +14,13 @@ const create = async (data) => {
     } = data;
 
     const [result] = await db.query(
-      `INSERT INTO materials (ID_MATERIAL_TYPES, NAME_MATERIALS, UNIT_MATERIALS, QUANTITY_ORDER_ITEMS, COST_PER_UNIT_, ORIGIN, EXPIRY_DATE, ID_COMPANY) 
+      `INSERT INTO materials (ID_MATERIAL_TYPES, NAME_, UNIT_, QUANTITY, COST_PER_UNIT_, ORIGIN, EXPIRY_DATE, ID_COMPANY) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         ID_MATERIAL_TYPES,
-        NAME_MATERIALS,
-        UNIT_MATERIALS,
-        QUANTITY_ORDER_ITEMS,
+        NAME_,
+        UNIT_,
+        QUANTITY,
         COST_PER_UNIT_,
         ORIGIN,
         EXPIRY_DATE,
@@ -61,9 +61,9 @@ const update = async (id, data) => {
   try {
     const {
       ID_MATERIAL_TYPES,
-      NAME_MATERIALS,
-      UNIT_MATERIALS,
-      QUANTITY_ORDER_ITEMS,
+      NAME_,
+      UNIT_,
+      QUANTITY,
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
@@ -71,12 +71,12 @@ const update = async (id, data) => {
     } = data;
 
     const [result] = await db.query(
-      `UPDATE materials SET ID_MATERIAL_TYPES = ?, NAME_MATERIALS = ?, UNIT_MATERIALS = ?, QUANTITY_ORDER_ITEMS = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ?, ID_COMPANY = ? WHERE ID_MATERIALS_ = ?`,
+      `UPDATE materials SET ID_MATERIAL_TYPES = ?, NAME_ = ?, UNIT_ = ?, QUANTITY = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ?, ID_COMPANY = ? WHERE ID_MATERIALS_ = ?`,
       [
         ID_MATERIAL_TYPES,
-        NAME_MATERIALS,
-        UNIT_MATERIALS,
-        QUANTITY_ORDER_ITEMS,
+        NAME_,
+        UNIT_,
+        QUANTITY,
         COST_PER_UNIT_,
         ORIGIN,
         EXPIRY_DATE,

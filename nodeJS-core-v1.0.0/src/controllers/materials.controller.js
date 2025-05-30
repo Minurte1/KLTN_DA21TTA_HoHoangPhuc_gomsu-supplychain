@@ -13,9 +13,9 @@ const createMaterial = async (req, res) => {
   try {
     const {
       ID_MATERIAL_TYPES,
-      NAME_MATERIALS,
-      UNIT_MATERIALS,
-      QUANTITY_ORDER_ITEMS,
+      NAME_,
+      UNIT_,
+      QUANTITY,
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
@@ -23,9 +23,9 @@ const createMaterial = async (req, res) => {
     } = req.body;
     const id = await MaterialsService.create({
       ID_MATERIAL_TYPES,
-      NAME_MATERIALS,
-      UNIT_MATERIALS,
-      QUANTITY_ORDER_ITEMS,
+      NAME_,
+      UNIT_,
+      QUANTITY,
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
@@ -55,8 +55,8 @@ const updateMaterial = async (req, res) => {
     const { id } = req.params;
     const {
       ID_MATERIAL_TYPES,
-      NAME_MATERIALS,
-      UNIT_MATERIALS,
+      NAME_,
+      UNIT_,
       QUANTITY_ORDER_ITEMS,
       COST_PER_UNIT_,
       ORIGIN,
@@ -64,9 +64,9 @@ const updateMaterial = async (req, res) => {
     } = req.body;
     const updated = await MaterialsService.update(id, {
       ID_MATERIAL_TYPES,
-      NAME_MATERIALS,
-      UNIT_MATERIALS,
-      QUANTITY_ORDER_ITEMS,
+      NAME_,
+      UNIT_,
+      QUANTITY,
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
