@@ -1,3 +1,3 @@
-Dựa vào đoạn code mẫu của " Company" bạn hãy viết lại cho " users  " biết Bảng users  gồm : ID_COMPANY_TYPE INT PRIMARY KEY AUTO_INCREMENT,NAME_COMPANY_TYPE VARCHAR(50) NOT NULL
+Dựa vào đoạn code mẫu của " MaterialTypeFormModal" bạn hãy viết lại cho " materials   " biết Bảng materials  gồm: ID_MATERIALS_,ID_MATERIAL_TYPES, NAME_MATERIALS, UNIT_MATERIALS, QUANTITY_ORDER_ITEMS, COST_PER_UNIT_,CREATED_AT_PRODUCTS, UPDATED_AT_PRODUCTS,    ORIGIN VARCHAR(255),    EXPIRY_DATE DATETIME 
 
-đoạn code mẫu Company là 
+đoạn code mẫu MaterialTypeFormModal là 
