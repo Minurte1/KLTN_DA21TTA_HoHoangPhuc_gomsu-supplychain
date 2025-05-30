@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
 import materialTypeServices from "../../services/materialTypeServices";
+import MaterialTypeFormModal from "../modal/material_types-modal";
 
 // import MaterialTypeFormModal from "../modal/material-type-modal";
 
@@ -53,6 +54,7 @@ const MaterialType = () => {
       <DynamicTable
         data={materialTypes}
         columns={[
+          { key: "NAME_COMPANY", label: "Tên công ty sở hữu" },
           { key: "NAME_MATERIAL_TYPES", label: "Tên loại vật liệu" },
           {
             key: "actions",
@@ -71,12 +73,12 @@ const MaterialType = () => {
         ]}
       />
 
-      {/* <MaterialTypeFormModal
+      <MaterialTypeFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         materialType={selectedMaterialType}
         onSuccess={fetchMaterialTypes}
-      /> */}
+      />
     </Box>
   );
 };

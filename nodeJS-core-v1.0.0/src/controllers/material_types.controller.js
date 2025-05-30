@@ -2,7 +2,14 @@ const MaterialTypesService = require("../services/material_types.service");
 
 const getAllMaterialTypes = async (req, res) => {
   try {
-    const materialTypes = await MaterialTypesService.getAll();
+    let { id_company } = req.query;
+
+    // Nếu id_company = 'undefined' hoặc '', chuyển thành undefined thật
+    if (id_company === "undefined" || id_company === "") {
+      id_company = undefined;
+    }
+
+    const materialTypes = await MaterialTypesService.getAll(id_company);
     res.json(materialTypes);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -11,8 +18,11 @@ const getAllMaterialTypes = async (req, res) => {
 
 const createMaterialType = async (req, res) => {
   try {
-    const { NAME_MATERIAL_TYPES } = req.body;
-    const id = await MaterialTypesService.create({ NAME_MATERIAL_TYPES });
+    const { NAME_MATERIAL_TYPES, ID_COMPANY } = req.body;
+    const id = await MaterialTypesService.create({
+      NAME_MATERIAL_TYPES,
+      ID_COMPANY,
+    });
     res.status(201).json({ message: "Material type created", id });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -4,8 +4,10 @@ const MATERIAL_TYPE_API = `${process.env.REACT_APP_URL_SERVER}/material-types`;
 
 const materialTypeServices = {
   // Lấy danh sách tất cả các loại nguyên vật liệu
-  getMaterialTypes: async () => {
-    const res = await axiosInstance.get(MATERIAL_TYPE_API);
+  getMaterialTypes: async (companyId) => {
+    const res = await axiosInstance.get(
+      `${MATERIAL_TYPE_API}?id_company=${companyId}`
+    );
     return res.data;
   },
 
