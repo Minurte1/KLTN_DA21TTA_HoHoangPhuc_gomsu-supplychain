@@ -32,13 +32,13 @@ const getDistricts_ProvincesId = async (req, res) => {
         message: "Province ID is required",
       });
     }
-    console.log("id", id);
+    //  console.log("id", id);
     // Thực thi truy vấn
     const [rows] = await pool.query(
       "SELECT * FROM districts WHERE province_code = ?",
       [id]
     );
-    console.log("rows", rows);
+    //   console.log("rows", rows);
     // Trả dữ liệu cho client
     res.status(200).json({
       status: "success",

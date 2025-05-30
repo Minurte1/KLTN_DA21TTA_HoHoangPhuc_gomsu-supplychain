@@ -430,7 +430,7 @@ const createUser = async (req, res) => {
 // SSS
 const loginUserGoogle = async (req, res) => {
   const { email, HO_TEN } = req.body;
-  console.log("req.body loginUserGoogle", req.body);
+  //  console.log("req.body loginUserGoogle", req.body);
 
   if (!email) {
     return res.status(401).json({
@@ -449,10 +449,10 @@ const loginUserGoogle = async (req, res) => {
        WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
-    console.log("rows", rows);
+    //    console.log("rows", rows);
     if (rows.length > 0) {
       const user = rows[0];
-      console.log("user", user);
+      //  console.log("user", user);
 
       // Kiểm tra trạng thái tài khoản
       if (user.TRANG_THAI_USER !== "ACTIVE") {
@@ -556,7 +556,7 @@ const loginUserGoogle = async (req, res) => {
         [email]
       );
 
-      console.log("newRows", newRows);
+      //     console.log("newRows", newRows);
       const user = newRows[0];
 
       // Tạo JWT token cho người dùng mới
@@ -734,7 +734,6 @@ const loginUser = async (req, res) => {
 
 const verifyAdmin = async (req, res) => {
   const { token } = req.body;
-  console.log("token", token);
 
   if (!token) {
     return res.status(401).json({
@@ -759,7 +758,7 @@ const verifyAdmin = async (req, res) => {
       WHERE u.ID_USERS = ? AND u.TRANG_THAI_USER = 'ACTIVE' AND u.IS_DELETE_USERS = 0 AND r.IS_DELETE = 0`,
       [ID_USERS]
     );
-    console.log("rows", rows);
+
     if (rows.length > 0) {
       const user = rows[0];
 

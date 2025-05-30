@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
 import materialServices from "../../services/materialServices";
+import MaterialsFormModal from "../modal/materials-modal";
 
 const Material = () => {
   const [materials, setMaterials] = useState([]);
@@ -74,12 +75,12 @@ const Material = () => {
         ]}
       />
 
-      {/* <MaterialFormModal
+      <MaterialsFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         material={selectedMaterial}
         onSuccess={fetchMaterials}
-      /> */}
+      />
     </Box>
   );
 };

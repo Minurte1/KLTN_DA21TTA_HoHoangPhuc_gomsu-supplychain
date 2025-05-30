@@ -19,6 +19,7 @@ const createMaterial = async (req, res) => {
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
+      ID_COMPANY,
     } = req.body;
     const id = await MaterialsService.create({
       ID_MATERIAL_TYPES,
@@ -28,6 +29,7 @@ const createMaterial = async (req, res) => {
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
+      ID_COMPANY,
     });
     res.status(201).json({ message: "Material created", id });
   } catch (error) {

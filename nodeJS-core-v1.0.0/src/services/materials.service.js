@@ -1,19 +1,8 @@
 const db = require("../config/database");
 
 const create = async (data) => {
-  const {
-    ID_MATERIAL_TYPES,
-    NAME_MATERIALS,
-    UNIT_MATERIALS,
-    QUANTITY_ORDER_ITEMS,
-    COST_PER_UNIT_,
-    ORIGIN,
-    EXPIRY_DATE,
-  } = data;
-  const [result] = await db.query(
-    `INSERT INTO materials (ID_MATERIAL_TYPES, NAME_MATERIALS, UNIT_MATERIALS, QUANTITY_ORDER_ITEMS, COST_PER_UNIT_, ORIGIN, EXPIRY_DATE) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [
+  try {
+    const {
       ID_MATERIAL_TYPES,
       NAME_MATERIALS,
       UNIT_MATERIALS,
@@ -21,37 +10,56 @@ const create = async (data) => {
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
-    ]
-  );
-  return result.insertId;
+      ID_COMPANY,
+    } = data;
+
+    const [result] = await db.query(
+      `INSERT INTO materials (ID_MATERIAL_TYPES, NAME_MATERIALS, UNIT_MATERIALS, QUANTITY_ORDER_ITEMS, COST_PER_UNIT_, ORIGIN, EXPIRY_DATE, ID_COMPANY) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        ID_MATERIAL_TYPES,
+        NAME_MATERIALS,
+        UNIT_MATERIALS,
+        QUANTITY_ORDER_ITEMS,
+        COST_PER_UNIT_,
+        ORIGIN,
+        EXPIRY_DATE,
+        ID_COMPANY,
+      ]
+    );
+    return result.insertId;
+  } catch (error) {
+    console.error("Error in create:", error);
+    throw error;
+  }
 };
 
 const getAll = async () => {
-  const [rows] = await db.query(`SELECT * FROM materials`);
-  return rows;
+  try {
+    const [rows] = await db.query(`SELECT * FROM materials`);
+    return rows;
+  } catch (error) {
+    console.error("Error in getAll:", error);
+    throw error;
+  }
 };
 
 const getById = async (id) => {
-  const [rows] = await db.query(
-    `SELECT * FROM materials WHERE ID_MATERIALS_ = ?`,
-    [id]
-  );
-  return rows[0] || null;
+  try {
+    const [rows] = await db.query(
+      `SELECT * FROM materials WHERE ID_MATERIALS_ = ?`,
+      [id]
+    );
+    return rows[0] || null;
+  } catch (error) {
+    console.error("Error in getById:", error);
+    throw error;
+  }
 };
 
 const update = async (id, data) => {
-  const {
-    ID_MATERIAL_TYPES,
-    NAME_MATERIALS,
-    UNIT_MATERIALS,
-    QUANTITY_ORDER_ITEMS,
-    COST_PER_UNIT_,
-    ORIGIN,
-    EXPIRY_DATE,
-  } = data;
-  const [result] = await db.query(
-    `UPDATE materials SET ID_MATERIAL_TYPES = ?, NAME_MATERIALS = ?, UNIT_MATERIALS = ?, QUANTITY_ORDER_ITEMS = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ? WHERE ID_MATERIALS_ = ?`,
-    [
+  try {
+    const {
       ID_MATERIAL_TYPES,
       NAME_MATERIALS,
       UNIT_MATERIALS,
@@ -59,18 +67,41 @@ const update = async (id, data) => {
       COST_PER_UNIT_,
       ORIGIN,
       EXPIRY_DATE,
-      id,
-    ]
-  );
-  return result.affectedRows > 0;
+      ID_COMPANY,
+    } = data;
+
+    const [result] = await db.query(
+      `UPDATE materials SET ID_MATERIAL_TYPES = ?, NAME_MATERIALS = ?, UNIT_MATERIALS = ?, QUANTITY_ORDER_ITEMS = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ?, ID_COMPANY = ? WHERE ID_MATERIALS_ = ?`,
+      [
+        ID_MATERIAL_TYPES,
+        NAME_MATERIALS,
+        UNIT_MATERIALS,
+        QUANTITY_ORDER_ITEMS,
+        COST_PER_UNIT_,
+        ORIGIN,
+        EXPIRY_DATE,
+        ID_COMPANY,
+        id,
+      ]
+    );
+    return result.affectedRows > 0;
+  } catch (error) {
+    console.error("Error in update:", error);
+    throw error;
+  }
 };
 
 const deleteMaterial = async (id) => {
-  const [result] = await db.query(
-    `DELETE FROM materials WHERE ID_MATERIALS_ = ?`,
-    [id]
-  );
-  return result.affectedRows > 0;
+  try {
+    const [result] = await db.query(
+      `DELETE FROM materials WHERE ID_MATERIALS_ = ?`,
+      [id]
+    );
+    return result.affectedRows > 0;
+  } catch (error) {
+    console.error("Error in deleteMaterial:", error);
+    throw error;
+  }
 };
 
 module.exports = {
