@@ -635,7 +635,7 @@ const loginUser = async (req, res) => {
     const [rows] = await pool.query(
       `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
        FROM users u 
-       LEFT JOIN role r ON u.VAI_TRO = r.ID_ROLE 
+       LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE 
        WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
       [email]
     );
@@ -677,7 +677,7 @@ const loginUser = async (req, res) => {
       {
         ID_USERS: user.ID_USERS,
         EMAIL: user.EMAIL,
-        VAI_TRO: user.VAI_TRO,
+        ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
         HO_TEN: user.HO_TEN,
         SO_DIEN_THOAI: user.SO_DIEN_THOAI,
         TRANG_THAI_USER: user.TRANG_THAI_USER,
@@ -706,7 +706,7 @@ const loginUser = async (req, res) => {
           ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
           HO_TEN: user.HO_TEN,
-          VAI_TRO: user.VAI_TRO,
+          ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
           NGAY_TAO_USER: user.NGAY_TAO_USER,
@@ -1084,7 +1084,7 @@ const checkOtp = async (req, res) => {
 
 const updatePasswordUser = async (req, res) => {
   const { email, newPassword } = req.body;
-  console.log("re", req.body);
+
   if (!email || !newPassword) {
     return res.status(400).json({ message: "All fields are required" });
   }

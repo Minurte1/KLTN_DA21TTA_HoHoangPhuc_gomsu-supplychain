@@ -39,12 +39,11 @@ const checkUserJWT = (req, res, next) => {
   if (nonSercurePaths.includes(req.path)) return next();
   let cookie = req.cookies;
   let tokenFromHeader = extractToken(req);
-  console.log("cookie", cookie);
+
   if ((cookie && cookie.jwt) || tokenFromHeader) {
     let token = cookie && cookie.jwt ? cookie.jwt : tokenFromHeader;
     let decoded = verifyToken(token);
     if (decoded) {
-      console.log("check decode: ", decoded);
       req.user = decoded;
       req.token = token;
       next();
