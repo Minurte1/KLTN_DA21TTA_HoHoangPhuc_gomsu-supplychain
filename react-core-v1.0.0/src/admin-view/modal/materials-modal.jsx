@@ -113,7 +113,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
     {
       key: "EXPIRY_DATE",
       label: "Hạn sử dụng",
-      inputType: "date",
+      inputType: "datetime",
     },
     {
       key: "ID_COMPANY",

@@ -13,7 +13,10 @@ import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
-
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs from "dayjs";
 const DynamicModal = ({
   open,
   onClose,
@@ -143,6 +146,29 @@ const DynamicModal = ({
             )}
           />
         );
+      case "datetime":
+        return (
+          <DateTimePicker
+            label={field.label}
+            value={formData[field.key] ? dayjs(formData[field.key]) : null}
+            onChange={(newValue) =>
+              handleChange(field.key)(
+                null,
+                newValue ? newValue.toISOString() : ""
+              )
+            }
+            disabled={field.disabled}
+            slotProps={{
+              textField: {
+                fullWidth: true,
+                margin: "normal",
+                error: !!errors[field.key],
+                helperText: errors[field.key],
+              },
+            }}
+          />
+        );
+
       default:
         const isMultiline = !!field.rows || !!field.row;
         return (
@@ -180,22 +206,24 @@ const DynamicModal = ({
   );
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <Box sx={{ mt: 2 }}>
-          {fields.map((field) => (
-            <div key={field.key}>{renderInput(field)}</div>
-          ))}
-          {renderExtraFields && renderExtraFields()}
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        {renderActions
-          ? renderActions({ handleSubmit, onClose })
-          : defaultActions}
-      </DialogActions>
-    </Dialog>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            {fields.map((field) => (
+              <div key={field.key}>{renderInput(field)}</div>
+            ))}
+            {renderExtraFields && renderExtraFields()}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          {renderActions
+            ? renderActions({ handleSubmit, onClose })
+            : defaultActions}
+        </DialogActions>
+      </Dialog>
+    </LocalizationProvider>
   );
 };
 
