@@ -41,12 +41,15 @@ const DynamicModal = ({
 
   // Handle input change
   const handleChange =
-    (key, isAutocomplete = false) =>
+    (key, isAutocomplete = false, isDirectValue = false) =>
     (eventOrValue, newValue) => {
       let value;
 
-      if (isAutocomplete) {
-        value = newValue; // newValue là option.value hoặc null
+      if (isDirectValue) {
+        // Dành cho datetime: newValue là ISO string hoặc ""
+        value = newValue;
+      } else if (isAutocomplete) {
+        value = newValue;
       } else if (eventOrValue?.target) {
         value = eventOrValue.target.value;
       } else {
@@ -152,10 +155,11 @@ const DynamicModal = ({
             label={field.label}
             value={formData[field.key] ? dayjs(formData[field.key]) : null}
             onChange={(newValue) =>
-              handleChange(field.key)(
-                null,
-                newValue ? newValue.toISOString() : ""
-              )
+              handleChange(
+                field.key,
+                false,
+                true
+              )(null, newValue ? newValue.toISOString() : "")
             }
             disabled={field.disabled}
             slotProps={{

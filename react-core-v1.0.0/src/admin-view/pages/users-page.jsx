@@ -33,7 +33,7 @@ const User = () => {
     await deleteUserById(id);
     fetchUsers();
   };
-  console.log("users", users);
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>

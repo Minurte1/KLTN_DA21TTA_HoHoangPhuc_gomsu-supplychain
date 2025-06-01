@@ -920,7 +920,7 @@ const updateAvatarController = async (req, res) => {
       "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
       [id]
     );
-    console.log("id user =>", id);
+
     if (results.length > 0) {
       const [results] = await pool.execute(
         "UPDATE NGUOI_DUNG SET NGAY_CAP_NHAT_USER = ? , AVATAR = ? WHERE ID_NGUOI_DUNG = ?",
@@ -932,7 +932,7 @@ const updateAvatarController = async (req, res) => {
         "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
         [id]
       );
-      console.log("updatedUser[0]", updatedUser[0]);
+
       const user = updatedUser[0];
       const token = jwt.sign(
         {
@@ -988,7 +988,7 @@ const sendOtp = async (req, res) => {
 
   // Lưu OTP
   otpStorage.set(email, { otp, expiresAt });
-  console.log("to email: ", email);
+
   // Gửi email
   const transporter = nodemailer.createTransport({
     service: "gmail",

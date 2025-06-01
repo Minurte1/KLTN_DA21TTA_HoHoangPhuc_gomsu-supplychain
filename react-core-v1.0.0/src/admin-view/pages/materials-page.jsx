@@ -52,9 +52,11 @@ const Material = () => {
       <DynamicTable
         data={materials}
         columns={[
-          { key: "NAME_MATERIALS", label: "Tên vật liệu" },
-          { key: "UNIT_MATERIALS", label: "Đơn vị" },
-          { key: "QUANTITY_ORDER_ITEMS", label: "Số lượng đặt hàng" },
+          { key: "NAME_MATERIAL_TYPES", label: "Tên loại vật liệu" },
+          { key: "NAME_COMPANY", label: "Tên công ty" },
+          { key: "NAME_", label: "Tên vật liệu" },
+          { key: "UNIT_", label: "Đơn vị" },
+          { key: "QUANTITY", label: "Số lượng " },
           { key: "COST_PER_UNIT_", label: "Giá mỗi đơn vị" },
           { key: "ORIGIN", label: "Nguồn gốc" },
           { key: "EXPIRY_DATE", label: "Ngày hết hạn" },

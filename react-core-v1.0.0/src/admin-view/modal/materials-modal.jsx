@@ -27,9 +27,9 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
         material
           ? {
               ID_MATERIAL_TYPES: material.ID_MATERIAL_TYPES || "",
-              NAME_MATERIALS: material.NAME_MATERIALS || "",
-              UNIT_MATERIALS: material.UNIT_MATERIALS || "",
-              QUANTITY_ORDER_ITEMS: material.QUANTITY_ORDER_ITEMS || "",
+              NAME_MATERIALS: material.NAME_ || "",
+              UNIT_MATERIALS: material.UNIT_ || "",
+              QUANTITY_ORDER_ITEMS: material.QUANTITY || "",
               COST_PER_UNIT_: material.COST_PER_UNIT_ || "",
               ORIGIN: material.ORIGIN || "",
               EXPIRY_DATE: material.EXPIRY_DATE
@@ -133,6 +133,8 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
   };
 
   const handleSubmit = async (submittedFormData) => {
+    console.log("submittedFormData", submittedFormData);
+
     try {
       const dataToSubmit = {
         ID_MATERIAL_TYPES:
