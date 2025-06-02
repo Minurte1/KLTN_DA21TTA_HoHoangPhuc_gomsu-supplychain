@@ -11,8 +11,6 @@ const create = async (data) => {
 
 const getAll = async (id_company) => {
   try {
-    console.log("Received id_company:", id_company);
-
     let query = `
       SELECT mt.*, c.*, ct.*
       FROM material_types mt
@@ -26,9 +24,6 @@ const getAll = async (id_company) => {
       query += ` WHERE mt.ID_COMPANY = ?`;
       params.push(id_company);
     }
-
-    console.log("SQL Query:", query);
-    console.log("Params:", params);
 
     const [rows] = await db.query(query, params);
 

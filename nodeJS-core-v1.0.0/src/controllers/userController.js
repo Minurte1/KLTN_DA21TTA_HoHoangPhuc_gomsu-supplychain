@@ -620,6 +620,7 @@ const loginUserGoogle = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
+  console.log(req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {

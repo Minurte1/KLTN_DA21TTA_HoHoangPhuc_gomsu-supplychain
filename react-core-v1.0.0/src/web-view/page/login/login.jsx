@@ -107,11 +107,13 @@ const Login = () => {
 
       // Gọi API đăng nhập
       const response = await axios.post(`${api}/login`, { email, password });
-      const { EC, EM, DT } = response.data;
-
+      const { EC, DT, EM } = response.data;
+      console.log("response", response);
       if (EC === 1) {
         // Đăng nhập thành công
-
+        Cookies.set("accessToken", response.data.DT.accessToken, {
+          expires: 7,
+        });
         // Dispatch action `login` từ Redux
         // dispatch(
         //   login({
@@ -145,7 +147,7 @@ const Login = () => {
           </Typography>
         )}
 
-        <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
+        <Box sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -170,6 +172,7 @@ const Login = () => {
             fullWidth
             variant="contained"
             color="primary"
+            onClick={() => handleLogin()}
             sx={{ mt: 2 }}
           >
             Đăng nhập
