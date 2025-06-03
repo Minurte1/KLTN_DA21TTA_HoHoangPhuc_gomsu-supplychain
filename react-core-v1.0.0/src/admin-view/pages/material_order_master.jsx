@@ -80,20 +80,22 @@ const MaterialOrderMaster = () => {
               return (
                 <>
                   {isSameCompany ? (
-                    // Nếu là công ty cùng, chỉ xem các đơn đặt hàng
-                    <IconButton onClick={() => handleViewOrders(row)}>
-                      <VisibilityIcon />
-                    </IconButton>
+                    <>
+                      <IconButton onClick={() => handleViewOrders(row)}>
+                        <VisibilityIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(row.ID_MATERIALS_)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
                   ) : (
                     // Nếu là công ty khác, có thể đặt mua
                     <IconButton onClick={() => handleOpenOrderModal(row)}>
                       <ShoppingCartIcon />
                     </IconButton>
                   )}
-
-                  <IconButton onClick={() => handleDelete(row.ID_MATERIALS_)}>
-                    <DeleteIcon />
-                  </IconButton>
                 </>
               );
             },
