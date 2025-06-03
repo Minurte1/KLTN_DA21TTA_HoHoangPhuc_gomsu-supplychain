@@ -4,8 +4,10 @@ const COMPANY_API = `${process.env.REACT_APP_URL_SERVER}/companies`;
 
 const companyServices = {
   // Lấy danh sách tất cả công ty
-  getCompanies: async () => {
-    const res = await axiosInstance.get(COMPANY_API);
+  getCompanies: async (ID_COMPANY) => {
+    const res = await axiosInstance.get(COMPANY_API, {
+      params: ID_COMPANY ? { ID_COMPANY } : {},
+    });
     return res.data;
   },
 

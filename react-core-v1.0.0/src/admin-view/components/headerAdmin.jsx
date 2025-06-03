@@ -82,12 +82,19 @@ const HeaderAdmin = () => {
               color: "#333333",
               textDecoration: "none",
             }}
-          ></Typography>
+          >
+            {" "}
+          </Typography>{" "}
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
+          {" "}
           {isAuthenticated ? (
             <>
+              {" "}
+              <p style={{ color: "black" }}>
+                {userInfo?.companyInfo?.NAME_COMPANY}
+              </p>
               <Button
                 variant="text"
                 sx={{
@@ -97,6 +104,7 @@ const HeaderAdmin = () => {
                 }}
                 onClick={handleMenuOpen}
               >
+                {" "}
                 {userInfo.AVATAR ? (
                   <Avatar
                     src={`${api}/images/${userInfo.AVATAR}`}

@@ -42,8 +42,16 @@ const createCompany = async (data) => {
   return result.insertId;
 };
 
-const getAllCompanies = async () => {
-  const [rows] = await db.query("SELECT * FROM companies");
+const getAllCompanies = async (ID_COMPANY) => {
+  let query = "SELECT * FROM companies";
+  let params = [];
+
+  if (ID_COMPANY) {
+    query += " WHERE ID_COMPANY = ?";
+    params.push(ID_COMPANY);
+  }
+
+  const [rows] = await db.query(query, params);
   return rows;
 };
 

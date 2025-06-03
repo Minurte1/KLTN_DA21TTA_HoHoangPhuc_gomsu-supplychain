@@ -17,14 +17,22 @@ const createRole = async ({
 };
 
 // Lấy tất cả role chưa bị xóa mềm
-const getAllRoles = async () => {
-  const [rows] = await db.query("SELECT * FROM role WHERE IS_DELETE = FALSE");
-  console.log("rows", rows);
+const getAllRoles = async (ID_COMPANY) => {
+  let query = "SELECT * FROM role WHERE IS_DELETE = FALSE";
+  let params = [];
+
+  if (ID_COMPANY) {
+    query += " AND ID_COMPANY = ?";
+    params.push(ID_COMPANY);
+  }
+
+  const [rows] = await db.query(query, params);
+
   const result = rows.map((role) => ({
     ...role,
     LIST_PERMISION: role.LIST_PERMISION ? JSON.parse(role.LIST_PERMISION) : [],
   }));
-  console.log("result", result);
+
   return result;
 };
 

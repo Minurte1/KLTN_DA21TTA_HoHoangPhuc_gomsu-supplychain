@@ -4,8 +4,10 @@ const ROLE_API = `${process.env.REACT_APP_URL_SERVER}/role`;
 
 const roleServices = {
   // Lấy danh sách tất cả roles
-  getRoles: async () => {
-    const res = await axiosInstance.get(ROLE_API);
+  getRoles: async (ID_COMPANY) => {
+    const res = await axiosInstance.get(ROLE_API, {
+      params: ID_COMPANY ? { ID_COMPANY } : {},
+    });
     return res.data;
   },
 

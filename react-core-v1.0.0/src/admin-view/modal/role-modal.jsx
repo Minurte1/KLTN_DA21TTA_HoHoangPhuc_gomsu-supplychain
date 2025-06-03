@@ -5,6 +5,7 @@ import PermissionManagerModal from "../section-modal/role/roleListPer-section-mo
 import { Button } from "@mui/material";
 import spService from "../../share-service/spService";
 import companyServices from "../../services/companies-service";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
   // State to manage form data
@@ -15,6 +16,8 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
     ID_COMPANY: 0,
     DESCRIPTION: "",
   });
+  const { userInfo } = ReduxExportUseAuthState();
+
   const [companiesOptions, setCompaniesOptions] = useState([]);
   useEffect(() => {
     if (open) {
@@ -32,7 +35,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
               NAME_ROLE: "",
               CODE_NAME: "",
               LIST_PERMISSION: [],
-              ID_COMPANY: 0,
+              ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || 0,
               DESCRIPTION: "",
             }
       );
@@ -42,9 +45,10 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
 
   const fetchCompanies = async () => {
     try {
-      const data = await companyServices.getCompanies();
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await companyServices.getCompanies(companyId);
 
-      setCompaniesOptions(data);
+      setCompaniesOptions(data?.DT || []);
     } catch (error) {
       console.error("Error fetching roles:", error);
     }
@@ -116,6 +120,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
       inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
       options: companiesOptions, // Dữ liệu lựa chọn từ API
       optionsLabel: "NAME_COMPANY",
+      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
     },
     {
       key: "NAME_ROLE",

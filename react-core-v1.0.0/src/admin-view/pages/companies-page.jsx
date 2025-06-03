@@ -7,15 +7,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DynamicTable from "../../share-view/dynamic/table/table";
 import companyServices from "../../services/companies-service";
 import CompanyFormModal from "../modal/companies-modal";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const Company = () => {
   const [companies, setCompanies] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const { userInfo } = ReduxExportUseAuthState();
 
   const fetchCompanies = async () => {
-    const data = await companyServices.getCompanies();
-    setCompanies(data);
+    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+    const data = await companyServices.getCompanies(companyId);
+    setCompanies(data.DT || []);
   };
 
   useEffect(() => {

@@ -3,11 +3,22 @@ const RoleService = require("../services/role.service");
 // Lấy toàn bộ vai trò
 const getRoles = async (req, res) => {
   try {
-    const roles = await RoleService.getAllRoles();
-    res.json(roles);
+    const { ID_COMPANY } = req.query;
+
+    const roles = await RoleService.getAllRoles(ID_COMPANY);
+
+    return res.status(200).json({
+      EM: "Lấy danh sách vai trò thành công",
+      EC: 1,
+      DT: roles,
+    });
   } catch (error) {
-    console.log("role", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error in getRoles:", error);
+    return res.status(500).json({
+      EM: `Error: ${error.message}`,
+      EC: -1,
+      DT: [],
+    });
   }
 };
 

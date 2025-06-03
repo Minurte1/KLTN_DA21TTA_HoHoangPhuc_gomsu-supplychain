@@ -10,6 +10,7 @@ import {
 } from "../../services/userAccountService";
 import companyServices from "../../services/companies-service";
 import AddressSelector from "../../components/addressUser";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -29,14 +30,17 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
     TRANG_THAI_USER: "ACTIVE",
     ID_COMPANY: 0,
   });
+  const { userInfo } = ReduxExportUseAuthState();
 
   const [roleOptions, setRoleOptions] = useState([]);
   const [companiesOptions, setCompaniesOptions] = useState([]);
 
   const fetchCompanies = async () => {
     try {
-      const data = await companyServices.getCompanies();
-      setCompaniesOptions(data);
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await companyServices.getCompanies(companyId);
+
+      setCompaniesOptions(data.DT || []);
     } catch (error) {
       console.error("Error fetching companies:", error);
     }
@@ -44,8 +48,9 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
 
   const fetchRoles = async () => {
     try {
-      const data = await roleServices.getRoles();
-      setRoleOptions(data);
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await roleServices.getRoles(companyId);
+      setRoleOptions(data.DT || []);
     } catch (error) {
       console.error("Error fetching roles:", error);
     }
@@ -56,12 +61,11 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       fetchRoles();
       fetchCompanies();
       if (user) {
-        console.log("user", user);
         setFormData({
           ID_ROLE: user.ID_ROLE || "",
           HO_TEN: user.HO_TEN || "",
           EMAIL: user.EMAIL || "",
-          _PASSWORD_HASH_USERS: "", // Không load mật khẩu cũ
+          _PASSWORD_HASH_USERS: "",
           SO_DIEN_THOAI: user.SO_DIEN_THOAI || "",
           NGAY_TAO_USER: user.NGAY_TAO_USER || "",
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER || "",
@@ -76,6 +80,24 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
           DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME || "",
           TRANG_THAI_USER: user.TRANG_THAI_USER || "ACTIVE",
           ID_COMPANY: user.ID_COMPANY || 0,
+        });
+      } else {
+        setFormData({
+          ID_ROLE: "",
+          HO_TEN: "",
+          EMAIL: "",
+          _PASSWORD_HASH_USERS: "",
+          SO_DIEN_THOAI: "",
+          NGAY_TAO_USER: "",
+          NGAY_CAP_NHAT_USER: "",
+          IS_DELETE_USERS: false,
+          AVATAR: "",
+          DIA_CHI_Provinces: "",
+          DIA_CHI_Districts: "",
+          DIA_CHI_Wards: "",
+          DIA_CHI_STREETNAME: "",
+          TRANG_THAI_USER: "ACTIVE",
+          ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || 0,
         });
       }
     }
@@ -168,6 +190,7 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       options: companiesOptions,
       optionsLabel: "NAME_COMPANY",
       required: true,
+      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
     },
     {
       key: "ID_ROLE",
