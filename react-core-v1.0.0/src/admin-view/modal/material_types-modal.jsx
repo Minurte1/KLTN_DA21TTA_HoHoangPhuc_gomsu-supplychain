@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import DynamicModal from "../../share-view/dynamic/modal/modal";
 import materialTypeServices from "../../services/materialTypeServices";
 import companyServices from "../../services/companies-service";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const MaterialTypeFormModal = ({ open, onClose, materialType, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const MaterialTypeFormModal = ({ open, onClose, materialType, onSuccess }) => {
     ID_COMPANY: "", // Thêm ID_COMPANY
   });
   const [companiesOptions, setCompaniesOptions] = useState([]);
+  const { userInfo } = ReduxExportUseAuthState();
+
   useEffect(() => {
     if (open) {
       setFormData(
@@ -20,7 +23,7 @@ const MaterialTypeFormModal = ({ open, onClose, materialType, onSuccess }) => {
             }
           : {
               NAME_MATERIAL_TYPES: "",
-              ID_COMPANY: "",
+              ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || 0,
             }
       );
     }
@@ -28,9 +31,10 @@ const MaterialTypeFormModal = ({ open, onClose, materialType, onSuccess }) => {
   }, [open, materialType]);
   const fetchCompanies = async () => {
     try {
-      const data = await companyServices.getCompanies();
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await companyServices.getCompanies(companyId);
 
-      setCompaniesOptions(data);
+      setCompaniesOptions(data.DT);
     } catch (error) {
       console.error("Error fetching roles:", error);
     }
@@ -50,6 +54,7 @@ const MaterialTypeFormModal = ({ open, onClose, materialType, onSuccess }) => {
       inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
       options: companiesOptions, // Dữ liệu lựa chọn từ API
       optionsLabel: "NAME_COMPANY",
+      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
     },
   ];
 

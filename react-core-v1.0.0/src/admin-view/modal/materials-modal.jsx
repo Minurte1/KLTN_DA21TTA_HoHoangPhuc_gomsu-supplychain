@@ -5,6 +5,7 @@ import DynamicModal from "../../share-view/dynamic/modal/modal";
 import materialTypeServices from "../../services/materialTypeServices";
 import companyServices from "../../services/companies-service";
 import materialServices from "../../services/materialServices";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
 
   const [materialTypesOptions, setMaterialTypesOptions] = useState([]);
   const [companiesOptions, setCompaniesOptions] = useState([]);
+  const { userInfo } = ReduxExportUseAuthState();
 
   useEffect(() => {
     if (open) {
@@ -45,7 +47,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
               COST_PER_UNIT_: "",
               ORIGIN: "",
               EXPIRY_DATE: "",
-              ID_COMPANY: "",
+              ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || 0,
             }
       );
     }
@@ -56,7 +58,8 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
 
   const fetchMaterialTypes = async () => {
     try {
-      const data = await materialTypeServices.getMaterialTypes();
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await materialTypeServices.getMaterialTypes(companyId);
       setMaterialTypesOptions(data);
     } catch (error) {
       console.error("Error fetching material types:", error);
@@ -66,7 +69,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
   const fetchCompanies = async () => {
     try {
       const data = await companyServices.getCompanies();
-      setCompaniesOptions(data);
+      setCompaniesOptions(data.DT);
     } catch (error) {
       console.error("Error fetching companies:", error);
     }
@@ -122,6 +125,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
       options: companiesOptions,
       optionsLabel: "NAME_COMPANY",
       required: true,
+      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
     },
   ];
 
