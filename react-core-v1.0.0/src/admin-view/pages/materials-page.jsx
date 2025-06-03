@@ -17,7 +17,8 @@ const Material = () => {
 
   const fetchMaterials = async () => {
     const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-    const data = await materialServices.getMaterials(companyId);
+    const data = await materialServices.getMaterials({ ID_COMPANY: companyId });
+
     setMaterials(data);
   };
 

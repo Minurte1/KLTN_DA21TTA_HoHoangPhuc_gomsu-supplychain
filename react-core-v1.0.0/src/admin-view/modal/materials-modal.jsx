@@ -140,7 +140,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
       options: companiesOptions,
       optionsLabel: "NAME_COMPANY",
       required: true,
-      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
+      disabled: userInfo?.companyInfo?.ID_COMPANY ? true : false,
     },
     {
       key: "STATUS",
