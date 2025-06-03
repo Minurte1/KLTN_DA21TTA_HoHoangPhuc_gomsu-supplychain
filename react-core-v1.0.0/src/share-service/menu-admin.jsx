@@ -132,6 +132,10 @@ export const adminMenuConfig = [
         path: "/admin/order/tat-ca",
       },
       {
+        label: "Kinh doanh vật liệu",
+        path: "/admin/material_order_master",
+      },
+      {
         label: "Đơn hàng đang xử lý",
         path: "/admin/order/dang-xu-ly",
       },

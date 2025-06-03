@@ -20,6 +20,7 @@ const createMaterial = async (req, res) => {
       ORIGIN,
       EXPIRY_DATE,
       ID_COMPANY,
+      STATUS,
     } = req.body;
 
     const id = await MaterialsService.create({
@@ -31,6 +32,7 @@ const createMaterial = async (req, res) => {
       ORIGIN,
       EXPIRY_DATE,
       ID_COMPANY,
+      STATUS,
     });
 
     res.status(201).json({ message: "Material created", id });
@@ -64,6 +66,7 @@ const updateMaterial = async (req, res) => {
       ORIGIN,
       EXPIRY_DATE,
       ID_COMPANY,
+      STATUS,
     } = req.body;
 
     const updated = await MaterialsService.update(id, {
@@ -75,6 +78,7 @@ const updateMaterial = async (req, res) => {
       ORIGIN,
       EXPIRY_DATE,
       ID_COMPANY,
+      STATUS,
     });
 
     if (!updated) {

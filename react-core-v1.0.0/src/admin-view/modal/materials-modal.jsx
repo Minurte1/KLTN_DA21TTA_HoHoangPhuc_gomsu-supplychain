@@ -17,6 +17,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
     ORIGIN: "",
     EXPIRY_DATE: "",
     ID_COMPANY: "",
+    STATUS: "",
   });
 
   const [materialTypesOptions, setMaterialTypesOptions] = useState([]);
@@ -38,6 +39,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
                 ? material.EXPIRY_DATE.split("T")[0]
                 : "",
               ID_COMPANY: material.ID_COMPANY || "",
+              STATUS: material.STATUS || "",
             }
           : {
               ID_MATERIAL_TYPES: "",
@@ -47,6 +49,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
               COST_PER_UNIT_: "",
               ORIGIN: "",
               EXPIRY_DATE: "",
+              STATUS: "",
               ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || 0,
             }
       );
@@ -74,6 +77,18 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
       console.error("Error fetching companies:", error);
     }
   };
+
+  const optionStatus = [
+    { value: "ACTIVE", label: "Đang bán, còn hàng", STATUS: "ACTIVE" },
+    {
+      value: "HIDDEN",
+      label: "Không hiển thị để bán nhưng vẫn còn kho",
+      STATUS: "HIDDEN",
+    },
+    { value: "OUT", label: "Hết hàng, không đặt mua được", STATUS: "OUT" },
+    { value: "STOP", label: "Ngừng kinh doanh vĩnh viễn", STATUS: "STOP" },
+    { value: "PENDING", label: "Đang chờ duyệt từ admin", STATUS: "PENDING" },
+  ];
 
   const fields = [
     {
@@ -127,6 +142,14 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
       required: true,
       disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
     },
+    {
+      key: "STATUS",
+      label: "Trạng thái",
+      inputType: "autocomplete",
+      options: optionStatus,
+      optionsLabel: "label",
+      required: true,
+    },
   ];
 
   const handleFormChange = (updatedFormData) => {
@@ -155,6 +178,7 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
         ORIGIN: submittedFormData.ORIGIN || formData.ORIGIN,
         EXPIRY_DATE: submittedFormData.EXPIRY_DATE || formData.EXPIRY_DATE,
         ID_COMPANY: submittedFormData.ID_COMPANY || formData.ID_COMPANY,
+        STATUS: submittedFormData.STATUS || formData.STATUS,
       };
 
       if (material) {

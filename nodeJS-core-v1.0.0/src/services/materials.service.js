@@ -11,6 +11,7 @@ const create = async (data) => {
       ORIGIN,
       EXPIRY_DATE,
       ID_COMPANY,
+      STATUS,
     } = data;
     const expiryDateFormatted = moment(EXPIRY_DATE).format(
       "YYYY-MM-DD HH:mm:ss"
@@ -30,8 +31,8 @@ const create = async (data) => {
 
     const [result] = await db.query(
       `INSERT INTO materials 
-        (ID_MATERIAL_TYPES, NAME_, UNIT_, QUANTITY, COST_PER_UNIT_, ORIGIN, EXPIRY_DATE, ID_COMPANY) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        (ID_MATERIAL_TYPES, NAME_, UNIT_, QUANTITY, COST_PER_UNIT_, ORIGIN, EXPIRY_DATE, ID_COMPANY,STATUS) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)`,
       [
         idMaterialType,
         NAME_,
@@ -41,6 +42,7 @@ const create = async (data) => {
         ORIGIN,
         expiryDateFormatted,
         idCompany,
+        STATUS,
       ]
     );
 
@@ -99,11 +101,12 @@ const update = async (id, data) => {
       ORIGIN,
       EXPIRY_DATE,
       ID_COMPANY,
+      STATUS,
     } = data;
 
     const [result] = await db.query(
       `UPDATE materials 
-       SET ID_MATERIAL_TYPES = ?, NAME_ = ?, UNIT_ = ?, QUANTITY = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ?, ID_COMPANY = ?
+       SET ID_MATERIAL_TYPES = ?, NAME_ = ?, UNIT_ = ?, QUANTITY = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ?,STATUS = ?, ID_COMPANY = ?
        WHERE ID_MATERIALS_ = ?`,
       [
         ID_MATERIAL_TYPES,
@@ -113,6 +116,7 @@ const update = async (id, data) => {
         COST_PER_UNIT_,
         ORIGIN,
         EXPIRY_DATE,
+        STATUS,
         ID_COMPANY,
         id,
       ]

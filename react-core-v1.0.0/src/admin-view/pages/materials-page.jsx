@@ -59,6 +59,7 @@ const Material = () => {
           { key: "QUANTITY", label: "Số lượng " },
           { key: "COST_PER_UNIT_", label: "Giá mỗi đơn vị" },
           { key: "ORIGIN", label: "Nguồn gốc" },
+          { key: "STATUS", label: "Trạng thái" },
           { key: "EXPIRY_DATE", label: "Ngày hết hạn" },
           {
             key: "actions",

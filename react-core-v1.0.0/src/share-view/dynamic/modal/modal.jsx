@@ -197,8 +197,9 @@ const DynamicModal = ({
               handleChange(
                 field.key,
                 field,
-                false,
-                true
+                false, // isAutocomplete = false
+                false, // isAutocompleteMultiple = false, sửa từ true thành false
+                true // isDirectValue = true, vì bạn truyền giá trị trực tiếp (string ISO)
               )(null, newValue ? newValue.toISOString() : "")
             }
             disabled={field.disabled}
