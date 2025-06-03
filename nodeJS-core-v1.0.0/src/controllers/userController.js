@@ -15,17 +15,26 @@ const saltRounds = 10;
 
 const getAllUser_Admin = async (req, res) => {
   try {
-    // Check if the user already exists in the database
+    const { ID_COMPANY } = req.query;
 
-    const [rows] = await pool.query("SELECT * FROM users");
-    const results = rows;
+    let query = "SELECT * FROM users";
+    let values = [];
+
+    // Nếu có ID_COMPANY thì thêm điều kiện WHERE
+    if (ID_COMPANY) {
+      query += " WHERE ID_COMPANY = ?";
+      values.push(ID_COMPANY);
+    }
+
+    const [rows] = await pool.query(query, values);
+
     return res.status(200).json({
-      EM: "Lấy thông tin tất cả người dùng thành công",
+      EM: "Lấy thông tin người dùng thành công",
       EC: 1,
-      DT: results,
+      DT: rows,
     });
   } catch (error) {
-    console.error("Error in loginUserGoogle:", error);
+    console.error("Error in getAllUser_Admin:", error);
     return res.status(500).json({
       EM: `Error: ${error.message}`,
       EC: -1,
@@ -33,6 +42,7 @@ const getAllUser_Admin = async (req, res) => {
     });
   }
 };
+
 const getUser_ById = async (req, res) => {
   try {
     const { id } = req.params;

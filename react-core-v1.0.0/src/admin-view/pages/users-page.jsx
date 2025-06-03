@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DynamicTable from "../../share-view/dynamic/table/table";
 import UsersFormModal from "../modal/users-modal";
 import { deleteUserById, getAllUsers } from "../../services/userAccountService";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 // import userServices from "../../services/user-service";
 // import UserFormModal from "../modal/user-modal";
 
@@ -14,9 +15,11 @@ const User = () => {
   const [users, setUsers] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const { userInfo } = ReduxExportUseAuthState();
 
   const fetchUsers = async () => {
-    const data = await getAllUsers();
+    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+    const data = await getAllUsers(companyId);
     setUsers(data);
   };
 

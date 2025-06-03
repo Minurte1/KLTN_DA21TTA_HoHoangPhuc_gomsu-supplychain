@@ -26,18 +26,24 @@ export const login = async (account) => {
 };
 
 // Get List of Users
-export const getAllUsers = async () => {
+export const getAllUsers = async (ID_COMPANY) => {
   try {
-    const response = await axiosInstance.get(`${apiUrl}/user`);
+    // Gửi ID_COMPANY nếu có
+    const response = await axiosInstance.get(`${apiUrl}/user`, {
+      params: ID_COMPANY ? { ID_COMPANY } : {},
+    });
+
     if (response.data.EC === 1) {
-      return response.data.DT; // Returns the list of users
+      return response.data.DT;
     }
+
     return [];
   } catch (error) {
     console.error("Error fetching the list of users:", error);
     return [];
   }
 };
+
 export const getUserById = async (id) => {
   try {
     const response = await axiosInstance.get(`${apiUrl}/user/${id}`);
