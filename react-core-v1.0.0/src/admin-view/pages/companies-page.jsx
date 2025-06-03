@@ -14,9 +14,8 @@ const Company = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const { userInfo } = ReduxExportUseAuthState();
-
+  const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
   const fetchCompanies = async () => {
-    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
     const data = await companyServices.getCompanies(companyId);
     setCompanies(data.DT || []);
   };
@@ -40,17 +39,19 @@ const Company = () => {
       <Typography variant="h5" gutterBottom mt={4}>
         Quản lý Công Ty
       </Typography>
-      <Button
-        variant="contained"
-        startIcon={<AddIcon />}
-        sx={{ mb: 2 }}
-        onClick={() => {
-          setSelectedCompany(null);
-          setOpenModal(true);
-        }}
-      >
-        Thêm Công Ty
-      </Button>
+      {!companyId && (
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{ mb: 2 }}
+          onClick={() => {
+            setSelectedCompany(null);
+            setOpenModal(true);
+          }}
+        >
+          Thêm Công Ty
+        </Button>
+      )}
 
       <DynamicTable
         data={companies}

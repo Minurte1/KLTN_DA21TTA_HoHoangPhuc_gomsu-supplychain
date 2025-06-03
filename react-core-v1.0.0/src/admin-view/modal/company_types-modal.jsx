@@ -7,6 +7,7 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
   // State quản lý dữ liệu form
   const [formData, setFormData] = useState({
     NAME_COMPANY_TYPE: "",
+    ROUTER_COMPANY: "",
   });
 
   // Khởi tạo dữ liệu khi mở modal hoặc có dữ liệu truyền vào
@@ -16,9 +17,11 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
         companyType
           ? {
               NAME_COMPANY_TYPE: companyType.NAME_COMPANY_TYPE || "",
+              ROUTER_COMPANY: companyType.ROUTER_COMPANY || "",
             }
           : {
               NAME_COMPANY_TYPE: "",
+              ROUTER_COMPANY: "",
             }
       );
     }
@@ -32,6 +35,12 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
       required: true,
       inputType: "text",
     },
+    {
+      key: "ROUTER_COMPANY",
+      label: "Phân loại quyền hạn",
+      required: true,
+      inputType: "text",
+    },
   ];
 
   // Xử lý thay đổi form
@@ -42,6 +51,10 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
         updatedFormData.NAME_COMPANY_TYPE !== undefined
           ? updatedFormData.NAME_COMPANY_TYPE
           : prev.NAME_COMPANY_TYPE,
+      ROUTER_COMPANY:
+        updatedFormData.ROUTER_COMPANY !== undefined
+          ? updatedFormData.ROUTER_COMPANY
+          : prev.ROUTER_COMPANY,
     }));
   };
 
@@ -51,6 +64,8 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
       const dataToSubmit = {
         NAME_COMPANY_TYPE:
           submittedFormData.NAME_COMPANY_TYPE || formData.NAME_COMPANY_TYPE,
+        ROUTER_COMPANY:
+          submittedFormData.ROUTER_COMPANY || formData.ROUTER_COMPANY,
       };
 
       if (companyType) {

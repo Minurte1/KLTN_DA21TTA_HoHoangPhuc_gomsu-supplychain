@@ -20,6 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useEffect } from "react";
 import roleServices from "../../../services/role-service";
 import { permissionService } from "../../../services/listPermisstion-service";
+import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
 
 // Component PermissionManager giờ là Modal
 const PermissionManagerModal = ({
@@ -65,7 +66,8 @@ const PermissionManagerModal = ({
     setSelectedRole(newValue);
     setPermissions(rolesData[newValue].permissions);
   };
-
+  const { userInfo } = ReduxExportUseAuthState();
+  const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
   useEffect(() => {
     setTranslatedPermissions([]);
     fetchListBasePermission();
@@ -77,10 +79,11 @@ const PermissionManagerModal = ({
   const fetchListBasePermission = async () => {
     try {
       const response = await permissionService.getPermission();
-      console.log("response", response);
+
       // Check if response is valid and contains the expected data
       if (response && Array.isArray(response)) {
         // console.log("oke");
+        console.log("response", response);
         setPermissions(response);
         // setTranslatedPermissions(translatedPermissionsL);
       } else {

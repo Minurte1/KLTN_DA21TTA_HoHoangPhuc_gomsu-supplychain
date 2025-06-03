@@ -14,9 +14,10 @@ const getCompanyTypes = async (req, res) => {
 // Tạo loại công ty mới
 const createCompanyType = async (req, res) => {
   try {
-    const { NAME_COMPANY_TYPE } = req.body;
+    const { NAME_COMPANY_TYPE, ROUTER_COMPANY } = req.body;
     const id = await CompanyTypeService.createCompanyType({
       NAME_COMPANY_TYPE,
+      ROUTER_COMPANY,
     });
     res.status(201).json({ message: "Company type created", id });
   } catch (error) {
@@ -44,9 +45,10 @@ const getCompanyTypeById = async (req, res) => {
 const updateCompanyType = async (req, res) => {
   try {
     const { id } = req.params;
-    const { NAME_COMPANY_TYPE } = req.body;
+    const { NAME_COMPANY_TYPE, ROUTER_COMPANY } = req.body;
     const updated = await CompanyTypeService.updateCompanyType(id, {
       NAME_COMPANY_TYPE,
+      ROUTER_COMPANY,
     });
     if (!updated) {
       return res.status(404).json({ message: "Company type not found" });

@@ -1,10 +1,10 @@
 const db = require("../config/database");
 
 // Tạo company_type
-const createCompanyType = async ({ NAME_COMPANY_TYPE }) => {
+const createCompanyType = async ({ NAME_COMPANY_TYPE, ROUTER_COMPANY }) => {
   const [result] = await db.query(
-    "INSERT INTO company_types (NAME_COMPANY_TYPE) VALUES (?)",
-    [NAME_COMPANY_TYPE]
+    "INSERT INTO company_types (NAME_COMPANY_TYPE ,ROUTER_COMPANY) VALUES (?,?)",
+    [NAME_COMPANY_TYPE, ROUTER_COMPANY]
   );
   return result.insertId;
 };
@@ -25,10 +25,10 @@ const getCompanyTypeById = async (id) => {
 };
 
 // Cập nhật company_type
-const updateCompanyType = async (id, { NAME_COMPANY_TYPE }) => {
+const updateCompanyType = async (id, { NAME_COMPANY_TYPE, ROUTER_COMPANY }) => {
   const [result] = await db.query(
-    "UPDATE company_types SET NAME_COMPANY_TYPE = ? WHERE ID_COMPANY_TYPE = ?",
-    [NAME_COMPANY_TYPE, id]
+    "UPDATE company_types SET NAME_COMPANY_TYPE = ? ROUTER_COMPANY =? WHERE ID_COMPANY_TYPE = ?",
+    [NAME_COMPANY_TYPE, ROUTER_COMPANY, id]
   );
   return result.affectedRows > 0;
 };
