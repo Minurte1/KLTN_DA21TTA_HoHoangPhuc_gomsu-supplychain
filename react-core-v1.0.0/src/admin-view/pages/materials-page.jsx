@@ -7,14 +7,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DynamicTable from "../../share-view/dynamic/table/table";
 import materialServices from "../../services/materialServices";
 import MaterialsFormModal from "../modal/materials-modal";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const Material = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const { userInfo } = ReduxExportUseAuthState();
 
   const fetchMaterials = async () => {
-    const data = await materialServices.getMaterials();
+    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+    const data = await materialServices.getMaterials(companyId);
     setMaterials(data);
   };
 

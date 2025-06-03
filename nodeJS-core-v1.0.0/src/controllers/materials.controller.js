@@ -2,7 +2,8 @@ const MaterialsService = require("../services/materials.service");
 
 const getAllMaterials = async (req, res) => {
   try {
-    const materials = await MaterialsService.getAll();
+    const { ID_COMPANY, STATUS } = req.query;
+    const materials = await MaterialsService.getAll(ID_COMPANY, STATUS);
     res.json(materials);
   } catch (error) {
     res.status(500).json({ error: error.message });

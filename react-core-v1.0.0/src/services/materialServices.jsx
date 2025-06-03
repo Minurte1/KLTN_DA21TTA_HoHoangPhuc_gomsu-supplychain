@@ -4,10 +4,12 @@ const MATERIAL_API = `${process.env.REACT_APP_URL_SERVER}/materials`;
 
 const materialServices = {
   // Lấy danh sách tất cả nguyên vật liệu
-  getMaterials: async (ID_COMPANY) => {
-    const res = await axiosInstance.get(MATERIAL_API, {
-      params: { ID_COMPANY },
-    });
+  getMaterials: async ({ ID_COMPANY, STATUS }) => {
+    const params = {};
+    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
+    if (STATUS) params.STATUS = STATUS;
+
+    const res = await axiosInstance.get(MATERIAL_API, { params });
     return res.data;
   },
 

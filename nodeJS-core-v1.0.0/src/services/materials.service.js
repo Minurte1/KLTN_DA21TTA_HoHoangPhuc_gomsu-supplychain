@@ -52,8 +52,7 @@ const create = async (data) => {
     throw error;
   }
 };
-
-const getAll = async (ID_COMPANY) => {
+const getAll = async (ID_COMPANY, STATUS) => {
   try {
     let query = `
       SELECT m.*, mt.NAME_MATERIAL_TYPES, c.NAME_COMPANY
@@ -63,10 +62,20 @@ const getAll = async (ID_COMPANY) => {
     `;
 
     const params = [];
+    const conditions = [];
 
     if (ID_COMPANY) {
-      query += ` WHERE m.ID_COMPANY = ?`;
+      conditions.push(`m.ID_COMPANY = ?`);
       params.push(ID_COMPANY);
+    }
+
+    if (STATUS) {
+      conditions.push(`m.STATUS = ?`);
+      params.push(STATUS);
+    }
+
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
     }
 
     const [rows] = await db.query(query, params);
