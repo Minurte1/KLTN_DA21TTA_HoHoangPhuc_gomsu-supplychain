@@ -42,26 +42,94 @@ const getUser_ById = async (req, res) => {
         u.*,
         r.NAME_ROLE,
         r.LIST_PERMISION,
-        r.CODE_NAME
+        r.CODE_NAME,
+        c.ID_COMPANY,
+        c.NAME_COMPANY,
+        c.TYPE_COMPANY,
+        c.ADDRESS,
+        c.DIA_CHI_Provinces,
+        c.DIA_CHI_Districts,
+        c.DIA_CHI_Wards,
+        c.DIA_CHI_STREETNAME,
+        c.PHONE,
+        c.EMAIL AS COMPANY_EMAIL,
+        c.AVATAR AS COMPANY_AVATAR,
+        c.SLUG,
+        c.CREATED_AT,
+        c.UPDATED_AT,
+        c.STATUS AS COMPANY_STATUS,
+        ct.NAME_COMPANY_TYPE
       FROM users u
       LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE
+      LEFT JOIN companies c ON u.ID_COMPANY = c.ID_COMPANY
+      LEFT JOIN company_types ct ON c.ID_COMPANY_TYPE = ct.ID_COMPANY_TYPE
       WHERE u.ID_USERS = ?`,
       [id]
     );
 
-    const results = rows;
+    if (rows.length === 0) {
+      return res.status(404).json({
+        EM: "Không tìm thấy người dùng",
+        EC: 0,
+        DT: {},
+      });
+    }
+
+    const row = rows[0];
+
+    const userInfo = {
+      ID_USERS: row.ID_USERS,
+      HO_TEN: row.HO_TEN,
+      EMAIL: row.EMAIL,
+      ID_ROLE: row.ID_ROLE,
+      SO_DIEN_THOAI: row.SO_DIEN_THOAI,
+      TRANG_THAI_USER: row.TRANG_THAI_USER,
+      NGAY_TAO_USER: row.NGAY_TAO_USER,
+      NGAY_CAP_NHAT_USER: row.NGAY_CAP_NHAT_USER,
+      AVATAR: row.AVATAR,
+      ID_COMPANY: row.ID_COMPANY,
+      DIA_CHI_Provinces: row.DIA_CHI_Provinces,
+      DIA_CHI_Districts: row.DIA_CHI_Districts,
+      DIA_CHI_Wards: row.DIA_CHI_Wards,
+      DIA_CHI_STREETNAME: row.DIA_CHI_STREETNAME,
+      NAME_ROLE: row.NAME_ROLE,
+      LIST_PERMISION: row.LIST_PERMISION,
+      CODE_NAME: row.CODE_NAME,
+    };
+
+    const companyInfo = {
+      ID_COMPANY: row.ID_COMPANY,
+      NAME_COMPANY: row.NAME_COMPANY,
+      TYPE_COMPANY: row.TYPE_COMPANY,
+      ADDRESS: row.ADDRESS,
+      DIA_CHI_Provinces: row.DIA_CHI_Provinces,
+      DIA_CHI_Districts: row.DIA_CHI_Districts,
+      DIA_CHI_Wards: row.DIA_CHI_Wards,
+      DIA_CHI_STREETNAME: row.DIA_CHI_STREETNAME,
+      PHONE: row.PHONE,
+      EMAIL: row.COMPANY_EMAIL,
+      AVATAR: row.COMPANY_AVATAR,
+      SLUG: row.SLUG,
+      CREATED_AT: row.CREATED_AT,
+      UPDATED_AT: row.UPDATED_AT,
+      STATUS: row.COMPANY_STATUS,
+      NAME_COMPANY_TYPE: row.NAME_COMPANY_TYPE,
+    };
 
     return res.status(200).json({
-      EM: "Lấy thông tin người dùng kèm quyền thành công",
+      EM: "Lấy thông tin người dùng kèm quyền và công ty thành công",
       EC: 1,
-      DT: results[0] || {}, // Lấy 1 user object
+      DT: {
+        ...userInfo,
+        companyInfo,
+      },
     });
   } catch (error) {
     console.error("Error in getUser_ById:", error);
     return res.status(500).json({
       EM: `Error: ${error.message}`,
       EC: -1,
-      DT: [],
+      DT: {},
     });
   }
 };
@@ -634,10 +702,28 @@ const loginUser = async (req, res) => {
   try {
     // Kiểm tra người dùng và lấy thông tin vai trò
     const [rows] = await pool.query(
-      `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
-       FROM users u 
-       LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE 
-       WHERE u.EMAIL = ? AND r.IS_DELETE = 0`,
+      `SELECT 
+  u.*, 
+  r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME,
+  c.NAME_COMPANY, c.TYPE_COMPANY, c.ADDRESS AS COMPANY_ADDRESS,
+  c.DIA_CHI_Provinces AS COMPANY_PROVINCES, 
+  c.DIA_CHI_Districts AS COMPANY_DISTRICTS, 
+  c.DIA_CHI_Wards AS COMPANY_WARDS,
+  c.DIA_CHI_STREETNAME AS COMPANY_STREETNAME,
+  c.PHONE AS COMPANY_PHONE, 
+  c.EMAIL AS COMPANY_EMAIL,
+  c.AVATAR AS COMPANY_AVATAR,
+  c.SLUG AS COMPANY_SLUG,
+  c.CREATED_AT AS COMPANY_CREATED_AT,
+  c.UPDATED_AT AS COMPANY_UPDATED_AT,
+  c.STATUS AS COMPANY_STATUS,
+  ct.NAME_COMPANY_TYPE
+FROM users u
+LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE
+LEFT JOIN companies c ON u.ID_COMPANY = c.ID_COMPANY
+LEFT JOIN company_types ct ON c.ID_COMPANY_TYPE = ct.ID_COMPANY_TYPE
+WHERE u.EMAIL = ? AND r.IS_DELETE = 0
+`,
       [email]
     );
 
@@ -678,8 +764,8 @@ const loginUser = async (req, res) => {
       {
         ID_USERS: user.ID_USERS,
         EMAIL: user.EMAIL,
-        ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
         HO_TEN: user.HO_TEN,
+        ID_ROLE: user.ID_ROLE,
         SO_DIEN_THOAI: user.SO_DIEN_THOAI,
         TRANG_THAI_USER: user.TRANG_THAI_USER,
         NGAY_TAO_USER: user.NGAY_TAO_USER,
@@ -692,11 +778,29 @@ const loginUser = async (req, res) => {
         LIST_PERMISION: user.LIST_PERMISION,
         NAME_ROLE: user.NAME_ROLE,
         CODE_NAME: user.CODE_NAME,
+        companyInfo: {
+          NAME_COMPANY: user.NAME_COMPANY,
+          TYPE_COMPANY: user.TYPE_COMPANY,
+          ADDRESS: user.COMPANY_ADDRESS,
+          DIA_CHI_Provinces: user.COMPANY_PROVINCES,
+          DIA_CHI_Districts: user.COMPANY_DISTRICTS,
+          DIA_CHI_Wards: user.COMPANY_WARDS,
+          DIA_CHI_STREETNAME: user.COMPANY_STREETNAME,
+          PHONE: user.COMPANY_PHONE,
+          EMAIL: user.COMPANY_EMAIL,
+          AVATAR: user.COMPANY_AVATAR,
+          SLUG: user.COMPANY_SLUG,
+          CREATED_AT: user.COMPANY_CREATED_AT,
+          UPDATED_AT: user.COMPANY_UPDATED_AT,
+          STATUS: user.COMPANY_STATUS,
+          NAME_COMPANY_TYPE: user.NAME_COMPANY_TYPE,
+        },
       },
       JWT_SECRET,
       { expiresIn: "5h" }
     );
 
+    // Trả về token và thông tin người dùng
     // Trả về token và thông tin người dùng
     return res.status(200).json({
       EM: "Đăng nhập thành công",
@@ -707,7 +811,7 @@ const loginUser = async (req, res) => {
           ID_USERS: user.ID_USERS,
           EMAIL: user.EMAIL,
           HO_TEN: user.HO_TEN,
-          ID_ROLE: user.ID_ROLE, // Cập nhật thành ID_ROLE
+          ID_ROLE: user.ID_ROLE,
           SO_DIEN_THOAI: user.SO_DIEN_THOAI,
           TRANG_THAI_USER: user.TRANG_THAI_USER,
           NGAY_TAO_USER: user.NGAY_TAO_USER,
@@ -720,6 +824,24 @@ const loginUser = async (req, res) => {
           LIST_PERMISION: user.LIST_PERMISION,
           NAME_ROLE: user.NAME_ROLE,
           CODE_NAME: user.CODE_NAME,
+          companyInfo: {
+            ID_COMPANY: user.ID_COMPANY,
+            NAME_COMPANY: user.NAME_COMPANY,
+            TYPE_COMPANY: user.TYPE_COMPANY,
+            ADDRESS: user.COMPANY_ADDRESS,
+            DIA_CHI_Provinces: user.COMPANY_PROVINCES,
+            DIA_CHI_Districts: user.COMPANY_DISTRICTS,
+            DIA_CHI_Wards: user.COMPANY_WARDS,
+            DIA_CHI_STREETNAME: user.COMPANY_STREETNAME,
+            PHONE: user.COMPANY_PHONE,
+            EMAIL: user.COMPANY_EMAIL,
+            AVATAR: user.COMPANY_AVATAR,
+            SLUG: user.COMPANY_SLUG,
+            CREATED_AT: user.COMPANY_CREATED_AT,
+            UPDATED_AT: user.COMPANY_UPDATED_AT,
+            STATUS: user.COMPANY_STATUS,
+            NAME_COMPANY_TYPE: user.NAME_COMPANY_TYPE,
+          },
         },
       },
     });
@@ -753,9 +875,19 @@ const verifyAdmin = async (req, res) => {
         u.ID_USERS, u.HO_TEN, u.EMAIL, u.ID_ROLE, u.SO_DIEN_THOAI,
         u.TRANG_THAI_USER, u.NGAY_TAO_USER, u.NGAY_CAP_NHAT_USER, u.AVATAR,
         u.DIA_CHI_Provinces, u.DIA_CHI_Districts, u.DIA_CHI_Wards, u.DIA_CHI_STREETNAME,
-        r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME
+        u.ID_COMPANY,
+        r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME,
+        c.NAME_COMPANY, c.TYPE_COMPANY, c.ADDRESS, c.DIA_CHI_Provinces AS COMPANY_Provinces,
+        c.DIA_CHI_Districts AS COMPANY_Districts, c.DIA_CHI_Wards AS COMPANY_Wards,
+        c.DIA_CHI_STREETNAME AS COMPANY_StreetName, c.PHONE AS COMPANY_PHONE,
+        c.EMAIL AS COMPANY_EMAIL, c.AVATAR AS COMPANY_AVATAR, c.SLUG,
+        c.CREATED_AT AS COMPANY_CREATED_AT, c.UPDATED_AT AS COMPANY_UPDATED_AT,
+        c.STATUS AS COMPANY_STATUS,
+        ct.NAME_COMPANY_TYPE
       FROM users u
       LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE
+      LEFT JOIN companies c ON u.ID_COMPANY = c.ID_COMPANY
+      LEFT JOIN company_types ct ON c.ID_COMPANY_TYPE = ct.ID_COMPANY_TYPE
       WHERE u.ID_USERS = ? AND u.TRANG_THAI_USER = 'ACTIVE' AND u.IS_DELETE_USERS = 0 AND r.IS_DELETE = 0`,
       [ID_USERS]
     );
@@ -763,39 +895,49 @@ const verifyAdmin = async (req, res) => {
     if (rows.length > 0) {
       const user = rows[0];
 
-      if (user) {
-        return res.status(200).json({
-          EM: "User is admin",
-          EC: 200,
-          DT: {
-            isAdmin: true,
-            userInfo: {
-              ID_USERS: user.ID_USERS,
-              EMAIL: user.EMAIL,
-              HO_TEN: user.HO_TEN,
-              ID_ROLE: user.ID_ROLE,
-              SO_DIEN_THOAI: user.SO_DIEN_THOAI,
-              TRANG_THAI_USER: user.TRANG_THAI_USER,
-              NGAY_TAO_USER: user.NGAY_TAO_USER,
-              NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
-              AVATAR: user.AVATAR,
-              DIA_CHI_Provinces: user.DIA_CHI_Provinces,
-              DIA_CHI_Districts: user.DIA_CHI_Districts,
-              DIA_CHI_Wards: user.DIA_CHI_Wards,
-              DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
-              LIST_PERMISION: user.LIST_PERMISION,
-              NAME_ROLE: user.NAME_ROLE,
-              CODE_NAME: user.CODE_NAME,
+      return res.status(200).json({
+        EM: "User is admin",
+        EC: 200,
+        DT: {
+          isAdmin: true,
+          userInfo: {
+            ID_USERS: user.ID_USERS,
+            EMAIL: user.EMAIL,
+            HO_TEN: user.HO_TEN,
+            ID_ROLE: user.ID_ROLE,
+            SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+            TRANG_THAI_USER: user.TRANG_THAI_USER,
+            NGAY_TAO_USER: user.NGAY_TAO_USER,
+            NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+            AVATAR: user.AVATAR,
+            DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+            DIA_CHI_Districts: user.DIA_CHI_Districts,
+            DIA_CHI_Wards: user.DIA_CHI_Wards,
+            DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
+            LIST_PERMISION: user.LIST_PERMISION,
+            NAME_ROLE: user.NAME_ROLE,
+            CODE_NAME: user.CODE_NAME,
+            companyInfo: {
+              ID_COMPANY: user.ID_COMPANY,
+              NAME_COMPANY: user.NAME_COMPANY,
+              TYPE_COMPANY: user.TYPE_COMPANY,
+              ADDRESS: user.ADDRESS,
+              DIA_CHI_Provinces: user.COMPANY_Provinces,
+              DIA_CHI_Districts: user.COMPANY_Districts,
+              DIA_CHI_Wards: user.COMPANY_Wards,
+              DIA_CHI_STREETNAME: user.COMPANY_StreetName,
+              PHONE: user.COMPANY_PHONE,
+              EMAIL: user.COMPANY_EMAIL,
+              AVATAR: user.COMPANY_AVATAR,
+              SLUG: user.SLUG,
+              CREATED_AT: user.COMPANY_CREATED_AT,
+              UPDATED_AT: user.COMPANY_UPDATED_AT,
+              STATUS: user.COMPANY_STATUS,
+              NAME_COMPANY_TYPE: user.NAME_COMPANY_TYPE,
             },
           },
-        });
-      } else {
-        return res.status(403).json({
-          EM: "User is not admin",
-          EC: 403,
-          DT: { isAdmin: false },
-        });
-      }
+        },
+      });
     } else {
       return res.status(404).json({
         EM: "User not found or inactive",

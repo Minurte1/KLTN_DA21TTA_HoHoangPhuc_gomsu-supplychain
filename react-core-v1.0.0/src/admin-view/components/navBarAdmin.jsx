@@ -17,7 +17,7 @@ import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 const NavBarAdmin = () => {
   const [openSection, setOpenSection] = useState(null);
   const location = useLocation();
-  const { listPermission } = ReduxExportUseAuthState();
+  const { listPermission, userInfo } = ReduxExportUseAuthState();
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
@@ -77,7 +77,7 @@ const NavBarAdmin = () => {
     })
     .filter(Boolean); // Loại bỏ các null
 
-  console.log("listPermission", listPermission);
+  console.log("userInfo", userInfo);
   return (
     <Box
       sx={{
