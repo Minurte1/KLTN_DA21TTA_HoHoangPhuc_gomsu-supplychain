@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import DynamicModal from "../../share-view/dynamic/modal/modal";
 import companyTypeServices from "../../services/company_types-service";
+import { permissionService } from "../../services/listPermisstion-service";
+import spService from "../../share-service/spService";
 
 const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
   // State quản lý dữ liệu form
   const [formData, setFormData] = useState({
     NAME_COMPANY_TYPE: "",
-    ROUTER_COMPANY: "",
+    ROUTER_COMPANY: [],
   });
-
+  const [permissions, setPermissions] = useState([]);
   // Khởi tạo dữ liệu khi mở modal hoặc có dữ liệu truyền vào
   useEffect(() => {
     if (open) {
@@ -17,7 +19,8 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
         companyType
           ? {
               NAME_COMPANY_TYPE: companyType.NAME_COMPANY_TYPE || "",
-              ROUTER_COMPANY: companyType.ROUTER_COMPANY || "",
+              ROUTER_COMPANY:
+                spService.parseJsonIfValid(companyType.ROUTER_COMPANY) || "",
             }
           : {
               NAME_COMPANY_TYPE: "",
@@ -25,8 +28,28 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
             }
       );
     }
+    fetchListBasePermission();
   }, [open, companyType]);
 
+  const fetchListBasePermission = async () => {
+    try {
+      const response = await permissionService.getPermission();
+
+      // Check if response is valid and contains the expected data
+      if (response && Array.isArray(response)) {
+        // console.log("oke");
+        const routerOptions = response.map((item, index) => ({
+          name: item.router, // Use router value as name
+        }));
+        setPermissions(routerOptions || []);
+        // setTranslatedPermissions(translatedPermissionsL);
+      } else {
+        console.error("Invalid response structure", response);
+      }
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
   // Cấu hình các trường input cho DynamicModal
   const fields = [
     {
@@ -35,14 +58,16 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
       required: true,
       inputType: "text",
     },
+
     {
       key: "ROUTER_COMPANY",
-      label: "Phân loại quyền hạn",
-      required: true,
-      inputType: "text",
+      label: "Chọn thẻ",
+      inputType: "autocomplete-multiple",
+      options: permissions,
+      optionsLabel: "name",
     },
   ];
-
+  console.log("permissions", permissions);
   // Xử lý thay đổi form
   const handleFormChange = (updatedFormData) => {
     setFormData((prev) => ({
@@ -64,8 +89,9 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
       const dataToSubmit = {
         NAME_COMPANY_TYPE:
           submittedFormData.NAME_COMPANY_TYPE || formData.NAME_COMPANY_TYPE,
-        ROUTER_COMPANY:
-          submittedFormData.ROUTER_COMPANY || formData.ROUTER_COMPANY,
+        ROUTER_COMPANY: JSON.stringify(
+          submittedFormData.ROUTER_COMPANY || formData.ROUTER_COMPANY
+        ),
       };
 
       if (companyType) {
@@ -94,7 +120,7 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
       </Button>
     </>
   );
-
+  console.log("formData", formData);
   return (
     <DynamicModal
       open={open}

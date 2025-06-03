@@ -134,7 +134,7 @@ const HeaderAdmin = () => {
                   Thông tin cá nhân
                 </MenuItem>
                 <MenuItem
-                  onClick={handleLogout}
+                  onClick={() => handleLogout()}
                   sx={{
                     color: "#333333",
                     "&:hover": { backgroundColor: "#ff6f61", color: "#fff" },

@@ -190,7 +190,7 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       options: companiesOptions,
       optionsLabel: "NAME_COMPANY",
       required: true,
-      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
+      disabled: userInfo?.companyInfo?.ID_COMPANY ? true : false,
     },
     {
       key: "ID_ROLE",

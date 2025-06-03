@@ -26,10 +26,15 @@ const getCompanyTypeById = async (id) => {
 
 // Cập nhật company_type
 const updateCompanyType = async (id, { NAME_COMPANY_TYPE, ROUTER_COMPANY }) => {
+  const formattedRouter = Array.isArray(ROUTER_COMPANY)
+    ? JSON.stringify(ROUTER_COMPANY)
+    : ROUTER_COMPANY;
+
   const [result] = await db.query(
-    "UPDATE company_types SET NAME_COMPANY_TYPE = ? ROUTER_COMPANY =? WHERE ID_COMPANY_TYPE = ?",
-    [NAME_COMPANY_TYPE, ROUTER_COMPANY, id]
+    "UPDATE company_types SET NAME_COMPANY_TYPE = ?, ROUTER_COMPANY = ? WHERE ID_COMPANY_TYPE = ?",
+    [NAME_COMPANY_TYPE, formattedRouter, id]
   );
+
   return result.affectedRows > 0;
 };
 

@@ -58,7 +58,8 @@ const getUser_ById = async (req, res) => {
         c.CREATED_AT,
         c.UPDATED_AT,
         c.STATUS AS COMPANY_STATUS,
-        ct.NAME_COMPANY_TYPE
+        ct.NAME_COMPANY_TYPE,
+        ct.ROUTER_COMPANY
       FROM users u
       LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE
       LEFT JOIN companies c ON u.ID_COMPANY = c.ID_COMPANY
@@ -114,8 +115,9 @@ const getUser_ById = async (req, res) => {
       UPDATED_AT: row.UPDATED_AT,
       STATUS: row.COMPANY_STATUS,
       NAME_COMPANY_TYPE: row.NAME_COMPANY_TYPE,
+      ROUTER_COMPANY: row.ROUTER_COMPANY,
     };
-
+    console.log("companyInfo", companyInfo);
     return res.status(200).json({
       EM: "Lấy thông tin người dùng kèm quyền và công ty thành công",
       EC: 1,

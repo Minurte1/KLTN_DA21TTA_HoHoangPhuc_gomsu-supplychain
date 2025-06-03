@@ -17,6 +17,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
+
 const DynamicModal = ({
   open,
   onClose,
@@ -25,31 +26,42 @@ const DynamicModal = ({
   initialData = {},
   title = "Form",
   renderActions,
-  onChange, // New prop to notify parent of input changes
+  onChange,
   renderExtraFields,
 }) => {
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
 
-  // Initialize formData from initialData when modal opens
   useEffect(() => {
     if (open) {
-      setFormData({ ...initialData }); // clone
+      setFormData({ ...initialData });
       setErrors({});
     }
   }, [open, initialData]);
 
-  // Handle input change
   const handleChange =
-    (key, isAutocomplete = false, isDirectValue = false) =>
+    (
+      key,
+      field, // Add field parameter to access field.optionsLabel
+      isAutocomplete = false,
+      isAutocompleteMultiple = false,
+      isDirectValue = false
+    ) =>
     (eventOrValue, newValue) => {
       let value;
 
       if (isDirectValue) {
-        // Dành cho datetime: newValue là ISO string hoặc ""
         value = newValue;
+      } else if (isAutocompleteMultiple) {
+        // For autocomplete-multiple: newValue is an array of objects
+        value = newValue.map(
+          (item) => item[key] || item[field.optionsLabel] || item
+        );
       } else if (isAutocomplete) {
-        value = newValue;
+        // For autocomplete: newValue is a single object or null
+        value = newValue
+          ? newValue[key] || newValue[field.optionsLabel] || newValue
+          : "";
       } else if (eventOrValue?.target) {
         value = eventOrValue.target.value;
       } else {
@@ -69,13 +81,15 @@ const DynamicModal = ({
       }
     };
 
-  // Handle form submission
   const handleSubmit = () => {
     const newErrors = {};
     fields.forEach((field) => {
       if (
         field.required &&
-        (formData[field.key] === undefined || formData[field.key] === "")
+        (formData[field.key] === undefined ||
+          formData[field.key] === "" ||
+          (Array.isArray(formData[field.key]) &&
+            formData[field.key].length === 0))
       ) {
         newErrors[field.key] = `${field.label} là bắt buộc`;
       }
@@ -86,11 +100,10 @@ const DynamicModal = ({
       return;
     }
 
-    onSubmit(formData); // Pass updated formData to parent
+    onSubmit(formData);
     onClose();
   };
 
-  // Render input based on inputType
   const renderInput = (field) => {
     switch (field.inputType) {
       case "select":
@@ -100,7 +113,7 @@ const DynamicModal = ({
             <Select
               value={formData[field.key] || ""}
               label={field.label}
-              onChange={handleChange(field.key)}
+              onChange={handleChange(field.key, field)}
               disabled={field.disabled}
             >
               {field.options.map((option) => (
@@ -130,12 +143,38 @@ const DynamicModal = ({
                 (opt) => String(opt[field.key]) === String(formData[field.key])
               ) || null
             }
-            onChange={(event, newValue) =>
-              handleChange(field.key, true)(
-                event,
-                newValue ? newValue[field.key] : ""
-              )
+            onChange={handleChange(field.key, field, true)}
+            disabled={field.disabled}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={field.label}
+                margin="normal"
+                fullWidth
+                error={!!errors[field.key]}
+                helperText={errors[field.key]}
+              />
+            )}
+          />
+        );
+      case "autocomplete-multiple":
+        return (
+          <Autocomplete
+            multiple
+            options={field.options}
+            getOptionLabel={(option) =>
+              typeof option === "string"
+                ? option
+                : option[field.optionsLabel] || ""
             }
+            value={
+              Array.isArray(formData[field.key])
+                ? field.options.filter((opt) =>
+                    formData[field.key].includes(opt[field.optionsLabel])
+                  )
+                : []
+            }
+            onChange={handleChange(field.key, field, false, true)}
             disabled={field.disabled}
             renderInput={(params) => (
               <TextField
@@ -157,6 +196,7 @@ const DynamicModal = ({
             onChange={(newValue) =>
               handleChange(
                 field.key,
+                field,
                 false,
                 true
               )(null, newValue ? newValue.toISOString() : "")
@@ -172,7 +212,6 @@ const DynamicModal = ({
             }}
           />
         );
-
       default:
         const isMultiline = !!field.rows || !!field.row;
         return (
@@ -185,7 +224,7 @@ const DynamicModal = ({
                 ? String(formData[field.key])
                 : ""
             }
-            onChange={handleChange(field.key)}
+            onChange={handleChange(field.key, field)}
             error={!!errors[field.key]}
             helperText={errors[field.key]}
             disabled={field.disabled}
@@ -197,7 +236,6 @@ const DynamicModal = ({
     }
   };
 
-  // Default actions if renderActions is not provided
   const defaultActions = (
     <>
       <Button onClick={onClose} color="secondary">

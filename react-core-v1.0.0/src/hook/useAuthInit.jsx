@@ -34,7 +34,7 @@ const useAuthInit = () => {
         if (latestUser && Object.keys(latestUser).length > 0) {
           // 3. Lưu thông tin user vào Redux
           dispatch(updateUser(latestUser));
-
+          console.log("latestUser", latestUser);
           // 4. Lưu LIST_PERMISION nếu có
           if (latestUser.LIST_PERMISION) {
             const listPermionssion = spService.parsePermissionList(

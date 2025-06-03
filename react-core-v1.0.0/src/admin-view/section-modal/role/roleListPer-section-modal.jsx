@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import roleServices from "../../../services/role-service";
 import { permissionService } from "../../../services/listPermisstion-service";
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
+import spService from "../../../share-service/spService";
 
 // Component PermissionManager giờ là Modal
 const PermissionManagerModal = ({
@@ -58,7 +59,7 @@ const PermissionManagerModal = ({
 
   const [selectedRole, setSelectedRole] = useState(0);
   const [permissions, setPermissions] = useState([]);
-
+  const [routerCompany, setRouterCompany] = useState([]);
   const [translatedPermissions, setTranslatedPermissions] = useState([]);
   const [rolesData, setRoleData] = useState({});
   // Xử lý khi thay đổi role
@@ -67,25 +68,34 @@ const PermissionManagerModal = ({
     setPermissions(rolesData[newValue].permissions);
   };
   const { userInfo } = ReduxExportUseAuthState();
-  const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+
   useEffect(() => {
-    setTranslatedPermissions([]);
-    fetchListBasePermission();
-    // Chuyển đổi dữ liệu để hiển thị
+    if (userInfo) {
+      const ROUTER_COMPANY = userInfo?.companyInfo?.ROUTER_COMPANY || null;
+      setTranslatedPermissions([]);
+      fetchListBasePermission(spService.parseJsonIfValid(ROUTER_COMPANY));
 
-    setRoleData({ name: roleName, permissions: permissions });
-  }, [open]);
-
-  const fetchListBasePermission = async () => {
+      setRouterCompany();
+      setRoleData({ name: roleName, permissions: permissions });
+    }
+  }, [open, userInfo]);
+  const fetchListBasePermission = async (ROUTER_COMPANY) => {
     try {
+      console.log("ROUTER_COMPANY", ROUTER_COMPANY);
       const response = await permissionService.getPermission();
 
-      // Check if response is valid and contains the expected data
       if (response && Array.isArray(response)) {
-        // console.log("oke");
-        console.log("response", response);
-        setPermissions(response);
-        // setTranslatedPermissions(translatedPermissionsL);
+        let permissionsToSet = response;
+
+        // Chỉ lọc nếu ROUTER_COMPANY là mảng và có ít nhất 1 phần tử
+        if (Array.isArray(ROUTER_COMPANY) && ROUTER_COMPANY.length > 0) {
+          permissionsToSet = response.filter((item) =>
+            ROUTER_COMPANY.includes(item.router)
+          );
+        }
+
+        console.log("permissionsToSet", permissionsToSet);
+        setPermissions(permissionsToSet);
       } else {
         console.error("Invalid response structure", response);
       }
