@@ -6,6 +6,7 @@ const {
   getCompanyTypeById,
   updateCompanyType,
   deleteCompanyType,
+  getCompaniesByRouter,
 } = require("../controllers/companyType.controller");
 
 const {
@@ -52,5 +53,5 @@ router.delete(
   // checkUserPermission("company_type", "delete"),
   deleteCompanyType
 );
-
+router.post("/getCompaniesByRouter", getCompaniesByRouter);
 module.exports = router;

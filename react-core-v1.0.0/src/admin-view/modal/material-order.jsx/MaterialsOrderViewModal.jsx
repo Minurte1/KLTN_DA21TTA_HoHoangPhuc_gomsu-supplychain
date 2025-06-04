@@ -11,15 +11,23 @@ import {
   Box,
   CircularProgress,
   Stack,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 
 import materialOrderMasterServices from "../../../services/materialOrderMasterServices";
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
+import companyServices from "../../../services/companies-service";
+import companyTypeServices from "../../../services/company_types-service";
 
 const MaterialsOrderViewModal = ({ open, onClose, material }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const { userInfo } = ReduxExportUseAuthState();
+  const [shippingCompanies, setShippingCompanies] = useState([]);
+  const [selectedShipCompanies, setSelectedShipCompanies] = useState({});
 
   const fetchOrders = async () => {
     if (!material) return;
@@ -41,9 +49,24 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
     }
   };
 
+  const fetchShippingCompanies = async () => {
+    try {
+      const filter = [
+        {
+          key: "ROUTER_COMPANY",
+          value: "transport_orders",
+        },
+      ];
+      const companies = await companyTypeServices.getCompaniesByRouter(filter);
+      setShippingCompanies(companies);
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách công ty vận chuyển:", error);
+    }
+  };
   useEffect(() => {
     if (open) {
       fetchOrders();
+      fetchShippingCompanies();
     }
   }, [open, material]);
 
@@ -54,6 +77,28 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
       fetchOrders(); // refresh lại
     } catch (error) {
       console.error("Xác nhận đơn hàng thất bại:", error);
+    }
+  };
+
+  const handleSelectShippingCompany = (orderId, companyId) => {
+    setSelectedShipCompanies((prev) => ({
+      ...prev,
+      [orderId]: companyId,
+    }));
+  };
+
+  const handleAssignShippingCompany = async (orderId) => {
+    const selectedId = selectedShipCompanies[orderId];
+    if (!selectedId) return;
+
+    try {
+      await materialOrderMasterServices.assignShippingCompany(
+        orderId,
+        selectedId
+      );
+      fetchOrders(); // refresh dữ liệu
+    } catch (error) {
+      console.error("Lỗi khi gán công ty vận chuyển:", error);
     }
   };
 
@@ -91,7 +136,7 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
                     Tổng chi phí: {order.ITEM_TOTAL_COST.toLocaleString()} VNĐ
                   </Typography>
 
-                  {order.ORDER_STATUS === "Đang xử lý" && (
+                  {order.ITEM_STATUS === "PENDING" && (
                     <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
                       <Button
                         variant="contained"
@@ -104,6 +149,52 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
                       </Button>
                     </Stack>
                   )}
+                  {order.ID_COMPANY_SHIP === null &&
+                    order.ITEM_STATUS === "PENDING" && (
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        alignItems="center"
+                        sx={{ mt: 2 }}
+                      >
+                        <FormControl size="small" sx={{ minWidth: 300 }}>
+                          <InputLabel>Công ty giao hàng</InputLabel>
+                          <Select
+                            value={
+                              selectedShipCompanies[
+                                order.ID_MATERIAL_ORDER_MASTER
+                              ] || ""
+                            }
+                            label="Công ty giao hàng"
+                            onChange={(e) =>
+                              handleSelectShippingCompany(
+                                order.ID_MATERIAL_ORDER_MASTER,
+                                e.target.value
+                              )
+                            }
+                          >
+                            {shippingCompanies.map((company) => (
+                              <MenuItem
+                                key={company.ID_COMPANY}
+                                value={company.ID_COMPANY}
+                              >
+                                {company.NAME_COMPANY}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <Button
+                          variant="outlined"
+                          onClick={() =>
+                            handleAssignShippingCompany(
+                              order.ID_MATERIAL_ORDER_MASTER
+                            )
+                          }
+                        >
+                          Gán công ty ship
+                        </Button>
+                      </Stack>
+                    )}
                 </Box>
               </ListItem>
             ))}

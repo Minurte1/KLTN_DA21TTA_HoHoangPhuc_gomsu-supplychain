@@ -8,6 +8,19 @@ const companyTypeServices = {
     const res = await axiosInstance.get(COMPANY_TYPE_API);
     return res.data;
   },
+  // New function to get companies by ROUTER_COMPANY
+  getCompaniesByRouter: async (filters) => {
+    try {
+      const res = await axiosInstance.post(
+        `${COMPANY_TYPE_API}/getCompaniesByRouter`,
+        { filters: filters }
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching companies by router:", error);
+      throw error; // Or handle error as needed
+    }
+  },
 
   // Lấy loại công ty theo ID
   getCompanyTypeById: async (id) => {
