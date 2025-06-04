@@ -8,6 +8,7 @@ const {
   deleteMaterialOrderMaster,
   getOrdersByCompanyAndMaterial,
   createMaterialOrderFull,
+  updateConfirmOrderMaster,
 } = require("../controllers/materialOrderMaster.controller");
 
 const {
@@ -45,6 +46,12 @@ router.put(
   // checkUserJWT,
   // checkUserPermission("material_order_master", "update"),
   updateMaterialOrderMaster
+);
+router.post(
+  "confirm-order",
+  // checkUserJWT,
+  // checkUserPermission("material_order_master", "update"),
+  updateConfirmOrderMaster
 );
 
 // Xóa đơn đặt hàng nguyên liệu

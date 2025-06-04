@@ -26,6 +26,7 @@ const materialTypesRoute = require("./material_types.route.js");
 const addressRoute = require("./provincesRoute.js");
 // Kết nối tất cả các router
 router.use("/api/permissions", permissionRoutes);
+router.use("/material-orders-master", materialOrdersMasterRoute);
 router.use("/", userRoute);
 router.use("/role", roleRoute);
 router.use("/transport-orders", transportOrdersRoute);
@@ -40,8 +41,9 @@ router.use("/production-plans", productionPlansRoute);
 router.use("/categories", categoriesRoute);
 router.use("/products", productsRoute);
 router.use("/cart", cartRoute);
+
 router.use("/material-orders", materialOrdersRoute);
-router.use("/material-orders-master", materialOrdersMasterRoute);
+
 router.use("/suppliers", suppliersRoute);
 router.use("/inventory", inventoryRoute);
 router.use("/materials", materialsRoute);

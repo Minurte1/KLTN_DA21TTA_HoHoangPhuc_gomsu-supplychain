@@ -84,7 +84,23 @@ const updateMaterialOrderMaster = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+const u = async (req, res) => {
+  const updatedOrder = req.body;
+  const { id } = req.params;
+  console.log("updatedOrder", updatedOrder);
+  try {
+    await db.query(
+      `UPDATE material_order_master
+       SET ID_COMPANY_SHIP = ?, ORDER_STATUS = ?, UPDATED_AT = NOW()
+       WHERE ID_MATERIAL_ORDER_MASTER = ?`,
+      [updatedOrder.ID_COMPANY_SHIP, "CONFIRMED", id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Lỗi xác nhận đơn hàng:", err);
+    res.status(500).json({ error: "Lỗi xác nhận đơn hàng." });
+  }
+};
 const deleteMaterialOrderMaster = async (req, res) => {
   try {
     const { id } = req.params;
@@ -205,6 +221,7 @@ module.exports = {
   createMaterialOrderMaster,
   getMaterialOrderByIdMaster,
   updateMaterialOrderMaster,
+  updateConfirmOrderMaster,
   deleteMaterialOrderMaster,
   getOrdersByCompanyAndMaterial,
   createMaterialOrderFull,

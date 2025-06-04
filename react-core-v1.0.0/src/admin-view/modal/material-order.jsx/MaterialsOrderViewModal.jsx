@@ -72,9 +72,28 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
 
   // Gọi API xác nhận đơn hàng
   const handleConfirmOrder = async (orderId) => {
+    const selectedShipId = selectedShipCompanies[orderId];
+    if (!selectedShipId) {
+      alert("Vui lòng chọn công ty giao hàng trước khi xác nhận đơn hàng.");
+      return;
+    }
+
+    // Tìm đơn hàng từ danh sách
+    const orderToConfirm = orders.find(
+      (o) => o.ID_MATERIAL_ORDER_MASTER === orderId
+    );
+
+    if (!orderToConfirm) return;
+
+    // Cập nhật ID_COMPANY_SHIP vào đơn hàng
+    const updatedOrder = {
+      ...orderToConfirm,
+      ID_COMPANY_SHIP: selectedShipId,
+    };
+
     try {
-      await materialOrderMasterServices.confirmOrder(orderId); // 👈 bạn phải tự viết API này trong service
-      fetchOrders(); // refresh lại
+      await materialOrderMasterServices.confirmOrder(updatedOrder); // 👈 Truyền full object
+      fetchOrders(); // refresh lại danh sách
     } catch (error) {
       console.error("Xác nhận đơn hàng thất bại:", error);
     }
@@ -135,20 +154,6 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
                   <Typography>
                     Tổng chi phí: {order.ITEM_TOTAL_COST.toLocaleString()} VNĐ
                   </Typography>
-
-                  {order.ITEM_STATUS === "PENDING" && (
-                    <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() =>
-                          handleConfirmOrder(order.ID_MATERIAL_ORDER_MASTER)
-                        }
-                      >
-                        Xác nhận đơn hàng
-                      </Button>
-                    </Stack>
-                  )}
                   {order.ID_COMPANY_SHIP === null &&
                     order.ITEM_STATUS === "PENDING" && (
                       <Stack
@@ -194,7 +199,20 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
                           Gán công ty ship
                         </Button>
                       </Stack>
-                    )}
+                    )}{" "}
+                  {order.ITEM_STATUS === "PENDING" && (
+                    <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() =>
+                          handleConfirmOrder(order.ID_MATERIAL_ORDER_MASTER)
+                        }
+                      >
+                        Xác nhận đơn hàng
+                      </Button>
+                    </Stack>
+                  )}
                 </Box>
               </ListItem>
             ))}

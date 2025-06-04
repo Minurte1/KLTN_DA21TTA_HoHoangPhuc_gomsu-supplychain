@@ -40,6 +40,14 @@ const materialOrderMasterServices = {
     const res = await axiosInstance.put(`${MATERIAL_ORDER_API}/${id}`, data);
     return res.data;
   },
+  // Cập nhật đơn hàng nguyên liệu
+  confirmOrder: async (data) => {
+    const res = await axiosInstance.post(
+      `${MATERIAL_ORDER_API}/confirm-order`,
+      data
+    );
+    return res.data;
+  },
 
   // Xóa đơn hàng nguyên liệu
   deleteMaterialOrderMaster: async (id) => {
