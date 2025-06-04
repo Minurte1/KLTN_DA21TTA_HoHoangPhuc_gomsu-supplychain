@@ -14,6 +14,12 @@ const materialOrderMasterServices = {
     const res = await axiosInstance.get(`${MATERIAL_ORDER_API}/${id}`);
     return res.data;
   },
+  getOrdersByCompanyAndMaterial: async (idCompany, idMaterial) => {
+    const res = await axiosInstance.get(
+      `${MATERIAL_ORDER_API}/orders/company/${idCompany}/material/${idMaterial}`
+    );
+    return res.data;
+  },
 
   // Tạo đơn hàng nguyên liệu mới
   createMaterialOrderMaster: async (data) => {

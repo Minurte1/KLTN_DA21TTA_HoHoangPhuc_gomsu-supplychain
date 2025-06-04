@@ -97,6 +97,21 @@ const deleteMaterialOrderMaster = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const getOrdersByCompanyAndMaterial = async (req, res) => {
+  try {
+    const { idCompany, idMaterial } = req.params;
+
+    const orders =
+      await MaterialOrderOrdersService.getOrdersByCompanyAndMaterial(
+        idCompany,
+        idMaterial
+      );
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   getAllMaterialOrdersMaster,
@@ -104,4 +119,5 @@ module.exports = {
   getMaterialOrderByIdMaster,
   updateMaterialOrderMaster,
   deleteMaterialOrderMaster,
+  getOrdersByCompanyAndMaterial,
 };

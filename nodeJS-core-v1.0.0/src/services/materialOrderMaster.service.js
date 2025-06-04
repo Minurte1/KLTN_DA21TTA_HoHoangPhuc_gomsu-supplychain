@@ -88,6 +88,18 @@ const deleteMaterialOrder = async (id) => {
   );
   return result.affectedRows > 0;
 };
+const getOrdersByCompanyAndMaterial = async (idCompany, idMaterial) => {
+  const [rows] = await db.execute(
+    `
+    SELECT *
+    FROM material_orders
+    WHERE ID_COMPANY = ? AND ID_MATERIALS_ = ?
+    `,
+    [idCompany, idMaterial]
+  );
+
+  return rows;
+};
 
 module.exports = {
   create,
@@ -95,4 +107,5 @@ module.exports = {
   getById,
   update,
   delete: deleteMaterialOrder,
+  getOrdersByCompanyAndMaterial,
 };

@@ -6,6 +6,7 @@ const {
   getMaterialOrderByIdMaster,
   updateMaterialOrderMaster,
   deleteMaterialOrderMaster,
+  getOrdersByCompanyAndMaterial,
 } = require("../controllers/materialOrderMaster.controller");
 
 const {
@@ -51,6 +52,10 @@ router.delete(
   // checkUserJWT,
   // checkUserPermission("material_order_master", "delete"),
   deleteMaterialOrderMaster
+);
+router.get(
+  "/orders/company/:idCompany/material/:idMaterial",
+  getOrdersByCompanyAndMaterial
 );
 
 module.exports = router;

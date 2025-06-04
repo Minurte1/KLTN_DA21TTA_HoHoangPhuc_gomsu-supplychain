@@ -154,7 +154,6 @@ const updateUserById_Admin = async (req, res) => {
     EMAIL,
     _PASSWORD_HASH_USERS,
     SO_DIEN_THOAI,
-
     IS_DELETE_USERS,
     AVATAR,
     DIA_CHI_Provinces,
@@ -177,6 +176,12 @@ const updateUserById_Admin = async (req, res) => {
   }
 
   try {
+    let hashedPassword = null;
+    if (_PASSWORD_HASH_USERS) {
+      const saltRounds = 10;
+      hashedPassword = await bcrypt.hash(_PASSWORD_HASH_USERS, saltRounds);
+    }
+
     const [result] = await pool.query(
       `UPDATE users 
        SET 
@@ -186,7 +191,7 @@ const updateUserById_Admin = async (req, res) => {
          _PASSWORD_HASH_USERS = ?, 
          SO_DIEN_THOAI = ?, 
          NGAY_TAO_USER = NOW(), 
-         NGAY_CAP_NHAT_USER =  NOW(), 
+         NGAY_CAP_NHAT_USER = NOW(), 
          IS_DELETE_USERS = ?, 
          AVATAR = ?, 
          DIA_CHI_Provinces = ?, 
@@ -194,16 +199,14 @@ const updateUserById_Admin = async (req, res) => {
          DIA_CHI_Wards = ?, 
          DIA_CHI_STREETNAME = ?, 
          TRANG_THAI_USER = ?, 
-         ID_COMPANY = ?
-        
+         ID_COMPANY = ? 
        WHERE ID_USERS = ?`,
       [
         ID_ROLE,
         HO_TEN,
         EMAIL,
-        _PASSWORD_HASH_USERS,
+        hashedPassword, // sử dụng mật khẩu đã hash
         SO_DIEN_THOAI,
-
         IS_DELETE_USERS,
         AVATAR,
         DIA_CHI_Provinces,
@@ -212,7 +215,6 @@ const updateUserById_Admin = async (req, res) => {
         DIA_CHI_STREETNAME,
         TRANG_THAI_USER,
         ID_COMPANY,
-
         id,
       ]
     );
@@ -239,7 +241,6 @@ const updateUserById_Admin = async (req, res) => {
     });
   }
 };
-
 const updateUserById_User = async (req, res) => {
   const {
     EMAIL,

@@ -13,11 +13,12 @@ import {
 } from "@mui/material";
 
 import materialOrderMasterServices from "../../../services/materialOrderMasterServices";
+import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
 
 const MaterialsOrderViewModal = ({ open, onClose, material }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { userInfo } = ReduxExportUseAuthState();
   // 🧠 Gọi API khi mở modal và có material
   useEffect(() => {
     const fetchOrders = async () => {
@@ -25,9 +26,12 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
 
       setLoading(true);
       try {
-        const data = await materialOrderMasterServices.getOrdersByMaterialId(
-          material.ID_MATERIALS_
-        );
+        const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+        const data =
+          await materialOrderMasterServices.getOrdersByCompanyAndMaterial(
+            companyId,
+            material.ID_MATERIALS_
+          );
         setOrders(data);
       } catch (error) {
         console.error("Lỗi khi tải đơn đặt hàng:", error);
