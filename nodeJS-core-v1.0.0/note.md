@@ -6,3 +6,12 @@
  PENDING         Đang chờ duyệt từ admin ✅ -->
 
 <!-- status cung cấp  -->
+
+<!-- const ORDER_STATUS = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  DELIVERING: 'DELIVERING',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED',
+  RETURNED: 'RETURNED',
+}; -->

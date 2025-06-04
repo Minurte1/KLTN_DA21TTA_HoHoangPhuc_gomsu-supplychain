@@ -26,6 +26,14 @@ const materialOrderMasterServices = {
     const res = await axiosInstance.post(MATERIAL_ORDER_API, data);
     return res.data;
   },
+  // Tạo đơn hàng từ 1 công ty để mua từ 1 công ty material
+  createMaterialOrderMasterFull: async (data) => {
+    const res = await axiosInstance.post(
+      `${MATERIAL_ORDER_API}/material-orders/create`,
+      data
+    );
+    return res.data;
+  },
 
   // Cập nhật đơn hàng nguyên liệu
   updateMaterialOrderMaster: async (id, data) => {

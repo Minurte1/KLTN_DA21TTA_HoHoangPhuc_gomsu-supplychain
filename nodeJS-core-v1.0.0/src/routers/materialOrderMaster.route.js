@@ -7,6 +7,7 @@ const {
   updateMaterialOrderMaster,
   deleteMaterialOrderMaster,
   getOrdersByCompanyAndMaterial,
+  createMaterialOrderFull,
 } = require("../controllers/materialOrderMaster.controller");
 
 const {
@@ -57,5 +58,6 @@ router.get(
   "/orders/company/:idCompany/material/:idMaterial",
   getOrdersByCompanyAndMaterial
 );
+router.post("/material-orders/create", createMaterialOrderFull);
 
 module.exports = router;
