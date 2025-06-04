@@ -88,14 +88,55 @@ const deleteMaterialOrder = async (id) => {
   );
   return result.affectedRows > 0;
 };
-const getOrdersByCompanyAndMaterial = async (idCompany, idMaterial) => {
+const getOrdersByCompanyAndMaterial = async (idCompanySeller, idMaterial) => {
   const [rows] = await db.execute(
     `
-    SELECT *
-    FROM material_orders
-    WHERE ID_COMPANY = ? AND ID_MATERIALS_ = ?
+   SELECT 
+  mom.ID_MATERIAL_ORDER_MASTER,
+  mom.ID_COMPANY_BUYER,
+  mom.ID_COMPANY_SELLER,
+  mom.ID_COMPANY_SHIP,
+  mom.ORDER_DATE,
+  mom.DELIVERY_DATE,
+  mom.STATUS AS ORDER_STATUS,
+  mom.TOTAL_COST,
+  mom.CREATED_AT,
+  mom.UPDATED_AT,
+
+  mo.ID_MATERIALS_,
+  mo.QUANTITY_ORDERED,
+  mo.STATUS AS ITEM_STATUS,
+  mo.TOTAL_COST AS ITEM_TOTAL_COST,
+
+  m.NAME_ AS MATERIAL_NAME,
+  m.UNIT_,
+  m.COST_PER_UNIT_,
+  m.ORIGIN,
+  m.EXPIRY_DATE,
+
+  c.NAME_COMPANY AS BUYER_NAME,
+  c.TYPE_COMPANY AS BUYER_TYPE,
+  c.ADDRESS AS BUYER_ADDRESS,
+  c.DIA_CHI_Provinces,
+  c.DIA_CHI_Districts,
+  c.DIA_CHI_Wards,
+  c.DIA_CHI_STREETNAME,
+  c.PHONE AS BUYER_PHONE,
+  c.EMAIL AS BUYER_EMAIL,
+  c.AVATAR AS BUYER_AVATAR,
+  c.STATUS AS BUYER_STATUS,
+  ct.NAME_COMPANY_TYPE AS BUYER_COMPANY_TYPE
+
+FROM material_order_master AS mom
+JOIN material_orders AS mo ON mom.ID_MATERIAL_ORDER_MASTER = mo.ID_MATERIAL_ORDER_MASTER
+JOIN materials AS m ON mo.ID_MATERIALS_ = m.ID_MATERIALS_
+JOIN companies AS c ON mom.ID_COMPANY_BUYER = c.ID_COMPANY
+LEFT JOIN company_types AS ct ON c.ID_COMPANY_TYPE = ct.ID_COMPANY_TYPE
+
+WHERE mom.ID_COMPANY_SELLER = ? AND m.ID_MATERIALS_ = ?
+
     `,
-    [idCompany, idMaterial]
+    [idCompanySeller, idMaterial]
   );
 
   return rows;
