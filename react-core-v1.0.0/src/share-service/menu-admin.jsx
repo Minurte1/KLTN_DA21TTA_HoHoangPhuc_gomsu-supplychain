@@ -136,6 +136,10 @@ export const adminMenuConfig = [
         path: "/admin/material_order_master",
       },
       {
+        label: "Vật liệu đang xử lý",
+        path: "/admin/material_order_master_pending",
+      },
+      {
         label: "Đơn hàng đang xử lý",
         path: "/admin/order/dang-xu-ly",
       },

@@ -16,11 +16,22 @@ const materialOrderMasterServices = {
   },
   getOrdersByCompanyAndMaterial: async (idCompany, idMaterial) => {
     const res = await axiosInstance.get(
-      `${MATERIAL_ORDER_API}/orders/company/${idCompany}/material/${idMaterial}`
+      `${MATERIAL_ORDER_API}/orders/company-material`,
+      { params: { idCompany, idMaterial } }
     );
     return res.data;
   },
 
+  getOrdersByCompanyAndMaterial_idCompanyBuyer: async (
+    idCompany,
+    idMaterial
+  ) => {
+    const res = await axiosInstance.get(
+      `${MATERIAL_ORDER_API}/orders/company-buy-material`,
+      { params: { idCompany, idMaterial } }
+    );
+    return res.data;
+  },
   // Tạo đơn hàng nguyên liệu mới
   createMaterialOrderMaster: async (data) => {
     const res = await axiosInstance.post(MATERIAL_ORDER_API, data);

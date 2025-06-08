@@ -102,7 +102,7 @@ const MaterialsOrdersModal = ({ open, onClose, material }) => {
           />
         </Box>
 
-        <Box mt={2}>
+        {/* <Box mt={2}>
           <TextField
             label="Ngày giao hàng"
             type="date"
@@ -113,7 +113,7 @@ const MaterialsOrdersModal = ({ open, onClose, material }) => {
               shrink: true,
             }}
           />
-        </Box>
+        </Box> */}
 
         <Box mt={2}>
           <Typography variant="h6">

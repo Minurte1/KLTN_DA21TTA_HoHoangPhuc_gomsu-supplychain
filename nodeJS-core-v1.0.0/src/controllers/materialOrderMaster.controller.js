@@ -115,7 +115,7 @@ const deleteMaterialOrderMaster = async (req, res) => {
 };
 const getOrdersByCompanyAndMaterial = async (req, res) => {
   try {
-    const { idCompany, idMaterial } = req.params;
+    const { idCompany, idMaterial } = req.query;
 
     const orders =
       await MaterialOrderOrdersService.getOrdersByCompanyAndMaterial(
@@ -128,6 +128,28 @@ const getOrdersByCompanyAndMaterial = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+const getOrdersByCompanyAndMaterial_idCompanyBuyer = async (req, res) => {
+  try {
+    let { idCompany, idMaterial } = req.query;
+
+    // Nếu idMaterial rỗng chuỗi thì gán null để SQL xử lý đúng
+    if (!idMaterial || idMaterial.trim() === "") {
+      idMaterial = null;
+    }
+
+    const orders =
+      await MaterialOrderOrdersService.getOrdersByCompanyAndMaterial_idCompanyBuyer(
+        idCompany,
+        idMaterial
+      );
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const createMaterialOrderFull = async (req, res) => {
   const {
     ID_COMPANY_BUYER,
@@ -216,6 +238,7 @@ const createMaterialOrderFull = async (req, res) => {
     res.status(500).json({ message: "Lỗi server", error: error.message });
   }
 };
+const updateConfirmOrderMaster = () => {};
 module.exports = {
   getAllMaterialOrdersMaster,
   createMaterialOrderMaster,
@@ -225,4 +248,5 @@ module.exports = {
   deleteMaterialOrderMaster,
   getOrdersByCompanyAndMaterial,
   createMaterialOrderFull,
+  getOrdersByCompanyAndMaterial_idCompanyBuyer,
 };

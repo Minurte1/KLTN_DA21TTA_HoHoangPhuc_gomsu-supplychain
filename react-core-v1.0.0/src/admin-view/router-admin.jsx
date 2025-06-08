@@ -12,6 +12,7 @@ import Material from "./pages/materials-page";
 import Supplier from "./pages/suppliers-page";
 import PrivateRoute from "../authentication/privateRoute";
 import MaterialOrderMaster from "./pages/material_order_master";
+import MaterialOrderMasterPending from "./pages/material-order/material_order_master_peding";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -100,7 +101,10 @@ const RouterAdmin = () => {
       path: "/material_order_master",
       element: <MaterialOrderMaster />,
     },
-
+    {
+      path: "/material_order_master_pending",
+      element: <MaterialOrderMasterPending />,
+    },
     // {
     //   path: "/admin/don-vat-lieu",
     //   element: <MaterialOrder />,
