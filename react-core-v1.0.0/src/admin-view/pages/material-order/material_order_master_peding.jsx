@@ -24,7 +24,7 @@ const MaterialOrderMasterPending = () => {
   const fetchOrders = async () => {
     try {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-      console.log("companyId", companyId);
+
       const data =
         await materialOrderMasterServices.getOrdersByCompanyAndMaterial_idCompanyBuyer(
           companyId
