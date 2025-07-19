@@ -32,9 +32,32 @@ const create = async (data) => {
   return result.insertId;
 };
 
-// Lấy tất cả đơn hàng
 const getAll = async () => {
-  const [rows] = await db.query(`SELECT * FROM material_order_master`);
+  const [rows] = await db.query(`
+    SELECT 
+      mom.ID_MATERIAL_ORDER_MASTER,
+      mom.ID_COMPANY_BUYER,
+      mom.ID_COMPANY_SELLER,
+      mom.ID_COMPANY_SHIP,
+      mom.ORDER_DATE,
+      mom.DELIVERY_DATE,
+      mom.STATUS,
+      mom.TOTAL_COST,
+      mom.CREATED_AT,
+      mom.UPDATED_AT,
+
+      mo.ID_MATERIAL_ORDER,
+      mo.ID_MATERIALS_,
+      mo.QUANTITY_ORDERED,
+      mo.ORDER_DATE AS ORDER_DATE_DETAIL,
+      mo.DELIVERY_DATE AS DELIVERY_DATE_DETAIL,
+      mo.STATUS AS STATUS_DETAIL,
+      mo.TOTAL_COST AS TOTAL_COST_DETAIL,
+      mo.ID_COMPANY AS ID_COMPANY_DETAIL
+
+    FROM material_order_master mom
+    LEFT JOIN material_orders mo ON mom.ID_MATERIAL_ORDER_MASTER = mo.ID_MATERIAL_ORDER
+  `);
   return rows;
 };
 

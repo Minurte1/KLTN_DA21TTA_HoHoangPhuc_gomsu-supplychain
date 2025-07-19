@@ -1,5 +1,7 @@
 const MaterialOrderOrdersService = require("../services/materialOrderMaster.service");
 const db = require("../config/database");
+
+/// Lấy thông tin tất cả đơn hàng giao dịch ( VẬT LIỆU )
 const getAllMaterialOrdersMaster = async (req, res) => {
   try {
     const materialOrders = await MaterialOrderOrdersService.getAll();
