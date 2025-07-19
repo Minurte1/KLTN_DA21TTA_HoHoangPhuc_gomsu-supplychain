@@ -15,6 +15,7 @@ import {
   alpha,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import spService from "../../../share-service/spService";
 
 const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
   const [search, setSearch] = useState("");
@@ -158,11 +159,7 @@ const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
                 {columns.map((column) => (
                   <TableCell
                     key={column.key}
-                    sx={{
-                      py: 1.2,
-                      fontSize: "0.875rem",
-                      color: "#444",
-                    }}
+                    sx={{ py: 1.2, fontSize: "0.875rem", color: "#444" }}
                   >
                     {column.render ? (
                       column.render(row[column.key], row)
@@ -192,7 +189,9 @@ const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
                           fontSize: "0.875rem",
                         }}
                       >
-                        {row[column.key]}
+                        {column.key === "STATUS"
+                          ? spService.mapStatusToVietnamese(row[column.key])
+                          : row[column.key]}
                       </Typography>
                     )}
                   </TableCell>

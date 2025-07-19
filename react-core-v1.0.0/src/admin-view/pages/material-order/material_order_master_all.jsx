@@ -58,13 +58,32 @@ const MaterialOrderAll = () => {
         data={materialOrders}
         columns={[
           { key: "ID_MATERIAL_ORDER_MASTER", label: "Mã Đơn Hàng" },
-          { key: "ID_COMPANY_BUYER", label: "Công ty mua" },
-          { key: "ID_COMPANY_SELLER", label: "Công ty bán" },
-          { key: "ID_COMPANY_SHIP", label: "Công ty vận chuyển" },
-          { key: "ORDER_DATE", label: "Ngày đặt hàng" },
-          { key: "DELIVERY_DATE", label: "Ngày giao hàng" },
+          { key: "NAME_COMPANY_SELLER", label: "Công ty bán" },
+          { key: "NAME_COMPANY_BUYER", label: "Công ty mua" },
+
+          { key: "NAME_COMPANY_SHIP", label: "Công ty vận chuyển" },
+          {
+            key: "ORDER_DATE",
+            label: "Ngày đặt hàng",
+            render: (_, row) =>
+              row.ORDER_DATE
+                ? new Date(row.ORDER_DATE).toLocaleDateString("vi-VN")
+                : "",
+          },
+          {
+            key: "DELIVERY_DATE",
+            label: "Ngày giao hàng",
+            render: (_, row) =>
+              row.DELIVERY_DATE
+                ? new Date(row.DELIVERY_DATE).toLocaleDateString("vi-VN")
+                : "",
+          },
           { key: "STATUS", label: "Trạng thái" },
-          { key: "TOTAL_COST", label: "Tổng chi phí" },
+          {
+            key: "TOTAL_COST",
+            label: "Tổng chi phí",
+            render: (_, row) => row.TOTAL_COST?.toLocaleString("vi-VN") + " ₫",
+          },
           { key: "ID_MATERIALS_", label: "Mã vật liệu" },
           { key: "QUANTITY_ORDERED", label: "Số lượng đặt" },
           {

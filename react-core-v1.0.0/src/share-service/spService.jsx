@@ -48,5 +48,24 @@ const spService = {
       .replace(/\-{2,}/g, "-") // Gộp nhiều dấu - thành 1
       .replace(/^-+|-+$/g, ""); // Xóa dấu - ở đầu/cuối
   },
+  mapStatusToVietnamese: (status) => {
+    const statusMap = {
+      // Trạng thái sản phẩm
+      ACTIVE: "Đang bán",
+      HIDDEN: "Đã ẩn",
+      OUT: "Hết hàng",
+      STOP: "Ngừng kinh doanh",
+      PENDING: "Chờ duyệt",
+
+      // Trạng thái đơn hàng
+      CONFIRMED: "Đã xác nhận",
+      DELIVERING: "Đang giao",
+      DELIVERED: "Đã giao",
+      CANCELLED: "Đã huỷ",
+      RETURNED: "Đã hoàn trả",
+    };
+
+    return statusMap[status] || status || "Không xác định";
+  },
 };
 export default spService;
