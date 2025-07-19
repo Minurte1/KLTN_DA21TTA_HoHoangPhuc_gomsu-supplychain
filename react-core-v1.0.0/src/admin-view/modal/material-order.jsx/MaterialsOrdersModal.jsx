@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import materialOrderMasterServices from "../../../services/materialOrderMasterServices";
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
+import { enqueueSnackbar } from "notistack";
 
 const MaterialsOrdersModal = ({ open, onClose, material }) => {
   const [quantity, setQuantity] = useState(1);
@@ -30,8 +31,8 @@ const MaterialsOrdersModal = ({ open, onClose, material }) => {
 
   const handleOrder = async () => {
     const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-    if (quantity <= 0 || !deliveryDate) {
-      alert("Vui lòng nhập số lượng và ngày giao hàng hợp lệ.");
+    if (quantity <= 0) {
+      enqueueSnackbar("Vui lòng nhập số lượng và ngày giao hàng hợp lệ.");
       return;
     }
 

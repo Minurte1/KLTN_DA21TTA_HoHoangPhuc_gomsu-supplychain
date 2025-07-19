@@ -10,6 +10,10 @@ const create = async (data) => {
     STATUS,
     TOTAL_COST,
   } = data;
+
+  const deliveryDate = DELIVERY_DATE === "" ? null : DELIVERY_DATE;
+  const orderDate = ORDER_DATE === "" ? null : ORDER_DATE;
+
   const [result] = await db.query(
     `INSERT INTO material_orders (ID_MATERIALS_, ID_SUPPLIERS, QUANTITY_ORDERED, ORDER_DATE, DELIVERY_DATE, STATUS, TOTAL_COST) 
     VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -17,12 +21,13 @@ const create = async (data) => {
       ID_MATERIALS_,
       ID_SUPPLIERS,
       QUANTITY_ORDERED,
-      ORDER_DATE,
-      DELIVERY_DATE,
+      orderDate,
+      deliveryDate,
       STATUS,
       TOTAL_COST,
     ]
   );
+
   return result.insertId;
 };
 
@@ -49,19 +54,33 @@ const update = async (id, data) => {
     STATUS,
     TOTAL_COST,
   } = data;
+
+  // Chuyển '' thành null để tránh lỗi
+  const orderDate = ORDER_DATE === "" ? null : ORDER_DATE;
+  const deliveryDate = DELIVERY_DATE === "" ? null : DELIVERY_DATE;
+
   const [result] = await db.query(
-    `UPDATE material_orders SET ID_MATERIALS_ = ?, ID_SUPPLIERS = ?, QUANTITY_ORDERED = ?, ORDER_DATE = ?, DELIVERY_DATE = ?, STATUS = ?, TOTAL_COST = ? WHERE ID_MATERIAL_ORDER = ?`,
+    `UPDATE material_orders 
+     SET ID_MATERIALS_ = ?, 
+         ID_SUPPLIERS = ?, 
+         QUANTITY_ORDERED = ?, 
+         ORDER_DATE = ?, 
+         DELIVERY_DATE = ?, 
+         STATUS = ?, 
+         TOTAL_COST = ? 
+     WHERE ID_MATERIAL_ORDER = ?`,
     [
       ID_MATERIALS_,
       ID_SUPPLIERS,
       QUANTITY_ORDERED,
-      ORDER_DATE,
-      DELIVERY_DATE,
+      orderDate,
+      deliveryDate,
       STATUS,
       TOTAL_COST,
       id,
     ]
   );
+
   return result.affectedRows > 0;
 };
 

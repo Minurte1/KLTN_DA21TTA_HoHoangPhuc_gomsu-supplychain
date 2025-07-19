@@ -163,6 +163,9 @@ const createMaterialOrderFull = async (req, res) => {
   const ORDER_DATE = new Date();
   const STATUS = "PENDING";
 
+  // ✅ Chuyển '' => null nếu DELIVERY_DATE rỗng
+  const deliveryDate = DELIVERY_DATE === "" ? null : DELIVERY_DATE;
+
   try {
     // 1. Lấy giá của vật liệu
     const [materialRows] = await db.execute(
@@ -195,7 +198,7 @@ const createMaterialOrderFull = async (req, res) => {
         ID_COMPANY_SELLER,
         ID_COMPANY_SHIP,
         ORDER_DATE,
-        DELIVERY_DATE,
+        deliveryDate, // dùng biến đã xử lý
         STATUS,
         TOTAL_COST,
       ]
@@ -220,7 +223,7 @@ const createMaterialOrderFull = async (req, res) => {
         ID_MATERIALS_,
         QUANTITY_ORDERED,
         ORDER_DATE,
-        DELIVERY_DATE,
+        deliveryDate, // dùng biến đã xử lý
         STATUS,
         TOTAL_COST,
         ID_COMPANY_BUYER,
@@ -238,6 +241,7 @@ const createMaterialOrderFull = async (req, res) => {
     res.status(500).json({ message: "Lỗi server", error: error.message });
   }
 };
+
 const updateConfirmOrderMaster = () => {};
 module.exports = {
   getAllMaterialOrdersMaster,
