@@ -57,6 +57,14 @@ const baseListPermission = [
     router: "material_order_master_pending",
     actions: ["view", "create", "update", "delete", "approve"],
   },
+  {
+    router: "material_order_master_buy_pending",
+    actions: ["view", "create", "update", "delete", "approve"],
+  },
+  {
+    router: "material_order_master_ship_pending",
+    actions: ["view", "create", "update", "delete", "approve"],
+  },
   // Order: Quản lý đơn hàng, chủ yếu dành cho RETAILER (xử lý bán hàng), TRANSPORT có thể xem để sắp xếp vận chuyển
   {
     router: "order",

@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import materialOrderMasterServices from "../../../services/materialOrderMasterServices";
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
 import DynamicTable from "../../../share-view/dynamic/table/table";
+import MaterialOrderViewModal from "../../modal/material-order.jsx/view-orderAll-modal-order";
 
 const MaterialOrderAll = () => {
   const [materialOrders, setMaterialOrders] = useState([]);
@@ -106,12 +107,11 @@ const MaterialOrderAll = () => {
         ]}
       />
 
-      {/* <MaterialOrderFormModal
+      <MaterialOrderViewModal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        materialOrder={selectedOrder}
-        onSuccess={fetchMaterialOrders}
-      /> */}
+        order={selectedOrder}
+      />
     </Box>
   );
 };

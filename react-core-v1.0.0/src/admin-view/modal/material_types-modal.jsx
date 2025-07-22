@@ -54,7 +54,7 @@ const MaterialTypeFormModal = ({ open, onClose, materialType, onSuccess }) => {
       inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
       options: companiesOptions, // Dữ liệu lựa chọn từ API
       optionsLabel: "NAME_COMPANY",
-      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
+      disabled: userInfo?.companyInfo?.ID_COMPANY ? true : false,
     },
   ];
 

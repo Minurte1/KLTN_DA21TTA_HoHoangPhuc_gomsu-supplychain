@@ -63,6 +63,9 @@ const spService = {
       DELIVERED: "Đã giao",
       CANCELLED: "Đã huỷ",
       RETURNED: "Đã hoàn trả",
+
+      // Trạng thái mới thêm
+      NEED_TO_SHIP: "Cần vận chuyển",
     };
 
     return statusMap[status] || status || "Không xác định";

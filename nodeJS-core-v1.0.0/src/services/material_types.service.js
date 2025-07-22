@@ -20,14 +20,12 @@ const getAll = async (id_company) => {
 
     const params = [];
 
-    if (id_company !== undefined && id_company !== null && id_company !== "") {
+    if (id_company != null && id_company !== "") {
       query += ` WHERE mt.ID_COMPANY = ?`;
       params.push(id_company);
     }
 
     const [rows] = await db.query(query, params);
-
-    console.log("Query result rows:", rows.length);
     return rows;
   } catch (error) {
     console.error("Error in getAll:", error);

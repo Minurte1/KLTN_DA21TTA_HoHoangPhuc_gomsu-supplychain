@@ -4,7 +4,21 @@ const db = require("../config/database");
 /// Lấy thông tin tất cả đơn hàng giao dịch ( VẬT LIỆU )
 const getAllMaterialOrdersMaster = async (req, res) => {
   try {
-    const materialOrders = await MaterialOrderOrdersService.getAll();
+    const {
+      idBuyer, // mom.ID_COMPANY_BUYER
+      idSeller, // mom.ID_COMPANY_SELLER
+      idShip, // mom.ID_COMPANY_SHIP
+      status, // mom.STATUS
+    } = req.query;
+
+    const filters = {
+      idBuyer: idBuyer || null,
+      idSeller: idSeller || null,
+      idShip: idShip || null,
+      status: status || null,
+    };
+
+    const materialOrders = await MaterialOrderOrdersService.getAll(filters);
     res.json(materialOrders);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -133,17 +147,24 @@ const getOrdersByCompanyAndMaterial = async (req, res) => {
 
 const getOrdersByCompanyAndMaterial_idCompanyBuyer = async (req, res) => {
   try {
-    let { idCompany, idMaterial } = req.query;
+    let { idCompany, idMaterial, STATUS } = req.query;
 
     // Nếu idMaterial rỗng chuỗi thì gán null để SQL xử lý đúng
     if (!idMaterial || idMaterial.trim() === "") {
       idMaterial = null;
     }
+    if (!idCompany || idCompany.trim() === "") {
+      idCompany = null;
+    }
+    if (!STATUS || STATUS.trim() === "") {
+      STATUS = null;
+    }
 
     const orders =
       await MaterialOrderOrdersService.getOrdersByCompanyAndMaterial_idCompanyBuyer(
         idCompany,
-        idMaterial
+        idMaterial,
+        STATUS
       );
 
     res.json(orders);

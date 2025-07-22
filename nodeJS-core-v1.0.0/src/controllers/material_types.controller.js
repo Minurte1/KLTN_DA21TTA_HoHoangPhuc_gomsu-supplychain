@@ -4,8 +4,7 @@ const getAllMaterialTypes = async (req, res) => {
   try {
     let { id_company } = req.query;
 
-    // Nếu id_company = 'undefined' hoặc '', chuyển thành undefined thật
-    if (id_company === "undefined" || id_company === "") {
+    if (!id_company || id_company === "undefined" || id_company === "null") {
       id_company = undefined;
     }
 

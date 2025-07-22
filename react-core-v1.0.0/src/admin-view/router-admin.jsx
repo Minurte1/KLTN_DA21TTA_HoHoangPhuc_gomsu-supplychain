@@ -12,8 +12,10 @@ import Material from "./pages/materials-page";
 import Supplier from "./pages/suppliers-page";
 import PrivateRoute from "../authentication/privateRoute";
 import MaterialOrderMaster from "./pages/material_order_master";
-import MaterialOrderMasterPending from "./pages/material-order/material_order_master_peding";
+import MaterialOrderMasterPending from "./pages/material-order/order-peding/material_order_master_ctyBuy_peding";
 import MaterialOrderAll from "./pages/material-order/material_order_master_all";
+import MaterialOrderMaster_SellerPending from "./pages/material-order/order-peding/material_order_master_ctySeller_peding";
+import MaterialOrderMaster_BuyPending from "./pages/material-order/order-peding/material_order_master_ctyBuy_peding";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -104,7 +106,15 @@ const RouterAdmin = () => {
     },
     {
       path: "/material_order_master_pending",
-      element: <MaterialOrderMasterPending />,
+      element: <MaterialOrderMaster_SellerPending />,
+    },
+    {
+      path: "/material_order_master_buy_pending",
+      element: <MaterialOrderMaster_BuyPending />,
+    },
+    {
+      path: "/material_order_master_ship_pending",
+      element: <MaterialOrderMaster_SellerPending />,
     },
     // {
     //   path: "/admin/don-vat-lieu",

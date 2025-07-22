@@ -136,20 +136,16 @@ export const adminMenuConfig = [
         path: "/admin/material_order_master",
       },
       {
-        label: "Vật liệu đang xử lý",
+        label: "Đơn hàng Cty CC bán vật liệu đang xử lý",
         path: "/admin/material_order_master_pending",
       },
       {
-        label: "Đơn hàng đang xử lý",
-        path: "/admin/order/dang-xu-ly",
+        label: "Đơn hàng Cty SS mua vật liệu đang xử lý",
+        path: "/admin/material_order_master_buy_pending",
       },
       {
-        label: "Đơn hàng đã hủy",
-        path: "/admin/order/da-huy",
-      },
-      {
-        label: "Đơn hàng hoàn tất",
-        path: "/admin/order/hoan-tat",
+        label: "Đơn hàng Cty VC vật liệu đang xử lý",
+        path: "/admin/material_order_master_ship_pending",
       },
       {
         label: "Giỏ hàng",

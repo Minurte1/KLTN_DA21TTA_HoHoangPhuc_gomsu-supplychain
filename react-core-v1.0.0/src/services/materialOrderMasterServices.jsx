@@ -4,8 +4,10 @@ const MATERIAL_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/material-orders-
 
 const materialOrderMasterServices = {
   // Lấy danh sách tất cả các đơn hàng nguyên liệu
-  getMaterialOrdersMaster: async () => {
-    const res = await axiosInstance.get(MATERIAL_ORDER_API);
+  getMaterialOrdersMaster: async (filters = {}) => {
+    const res = await axiosInstance.get(MATERIAL_ORDER_API, {
+      params: filters,
+    });
     return res.data;
   },
 

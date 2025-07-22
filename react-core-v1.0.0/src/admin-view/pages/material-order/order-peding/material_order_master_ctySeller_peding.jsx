@@ -4,17 +4,17 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import DynamicTable from "../../../share-view/dynamic/table/table";
-import materialServices from "../../../services/materialServices";
-import MaterialsFormModal from "../../modal/materials-modal";
-import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
+import DynamicTable from "../../../../share-view/dynamic/table/table";
+import materialServices from "../../../../services/materialServices";
+import MaterialsFormModal from "../../../modal/materials-modal";
+import ReduxExportUseAuthState from "../../../../redux/redux-export/useAuthServices";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import MaterialsOrdersModal from "../../modal/material-order.jsx/MaterialsOrdersModal";
-import MaterialsOrderViewModal from "../../modal/material-order.jsx/MaterialsOrderViewModal";
-import materialOrderMasterServices from "../../../services/materialOrderMasterServices";
+import MaterialsOrdersModal from "../../../modal/material-order.jsx/MaterialsOrdersModal";
+import MaterialsOrderViewModal from "../../../modal/material-order.jsx/MaterialsOrderViewModal";
+import materialOrderMasterServices from "../../../../services/materialOrderMasterServices";
 
-const MaterialOrderMasterPending = () => {
+const MaterialOrderMaster_SellerPending = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
@@ -25,10 +25,12 @@ const MaterialOrderMasterPending = () => {
     try {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
 
-      const data =
-        await materialOrderMasterServices.getOrdersByCompanyAndMaterial_idCompanyBuyer(
-          companyId
-        );
+      const data = await materialOrderMasterServices.getMaterialOrdersMaster({
+        idBuyer: companyId, // nếu đang lọc theo công ty mua
+
+        status: "PENDING", // hoặc trạng thái nếu cần
+      });
+
       setOrders(data);
     } catch (error) {
       console.error("Lỗi khi tải đơn đặt hàng:", error);
@@ -61,24 +63,45 @@ const MaterialOrderMasterPending = () => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-  console.log("orders", orders);
+  console.log("userInfo:", userInfo);
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Buôn bán vật liệu giữa các công ty
+        Danh sách đơn hàng đang chờ xử lý
       </Typography>
 
       <DynamicTable
         data={orders}
         columns={[
-          { key: "NAME_MATERIAL_TYPES", label: "Tên loại vật liệu" },
-          { key: "NAME_COMPANY", label: "Tên công ty" },
-          { key: "NAME_", label: "Tên vật liệu" },
-          { key: "UNIT_", label: "Đơn vị" },
-          { key: "QUANTITY", label: "Số lượng hiện có" },
-          { key: "COST_PER_UNIT_", label: "Giá mỗi đơn vị" },
-          { key: "ORIGIN", label: "Nguồn gốc" },
+          { key: "ID_MATERIAL_ORDER_MASTER", label: "Mã Đơn Hàng" },
+          { key: "NAME_COMPANY_SELLER", label: "Công ty bán" },
+          { key: "MATERIAL_NAME", label: "Tên vật liệu" },
+          { key: "NAME_COMPANY_BUYER", label: "Công ty mua" },
+          { key: "QUANTITY_ORDERED", label: "Số lượng đặt" },
+
+          { key: "NAME_COMPANY_SHIP", label: "Công ty vận chuyển" },
+          {
+            key: "ORDER_DATE",
+            label: "Ngày đặt hàng",
+            render: (_, row) =>
+              row.ORDER_DATE
+                ? new Date(row.ORDER_DATE).toLocaleDateString("vi-VN")
+                : "",
+          },
+          {
+            key: "DELIVERY_DATE",
+            label: "Ngày giao hàng",
+            render: (_, row) =>
+              row.DELIVERY_DATE
+                ? new Date(row.DELIVERY_DATE).toLocaleDateString("vi-VN")
+                : "",
+          },
           { key: "STATUS", label: "Trạng thái" },
+          {
+            key: "TOTAL_COST",
+            label: "Tổng chi phí",
+            render: (_, row) => row.TOTAL_COST?.toLocaleString("vi-VN") + " ₫",
+          },
 
           {
             key: "actions",
@@ -116,4 +139,4 @@ const MaterialOrderMasterPending = () => {
   );
 };
 
-export default MaterialOrderMasterPending;
+export default MaterialOrderMaster_SellerPending;
