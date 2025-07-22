@@ -13,6 +13,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MaterialsOrdersModal from "../../../modal/material-order.jsx/MaterialsOrdersModal";
 import MaterialsOrderViewModal from "../../../modal/material-order.jsx/MaterialsOrderViewModal";
 import materialOrderMasterServices from "../../../../services/materialOrderMasterServices";
+import MaterialOrderViewModal from "../../../modal/material-order.jsx/view-orderAll-modal-order";
 
 const MaterialOrderMaster_SellerPending = () => {
   const [materials, setMaterials] = useState([]);
@@ -54,16 +55,11 @@ const MaterialOrderMaster_SellerPending = () => {
   const [openOrderModal, setOpenOrderModal] = useState(false);
   const [openViewOrdersModal, setOpenViewOrdersModal] = useState(false);
 
-  const handleOpenOrderModal = (material) => {
-    setSelectedMaterial(material);
-    setOpenOrderModal(true);
-  };
-
   const handleViewOrders = (material) => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-  console.log("userInfo:", userInfo);
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
@@ -112,28 +108,24 @@ const MaterialOrderMaster_SellerPending = () => {
 
               return (
                 <>
-                  {isSameCompany ? (
-                    <>
-                      <IconButton onClick={() => handleViewOrders(row)}>
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(row.ID_MATERIALS_)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  ) : (
-                    // Nếu là công ty khác, có thể đặt mua
-                    <IconButton onClick={() => handleOpenOrderModal(row)}>
-                      <ShoppingCartIcon />
+                  <>
+                    <IconButton onClick={() => handleViewOrders(row)}>
+                      <VisibilityIcon />
                     </IconButton>
-                  )}
+                    <IconButton onClick={() => handleDelete(row.ID_MATERIALS_)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
                 </>
               );
             },
           },
         ]}
+      />
+      <MaterialOrderViewModal
+        open={openViewOrdersModal}
+        onClose={() => setOpenViewOrdersModal(false)}
+        order={selectedMaterial}
       />
     </Box>
   );
