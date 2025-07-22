@@ -63,7 +63,7 @@ const MaterialOrderMaster_SellerConfirmed = () => {
     const response =
       await materialOrderMasterServices.updateStatusMaterialOrderMaster(
         id,
-        "CONFIRMED"
+        "FAILED"
       );
     if (response.status === 200) {
       enqueueSnackbar("Cập nhật trạng thái đơn hàng thành công", {
@@ -144,6 +144,8 @@ const MaterialOrderMaster_SellerConfirmed = () => {
         onClose={() => setOpenViewOrdersModal(false)}
         order={selectedMaterial}
         onConfirmTransport={handleUpdateStatusOrder}
+        title={"Hủy vận chuyển đơn hàng"}
+        color="error"
       />
     </Box>
   );

@@ -30,6 +30,8 @@ const MaterialOrderViewModal = ({
   onClose,
   order,
   onConfirmTransport,
+  title = "Xác nhận vận chuyển",
+  color = "success",
 }) => {
   if (!order) return null;
 
@@ -88,9 +90,9 @@ const MaterialOrderViewModal = ({
             }
           }}
           variant="contained"
-          color="success"
+          color={color || "primary"}
         >
-          Xác nhận cần vận chuyển
+          {title || "Xác nhận vận chuyển"}
         </Button>
       </DialogActions>
     </Dialog>
