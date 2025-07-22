@@ -26,7 +26,7 @@ const MaterialOrderMaster_SellerPending = () => {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
-        idBuyer: companyId, // nếu đang lọc theo công ty mua
+        idSeller: companyId, // nếu đang lọc theo công ty mua
 
         status: "PENDING", // hoặc trạng thái nếu cần
       });
@@ -67,7 +67,7 @@ const MaterialOrderMaster_SellerPending = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Danh sách đơn hàng đang chờ xử lý
+        Đơn hàng Cty CC bán vật liệu đang xử lý
       </Typography>
 
       <DynamicTable
