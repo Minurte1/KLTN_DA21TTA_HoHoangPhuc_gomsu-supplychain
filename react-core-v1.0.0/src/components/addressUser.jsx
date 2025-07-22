@@ -29,15 +29,14 @@ const AddressSelector = ({
   const [loadingProvinces, setLoadingProvinces] = useState(false);
   const [loadingDistricts, setLoadingDistricts] = useState(false);
   const [loadingWards, setLoadingWards] = useState(false);
+  const api = process.env.REACT_APP_URL_SERVER; // URL API của bạn
 
   // Fetch provinces
   useEffect(() => {
     const fetchProvinces = async () => {
       setLoadingProvinces(true);
       try {
-        const response = await axios.get(
-          `http://localhost:3002/address/provinces`
-        );
+        const response = await axios.get(`${api}/address/provinces`);
 
         setProvinces(response.data.data || []);
       } catch (error) {
@@ -56,7 +55,7 @@ const AddressSelector = ({
         setLoadingDistricts(true);
         try {
           const response = await axios.get(
-            `http://localhost:3002/address/districts/${selectedProvince.code}`
+            `${api}/address/districts/${selectedProvince.code}`
           );
           setDistricts(response.data.data || []);
         } catch (error) {
@@ -78,7 +77,7 @@ const AddressSelector = ({
         setLoadingWards(true);
         try {
           const response = await axios.get(
-            `http://localhost:3002/address/wards/${selectedDistrict.code}`
+            `${api}/address/wards/${selectedDistrict.code}`
           );
           setWards(response.data.data || []);
         } catch (error) {

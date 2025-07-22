@@ -59,7 +59,9 @@ const MaterialOrderAll = () => {
         columns={[
           { key: "ID_MATERIAL_ORDER_MASTER", label: "Mã Đơn Hàng" },
           { key: "NAME_COMPANY_SELLER", label: "Công ty bán" },
+          { key: "MATERIAL_NAME", label: "Tên vật liệu" },
           { key: "NAME_COMPANY_BUYER", label: "Công ty mua" },
+          { key: "QUANTITY_ORDERED", label: "Số lượng đặt" },
 
           { key: "NAME_COMPANY_SHIP", label: "Công ty vận chuyển" },
           {
@@ -84,8 +86,7 @@ const MaterialOrderAll = () => {
             label: "Tổng chi phí",
             render: (_, row) => row.TOTAL_COST?.toLocaleString("vi-VN") + " ₫",
           },
-          { key: "ID_MATERIALS_", label: "Mã vật liệu" },
-          { key: "QUANTITY_ORDERED", label: "Số lượng đặt" },
+
           {
             key: "actions",
             label: "Hành động",

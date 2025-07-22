@@ -59,7 +59,7 @@ const DashboardAdmin = () => {
 
         // Fetch doanh thu theo ngày, tháng, năm
         const revenueStatsRes = await axios.get(
-          "http://localhost:3002/thong-ke/ngay/thang/nam"
+          `${api}/thong-ke/ngay/thang/nam`
         );
         setRevenueStats(revenueStatsRes.data);
       } catch (error) {
