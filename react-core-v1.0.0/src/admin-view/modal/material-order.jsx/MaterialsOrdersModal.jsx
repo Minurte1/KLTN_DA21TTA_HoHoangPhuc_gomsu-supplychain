@@ -55,9 +55,11 @@ const MaterialsOrdersModal = ({ open, onClose, material }) => {
         }`
       );
       setTimeout(() => {
+        setQuantity(0);
+        setTotalCost(0);
         setMessage("");
         onClose();
-      }, 2000);
+      }, 1000);
     } catch (err) {
       console.error("❌ Lỗi đặt hàng:", err);
       setMessage("❌ Đặt hàng thất bại. Vui lòng thử lại sau.");

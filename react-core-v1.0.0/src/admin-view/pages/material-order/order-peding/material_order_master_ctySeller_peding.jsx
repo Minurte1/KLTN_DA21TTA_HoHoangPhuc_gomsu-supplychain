@@ -52,7 +52,7 @@ const MaterialOrderMaster_SellerPending = () => {
     await materialServices.deleteMaterial(id);
     fetchOrders();
   };
-  const [openOrderModal, setOpenOrderModal] = useState(false);
+
   const [openViewOrdersModal, setOpenViewOrdersModal] = useState(false);
 
   const handleViewOrders = (material) => {

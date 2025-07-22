@@ -97,7 +97,7 @@ export const adminMenuConfig = [
 
   // SUPPLIER
   {
-    label: "Nhà cung cấp",
+    label: "Vật liệu",
     icon: <LayersIcon />,
     children: [
       {
