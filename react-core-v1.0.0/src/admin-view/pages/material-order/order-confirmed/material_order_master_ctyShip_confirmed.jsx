@@ -27,7 +27,7 @@ const MaterialOrderMaster_ShipConfirmed = () => {
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
         idShip: companyId, // nếu đang lọc theo công ty mua
-        status: "PENDING", // hoặc trạng thái nếu cần
+        status: "CONFIRMED", // hoặc trạng thái nếu cần
       });
 
       setOrders(data);
