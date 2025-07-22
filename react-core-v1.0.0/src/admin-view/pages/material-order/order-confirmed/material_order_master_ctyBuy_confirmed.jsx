@@ -13,10 +13,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MaterialsOrdersModal from "../../../modal/material-order.jsx/MaterialsOrdersModal";
 import MaterialsOrderViewModal from "../../../modal/material-order.jsx/MaterialsOrderViewModal";
 import materialOrderMasterServices from "../../../../services/materialOrderMasterServices";
-import MaterialOrderViewModal from "../../../modal/material-order.jsx/view-orderAll-modal-order";
-import { enqueueSnackbar } from "notistack";
 
-const MaterialOrderMaster_SellerPending = () => {
+const MaterialOrderMaster_BuyConfirmed = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
@@ -28,8 +26,8 @@ const MaterialOrderMaster_SellerPending = () => {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
-        idSeller: companyId, // nếu đang lọc theo công ty mua
-        status: "PENDING", // hoặc trạng thái nếu cần
+        idBuyer: companyId, // nếu đang lọc theo công ty mua
+        status: "CONFIRMED", // hoặc trạng thái nếu cần
       });
 
       setOrders(data);
@@ -52,35 +50,23 @@ const MaterialOrderMaster_SellerPending = () => {
     await materialServices.deleteMaterial(id);
     fetchOrders();
   };
-
+  const [openOrderModal, setOpenOrderModal] = useState(false);
   const [openViewOrdersModal, setOpenViewOrdersModal] = useState(false);
+
+  const handleOpenOrderModal = (material) => {
+    setSelectedMaterial(material);
+    setOpenOrderModal(true);
+  };
 
   const handleViewOrders = (material) => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-  const handleUpdateStatusOrder = async (id) => {
-    const response =
-      await materialOrderMasterServices.updateStatusMaterialOrderMaster(
-        id,
-        "CONFIRMED"
-      );
-    if (response.status === 200) {
-      enqueueSnackbar("Cập nhật trạng thái đơn hàng thành công", {
-        variant: "success",
-      });
-      setOpenViewOrdersModal(false);
-    } else {
-      enqueueSnackbar("Cập nhật trạng thái đơn hàng thất bại", {
-        variant: "error",
-      });
-    }
-  };
-
+  console.log("userInfo:", userInfo);
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Đơn hàng Cty CC bán vật liệu đang xử lý
+        Đơn hàng Cty SS mua vật liệu đang xử lý
       </Typography>
 
       <DynamicTable
@@ -125,28 +111,31 @@ const MaterialOrderMaster_SellerPending = () => {
 
               return (
                 <>
-                  <>
-                    <IconButton onClick={() => handleViewOrders(row)}>
-                      <VisibilityIcon />
+                  {isSameCompany ? (
+                    <>
+                      <IconButton onClick={() => handleViewOrders(row)}>
+                        <VisibilityIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(row.ID_MATERIALS_)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    // Nếu là công ty khác, có thể đặt mua
+                    <IconButton onClick={() => handleOpenOrderModal(row)}>
+                      <ShoppingCartIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(row.ID_MATERIALS_)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
+                  )}
                 </>
               );
             },
           },
         ]}
       />
-      <MaterialOrderViewModal
-        open={openViewOrdersModal}
-        onClose={() => setOpenViewOrdersModal(false)}
-        order={selectedMaterial}
-        onConfirmTransport={handleUpdateStatusOrder}
-      />
     </Box>
   );
 };
 
-export default MaterialOrderMaster_SellerPending;
+export default MaterialOrderMaster_BuyConfirmed;

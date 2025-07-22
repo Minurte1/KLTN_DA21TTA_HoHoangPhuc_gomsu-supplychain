@@ -10,6 +10,7 @@ const {
   createMaterialOrderFull,
   updateConfirmOrderMaster,
   getOrdersByCompanyAndMaterial_idCompanyBuyer,
+  updateStatusMaterialOrderMaster,
 } = require("../controllers/materialOrderMaster.controller");
 
 const {
@@ -69,5 +70,12 @@ router.get(
 );
 
 router.post("/material-orders/create", createMaterialOrderFull);
+
+router.put(
+  "/update-status/:id",
+  // checkUserJWT,
+  // checkUserPermission("material_order_master", "update"),
+  updateStatusMaterialOrderMaster
+);
 
 module.exports = router;

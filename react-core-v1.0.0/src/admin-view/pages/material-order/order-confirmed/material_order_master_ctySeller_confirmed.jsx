@@ -16,7 +16,7 @@ import materialOrderMasterServices from "../../../../services/materialOrderMaste
 import MaterialOrderViewModal from "../../../modal/material-order.jsx/view-orderAll-modal-order";
 import { enqueueSnackbar } from "notistack";
 
-const MaterialOrderMaster_SellerPending = () => {
+const MaterialOrderMaster_SellerConfirmed = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
@@ -29,7 +29,7 @@ const MaterialOrderMaster_SellerPending = () => {
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
         idSeller: companyId, // nếu đang lọc theo công ty mua
-        status: "PENDING", // hoặc trạng thái nếu cần
+        status: "CONFIRMED", // hoặc trạng thái nếu cần
       });
 
       setOrders(data);
@@ -149,4 +149,4 @@ const MaterialOrderMaster_SellerPending = () => {
   );
 };
 
-export default MaterialOrderMaster_SellerPending;
+export default MaterialOrderMaster_SellerConfirmed;

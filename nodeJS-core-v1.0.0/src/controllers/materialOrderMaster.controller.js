@@ -1,6 +1,6 @@
 const MaterialOrderOrdersService = require("../services/materialOrderMaster.service");
 const db = require("../config/database");
-
+const moment = require("moment");
 /// Lấy thông tin tất cả đơn hàng giao dịch ( VẬT LIỆU )
 const getAllMaterialOrdersMaster = async (req, res) => {
   try {
@@ -266,6 +266,42 @@ const createMaterialOrderFull = async (req, res) => {
 };
 
 const updateConfirmOrderMaster = () => {};
+const updateStatusMaterialOrderMaster = async (req, res) => {
+  const { id } = req.params; // ID_MATERIAL_ORDER_MASTER
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: "Thiếu status để cập nhật" });
+  }
+
+  try {
+    // Cập nhật bảng material_order_master
+    const updateMaster = `
+      UPDATE material_order_master 
+      SET STATUS = ?, UPDATED_AT = ? 
+      WHERE ID_MATERIAL_ORDER_MASTER = ?
+    `;
+    await db.execute(updateMaster, [
+      status,
+      moment().format("YYYY-MM-DD HH:mm:ss"),
+      id,
+    ]);
+
+    // Cập nhật bảng material_orders
+    const updateOrders = `
+      UPDATE material_orders 
+      SET STATUS = ? 
+      WHERE ID_MATERIAL_ORDER_MASTER = ?
+    `;
+    await db.execute(updateOrders, [status, id]);
+
+    res.status(200).json({ message: "Cập nhật trạng thái thành công" });
+  } catch (error) {
+    console.error("Lỗi cập nhật trạng thái:", error);
+    res.status(500).json({ message: "Lỗi máy chủ" });
+  }
+};
+
 module.exports = {
   getAllMaterialOrdersMaster,
   createMaterialOrderMaster,
@@ -276,4 +312,5 @@ module.exports = {
   getOrdersByCompanyAndMaterial,
   createMaterialOrderFull,
   getOrdersByCompanyAndMaterial_idCompanyBuyer,
+  updateStatusMaterialOrderMaster,
 };

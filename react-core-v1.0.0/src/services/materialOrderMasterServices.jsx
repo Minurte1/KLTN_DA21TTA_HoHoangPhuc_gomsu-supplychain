@@ -67,6 +67,14 @@ const materialOrderMasterServices = {
     const res = await axiosInstance.delete(`${MATERIAL_ORDER_API}/${id}`);
     return res.data;
   },
+
+  updateStatusMaterialOrderMaster: async (id, status) => {
+    const res = await axiosInstance.put(
+      `${MATERIAL_ORDER_API}/update-status/${id}`,
+      { status }
+    );
+    return res;
+  },
 };
 
 export default materialOrderMasterServices;

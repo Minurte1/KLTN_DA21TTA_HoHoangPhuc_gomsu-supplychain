@@ -102,6 +102,8 @@ const MaterialOrderMaster = () => {
           },
         ]}
       />
+
+      {/* Modal mua vật liệu */}
       <MaterialsOrdersModal
         open={openOrderModal}
         onClose={() => setOpenOrderModal(false)}

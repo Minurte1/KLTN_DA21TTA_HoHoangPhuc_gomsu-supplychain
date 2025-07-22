@@ -135,18 +135,26 @@ export const adminMenuConfig = [
         label: "Kinh doanh vật liệu",
         path: "/admin/material_order_master",
       },
+      // ============================Pending==========================
       {
         label: "Đơn hàng Cty CC bán vật liệu đang xử lý",
         path: "/admin/material_order_master_pending",
       },
       {
-        label: "Đơn hàng Cty SS mua vật liệu đang xử lý",
+        label: "Đơn hàng Cty SS mua vật liệu",
         path: "/admin/material_order_master_buy_pending",
       },
+
+      // ============================Confirmed==========================
       {
         label: "Đơn hàng Cty VC vật liệu đang xử lý",
-        path: "/admin/material_order_master_ship_pending",
+        path: "/admin/material_order_master_ship_confirmed",
       },
+      {
+        label: "Đơn hàng Cty CC bán vật liệu đã xác nhận",
+        path: "/admin/material_order_master_seller_confirmed",
+      },
+
       {
         label: "Giỏ hàng",
         path: "/admin/cart",

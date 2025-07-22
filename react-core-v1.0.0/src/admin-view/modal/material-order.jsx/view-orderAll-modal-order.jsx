@@ -25,7 +25,12 @@ const renderCell = (label, value) => (
   </TableRow>
 );
 
-const MaterialOrderViewModal = ({ open, onClose, order }) => {
+const MaterialOrderViewModal = ({
+  open,
+  onClose,
+  order,
+  onConfirmTransport,
+}) => {
   if (!order) return null;
 
   return (
@@ -71,9 +76,21 @@ const MaterialOrderViewModal = ({ open, onClose, order }) => {
           </TableBody>
         </Table>
       </DialogContent>
+
       <DialogActions>
-        <Button onClick={onClose} variant="contained">
+        <Button onClick={onClose} variant="contained" color="primary">
           Đóng
+        </Button>
+        <Button
+          onClick={() => {
+            if (typeof onConfirmTransport === "function") {
+              onConfirmTransport(order.ID_MATERIAL_ORDER_MASTER);
+            }
+          }}
+          variant="contained"
+          color="success"
+        >
+          Xác nhận cần vận chuyển
         </Button>
       </DialogActions>
     </Dialog>

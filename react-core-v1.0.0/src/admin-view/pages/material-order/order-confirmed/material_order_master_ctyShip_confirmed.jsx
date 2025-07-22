@@ -14,7 +14,7 @@ import MaterialsOrdersModal from "../../../modal/material-order.jsx/MaterialsOrd
 import MaterialsOrderViewModal from "../../../modal/material-order.jsx/MaterialsOrderViewModal";
 import materialOrderMasterServices from "../../../../services/materialOrderMasterServices";
 
-const MaterialOrderMaster_ShipPending = () => {
+const MaterialOrderMaster_ShipConfirmed = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
@@ -138,4 +138,4 @@ const MaterialOrderMaster_ShipPending = () => {
   );
 };
 
-export default MaterialOrderMaster_ShipPending;
+export default MaterialOrderMaster_ShipConfirmed;

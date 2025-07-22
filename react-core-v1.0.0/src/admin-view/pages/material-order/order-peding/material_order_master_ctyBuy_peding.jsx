@@ -27,7 +27,7 @@ const MaterialOrderMaster_BuyPending = () => {
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
         idBuyer: companyId, // nếu đang lọc theo công ty mua
-        status: "PENDING", // hoặc trạng thái nếu cần
+        // status: "PENDING", // hoặc trạng thái nếu cần
       });
 
       setOrders(data);
@@ -62,7 +62,7 @@ const MaterialOrderMaster_BuyPending = () => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-  console.log("userInfo:", userInfo);
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
