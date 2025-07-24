@@ -106,8 +106,12 @@ const baseListPermission = [
     router: "product_instances",
     actions: ["view", "create", "update", "delete"],
   },
-
+  // ========================VẬN CHUYỂN===============================
   // Transport Order: Quản lý đơn vận chuyển, chủ yếu dành cho TRANSPORT, MANUFACTURER và RETAILER có thể xem để theo dõi
+  {
+    router: "transport_orders",
+    actions: ["view", "create", "update", "delete", "ship"],
+  },
   {
     router: "transport_orders",
     actions: ["view", "create", "update", "delete", "ship"],
