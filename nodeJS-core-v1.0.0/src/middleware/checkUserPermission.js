@@ -113,7 +113,7 @@ const baseListPermission = [
     actions: ["view", "create", "update", "delete", "ship"],
   },
   {
-    router: "transport_orders",
+    router: "transport_service_fees",
     actions: ["view", "create", "update", "delete", "ship"],
   },
   // Cart: Quản lý giỏ hàng, chủ yếu dành cho RETAILER hoặc người dùng cuối
