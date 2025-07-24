@@ -1,3 +1,14 @@
-Dựa vào đoạn code mẫu của " MaterialTypeFormModal" bạn hãy viết lại cho " materials   " biết Bảng materials  gồm: ID_MATERIALS_,ID_MATERIAL_TYPES, NAME_MATERIALS, UNIT_MATERIALS, QUANTITY_ORDER_ITEMS, COST_PER_UNIT_,CREATED_AT_PRODUCTS, UPDATED_AT_PRODUCTS,    ORIGIN VARCHAR(255),    EXPIRY_DATE DATETIME 
+Dựa vào đoạn code mẫu của " Material" bạn hãy viết lại cho " transport_service_fees " biết Bảng bang gồm : transport_service_fees 
+ID_FEE INT
+ID_COMPANY_SHIP INT
+SERVICE_NAME VARCHAR(100)
+UNIT VARCHAR(50)
+PRICE FLOAT
+NOTE TEXT
+STATUS VARCHAR(50)
+CREATED_AT DATETIME
+ UPDATED_AT DATETIME
 
-đoạn code mẫu MaterialTypeFormModal là 
+
+
+đoạn code mẫu Material là 
