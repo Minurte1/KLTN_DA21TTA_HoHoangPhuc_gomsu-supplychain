@@ -24,6 +24,8 @@ const inventoryRoute = require("./inventory.route.js");
 const materialsRoute = require("./materials.route.js");
 const materialTypesRoute = require("./material_types.route.js");
 const addressRoute = require("./provincesRoute.js");
+const transportServiceFeesRoutes = require("./transportServiceFees.router.js");
+
 // Kết nối tất cả các router
 router.use("/api/permissions", permissionRoutes);
 router.use("/material-orders-master", materialOrdersMasterRoute);
@@ -49,4 +51,6 @@ router.use("/inventory", inventoryRoute);
 router.use("/materials", materialsRoute);
 router.use("/material-types", materialTypesRoute);
 router.use("/address", addressRoute);
+router.use("/api/transport-service-fees", transportServiceFeesRoutes);
+
 module.exports = router;
