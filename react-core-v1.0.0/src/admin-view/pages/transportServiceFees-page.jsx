@@ -5,9 +5,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-import transportServiceFeesService from "../../services/transportServiceFees.service";
-import TransportServiceFeesModal from "../modal/transportServiceFees-modal";
+
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import transportServiceFeesService from "../../services/transportServiceFees.service";
+import TransportServiceFeesModal from "../modal/transportServiceFeesModal";
 
 const TransportServiceFees = () => {
   const [fees, setFees] = useState([]);

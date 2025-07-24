@@ -5,6 +5,7 @@ import DynamicModal from "../../share-view/dynamic/modal/modal";
 import companyServices from "../../services/companies-service";
 import transportServiceFeesService from "../../services/transportServiceFees.service";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import companyTypeServices from "../../services/company_types-service";
 
 const TransportServiceFeesModal = ({ open, onClose, fee, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -16,9 +17,8 @@ const TransportServiceFeesModal = ({ open, onClose, fee, onSuccess }) => {
     STATUS: "",
   });
 
-  const [companiesOptions, setCompaniesOptions] = useState([]);
   const { userInfo } = ReduxExportUseAuthState();
-
+  const [shippingCompanies, setShippingCompanies] = useState([]);
   useEffect(() => {
     if (open) {
       setFormData(
@@ -40,16 +40,29 @@ const TransportServiceFeesModal = ({ open, onClose, fee, onSuccess }) => {
               STATUS: "",
             }
       );
-      fetchCompanies();
+
+      fetchShippingCompanies();
     }
   }, [open, fee]);
 
-  const fetchCompanies = async () => {
+  const fetchShippingCompanies = async () => {
     try {
-      const data = await companyServices.getCompanies();
-      setCompaniesOptions(data.DT);
+      const filter = [
+        {
+          key: "ROUTER_COMPANY",
+          value: "transport_orders",
+        },
+      ];
+      const data = await companyTypeServices.getCompaniesByRouter(filter);
+
+      const companies = data?.map((company) => ({
+        ...company,
+        ID_COMPANY_SHIP: company.ID_COMPANY, // Thêm trường mới
+        ID_COMPANY: company.ID_COMPANY, // (Tùy chọn) Xóa trường cũ nếu không cần
+      }));
+      setShippingCompanies(companies || []);
     } catch (error) {
-      console.error("Error fetching companies:", error);
+      console.error("Lỗi khi tải danh sách công ty vận chuyển:", error);
     }
   };
 
@@ -64,7 +77,7 @@ const TransportServiceFeesModal = ({ open, onClose, fee, onSuccess }) => {
       key: "ID_COMPANY_SHIP",
       label: "Thuộc công ty vận chuyển",
       inputType: "autocomplete",
-      options: companiesOptions,
+      options: shippingCompanies,
       optionsLabel: "NAME_COMPANY",
       required: true,
       disabled: !!userInfo?.companyInfo?.ID_COMPANY,

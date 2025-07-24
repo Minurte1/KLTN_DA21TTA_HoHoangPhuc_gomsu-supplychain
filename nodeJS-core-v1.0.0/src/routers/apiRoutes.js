@@ -51,6 +51,6 @@ router.use("/inventory", inventoryRoute);
 router.use("/materials", materialsRoute);
 router.use("/material-types", materialTypesRoute);
 router.use("/address", addressRoute);
-router.use("/api/transport-service-fees", transportServiceFeesRoutes);
+router.use("/transport-service-fees", transportServiceFeesRoutes);
 
 module.exports = router;

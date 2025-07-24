@@ -16,17 +16,8 @@ const create = async (data) => {
   const [result] = await db.query(
     `INSERT INTO transport_service_fees (
       ID_COMPANY_SHIP, SERVICE_NAME, UNIT, PRICE, NOTE, STATUS, CREATED_AT, UPDATED_AT
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      ID_COMPANY_SHIP,
-      SERVICE_NAME,
-      UNIT,
-      PRICE,
-      NOTE,
-      STATUS,
-      CREATED_AT,
-      UPDATED_AT,
-    ]
+    ) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+    [ID_COMPANY_SHIP, SERVICE_NAME, UNIT, PRICE, NOTE, STATUS]
   );
 
   return result.insertId;
@@ -62,19 +53,9 @@ const update = async (id, data) => {
 
   const [result] = await db.query(
     `UPDATE transport_service_fees SET
-      ID_COMPANY_SHIP = ?, SERVICE_NAME = ?, UNIT = ?, PRICE = ?, NOTE = ?, STATUS = ?, CREATED_AT = ?, UPDATED_AT = ?
+      ID_COMPANY_SHIP = ?, SERVICE_NAME = ?, UNIT = ?, PRICE = ?, NOTE = ?, STATUS = ?, CREATED_AT = NOW(), UPDATED_AT = NOW()
     WHERE ID_FEE = ?`,
-    [
-      ID_COMPANY_SHIP,
-      SERVICE_NAME,
-      UNIT,
-      PRICE,
-      NOTE,
-      STATUS,
-      CREATED_AT,
-      UPDATED_AT,
-      id,
-    ]
+    [ID_COMPANY_SHIP, SERVICE_NAME, UNIT, PRICE, NOTE, STATUS, id]
   );
 
   return result.affectedRows > 0;

@@ -94,7 +94,6 @@ export const adminMenuConfig = [
       },
     ],
   },
-
   // SUPPLIER
   {
     label: "Vật liệu",
@@ -114,14 +113,21 @@ export const adminMenuConfig = [
       },
     ],
   },
-
   // TRANSPORT
   {
     label: "Vận chuyển",
-    path: "/admin/transport_orders",
     icon: <LocalShippingIcon />,
+    children: [
+      {
+        label: "Dịch vụ vận chuyển",
+        path: "/admin/transport_service_fees",
+      },
+      {
+        label: "Đơn hàng vận chuyển",
+        path: "/admin/transport_orders",
+      },
+    ],
   },
-
   // RETAILER
   {
     label: "Bán lẻ & Đơn hàng",
@@ -161,7 +167,6 @@ export const adminMenuConfig = [
       },
     ],
   },
-
   {
     label: "Báo cáo & Thống kê",
     path: "/admin/bao-cao",

@@ -18,6 +18,7 @@ import MaterialOrderMaster_SellerPending from "./pages/material-order/order-pedi
 import MaterialOrderMaster_BuyPending from "./pages/material-order/order-peding/material_order_master_ctyBuy_peding";
 import MaterialOrderMaster_ShipConfirmed from "./pages/material-order/order-confirmed/material_order_master_ctyShip_confirmed";
 import MaterialOrderMaster_SellerConfirmed from "./pages/material-order/order-confirmed/material_order_master_ctySeller_confirmed";
+import TransportServiceFees from "./pages/transportServiceFees-page";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -101,6 +102,10 @@ const RouterAdmin = () => {
     {
       path: "/material",
       element: <Material />,
+    },
+    {
+      path: "/transport_service_fees",
+      element: <TransportServiceFees />,
     },
     {
       path: "/material_order_master",
