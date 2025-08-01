@@ -75,15 +75,16 @@ const deleteCompanyType = async (req, res) => {
   }
 };
 
+// Lấy danh sách các công ty vận chuyển
 const getCompaniesByRouter = async (req, res) => {
   try {
-    const { filters } = req.body; // Expecting filters like [{ key: "ROUTER_COMPANY", value: "transport_orders" }]
+    const { filters } = req.body;
     console.log("filters", filters);
+
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return res.status(400).json({ error: "Filters array is required" });
     }
 
-    // Extract the value for ROUTER_COMPANY from filters
     const routerFilter = filters.find((f) => f.key === "ROUTER_COMPANY");
     if (!routerFilter || !routerFilter.value) {
       return res
@@ -93,7 +94,6 @@ const getCompaniesByRouter = async (req, res) => {
 
     const routerValue = routerFilter.value;
 
-    // SQL query to join company_types and companies, filtering by ROUTER_COMPANY
     const query = `
       SELECT 
         c.ID_COMPANY,
@@ -108,27 +108,37 @@ const getCompaniesByRouter = async (req, res) => {
         c.EMAIL,
         c.AVATAR,
         c.SLUG,
-        c.CREATED_AT,
-        c.UPDATED_AT,
-        c.STATUS,
+        c.CREATED_AT AS COMPANY_CREATED_AT,
+        c.UPDATED_AT AS COMPANY_UPDATED_AT,
+        c.STATUS AS COMPANY_STATUS,
         c.ID_COMPANY_TYPE,
         ct.NAME_COMPANY_TYPE,
-        ct.ROUTER_COMPANY
+        ct.ROUTER_COMPANY,
+
+        tsf.ID_FEE,
+        tsf.SERVICE_NAME,
+        tsf.UNIT,
+        tsf.PRICE,
+        tsf.NOTE,
+        tsf.STATUS AS FEE_STATUS,
+        tsf.CREATED_AT AS FEE_CREATED_AT,
+        tsf.UPDATED_AT AS FEE_UPDATED_AT
+
       FROM companies c
       INNER JOIN company_types ct ON c.ID_COMPANY_TYPE = ct.ID_COMPANY_TYPE
+      LEFT JOIN transport_service_fees tsf ON c.ID_COMPANY = tsf.ID_COMPANY_SHIP
       WHERE ct.ROUTER_COMPANY LIKE ?
     `;
 
-    // Use % wildcard to search for the value within the JSON-like string in ROUTER_COMPANY
     const [rows] = await db.query(query, [`%${routerValue}%`]);
 
-    // Return the results
     return res.status(200).json(rows);
   } catch (error) {
     console.error("Error in getCompaniesByRouter:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 module.exports = {
   getCompanyTypes,
   createCompanyType,

@@ -120,7 +120,7 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
       console.error("Lỗi khi gán công ty vận chuyển:", error);
     }
   };
-
+  console.log("shippingCompanies", shippingCompanies);
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>Đơn yêu cầu mua vật liệu: {material?.NAME_}</DialogTitle>
