@@ -76,19 +76,26 @@ const updateMaterialOrderMaster = async (req, res) => {
       ID_COMPANY_SHIP,
       ORDER_DATE,
       DELIVERY_DATE,
-      STATUS,
+      STATUS: ORDER_STATUS, // <- đổi tên cho khớp
       TOTAL_COST,
     } = req.body;
+
+    const formattedOrderDate = ORDER_DATE
+      ? moment(ORDER_DATE).format("YYYY-MM-DD HH:mm:ss")
+      : null;
+    const formattedDeliveryDate = DELIVERY_DATE
+      ? moment(DELIVERY_DATE).format("YYYY-MM-DD HH:mm:ss")
+      : null;
 
     const updated = await MaterialOrderOrdersService.update(id, {
       ID_COMPANY_BUYER,
       ID_COMPANY_SELLER,
       ID_COMPANY_SHIP,
-      ORDER_DATE,
-      DELIVERY_DATE,
-      STATUS,
+      ORDER_DATE: formattedOrderDate,
+      DELIVERY_DATE: formattedDeliveryDate,
+      STATUS: ORDER_STATUS, // <- đổi tên cho khớp
       TOTAL_COST,
-      UPDATED_AT: new Date(), // cập nhật thời gian chỉnh sửa
+      UPDATED_AT: moment().format("YYYY-MM-DD HH:mm:ss"),
     });
 
     if (!updated) {
@@ -100,6 +107,7 @@ const updateMaterialOrderMaster = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const u = async (req, res) => {
   const updatedOrder = req.body;
   const { id } = req.params;

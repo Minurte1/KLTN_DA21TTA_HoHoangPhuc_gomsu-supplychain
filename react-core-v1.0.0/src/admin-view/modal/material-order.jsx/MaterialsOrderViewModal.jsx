@@ -91,6 +91,7 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
     const updatedOrder = {
       ...orderToConfirm,
       ID_COMPANY_SHIP: selectedShipId,
+      ITEM_STATUS: "CONFIRMED",
     };
 
     try {
@@ -132,7 +133,7 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
       [selectOrder?.ID_MATERIAL_ORDER_MASTER]: company.ID_COMPANY,
     }));
   };
-
+  console.log("orders", orders);
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <>

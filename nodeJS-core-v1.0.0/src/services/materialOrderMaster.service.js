@@ -139,7 +139,6 @@ const getById = async (id) => {
   return rows[0] || null;
 };
 
-// Cập nhật đơn hàng theo ID
 const update = async (id, data) => {
   const {
     ID_COMPANY_BUYER,
@@ -152,24 +151,55 @@ const update = async (id, data) => {
     UPDATED_AT,
   } = data;
 
-  const [result] = await db.query(
-    `UPDATE material_order_master 
-     SET ID_COMPANY_BUYER = ?, ID_COMPANY_SELLER = ?, ID_COMPANY_SHIP = ?, ORDER_DATE = ?, DELIVERY_DATE = ?, STATUS = ?, TOTAL_COST = ?, UPDATED_AT = ?
-     WHERE ID_MATERIAL_ORDER_MASTER = ?`,
-    [
-      ID_COMPANY_BUYER,
-      ID_COMPANY_SELLER,
-      ID_COMPANY_SHIP,
-      ORDER_DATE,
-      DELIVERY_DATE,
-      STATUS,
-      TOTAL_COST,
-      UPDATED_AT,
-      id,
-    ]
-  );
+  const conn = await db.getConnection(); // dùng pool để lấy connection riêng
+  try {
+    await conn.beginTransaction();
 
-  return result.affectedRows > 0;
+    const [result] = await conn.query(
+      `UPDATE material_order_master 
+       SET ID_COMPANY_BUYER = ?, ID_COMPANY_SELLER = ?, ID_COMPANY_SHIP = ?, ORDER_DATE = ?, DELIVERY_DATE = ?, STATUS = ?, TOTAL_COST = ?, UPDATED_AT = ?
+       WHERE ID_MATERIAL_ORDER_MASTER = ?`,
+      [
+        ID_COMPANY_BUYER,
+        ID_COMPANY_SELLER,
+        ID_COMPANY_SHIP,
+        ORDER_DATE,
+        DELIVERY_DATE,
+        STATUS,
+        TOTAL_COST,
+        UPDATED_AT,
+        id,
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      await conn.rollback();
+      return false;
+    }
+
+    // Truy vấn thứ 2
+    try {
+      const [material_order_master] = await conn.query(
+        `UPDATE material_orders  
+         SET STATUS = ? 
+         WHERE ID_MATERIAL_ORDER_MASTER = ?`,
+        [STATUS, id]
+      );
+    } catch (err) {
+      await conn.rollback();
+      console.error("Lỗi khi cập nhật material_orders:", err.message);
+      throw new Error("Cập nhật bảng material_orders thất bại");
+    }
+
+    await conn.commit();
+    return true;
+  } catch (error) {
+    await conn.rollback();
+    console.error("Lỗi trong transaction:", error.message);
+    throw error;
+  } finally {
+    conn.release(); // trả connection về pool
+  }
 };
 
 // Xóa đơn hàng
