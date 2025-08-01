@@ -21,6 +21,7 @@ import materialOrderMasterServices from "../../../services/materialOrderMasterSe
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
 import companyServices from "../../../services/companies-service";
 import companyTypeServices from "../../../services/company_types-service";
+import ViewTranSportServicesFeesModal from "./view-transport-serrvice-fees-modal";
 
 const MaterialsOrderViewModal = ({ open, onClose, material }) => {
   const [orders, setOrders] = useState([]);
@@ -28,7 +29,8 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
   const { userInfo } = ReduxExportUseAuthState();
   const [shippingCompanies, setShippingCompanies] = useState([]);
   const [selectedShipCompanies, setSelectedShipCompanies] = useState({});
-
+  const [openTransportModal, setOpenTransportModal] = useState(false);
+  const [selectOrder, setSelectOrder] = useState(null);
   const fetchOrders = async () => {
     if (!material) return;
 
@@ -92,7 +94,10 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
     };
 
     try {
-      await materialOrderMasterServices.confirmOrder(updatedOrder); // 👈 Truyền full object
+      await materialOrderMasterServices.updateMaterialOrderMaster(
+        selectOrder?.ID_MATERIAL_ORDER_MASTER,
+        updatedOrder
+      ); // 👈 Truyền full object
       fetchOrders(); // refresh lại danh sách
     } catch (error) {
       console.error("Xác nhận đơn hàng thất bại:", error);
@@ -120,108 +125,126 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
       console.error("Lỗi khi gán công ty vận chuyển:", error);
     }
   };
-  console.log("shippingCompanies", shippingCompanies);
+
+  const handleAddShipping = (company) => {
+    setSelectedShipCompanies((prev) => ({
+      ...prev,
+      [selectOrder?.ID_MATERIAL_ORDER_MASTER]: company.ID_COMPANY,
+    }));
+  };
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Đơn yêu cầu mua vật liệu: {material?.NAME_}</DialogTitle>
-      <DialogContent dividers>
-        {loading ? (
-          <CircularProgress />
-        ) : orders.length === 0 ? (
-          <Typography>Không có đơn đặt hàng nào.</Typography>
-        ) : (
-          <List>
-            {orders.map((order, index) => (
-              <ListItem key={index} sx={{ display: "block", mb: 2 }}>
-                <Box border={1} borderRadius={2} p={2} borderColor="grey.300">
-                  <Typography variant="h6" gutterBottom>
-                    Công ty đặt hàng: {order.BUYER_NAME}
-                  </Typography>
-                  <Typography>
-                    Loại hình: {order.BUYER_COMPANY_TYPE || "Chưa rõ"}
-                  </Typography>
-                  <Typography>Địa chỉ: {order.BUYER_ADDRESS}</Typography>
-                  <Typography>Email: {order.BUYER_EMAIL}</Typography>
-                  <Typography>SĐT: {order.BUYER_PHONE}</Typography>
-                  <Typography sx={{ mt: 1 }}>
-                    Ngày đặt hàng:{" "}
-                    {new Date(order.ORDER_DATE).toLocaleDateString()}
-                  </Typography>
-                  <Typography>Trạng thái: {order.ORDER_STATUS}</Typography>
-                  <Typography>
-                    Số lượng: {order.QUANTITY_ORDERED} {order.UNIT_}
-                  </Typography>
-                  <Typography>
-                    Tổng chi phí: {order.ITEM_TOTAL_COST.toLocaleString()} VNĐ
-                  </Typography>
-                  {order.ID_COMPANY_SHIP === null &&
-                    order.ITEM_STATUS === "PENDING" && (
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
-                        sx={{ mt: 2 }}
-                      >
-                        <FormControl size="small" sx={{ minWidth: 300 }}>
-                          <InputLabel>Công ty giao hàng</InputLabel>
-                          <Select
-                            value={
-                              selectedShipCompanies[
-                                order.ID_MATERIAL_ORDER_MASTER
-                              ] || ""
-                            }
-                            label="Công ty giao hàng"
-                            onChange={(e) =>
-                              handleSelectShippingCompany(
-                                order.ID_MATERIAL_ORDER_MASTER,
-                                e.target.value
-                              )
-                            }
+      <>
+        <DialogTitle>Đơn yêu cầu mua vật liệu: {material?.NAME_}</DialogTitle>
+        <DialogContent dividers>
+          {loading ? (
+            <CircularProgress />
+          ) : orders.length === 0 ? (
+            <Typography>Không có đơn đặt hàng nào.</Typography>
+          ) : (
+            <List>
+              {orders.map((order, index) => (
+                <ListItem key={index} sx={{ display: "block", mb: 2 }}>
+                  <Box border={1} borderRadius={2} p={2} borderColor="grey.300">
+                    <Typography variant="h6" gutterBottom>
+                      Công ty đặt hàng: {order.BUYER_NAME}
+                    </Typography>
+                    <Typography>
+                      Loại hình: {order.BUYER_COMPANY_TYPE || "Chưa rõ"}
+                    </Typography>
+                    <Typography>Địa chỉ: {order.BUYER_ADDRESS}</Typography>
+                    <Typography>Email: {order.BUYER_EMAIL}</Typography>
+                    <Typography>SĐT: {order.BUYER_PHONE}</Typography>
+                    <Typography sx={{ mt: 1 }}>
+                      Ngày đặt hàng:{" "}
+                      {new Date(order.ORDER_DATE).toLocaleDateString()}
+                    </Typography>
+                    <Typography>Trạng thái: {order.ORDER_STATUS}</Typography>
+                    <Typography>
+                      Số lượng: {order.QUANTITY_ORDERED} {order.UNIT_}
+                    </Typography>
+                    <Typography>
+                      Tổng chi phí: {order.ITEM_TOTAL_COST.toLocaleString()} VNĐ
+                    </Typography>
+                    {order.ID_COMPANY_SHIP === null &&
+                      order.ITEM_STATUS === "PENDING" && (
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          alignItems="center"
+                          sx={{ mt: 2 }}
+                        >
+                          <FormControl size="small" sx={{ minWidth: 300 }}>
+                            <InputLabel>Công ty giao hàng</InputLabel>
+                            <Select
+                              disabled
+                              value={
+                                selectedShipCompanies[
+                                  order.ID_MATERIAL_ORDER_MASTER
+                                ] || ""
+                              }
+                              label="Công ty giao hàng"
+                              onChange={(e) =>
+                                handleSelectShippingCompany(
+                                  order.ID_MATERIAL_ORDER_MASTER,
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {shippingCompanies.map((company) => (
+                                <MenuItem
+                                  key={company.ID_COMPANY}
+                                  value={company.ID_COMPANY}
+                                >
+                                  {company.NAME_COMPANY}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          <Button
+                            variant="outlined"
+                            onClick={() => {
+                              setOpenTransportModal(true);
+                              setSelectOrder(order);
+                            }}
                           >
-                            {shippingCompanies.map((company) => (
-                              <MenuItem
-                                key={company.ID_COMPANY}
-                                value={company.ID_COMPANY}
-                              >
-                                {company.NAME_COMPANY}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                            Chọn công ty vận chuyển
+                          </Button>
+                        </Stack>
+                      )}{" "}
+                    {order.ITEM_STATUS === "PENDING" && (
+                      <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
                         <Button
-                          variant="outlined"
+                          variant="contained"
+                          color="success"
                           onClick={() =>
-                            handleAssignShippingCompany(
-                              order.ID_MATERIAL_ORDER_MASTER
-                            )
+                            handleConfirmOrder(order.ID_MATERIAL_ORDER_MASTER)
                           }
                         >
-                          Gán công ty ship
+                          Xác nhận đơn hàng
                         </Button>
                       </Stack>
-                    )}{" "}
-                  {order.ITEM_STATUS === "PENDING" && (
-                    <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() =>
-                          handleConfirmOrder(order.ID_MATERIAL_ORDER_MASTER)
-                        }
-                      >
-                        Xác nhận đơn hàng
-                      </Button>
-                    </Stack>
-                  )}
-                </Box>
-              </ListItem>
-            ))}
-          </List>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Đóng</Button>
-      </DialogActions>
+                    )}
+                  </Box>
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Đóng</Button>
+        </DialogActions>
+        <ViewTranSportServicesFeesModal
+          open={openTransportModal}
+          onClose={() => setOpenTransportModal(false)}
+          companies={shippingCompanies}
+          onAdd={(company) => {
+            handleAddShipping(company);
+            setOpenTransportModal(false);
+          }}
+        />
+      </>
     </Dialog>
   );
 };

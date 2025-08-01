@@ -94,7 +94,8 @@ const getCompaniesByRouter = async (req, res) => {
 
     const routerValue = routerFilter.value;
 
-    const query = `
+    // Step 1: Lấy danh sách công ty phù hợp
+    const companyQuery = `
       SELECT 
         c.ID_COMPANY,
         c.NAME_COMPANY,
@@ -113,9 +114,24 @@ const getCompaniesByRouter = async (req, res) => {
         c.STATUS AS COMPANY_STATUS,
         c.ID_COMPANY_TYPE,
         ct.NAME_COMPANY_TYPE,
-        ct.ROUTER_COMPANY,
+        ct.ROUTER_COMPANY
+      FROM companies c
+      INNER JOIN company_types ct ON c.ID_COMPANY_TYPE = ct.ID_COMPANY_TYPE
+      WHERE ct.ROUTER_COMPANY LIKE ?
+    `;
 
+    const [companies] = await db.query(companyQuery, [`%${routerValue}%`]);
+
+    if (!companies || companies.length === 0) {
+      return res.status(200).json([]); // Không có công ty nào
+    }
+
+    // Step 2: Lấy danh sách phí dịch vụ dựa trên ID_COMPANY
+    const companyIds = companies.map((c) => c.ID_COMPANY);
+    const feeQuery = `
+      SELECT 
         tsf.ID_FEE,
+        tsf.ID_COMPANY_SHIP,
         tsf.SERVICE_NAME,
         tsf.UNIT,
         tsf.PRICE,
@@ -123,16 +139,23 @@ const getCompaniesByRouter = async (req, res) => {
         tsf.STATUS AS FEE_STATUS,
         tsf.CREATED_AT AS FEE_CREATED_AT,
         tsf.UPDATED_AT AS FEE_UPDATED_AT
-
-      FROM companies c
-      INNER JOIN company_types ct ON c.ID_COMPANY_TYPE = ct.ID_COMPANY_TYPE
-      LEFT JOIN transport_service_fees tsf ON c.ID_COMPANY = tsf.ID_COMPANY_SHIP
-      WHERE ct.ROUTER_COMPANY LIKE ?
+      FROM transport_service_fees tsf
+      WHERE tsf.ID_COMPANY_SHIP IN (?)
     `;
+    const [fees] = await db.query(feeQuery, [companyIds]);
 
-    const [rows] = await db.query(query, [`%${routerValue}%`]);
+    // Gắn fees vào từng company tương ứng
+    const companiesWithFees = companies.map((company) => {
+      const companyFees = fees.filter(
+        (f) => f.ID_COMPANY_SHIP === company.ID_COMPANY
+      );
+      return {
+        ...company,
+        transport_service_fees: companyFees,
+      };
+    });
 
-    return res.status(200).json(rows);
+    return res.status(200).json(companiesWithFees);
   } catch (error) {
     console.error("Error in getCompaniesByRouter:", error);
     return res.status(500).json({ error: "Internal server error" });
