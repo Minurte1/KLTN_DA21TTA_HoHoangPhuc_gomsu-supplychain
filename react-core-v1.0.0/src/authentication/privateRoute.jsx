@@ -15,7 +15,7 @@ const PrivateRoute = ({ children }) => {
 
   const [isReady, setIsReady] = useState(false);
   const [isAllowed, setIsAllowed] = useState(false);
-  console.log("PrivateRoute");
+
   useEffect(() => {
     if (!currentPath || !listPermission) return;
 
