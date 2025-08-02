@@ -84,11 +84,20 @@ const OrderShipDetailView = ({ open, onClose, data }) => {
     if (!selectUserShip) {
       enqueueSnackbar("Vui lòng chọn người vận chuyển");
     }
-
-    const data = await transportOrderServices.createTransportOrder(
-      selectOrderShip
-    );
+    const input = {
+      ID_COMPANY_SHIP: selectOrderShip?.ID_COMPANY_SHIP || "",
+      ID_MATERIAL_ORDER: selectOrderShip?.ID_MATERIAL_ORDER || "",
+      ID_ORDER: selectOrderShip?.ID_MATERIAL_ORDER_MASTER || "",
+      DELIVERY_DATE: selectOrderShip?.DELIVERY_DATE || "",
+      STATUS: "DELIVERING" || "",
+      SHIPPING_COST: selectOrderShip?.SHIPPING_COST || "",
+      NOTE: selectOrderShip?.ID_COMPANY_SHIP || "",
+      ID_FEE: selectOrderShip?.ID_FEE || "",
+      ID_USERS_SHIP: selectOrderShip?.ID_COMPANY_SHIP || "",
+    };
+    const data = await transportOrderServices.createTransportOrder(input);
   };
+  console.log("data", data);
   if (!data) return null;
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>

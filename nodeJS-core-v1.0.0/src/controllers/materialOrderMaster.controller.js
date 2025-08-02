@@ -9,6 +9,7 @@ const getAllMaterialOrdersMaster = async (req, res) => {
       idSeller, // mom.ID_COMPANY_SELLER
       idShip, // mom.ID_COMPANY_SHIP
       status, // mom.STATUS
+      keyTable,
     } = req.query;
 
     const filters = {
@@ -16,6 +17,7 @@ const getAllMaterialOrdersMaster = async (req, res) => {
       idSeller: idSeller || null,
       idShip: idShip || null,
       status: status || null,
+      keyTable: keyTable || null,
     };
 
     const materialOrders = await MaterialOrderOrdersService.getAll(filters);

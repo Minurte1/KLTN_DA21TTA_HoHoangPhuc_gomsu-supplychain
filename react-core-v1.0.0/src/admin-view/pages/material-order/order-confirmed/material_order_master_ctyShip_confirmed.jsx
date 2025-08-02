@@ -36,6 +36,7 @@ const MaterialOrderMaster_ShipConfirmed = () => {
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
         idShip: companyId, // nếu đang lọc theo công ty mua
         status: "CONFIRMED", // hoặc trạng thái nếu cần
+        keyTable: "transport_service_fees",
       });
 
       setOrders(data);
@@ -59,7 +60,6 @@ const MaterialOrderMaster_ShipConfirmed = () => {
   const [openViewOrdersModal, setOpenViewOrdersModal] = useState(false);
 
   const handleViewOrders = (item) => {
-    console.log("item", item);
     setSelectAddOrderShip(item);
     setOpenViewOrdersModal(true);
   };

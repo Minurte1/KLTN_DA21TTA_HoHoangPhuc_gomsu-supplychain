@@ -33,8 +33,9 @@ const create = async (data) => {
 };
 
 const getAll = async (filters) => {
-  const { idBuyer, idSeller, idShip, status } = filters;
+  const { idBuyer, idSeller, idShip, status, keyTable } = filters;
   console.log("Filters:", filters);
+
   let query = `
     SELECT 
       mom.ID_MATERIAL_ORDER_MASTER,
@@ -65,6 +66,7 @@ const getAll = async (filters) => {
       mom.TOTAL_COST,
       mom.CREATED_AT,
       mom.UPDATED_AT,
+      mom.ID_FEE,
 
       mo.ID_MATERIAL_ORDER,
       mo.ID_MATERIALS_,
@@ -77,13 +79,27 @@ const getAll = async (filters) => {
 
       m.NAME_ AS MATERIAL_NAME,
       m.QUANTITY,
-      m.UNIT_,
+      m.UNIT_ ,
       m.COST_PER_UNIT_,
       m.ORIGIN,
       m.EXPIRY_DATE
+  `;
 
+  // ✅ Nếu yêu cầu lấy từ transport_service_fees thì thêm các trường
+  if (keyTable === "transport_service_fees") {
+    query += `,
+      tsf.SERVICE_NAME,
+      tsf.UNIT AS FEE_UNIT,
+      tsf.PRICE AS FEE_PRICE,
+      tsf.NOTE AS FEE_NOTE,
+      tsf.STATUS AS FEE_STATUS,
+      tsf.CREATED_AT AS FEE_CREATED_AT,
+      tsf.UPDATED_AT AS FEE_UPDATED_AT
+    `;
+  }
+
+  query += `
     FROM material_order_master mom
-
     LEFT JOIN material_orders mo 
       ON mom.ID_MATERIAL_ORDER_MASTER = mo.ID_MATERIAL_ORDER_MASTER
     LEFT JOIN materials m 
@@ -101,6 +117,14 @@ const getAll = async (filters) => {
     LEFT JOIN company_types type_ship 
       ON ship.ID_COMPANY_TYPE = type_ship.ID_COMPANY_TYPE
   `;
+
+  // ✅ Nếu yêu cầu dữ liệu từ bảng transport_service_fees thì JOIN thêm
+  if (keyTable === "transport_service_fees") {
+    query += `
+      LEFT JOIN transport_service_fees tsf
+        ON mom.ID_FEE = tsf.ID_FEE
+    `;
+  }
 
   const conditions = [];
   const params = [];
