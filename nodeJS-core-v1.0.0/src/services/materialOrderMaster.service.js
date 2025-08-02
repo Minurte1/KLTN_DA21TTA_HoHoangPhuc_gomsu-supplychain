@@ -146,11 +146,11 @@ const update = async (id, data) => {
     ID_COMPANY_SHIP,
     ORDER_DATE,
     DELIVERY_DATE,
-    STATUS,
+
     TOTAL_COST,
     UPDATED_AT,
   } = data;
-
+  const STATUS = "CONFIRMED";
   const conn = await db.getConnection(); // dùng pool để lấy connection riêng
   try {
     await conn.beginTransaction();
