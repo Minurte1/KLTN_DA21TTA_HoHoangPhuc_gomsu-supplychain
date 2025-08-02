@@ -14,6 +14,8 @@ import ViewUsersShipModal from "../order-confirmed/ctyShip-add-user-order";
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
 import { getAllUsers } from "../../../services/userAccountService";
 import DeleteIcon from "@mui/icons-material/Delete";
+import transportOrderServices from "../../../services/transportOrderServices";
+import { enqueueSnackbar } from "notistack";
 
 const formatDateTime = (dateStr) => {
   if (!dateStr) return "Chưa cập nhật";
@@ -78,7 +80,15 @@ const OrderShipDetailView = ({ open, onClose, data }) => {
     setOpenUserShipModal(false);
     setSelectUserShip(user);
   };
-  const onConfirmShip = () => {};
+  const onConfirmShip = async () => {
+    if (!selectUserShip) {
+      enqueueSnackbar("Vui lòng chọn người vận chuyển");
+    }
+
+    const data = await transportOrderServices.createTransportOrder(
+      selectOrderShip
+    );
+  };
   if (!data) return null;
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
