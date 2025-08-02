@@ -19,6 +19,10 @@ const MaterialOrderMaster = () => {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const { userInfo } = ReduxExportUseAuthState();
 
+  useEffect(() => {
+    fetchMaterials();
+  }, []);
+
   const fetchMaterials = async () => {
     const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
     const data = await materialServices.getMaterials({
@@ -26,10 +30,6 @@ const MaterialOrderMaster = () => {
     });
     setMaterials(data);
   };
-
-  useEffect(() => {
-    fetchMaterials();
-  }, []);
 
   const handleEdit = (material) => {
     setSelectedMaterial(material);

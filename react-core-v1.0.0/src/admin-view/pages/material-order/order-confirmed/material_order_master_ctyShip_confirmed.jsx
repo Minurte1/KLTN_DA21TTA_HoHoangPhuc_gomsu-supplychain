@@ -13,6 +13,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MaterialsOrdersModal from "../../../modal/material-order.jsx/MaterialsOrdersModal";
 import MaterialsOrderViewModal from "../../../modal/material-order.jsx/MaterialsOrderViewModal";
 import materialOrderMasterServices from "../../../../services/materialOrderMasterServices";
+import { getAllUsers } from "../../../../services/userAccountService";
+import ViewUsersShipModal from "../../../modal/order-confirmed/ctyShip-add-user-order";
 
 const MaterialOrderMaster_ShipConfirmed = () => {
   const [materials, setMaterials] = useState([]);
@@ -20,7 +22,11 @@ const MaterialOrderMaster_ShipConfirmed = () => {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const { userInfo } = ReduxExportUseAuthState();
   const [orders, setOrders] = useState([]);
-
+  const [usersShip, setUsersShip] = useState([]);
+  useEffect(() => {
+    fetchOrders();
+    fetchUserCtyShip();
+  }, [userInfo]);
   const fetchOrders = async () => {
     try {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
@@ -37,10 +43,20 @@ const MaterialOrderMaster_ShipConfirmed = () => {
     } finally {
     }
   };
-  useEffect(() => {
-    fetchOrders();
-  }, [userInfo]);
+  const fetchUserCtyShip = async () => {
+    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+    const data = await getAllUsers(companyId);
 
+    // Lọc trạng thái
+    const filteredUsers = data.filter(
+      (user) =>
+        user.TRANG_THAI_USER === "ACTIVE" || user.TRANG_THAI_USER === "WORKING"
+    );
+
+    setUsersShip(filteredUsers);
+  };
+
+  console.log("usersShip", usersShip);
   const handleEdit = (material) => {
     setSelectedMaterial(material);
     setOpenModal(true);
@@ -62,7 +78,7 @@ const MaterialOrderMaster_ShipConfirmed = () => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-
+  const handleAddUserShip = () => {};
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
@@ -133,6 +149,12 @@ const MaterialOrderMaster_ShipConfirmed = () => {
             },
           },
         ]}
+      />
+      <ViewUsersShipModal
+        users={usersShip}
+        onAdd={handleAddUserShip}
+        open={openOrderModal}
+        onClose={() => setOpenOrderModal(false)}
       />
     </Box>
   );
