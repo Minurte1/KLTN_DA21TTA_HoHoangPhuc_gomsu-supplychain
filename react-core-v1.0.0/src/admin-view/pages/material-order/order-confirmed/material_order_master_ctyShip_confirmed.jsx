@@ -15,6 +15,7 @@ import MaterialsOrderViewModal from "../../../modal/material-order.jsx/Materials
 import materialOrderMasterServices from "../../../../services/materialOrderMasterServices";
 import { getAllUsers } from "../../../../services/userAccountService";
 import ViewUsersShipModal from "../../../modal/order-confirmed/ctyShip-add-user-order";
+import OrderShipDetailView from "../../../modal/material-order.jsx/view-order-transport-modal";
 
 const MaterialOrderMaster_ShipConfirmed = () => {
   const [materials, setMaterials] = useState([]);
@@ -22,12 +23,12 @@ const MaterialOrderMaster_ShipConfirmed = () => {
 
   const { userInfo } = ReduxExportUseAuthState();
   const [orders, setOrders] = useState([]);
-  const [usersShip, setUsersShip] = useState([]);
+
   const [selectAddOrderShip, setSelectAddOrderShip] = useState(null);
   useEffect(() => {
     fetchOrders();
-    fetchUserCtyShip();
   }, [userInfo]);
+
   const fetchOrders = async () => {
     try {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
@@ -44,20 +45,7 @@ const MaterialOrderMaster_ShipConfirmed = () => {
     } finally {
     }
   };
-  const fetchUserCtyShip = async () => {
-    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-    const data = await getAllUsers(companyId);
 
-    // Lọc trạng thái
-    const filteredUsers = data.filter(
-      (user) =>
-        user.TRANG_THAI_USER === "ACTIVE" || user.TRANG_THAI_USER === "WORKING"
-    );
-
-    setUsersShip(filteredUsers);
-  };
-
-  console.log("usersShip", usersShip);
   const handleEdit = (item) => {
     setSelectAddOrderShip(item);
     setOpenModal(true);
@@ -67,21 +55,15 @@ const MaterialOrderMaster_ShipConfirmed = () => {
     await materialServices.deleteMaterial(id);
     fetchOrders();
   };
-  const [openOrderModal, setOpenOrderModal] = useState(false);
+
   const [openViewOrdersModal, setOpenViewOrdersModal] = useState(false);
 
-  const handleOpenOrderModal = (material) => {
-    setSelectedMaterial(material);
-    setOpenOrderModal(true);
-  };
-
   const handleViewOrders = (item) => {
+    console.log("item", item);
     setSelectAddOrderShip(item);
     setOpenViewOrdersModal(true);
   };
-  const handleAddUserShip = (user) => {
-    console.log("usser ", user);
-  };
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
@@ -130,35 +112,34 @@ const MaterialOrderMaster_ShipConfirmed = () => {
 
               return (
                 <>
-                  {isSameCompany ? (
-                    <>
-                      <IconButton onClick={() => handleViewOrders(row)}>
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(row.ID_MATERIALS_)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  ) : (
-                    // Nếu là công ty khác, có thể đặt mua
-                    <IconButton onClick={() => handleOpenOrderModal(row)}>
-                      <ShoppingCartIcon />
+                  <>
+                    <IconButton onClick={() => handleViewOrders(row)}>
+                      <VisibilityIcon />
                     </IconButton>
-                  )}
+                    <IconButton onClick={() => handleDelete(row.ID_MATERIALS_)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                  {/* 
+                  <IconButton onClick={() => handleOpenOrderModal(row)}>
+                    <ShoppingCartIcon />
+                  </IconButton> */}
                 </>
               );
             },
           },
         ]}
       />
-      <ViewUsersShipModal
-        users={usersShip}
-        onAdd={handleAddUserShip}
-        open={openOrderModal}
-        onClose={() => setOpenOrderModal(false)}
-      />
+      {openViewOrdersModal && (
+        <>
+          {" "}
+          <OrderShipDetailView
+            open={openViewOrdersModal}
+            onClose={() => setOpenViewOrdersModal(false)}
+            data={selectAddOrderShip}
+          />
+        </>
+      )}
     </Box>
   );
 };
