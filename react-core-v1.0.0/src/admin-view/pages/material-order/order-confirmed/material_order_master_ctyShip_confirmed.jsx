@@ -39,7 +39,7 @@ const MaterialOrderMaster_ShipConfirmed = () => {
   };
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [userInfo]);
 
   const handleEdit = (material) => {
     setSelectedMaterial(material);

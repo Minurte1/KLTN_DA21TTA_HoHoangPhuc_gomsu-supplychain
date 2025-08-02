@@ -38,7 +38,7 @@ const MaterialOrderMaster_BuyConfirmed = () => {
     }
   };
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(userInfo);
   }, []);
 
   const handleEdit = (material) => {

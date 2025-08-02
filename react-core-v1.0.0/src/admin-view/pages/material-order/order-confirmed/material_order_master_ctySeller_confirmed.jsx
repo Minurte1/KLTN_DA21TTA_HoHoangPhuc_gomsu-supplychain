@@ -41,7 +41,7 @@ const MaterialOrderMaster_SellerConfirmed = () => {
   };
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [userInfo]);
 
   const handleEdit = (material) => {
     setSelectedMaterial(material);
