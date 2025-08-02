@@ -19,10 +19,11 @@ import ViewUsersShipModal from "../../../modal/order-confirmed/ctyShip-add-user-
 const MaterialOrderMaster_ShipConfirmed = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState(null);
+
   const { userInfo } = ReduxExportUseAuthState();
   const [orders, setOrders] = useState([]);
   const [usersShip, setUsersShip] = useState([]);
+  const [selectAddOrderShip, setSelectAddOrderShip] = useState(null);
   useEffect(() => {
     fetchOrders();
     fetchUserCtyShip();
@@ -57,8 +58,8 @@ const MaterialOrderMaster_ShipConfirmed = () => {
   };
 
   console.log("usersShip", usersShip);
-  const handleEdit = (material) => {
-    setSelectedMaterial(material);
+  const handleEdit = (item) => {
+    setSelectAddOrderShip(item);
     setOpenModal(true);
   };
 
@@ -74,11 +75,13 @@ const MaterialOrderMaster_ShipConfirmed = () => {
     setOpenOrderModal(true);
   };
 
-  const handleViewOrders = (material) => {
-    setSelectedMaterial(material);
+  const handleViewOrders = (item) => {
+    setSelectAddOrderShip(item);
     setOpenViewOrdersModal(true);
   };
-  const handleAddUserShip = () => {};
+  const handleAddUserShip = (user) => {
+    console.log("usser ", user);
+  };
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>

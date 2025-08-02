@@ -49,7 +49,7 @@ const ViewUsersShipModal = ({ open, onClose, users, onAdd }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-      <DialogTitle>Danh sách người dùng</DialogTitle>
+      <DialogTitle>Danh sách nhân viên vận chuyển</DialogTitle>
 
       <DialogContent dividers>
         {users?.length > 0 ? (
