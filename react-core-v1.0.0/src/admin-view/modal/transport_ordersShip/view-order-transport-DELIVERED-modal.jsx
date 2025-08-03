@@ -45,7 +45,12 @@ const getTrangThaiStyle = (status) => {
   }
 };
 
-const OrderShipDetailViewDELIVERING = ({ open, onClose, data }) => {
+const OrderShipDetailViewDELIVERING = ({
+  open,
+  onClose,
+  data,
+  STATUS = "",
+}) => {
   const [selectOrderShip, setSeletOrderShip] = useState(null);
   const [openUserShipModal, setOpenUserShipModal] = useState(false);
   const { userInfo } = ReduxExportUseAuthState();
@@ -88,7 +93,7 @@ const OrderShipDetailViewDELIVERING = ({ open, onClose, data }) => {
       ID_MATERIAL_ORDER: selectOrderShip?.ID_MATERIAL_ORDER || "",
       ID_ORDER: selectOrderShip?.ID_MATERIAL_ORDER_MASTER || "",
       DELIVERY_DATE: selectOrderShip?.DELIVERY_DATE || "",
-      STATUS: "SUCCESS" || "",
+      STATUS: "DELIVERED" || "",
       SHIPPING_COST: selectOrderShip?.SHIPPING_COST || "",
       NOTE: selectOrderShip?.ID_COMPANY_SHIP || "",
       ID_FEE: selectOrderShip?.ID_FEE || "",
@@ -305,16 +310,20 @@ const OrderShipDetailViewDELIVERING = ({ open, onClose, data }) => {
           <Button onClick={onClose} variant="outlined" color="secondary">
             Đóng
           </Button>
-          <Box display="flex" gap={2}>
-            <Button
-              onClick={onConfirmShip}
-              variant="contained"
-              color="primary"
-              disabled={data.STATUS !== "DELIVERING" || usersShip.length === 0}
-            >
-              Giao thành công
-            </Button>
-          </Box>
+          {STATUS === "DELIVERING" && (
+            <Box display="flex" gap={2}>
+              <Button
+                onClick={onConfirmShip}
+                variant="contained"
+                color="primary"
+                disabled={
+                  data.STATUS !== "DELIVERING" || usersShip.length === 0
+                }
+              >
+                Giao thành công
+              </Button>
+            </Box>
+          )}
         </Box>
       </>
     </Dialog>

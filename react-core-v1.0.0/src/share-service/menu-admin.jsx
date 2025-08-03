@@ -126,6 +126,14 @@ export const adminMenuConfig = [
         label: "Đơn hàng vận chuyển",
         path: "/admin/transport_orders",
       },
+      {
+        label: "Đơn hàng vận chuyển đã giao",
+        path: "/admin/transport_orders_delivered",
+      },
+      {
+        label: "Đơn hàng vận chuyển giao thành công",
+        path: "/admin/transport_orders_success",
+      },
     ],
   },
   // RETAILER

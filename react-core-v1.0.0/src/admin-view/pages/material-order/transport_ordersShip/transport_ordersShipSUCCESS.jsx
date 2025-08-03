@@ -19,7 +19,7 @@ import OrderShipDetailView from "../../../modal/material-order.jsx/view-order-tr
 import transportOrderServices from "../../../../services/transportOrderServices";
 import OrderShipDetailViewDELIVERING from "../../../modal/transport_ordersShip/view-order-transport-DELIVERED-modal";
 
-const Transport_ordersShipDELIVERING = () => {
+const Transport_ordersShipSUCCESS = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
 
@@ -27,7 +27,7 @@ const Transport_ordersShipDELIVERING = () => {
   const [orders, setOrders] = useState([]);
 
   const [selectAddOrderShip, setSelectAddOrderShip] = useState(null);
-  const STATUS = "DELIVERING"; // hoặc null nếu muốn lấy tất cả
+  const STATUS = "SUCCESS"; // hoặc null nếu muốn lấy tất cả
   useEffect(() => {
     fetchOrders();
   }, [userInfo]);
@@ -62,7 +62,7 @@ const Transport_ordersShipDELIVERING = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Đơn hàng Cty VC vật liệu đang xử lý
+        Đơn hàng Cty VC vật liệu giao thành công
       </Typography>
 
       <DynamicTable
@@ -145,7 +145,7 @@ const Transport_ordersShipDELIVERING = () => {
               fetchOrders();
             }}
             data={selectAddOrderShip}
-            STATUS="DELIVERING"
+            STATUS={STATUS}
           />
         </>
       )}
@@ -153,4 +153,4 @@ const Transport_ordersShipDELIVERING = () => {
   );
 };
 
-export default Transport_ordersShipDELIVERING;
+export default Transport_ordersShipSUCCESS;
