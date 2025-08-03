@@ -6,14 +6,16 @@ const create = async (data) => {
     ID_COMPANY_SHIP,
     ID_MATERIAL_ORDER,
     ID_ORDER,
-    DELIVERY_DATE,
+    // DELIVERY_DATE,
     STATUS,
     SHIPPING_COST,
     NOTE,
     ID_FEE,
     ID_USERS_SHIP,
+    ID_MATERIAL_ORDER_MASTER,
   } = data;
   console.log("data ", data);
+  const DELIVERY_DATE = null;
   const [result] = await db.query(
     `INSERT INTO transport_orders (
       ID_COMPANY_SHIP, ID_MATERIAL_ORDER, ID_ORDER,
@@ -31,6 +33,18 @@ const create = async (data) => {
       ID_FEE,
       ID_USERS_SHIP,
     ]
+  );
+
+  const [material_order_master] = await db.query(
+    `UPDATE material_order_master SET STATUS = ?
+    WHERE ID_MATERIAL_ORDER_MASTER = ?`,
+    [STATUS, ID_MATERIAL_ORDER_MASTER]
+  );
+
+  const [transport_orders] = await db.query(
+    `UPDATE material_orders SET STATUS = ?
+    WHERE ID_MATERIAL_ORDER_MASTER = ?`,
+    [STATUS, ID_MATERIAL_ORDER_MASTER]
   );
 
   return result.insertId;

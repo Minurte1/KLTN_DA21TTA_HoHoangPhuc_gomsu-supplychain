@@ -135,7 +135,10 @@ const MaterialOrderMaster_ShipConfirmed = () => {
           {" "}
           <OrderShipDetailView
             open={openViewOrdersModal}
-            onClose={() => setOpenViewOrdersModal(false)}
+            onClose={() => {
+              setOpenViewOrdersModal(false);
+              fetchOrders();
+            }}
             data={selectAddOrderShip}
           />
         </>

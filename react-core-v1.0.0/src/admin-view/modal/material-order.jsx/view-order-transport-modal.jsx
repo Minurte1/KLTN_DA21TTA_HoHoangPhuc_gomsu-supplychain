@@ -67,7 +67,6 @@ const OrderShipDetailView = ({ open, onClose, data }) => {
       (user) =>
         user.TRANG_THAI_USER === "ACTIVE" || user.TRANG_THAI_USER === "WORKING"
     );
-
     setUsersShip(filteredUsers);
   };
 
@@ -90,14 +89,16 @@ const OrderShipDetailView = ({ open, onClose, data }) => {
       ID_ORDER: selectOrderShip?.ID_MATERIAL_ORDER_MASTER || "",
       DELIVERY_DATE: selectOrderShip?.DELIVERY_DATE || "",
       STATUS: "DELIVERING" || "",
-      SHIPPING_COST: selectOrderShip?.SHIPPING_COST || "",
+      SHIPPING_COST: selectOrderShip?.FEE_PRICE || "",
       NOTE: selectOrderShip?.ID_COMPANY_SHIP || "",
       ID_FEE: selectOrderShip?.ID_FEE || "",
-      ID_USERS_SHIP: selectOrderShip?.ID_COMPANY_SHIP || "",
+      ID_USERS_SHIP: selectUserShip?.ID_USERS || "",
+      ID_MATERIAL_ORDER_MASTER: selectOrderShip?.ID_MATERIAL_ORDER_MASTER,
     };
     const data = await transportOrderServices.createTransportOrder(input);
+    onClose();
   };
-  console.log("data", data);
+
   if (!data) return null;
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -255,11 +256,6 @@ const OrderShipDetailView = ({ open, onClose, data }) => {
               Xác nhận vận chuyển
             </Button>
           </Box>{" "}
-          {/* {data.STATUS === "CONFIRMED" && !selectUserShip && (
-            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-              Vui lòng thêm người vận chuyển trước khi xác nhận!
-            </Typography>
-          )} */}
         </Box>
         <ViewUsersShipModal
           users={usersShip}
