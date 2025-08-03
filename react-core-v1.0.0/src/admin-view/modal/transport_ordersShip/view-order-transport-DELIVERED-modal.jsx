@@ -89,16 +89,17 @@ const OrderShipDetailViewDELIVERING = ({ open, onClose, data }) => {
       ID_ORDER: selectOrderShip?.ID_MATERIAL_ORDER_MASTER || "",
       DELIVERY_DATE: selectOrderShip?.DELIVERY_DATE || "",
       STATUS: "SUCCESS" || "",
-      SHIPPING_COST: selectOrderShip?.FEE_PRICE || "",
+      SHIPPING_COST: selectOrderShip?.SHIPPING_COST || "",
       NOTE: selectOrderShip?.ID_COMPANY_SHIP || "",
       ID_FEE: selectOrderShip?.ID_FEE || "",
-      ID_USERS_SHIP: selectUserShip?.ID_USERS || "",
+      ID_USERS_SHIP: selectOrderShip?.ID_USERS_SHIP || "",
       ID_MATERIAL_ORDER_MASTER: selectOrderShip?.ID_MATERIAL_ORDER_MASTER,
     };
-    const data = await transportOrderServices.updateTransportOrder(input);
+    const id = selectOrderShip?.ID_TRANSPORT_ORDER;
+    const data = await transportOrderServices.updateTransportOrder(id, input);
     onClose();
   };
-  console.log("data", data);
+
   if (!data) return null;
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>

@@ -182,25 +182,26 @@ const update = async (id, data) => {
     ID_COMPANY_SHIP,
     ID_MATERIAL_ORDER,
     ID_ORDER,
-    DELIVERY_DATE,
+    // DELIVERY_DATE,
     STATUS,
     SHIPPING_COST,
     NOTE,
     ID_FEE,
     ID_USERS_SHIP,
+    ID_MATERIAL_ORDER_MASTER,
   } = data;
 
   const [result] = await db.query(
     `UPDATE transport_orders SET
       ID_COMPANY_SHIP = ?, ID_MATERIAL_ORDER = ?, ID_ORDER = ?,
-      DELIVERY_DATE = ?, STATUS = ?, SHIPPING_COST = ?, NOTE = ?,
+      DELIVERY_DATE = NOW(), STATUS = ?, SHIPPING_COST = ?, NOTE = ?,
       ID_FEE = ?, ID_USERS_SHIP = ?, UPDATED_AT = NOW()
     WHERE ID_TRANSPORT_ORDER = ?`,
     [
       ID_COMPANY_SHIP,
       ID_MATERIAL_ORDER,
       ID_ORDER,
-      DELIVERY_DATE,
+      // DELIVERY_DATE,
       STATUS,
       SHIPPING_COST,
       NOTE,
@@ -208,6 +209,18 @@ const update = async (id, data) => {
       ID_USERS_SHIP,
       id,
     ]
+  );
+
+  const [material_order_master] = await db.query(
+    `UPDATE material_order_master SET STATUS = ?
+    WHERE ID_MATERIAL_ORDER_MASTER = ?`,
+    [STATUS, ID_MATERIAL_ORDER_MASTER]
+  );
+
+  const [transport_orders] = await db.query(
+    `UPDATE material_orders SET STATUS = ?
+    WHERE ID_MATERIAL_ORDER_MASTER = ?`,
+    [STATUS, ID_MATERIAL_ORDER_MASTER]
   );
 
   return result.affectedRows > 0;
