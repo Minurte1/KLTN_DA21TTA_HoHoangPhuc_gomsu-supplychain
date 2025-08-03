@@ -53,6 +53,15 @@ const deleteTransportOrder = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const transportOrdersShipDELIVERING = async (req, res) => {
+  try {
+    const data = await TransportOrderService.transport_ordersShipDELIVERING();
+    res.json(data);
+  } catch (error) {
+    console.log("transport_order", error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   getTransportOrders,
@@ -60,4 +69,5 @@ module.exports = {
   getTransportOrderById,
   updateTransportOrder,
   deleteTransportOrder,
+  transportOrdersShipDELIVERING,
 };

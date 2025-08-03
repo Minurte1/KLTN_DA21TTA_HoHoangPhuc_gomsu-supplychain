@@ -6,12 +6,20 @@ const {
   getTransportOrderById,
   updateTransportOrder,
   deleteTransportOrder,
+  // transportOrdersShipDELIVERING,
 } = require("../controllers/transport_order.controller");
 
 const {
   checkUserJWT,
   checkUserPermission,
 } = require("../middleware/JWTaction");
+
+// router.get(
+//   "/",
+//   // checkUserJWT,
+//   // checkUserPermission("transport_order", "view"),
+//   transportOrdersShipDELIVERING
+// );
 
 // Lấy tất cả đơn vận chuyển
 router.get(

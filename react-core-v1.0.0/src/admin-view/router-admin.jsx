@@ -19,6 +19,7 @@ import MaterialOrderMaster_BuyPending from "./pages/material-order/order-peding/
 import MaterialOrderMaster_ShipConfirmed from "./pages/material-order/order-confirmed/material_order_master_ctyShip_confirmed";
 import MaterialOrderMaster_SellerConfirmed from "./pages/material-order/order-confirmed/material_order_master_ctySeller_confirmed";
 import TransportServiceFees from "./pages/transportServiceFees-page";
+import Transport_ordersShipDELIVERING from "./pages/material-order/transport_ordersShip/transport_ordersShipDELIVERING";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -127,6 +128,11 @@ const RouterAdmin = () => {
       path: "/material_order_master_seller_confirmed",
       element: <MaterialOrderMaster_SellerConfirmed />,
     },
+    {
+      path: "/transport_orders",
+      element: <Transport_ordersShipDELIVERING />,
+    },
+
     // {
     //   path: "/admin/don-vat-lieu",
     //   element: <MaterialOrder />,
