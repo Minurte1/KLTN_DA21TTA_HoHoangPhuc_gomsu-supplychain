@@ -4,8 +4,10 @@ const TRANSPORT_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/transport-order
 
 const transportOrderServices = {
   // Lấy danh sách tất cả đơn vận chuyển
-  getTransportOrders: async () => {
-    const res = await axiosInstance.get(TRANSPORT_ORDER_API);
+  getTransportOrders: async (STATUS) => {
+    const res = await axiosInstance.get(TRANSPORT_ORDER_API, {
+      params: { STATUS }, // 👈 đây là cách thêm query
+    });
     return res.data;
   },
 

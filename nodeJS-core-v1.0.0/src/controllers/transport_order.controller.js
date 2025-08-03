@@ -2,7 +2,10 @@ const TransportOrderService = require("../services/transport_order.service");
 
 const getTransportOrders = async (req, res) => {
   try {
-    const data = await TransportOrderService.getAll();
+    const { STATUS } = req.query; // 👈 nhận status từ query
+    const status = STATUS || null;
+    const data = await TransportOrderService.getAll(status); // truyền vào service
+
     res.json(data);
   } catch (error) {
     console.log("transport_order", error);

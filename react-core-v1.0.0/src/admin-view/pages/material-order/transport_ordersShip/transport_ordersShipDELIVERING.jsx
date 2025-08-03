@@ -34,19 +34,12 @@ const Transport_ordersShipDELIVERING = () => {
 
   const fetchOrders = async () => {
     try {
-      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-      // {
-      //         idShip: companyId, // nếu đang lọc theo công ty mua
-      //         status: "DELIVERING", // hoặc trạng thái nếu cần
-      //         keyTable: "transport_service_fees",
-      //       }
-      const data = await transportOrderServices.getTransportOrders();
-
+      const STATUS = "DELIVERING"; // hoặc null nếu muốn lấy tất cả
+      const data = await transportOrderServices.getTransportOrders(STATUS);
       setOrders(data);
     } catch (error) {
       console.error("Lỗi khi tải đơn đặt hàng:", error);
       setOrders([]);
-    } finally {
     }
   };
 
