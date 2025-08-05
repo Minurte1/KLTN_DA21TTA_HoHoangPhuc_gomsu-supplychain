@@ -22,6 +22,7 @@ import TransportServiceFees from "./pages/transportServiceFees-page";
 import Transport_ordersShipDELIVERING from "./pages/material-order/transport_ordersShip/transport_ordersShipDELIVERING";
 import Transport_ordersShipDELIVERED from "./pages/material-order/transport_ordersShip/transport_ordersShipDELIVERED";
 import Transport_ordersShipSUCCESS from "./pages/material-order/transport_ordersShip/transport_ordersShipSUCCESS";
+import Transport_ordersShipFAILED from "./pages/material-order/transport_ordersShip/transport_ordersShipFAILED";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -141,6 +142,10 @@ const RouterAdmin = () => {
     {
       path: "/transport_orders_success",
       element: <Transport_ordersShipSUCCESS />,
+    },
+    {
+      path: "/transport_orders_failed",
+      element: <Transport_ordersShipFAILED />,
     },
     // {
     //   path: "/admin/don-vat-lieu",

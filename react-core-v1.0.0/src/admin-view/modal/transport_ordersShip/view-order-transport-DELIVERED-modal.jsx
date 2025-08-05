@@ -84,7 +84,7 @@ const OrderShipDetailViewDELIVERING = ({
     setOpenUserShipModal(false);
     setSelectUserShip(user);
   };
-  const onConfirmShip = async () => {
+  const onConfirmShip = async (key) => {
     if (!selectUserShip) {
       enqueueSnackbar("Vui lòng chọn người vận chuyển");
     }
@@ -93,7 +93,7 @@ const OrderShipDetailViewDELIVERING = ({
       ID_MATERIAL_ORDER: selectOrderShip?.ID_MATERIAL_ORDER || "",
       ID_ORDER: selectOrderShip?.ID_MATERIAL_ORDER_MASTER || "",
       DELIVERY_DATE: selectOrderShip?.DELIVERY_DATE || "",
-      STATUS: "DELIVERED" || "",
+      STATUS: key === "FAILED" ? "FAILED" : "DELIVERED" || "",
       SHIPPING_COST: selectOrderShip?.SHIPPING_COST || "",
       NOTE: selectOrderShip?.ID_COMPANY_SHIP || "",
       ID_FEE: selectOrderShip?.ID_FEE || "",
@@ -309,21 +309,43 @@ const OrderShipDetailViewDELIVERING = ({
         >
           <Button onClick={onClose} variant="outlined" color="secondary">
             Đóng
-          </Button>
-          {STATUS === "DELIVERING" && (
-            <Box display="flex" gap={2}>
-              <Button
-                onClick={onConfirmShip}
-                variant="contained"
-                color="primary"
-                disabled={
-                  data.STATUS !== "DELIVERING" || usersShip.length === 0
-                }
-              >
-                Giao thành công
-              </Button>
-            </Box>
-          )}
+          </Button>{" "}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            gap={2}
+          >
+            {" "}
+            {STATUS === "DELIVERING" && (
+              <Box display="flex" gap={2}>
+                <Button
+                  onClick={() => onConfirmShip("FAILED")}
+                  variant="contained"
+                  color="error"
+                  disabled={
+                    data.STATUS !== "DELIVERING" || usersShip.length === 0
+                  }
+                >
+                  Giao thất bại
+                </Button>
+              </Box>
+            )}
+            {STATUS === "DELIVERING" && (
+              <Box display="flex" gap={2}>
+                <Button
+                  onClick={onConfirmShip}
+                  variant="contained"
+                  color="primary"
+                  disabled={
+                    data.STATUS !== "DELIVERING" || usersShip.length === 0
+                  }
+                >
+                  Đã giao
+                </Button>
+              </Box>
+            )}
+          </Box>
         </Box>
       </>
     </Dialog>

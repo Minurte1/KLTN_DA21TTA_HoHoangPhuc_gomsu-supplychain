@@ -134,6 +134,10 @@ export const adminMenuConfig = [
         label: "Đơn hàng vận chuyển giao thành công",
         path: "/admin/transport_orders_success",
       },
+      {
+        label: "Đơn hàng vận chuyển giao thất bại",
+        path: "/admin/transport_orders_failed",
+      },
     ],
   },
   // RETAILER
