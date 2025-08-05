@@ -27,7 +27,7 @@ const MaterialOrderMaster_BuyPending = () => {
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
         idBuyer: companyId, // nếu đang lọc theo công ty mua
-        // status: "PENDING", // hoặc trạng thái nếu cần
+        status: "PENDING", // hoặc trạng thái nếu cần
       });
 
       setOrders(data);

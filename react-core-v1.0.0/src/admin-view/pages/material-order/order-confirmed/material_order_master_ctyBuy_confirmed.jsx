@@ -62,7 +62,7 @@ const MaterialOrderMaster_BuyConfirmed = () => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-  console.log("userInfo:", userInfo);
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>

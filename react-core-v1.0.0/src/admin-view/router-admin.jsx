@@ -23,6 +23,7 @@ import Transport_ordersShipDELIVERING from "./pages/material-order/transport_ord
 import Transport_ordersShipDELIVERED from "./pages/material-order/transport_ordersShip/transport_ordersShipDELIVERED";
 import Transport_ordersShipSUCCESS from "./pages/material-order/transport_ordersShip/transport_ordersShipSUCCESS";
 import Transport_ordersShipFAILED from "./pages/material-order/transport_ordersShip/transport_ordersShipFAILED";
+import Transport_ordersBuyDELIVERED from "./pages/material-order/order-success/transport_ordersShipDELIVERED";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -147,6 +148,7 @@ const RouterAdmin = () => {
       path: "/transport_orders_failed",
       element: <Transport_ordersShipFAILED />,
     },
+
     // {
     //   path: "/admin/don-vat-lieu",
     //   element: <MaterialOrder />,

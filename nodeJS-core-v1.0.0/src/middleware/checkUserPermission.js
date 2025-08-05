@@ -61,6 +61,7 @@ const baseListPermission = [
     router: "material_order_master_buy_pending",
     actions: ["view", "create", "update", "delete", "approve"],
   },
+
   // ==========================Confirmed================================
   {
     router: "material_order_master_ship_confirmed",
