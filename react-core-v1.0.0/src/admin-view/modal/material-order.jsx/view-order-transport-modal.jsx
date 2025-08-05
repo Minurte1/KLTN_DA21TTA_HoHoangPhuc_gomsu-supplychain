@@ -79,8 +79,9 @@ const OrderShipDetailView = ({ open, onClose, data }) => {
     setOpenUserShipModal(false);
     setSelectUserShip(user);
   };
+  console.log("selel", selectUserShip);
   const onConfirmShip = async () => {
-    if (!selectUserShip) {
+    if (!selectUserShip?.ID_USERS) {
       enqueueSnackbar("Vui lòng chọn người vận chuyển");
     }
     const input = {

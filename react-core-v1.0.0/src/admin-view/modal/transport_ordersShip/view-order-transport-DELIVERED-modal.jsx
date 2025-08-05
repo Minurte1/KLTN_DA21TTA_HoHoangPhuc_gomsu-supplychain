@@ -74,7 +74,7 @@ const OrderShipDetailViewDELIVERING = ({
     );
     setUsersShip(filteredUsers);
   };
-  console.log("data", data);
+
   const handleAddUserShip = (user) => {
     setSeletOrderShip((prev) => ({
       ...prev,
@@ -84,6 +84,7 @@ const OrderShipDetailViewDELIVERING = ({
     setOpenUserShipModal(false);
     setSelectUserShip(user);
   };
+
   const onConfirmShip = async (key) => {
     if (!selectUserShip) {
       enqueueSnackbar("Vui lòng chọn người vận chuyển");

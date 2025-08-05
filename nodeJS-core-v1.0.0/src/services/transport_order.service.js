@@ -266,7 +266,7 @@ const getAll = async (status) => {
     LEFT JOIN material_order_master mom ON mo.ID_MATERIAL_ORDER_MASTER = mom.ID_MATERIAL_ORDER_MASTER
     LEFT JOIN companies buyer ON mom.ID_COMPANY_BUYER = buyer.ID_COMPANY
     LEFT JOIN companies seller ON mom.ID_COMPANY_SELLER = seller.ID_COMPANY
-    LEFT JOIN transport_service_fees tsf ON tsf.ID_COMPANY_SHIP = todr.ID_COMPANY_SHIP
+LEFT JOIN transport_service_fees tsf ON todr.ID_FEE = tsf.ID_FEE
     LEFT JOIN users ON todr.ID_USERS_SHIP = users.ID_USERS
   `;
 
