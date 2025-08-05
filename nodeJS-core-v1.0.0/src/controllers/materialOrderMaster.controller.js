@@ -80,6 +80,7 @@ const updateMaterialOrderMaster = async (req, res) => {
       DELIVERY_DATE,
       STATUS: ORDER_STATUS, // <- đổi tên cho khớp
       TOTAL_COST,
+      ID_FEE,
     } = req.body;
 
     const formattedOrderDate = ORDER_DATE
@@ -98,6 +99,7 @@ const updateMaterialOrderMaster = async (req, res) => {
       STATUS: ORDER_STATUS, // <- đổi tên cho khớp
       TOTAL_COST,
       UPDATED_AT: moment().format("YYYY-MM-DD HH:mm:ss"),
+      ID_FEE,
     });
 
     if (!updated) {

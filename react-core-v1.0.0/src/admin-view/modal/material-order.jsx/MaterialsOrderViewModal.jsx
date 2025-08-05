@@ -92,6 +92,7 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
       ...orderToConfirm,
       ID_COMPANY_SHIP: selectedShipId,
       ITEM_STATUS: "CONFIRMED",
+      ID_FEE: selectedShipCompanies?.freeServices?.ID_FEE,
     };
 
     try {
@@ -127,10 +128,13 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
     }
   };
 
-  const handleAddShipping = (company) => {
+  const handleAddShipping = (company, fee) => {
+    console.log("fee", fee);
+
     setSelectedShipCompanies((prev) => ({
       ...prev,
       [selectOrder?.ID_MATERIAL_ORDER_MASTER]: company.ID_COMPANY,
+      freeServices: fee,
     }));
   };
   console.log("orders", orders);
@@ -240,8 +244,8 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
           open={openTransportModal}
           onClose={() => setOpenTransportModal(false)}
           companies={shippingCompanies}
-          onAdd={(company) => {
-            handleAddShipping(company);
+          onAdd={(company, free) => {
+            handleAddShipping(company, free);
             setOpenTransportModal(false);
           }}
         />

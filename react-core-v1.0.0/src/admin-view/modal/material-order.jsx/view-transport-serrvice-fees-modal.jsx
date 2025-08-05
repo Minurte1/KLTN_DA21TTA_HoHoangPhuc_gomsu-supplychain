@@ -56,13 +56,14 @@ const ViewTranSportServicesFeesModal = ({
                       <TableCell>{fee.PRICE.toLocaleString()}đ</TableCell>
                       <TableCell>{fee.UNIT}</TableCell>
                       <TableCell>{fee.FEE_STATUS}</TableCell>
+
                       <TableCell>
                         <Button
                           variant="contained"
                           size="small"
                           color="primary"
                           startIcon={<AddIcon />}
-                          onClick={() => onAdd(company)}
+                          onClick={() => onAdd(company, fee)}
                         >
                           +
                         </Button>

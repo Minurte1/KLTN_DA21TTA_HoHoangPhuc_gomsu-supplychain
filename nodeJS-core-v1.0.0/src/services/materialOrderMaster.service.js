@@ -173,6 +173,7 @@ const update = async (id, data) => {
 
     TOTAL_COST,
     UPDATED_AT,
+    ID_FEE,
   } = data;
   const STATUS = "CONFIRMED";
   const conn = await db.getConnection(); // dùng pool để lấy connection riêng
@@ -181,7 +182,7 @@ const update = async (id, data) => {
 
     const [result] = await conn.query(
       `UPDATE material_order_master 
-       SET ID_COMPANY_BUYER = ?, ID_COMPANY_SELLER = ?, ID_COMPANY_SHIP = ?, ORDER_DATE = ?, DELIVERY_DATE = ?, STATUS = ?, TOTAL_COST = ?, UPDATED_AT = ?
+       SET ID_COMPANY_BUYER = ?, ID_COMPANY_SELLER = ?, ID_COMPANY_SHIP = ?, ORDER_DATE = ?, DELIVERY_DATE = ?, STATUS = ?, TOTAL_COST = ?, UPDATED_AT = ?, ID_FEE = ?
        WHERE ID_MATERIAL_ORDER_MASTER = ?`,
       [
         ID_COMPANY_BUYER,
@@ -192,6 +193,7 @@ const update = async (id, data) => {
         STATUS,
         TOTAL_COST,
         UPDATED_AT,
+        ID_FEE,
         id,
       ]
     );
