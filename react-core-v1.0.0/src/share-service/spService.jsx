@@ -57,6 +57,8 @@ const spService = {
       STOP: "Ngừng kinh doanh",
       PENDING: "Chờ duyệt",
 
+      READY: "Sẵn sàng",
+
       // Trạng thái đơn hàng
       CONFIRMED: "Đã xác nhận",
       DELIVERING: "Đang giao",
@@ -65,6 +67,7 @@ const spService = {
       RETURNED: "Đã hoàn trả",
       SUCCESS: "Giao thành công",
       FAILED: "Giao thất bại",
+
       // Trạng thái mới thêm
       NEED_TO_SHIP: "Cần vận chuyển",
     };

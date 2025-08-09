@@ -24,7 +24,7 @@ const Material = () => {
 
   useEffect(() => {
     fetchMaterials();
-  }, []);
+  }, [userInfo]);
 
   const handleEdit = (material) => {
     setSelectedMaterial(material);
