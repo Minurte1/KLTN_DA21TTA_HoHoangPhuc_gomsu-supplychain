@@ -3,7 +3,10 @@
  HIDDEN          Không hiển thị để bán nhưng vẫn còn kho ✅
  OUT             Hết hàng, không đặt mua được ✅
  STOP            Ngừng kinh doanh vĩnh viễn ✅
- PENDING         Đang chờ duyệt từ admin ✅ -->
+ PENDING         Đang chờ duyệt từ admin ✅
+
+ READY           Vật liệu đã sẵn sàng
+  -->
 
 <!-- status cung cấp  -->
 

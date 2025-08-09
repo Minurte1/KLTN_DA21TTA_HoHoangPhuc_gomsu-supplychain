@@ -154,7 +154,9 @@ const ViewOrderModal = ({
             <Button
               variant="contained"
               color="success"
-              onClick={() => handleConfirmOrder(data?.ID_MATERIAL_ORDER_MASTER)}
+              onClick={() =>
+                handleConfirmOrder(data?.ID_MATERIAL_ORDER_MASTER, data)
+              }
             >
               {title}
             </Button>

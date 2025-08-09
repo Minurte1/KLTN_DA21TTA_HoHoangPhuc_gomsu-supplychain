@@ -65,11 +65,13 @@ const MaterialOrderMaster_BuyPending = () => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-  const handleUpdateStatusOrder = async (id) => {
+  const handleUpdateStatusOrder = async (id, data) => {
     const response =
       await materialOrderMasterServices.updateStatusMaterialOrderMaster(
         id,
-        "SUCCESS"
+        "SUCCESS",
+        data,
+        true
       );
     if (response.status === 200) {
       enqueueSnackbar("Cập nhật trạng thái đơn hàng thành công", {

@@ -68,10 +68,15 @@ const materialOrderMasterServices = {
     return res.data;
   },
 
-  updateStatusMaterialOrderMaster: async (id, status) => {
+  updateStatusMaterialOrderMaster: async (
+    id,
+    status,
+    data,
+    isTransportOrders
+  ) => {
     const res = await axiosInstance.put(
       `${MATERIAL_ORDER_API}/update-status/${id}`,
-      { status }
+      { status, data: data, isTransportOrders }
     );
     return res;
   },

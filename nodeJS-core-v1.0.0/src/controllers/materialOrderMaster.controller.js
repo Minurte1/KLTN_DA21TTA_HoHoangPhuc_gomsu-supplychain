@@ -280,7 +280,7 @@ const createMaterialOrderFull = async (req, res) => {
 const updateConfirmOrderMaster = () => {};
 const updateStatusMaterialOrderMaster = async (req, res) => {
   const { id } = req.params; // ID_MATERIAL_ORDER_MASTER
-  const { status } = req.body;
+  const { status, isTransportOrders, data } = req.body;
 
   if (!status) {
     return res.status(400).json({ message: "Thiếu status để cập nhật" });
@@ -305,7 +305,51 @@ const updateStatusMaterialOrderMaster = async (req, res) => {
       SET STATUS = ? 
       WHERE ID_MATERIAL_ORDER_MASTER = ?
     `;
+    if (isTransportOrders) {
+      await db.execute(
+        `UPDATE transport_orders 
+         SET STATUS = ? 
+         WHERE ID_MATERIAL_ORDER = ?`,
+        [status, data?.ID_MATERIAL_ORDER]
+      );
+    }
+
     await db.execute(updateOrders, [status, id]);
+
+    // Nếu trạng thái là SUCCESS thì truy vấn lại dữ liệu chi tiết đơn hàng
+    if (status === "SUCCESS") {
+      // 1. Lấy dữ liệu chi tiết đơn hàng
+      const [rows] = await db.execute(
+        `SELECT * FROM materials
+         WHERE ID_MATERIALS_ = ?`,
+        [data?.ID_MATERIALS_]
+      );
+      const STATUS = "READY";
+      if (rows.length > 0) {
+        const detail = rows[0];
+
+        // 2. Tạo bản ghi mới trong materials
+        const insertMaterials = `
+          INSERT INTO materials 
+          (ID_MATERIAL_TYPES, NAME_, UNIT_, QUANTITY, COST_PER_UNIT_, CREATED_AT_PRODUCTS, UPDATED_AT_PRODUCTS, ORIGIN, EXPIRY_DATE, ID_COMPANY, STATUS)
+          VALUES (?,  ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?,?)
+        `;
+
+        await db.execute(insertMaterials, [
+          detail.ID_MATERIAL_TYPES, // nếu ID_MATERIAL_TYPES có cột khác bạn sửa lại
+
+          detail.NAME_,
+          detail.UNIT_,
+          data.QUANTITY_ORDERED, // hoặc detail.QUANTITY tuỳ dữ liệu đúng
+          detail.COST_PER_UNIT_,
+
+          detail.ORIGIN,
+          detail.EXPIRY_DATE,
+          data.ID_COMPANY_BUYER,
+          STATUS,
+        ]);
+      }
+    }
 
     res.status(200).json({ message: "Cập nhật trạng thái thành công" });
   } catch (error) {
