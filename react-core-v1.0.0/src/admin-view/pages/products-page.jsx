@@ -8,14 +8,17 @@ import DynamicTable from "../../share-view/dynamic/table/table";
 
 import productServices from "../../services/productServices";
 import ProductsFormModal from "../modal/products-modal";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const { userInfo } = ReduxExportUseAuthState();
 
   const fetchProducts = async () => {
-    const data = await productServices.getProducts();
+    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+    const data = await productServices.getProducts({ ID_COMPANY: companyId });
     setProducts(data);
   };
 

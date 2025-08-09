@@ -57,6 +57,8 @@ const ProductionPlans = () => {
 
       <DynamicTable
         data={plans}
+        subStatus={true}
+        keyStatus={"productionPlans"}
         columns={[
           { key: "NAME_PRODUCTION_PLAN", label: "Tên kế hoạch" },
           { key: "ID_PRODUCT", label: "ID Sản phẩm" },

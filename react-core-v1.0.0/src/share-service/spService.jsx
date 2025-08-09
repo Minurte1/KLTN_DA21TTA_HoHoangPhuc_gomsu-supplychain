@@ -101,6 +101,13 @@ const spService = {
         MAINTENANCE: "Đang bảo trì",
         RETIRED: "Đã ngưng sử dụng",
       },
+      productionPlans: {
+        PLANNED: "Đã Lập Kế Hoạch",
+        IN_PROGRESS: "Đang Tiến Hành",
+        COMPLETED: "Đã Hoàn Thành",
+        CANCELED: "Đã Hủy",
+      },
+
       default: {
         ACTIVE: "Hoạt động",
         INACTIVE: "Không hoạt động",

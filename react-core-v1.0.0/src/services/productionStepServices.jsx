@@ -4,7 +4,7 @@ const PRODUCTION_STEP_API = `${process.env.REACT_APP_URL_SERVER}/production-step
 
 const productionStepServices = {
   // Lấy danh sách tất cả các bước sản xuất
-  getProductionSteps: async () => {
+  getProductionSteps: async ({}) => {
     const res = await axiosInstance.get(PRODUCTION_STEP_API);
     return res.data;
   },

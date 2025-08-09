@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import DynamicModal from "../../share-view/dynamic/modal/modal";
 
-import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import productionPlanServices from "../../services/productionPlanServices";
+
+import productServices from "../../services/productServices";
+import companyServices from "../../services/companies-service";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import { getAllUsers } from "../../services/userAccountService";
 
 const ProductionPlansFormModal = ({
   open,
@@ -26,6 +30,11 @@ const ProductionPlansFormModal = ({
     NAME_PRODUCTION_PLAN: "",
   });
 
+  // State để chứa dữ liệu options
+  const [products, setProducts] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [companies, setCompanies] = useState([]);
+
   const optionStatus = [
     { value: "PLANNED", label: "Đã Lập Kế Hoạch" },
     { value: "IN_PROGRESS", label: "Đang Tiến Hành" },
@@ -33,6 +42,45 @@ const ProductionPlansFormModal = ({
     { value: "CANCELED", label: "Đã Hủy" },
   ];
 
+  // Fetch dữ liệu khi modal mở hoặc userInfo thay đổi
+  useEffect(() => {
+    if (open && userInfo) {
+      fetchProducts();
+      fetchUsers();
+      fetchCompanies();
+    }
+  }, [open, userInfo]);
+
+  const fetchProducts = async () => {
+    try {
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await productServices.getProducts({ ID_COMPANY: companyId });
+      // Giả sử data trả về có cấu trúc { DT: [...] }
+      setProducts(data || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await getAllUsers(companyId);
+      setUsers(data || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const fetchCompanies = async () => {
+    try {
+      const data = await companyServices.getCompanies();
+      setCompanies(data.DT || []);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+  console.log("product", products);
   useEffect(() => {
     if (open) {
       setFormData(
@@ -80,7 +128,8 @@ const ProductionPlansFormModal = ({
       );
     }
   }, [open, productionPlan, userInfo]);
-
+  console.log("user", users);
+  // Chỉnh sửa fields cho 3 trường select
   const fields = [
     {
       key: "NAME_PRODUCTION_PLAN",
@@ -90,52 +139,59 @@ const ProductionPlansFormModal = ({
     },
     {
       key: "ID_PRODUCT",
-      label: "Mã Sản Phẩm",
-      inputType: "text",
+      label: "Sản Phẩm Mong Muốn",
+      inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
       required: true,
+      options: products,
+      optionsLabel: "NAME_PRODUCTS",
     },
     {
       key: "ID_USERS",
-      label: "Mã Người Dùng",
-      inputType: "text",
+      label: "Người Thực Hiện",
+      inputType: "autocomplete", // Sử dụng Autocomplete cho trường này
       required: true,
+      options: users,
+      optionsLabel: "HO_TEN",
     },
     {
       key: "PLANNED_START_PRODUCTION_PLANS",
       label: "Ngày Bắt Đầu Dự Kiến",
-      inputType: "date",
+      inputType: "datetime",
       required: true,
     },
     {
       key: "PLANNED_END_PRODUCTION_PLANS",
       label: "Ngày Kết Thúc Dự Kiến",
-      inputType: "date",
+      inputType: "datetime",
       required: true,
     },
     {
       key: "ACTUAL_START_PRODUCTION_PLANS",
       label: "Ngày Bắt Đầu Thực Tế",
-      inputType: "date",
+      inputType: "datetime",
     },
     {
       key: "ACTUAL_END_PRODUCTION_PLANS",
       label: "Ngày Kết Thúc Thực Tế",
-      inputType: "date",
+      inputType: "datetime",
     },
     {
       key: "STATUS_PRODUCTION_PLANS",
       label: "Trạng Thái",
-      inputType: "autocomplete",
+      inputType: "select",
       options: optionStatus,
-      optionsLabel: "label",
+
       required: true,
     },
     { key: "NOTE_PRODUCTION_PLANS", label: "Ghi Chú", inputType: "text" },
     {
       key: "ID_COMPANY",
       label: "Công Ty",
-      inputType: "text",
+      inputType: "autocomplete",
       disabled: true,
+      options: companies,
+      optionsLabel: "NAME_COMPANY",
+      disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
     },
   ];
 

@@ -198,12 +198,10 @@ const DynamicTable = ({
                         {subStatus ? (
                           <>
                             {" "}
-                            {column.key === "STATUS"
-                              ? spService.mapStatusToVietnamese(
-                                  row[column.key],
-                                  keyStatus
-                                )
-                              : row[column.key]}
+                            {spService.mapStatusToVietnamese(
+                              row[column.key],
+                              keyStatus
+                            )}
                           </>
                         ) : (
                           <> {row[column.key]}</>
