@@ -62,7 +62,7 @@ export const adminMenuConfig = [
       },
       {
         label: "Bước sản xuất",
-        path: "/admin/buoc-san-xuat",
+        path: "/admin/production_steps",
       },
       {
         label: "Vật liệu sản xuất",
