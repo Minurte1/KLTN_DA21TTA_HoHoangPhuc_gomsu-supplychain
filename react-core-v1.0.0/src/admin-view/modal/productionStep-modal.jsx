@@ -80,7 +80,9 @@ const ProductionStepsFormModal = ({
   const fetchProductionPlans = async () => {
     try {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-      const data = await productionPlanServices.getAll(companyId);
+      if (!companyId) return; // không lấy nếu chưa có companyId
+
+      const data = await productionPlanServices.getProductionPlans(companyId);
       setProductionPlansOptions(data);
     } catch (error) {
       console.error("Error fetching production plans:", error);
@@ -100,7 +102,9 @@ const ProductionStepsFormModal = ({
   const fetchEquipment = async () => {
     try {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-      const data = await equipmentServices.getAll(companyId);
+      const data = await equipmentServices.getEquipments({
+        ID_COMPANY: companyId,
+      });
       setEquipmentOptions(data);
     } catch (error) {
       console.error("Error fetching equipment:", error);
@@ -109,7 +113,8 @@ const ProductionStepsFormModal = ({
 
   const fetchCompanies = async () => {
     try {
-      const data = await companyServices.getCompanies();
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await companyServices.getCompanies(companyId);
       setCompaniesOptions(data.DT || []);
     } catch (error) {
       console.error("Error fetching companies:", error);
@@ -129,7 +134,7 @@ const ProductionStepsFormModal = ({
       label: "Kế hoạch sản xuất",
       inputType: "autocomplete",
       options: productionPlansOptions,
-      optionsLabel: "PLAN_NAME", // chỉnh theo tên trường đúng bên API
+      optionsLabel: "NAME_PRODUCTION_PLAN", // chỉnh theo tên trường đúng bên API
       required: true,
     },
     {
@@ -137,7 +142,7 @@ const ProductionStepsFormModal = ({
       label: "Người phụ trách",
       inputType: "autocomplete",
       options: usersOptions,
-      optionsLabel: "USER_NAME", // chỉnh theo tên trường đúng bên API
+      optionsLabel: "HO_TEN", // chỉnh theo tên trường đúng bên API
       required: true,
     },
     {
@@ -145,7 +150,7 @@ const ProductionStepsFormModal = ({
       label: "Thiết bị",
       inputType: "autocomplete",
       options: equipmentOptions,
-      optionsLabel: "EQUIPMENT_NAME", // chỉnh theo tên trường đúng bên API
+      optionsLabel: "NAME_EQUIPMENT", // chỉnh theo tên trường đúng bên API
       required: true,
     },
     {
@@ -169,9 +174,9 @@ const ProductionStepsFormModal = ({
     {
       key: "STATUS_PRODUCTION_STEPS",
       label: "Trạng thái",
-      inputType: "autocomplete",
+      inputType: "select",
       options: optionStatus,
-      optionsLabel: "label",
+
       required: true,
     },
     {

@@ -4,7 +4,7 @@ const EQUIPMENT_API = `${process.env.REACT_APP_URL_SERVER}/equipment`;
 
 const equipmentServices = {
   // Lấy danh sách tất cả thiết bị, có thể lọc theo STATUS hoặc TYPE_EQUIPMENT
-  getEquipments: async ({ STATUS, TYPE_EQUIPMENT } = {}) => {
+  getEquipments: async ({ ID_COMPANY, STATUS, TYPE_EQUIPMENT } = {}) => {
     const params = {};
     if (STATUS) params.STATUS = STATUS;
     if (TYPE_EQUIPMENT) params.TYPE_EQUIPMENT = TYPE_EQUIPMENT;
