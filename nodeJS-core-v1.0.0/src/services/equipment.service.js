@@ -3,7 +3,13 @@ const moment = require("moment");
 
 const create = async (data) => {
   try {
-    const { NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, LAST_MAINTENANCE } = data;
+    const {
+      NAME_EQUIPMENT,
+      TYPE_EQUIPMENT,
+      STATUS,
+      LAST_MAINTENANCE,
+      ID_COMPANY,
+    } = data;
 
     const lastMaintenanceFormatted = LAST_MAINTENANCE
       ? moment(LAST_MAINTENANCE).format("YYYY-MM-DD HH:mm:ss")
@@ -11,9 +17,15 @@ const create = async (data) => {
 
     const [result] = await db.query(
       `INSERT INTO equipment 
-        (NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, LAST_MAINTENANCE, CREATED_AT, UPDATED_AT) 
-      VALUES (?, ?, ?, ?, NOW(), NOW())`,
-      [NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, lastMaintenanceFormatted]
+        (NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, LAST_MAINTENANCE, ID_COMPANY, CREATED_AT, UPDATED_AT) 
+       VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
+      [
+        NAME_EQUIPMENT,
+        TYPE_EQUIPMENT,
+        STATUS,
+        lastMaintenanceFormatted,
+        ID_COMPANY,
+      ]
     );
 
     return result.insertId;
@@ -23,23 +35,35 @@ const create = async (data) => {
   }
 };
 
-const getAll = async (STATUS, TYPE_EQUIPMENT) => {
+const getAll = async (STATUS, TYPE_EQUIPMENT, ID_COMPANY) => {
   try {
-    let query = `SELECT * FROM equipment`;
+    let query = `
+      SELECT e.*, c.NAME_COMPANY, c.TYPE_COMPANY, c.ADDRESS, c.PHONE, c.EMAIL
+      FROM equipment e
+      LEFT JOIN companies c ON e.ID_COMPANY = c.ID_COMPANY
+    `;
     const params = [];
     const conditions = [];
 
     if (STATUS) {
-      conditions.push(`STATUS = ?`);
+      conditions.push(`e.STATUS = ?`);
       params.push(STATUS);
     }
     if (TYPE_EQUIPMENT) {
-      conditions.push(`TYPE_EQUIPMENT = ?`);
+      conditions.push(`e.TYPE_EQUIPMENT = ?`);
       params.push(TYPE_EQUIPMENT);
     }
+    if (ID_COMPANY) {
+      conditions.push(`e.ID_COMPANY = ?`);
+      params.push(ID_COMPANY);
+    }
+
     if (conditions.length > 0) {
       query += " WHERE " + conditions.join(" AND ");
     }
+
+    // Sắp xếp theo thời gian cập nhật mới nhất (giảm dần)
+    query += " ORDER BY e.UPDATED_AT DESC";
 
     const [rows] = await db.query(query, params);
     return rows;
@@ -64,17 +88,29 @@ const getById = async (id) => {
 
 const update = async (id, data) => {
   try {
-    const { NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, LAST_MAINTENANCE } = data;
+    let {
+      NAME_EQUIPMENT,
+      TYPE_EQUIPMENT,
+      STATUS,
+      LAST_MAINTENANCE,
+      ID_COMPANY,
+    } = data;
 
-    const lastMaintenanceFormatted = LAST_MAINTENANCE
-      ? moment(LAST_MAINTENANCE).format("YYYY-MM-DD HH:mm:ss")
-      : null;
+    // Nếu STATUS là MAINTENANCE thì LAST_MAINTENANCE = thời gian hiện tại
+    if (STATUS === "MAINTENANCE") {
+      LAST_MAINTENANCE = moment().format("YYYY-MM-DD HH:mm:ss");
+    } else {
+      // Nếu không phải, thì format theo dữ liệu đầu vào, hoặc null nếu không có
+      LAST_MAINTENANCE = LAST_MAINTENANCE
+        ? moment(LAST_MAINTENANCE).format("YYYY-MM-DD HH:mm:ss")
+        : null;
+    }
 
     const [result] = await db.query(
       `UPDATE equipment 
-       SET NAME_EQUIPMENT = ?, TYPE_EQUIPMENT = ?, STATUS = ?, LAST_MAINTENANCE = ?, UPDATED_AT = NOW()
+       SET NAME_EQUIPMENT = ?, TYPE_EQUIPMENT = ?, STATUS = ?, LAST_MAINTENANCE = ?, ID_COMPANY = ?, UPDATED_AT = NOW()
        WHERE ID_EQUIPMENT = ?`,
-      [NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, lastMaintenanceFormatted, id]
+      [NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, LAST_MAINTENANCE, ID_COMPANY, id]
     );
 
     return result.affectedRows > 0;

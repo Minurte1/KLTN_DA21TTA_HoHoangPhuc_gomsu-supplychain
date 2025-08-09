@@ -85,6 +85,7 @@ const EquipmentFormModal = ({ open, onClose, equipment, onSuccess }) => {
       key: "LAST_MAINTENANCE",
       label: "Ngày bảo trì gần nhất",
       inputType: "date",
+      disabled: true,
     },
     {
       key: "ID_COMPANY",

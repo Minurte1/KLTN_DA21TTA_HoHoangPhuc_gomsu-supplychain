@@ -2,8 +2,12 @@ const EquipmentService = require("../services/equipment.service");
 
 const getAllEquipment = async (req, res) => {
   try {
-    const { STATUS, TYPE_EQUIPMENT } = req.query;
-    const equipmentList = await EquipmentService.getAll(STATUS, TYPE_EQUIPMENT);
+    const { STATUS, TYPE_EQUIPMENT, ID_COMPANY } = req.query;
+    const equipmentList = await EquipmentService.getAll(
+      STATUS,
+      TYPE_EQUIPMENT,
+      ID_COMPANY
+    );
     res.json(equipmentList);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -12,14 +16,20 @@ const getAllEquipment = async (req, res) => {
 
 const createEquipment = async (req, res) => {
   try {
-    const { NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, LAST_MAINTENANCE } =
-      req.body;
+    const {
+      NAME_EQUIPMENT,
+      TYPE_EQUIPMENT,
+      STATUS,
+      LAST_MAINTENANCE,
+      ID_COMPANY,
+    } = req.body;
 
     const id = await EquipmentService.create({
       NAME_EQUIPMENT,
       TYPE_EQUIPMENT,
       STATUS,
       LAST_MAINTENANCE,
+      ID_COMPANY,
     });
 
     res.status(201).json({ message: "Equipment created", id });
@@ -44,14 +54,20 @@ const getEquipmentById = async (req, res) => {
 const updateEquipment = async (req, res) => {
   try {
     const { id } = req.params;
-    const { NAME_EQUIPMENT, TYPE_EQUIPMENT, STATUS, LAST_MAINTENANCE } =
-      req.body;
+    const {
+      NAME_EQUIPMENT,
+      TYPE_EQUIPMENT,
+      STATUS,
+      LAST_MAINTENANCE,
+      ID_COMPANY,
+    } = req.body;
 
     const updated = await EquipmentService.update(id, {
       NAME_EQUIPMENT,
       TYPE_EQUIPMENT,
       STATUS,
       LAST_MAINTENANCE,
+      ID_COMPANY,
     });
 
     if (!updated) {
