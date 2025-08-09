@@ -213,6 +213,33 @@ const DynamicModal = ({
             }}
           />
         );
+      case "file":
+        return (
+          <TextField
+            fullWidth
+            margin="normal"
+            label={field.label}
+            type="file"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              // lưu file hoặc upload file ở đây
+              // nếu muốn lưu trong formData thì set dưới dạng file object
+              setFormData((prev) => ({ ...prev, [field.key]: file }));
+
+              if (onChange) {
+                onChange({ ...formData, [field.key]: file });
+              }
+              if (errors[field.key]) {
+                setErrors((prev) => ({ ...prev, [field.key]: "" }));
+              }
+            }}
+            error={!!errors[field.key]}
+            helperText={errors[field.key]}
+            disabled={field.disabled}
+            InputLabelProps={{ shrink: true }}
+          />
+        );
+
       default:
         const isMultiline = !!field.rows || !!field.row;
         return (

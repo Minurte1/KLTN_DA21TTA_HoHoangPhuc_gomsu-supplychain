@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../config/multerConfig");
+
 const {
   getAllProducts,
   createProduct,
@@ -8,49 +10,27 @@ const {
   deleteProduct,
 } = require("../controllers/products.controller");
 
-const {
-  checkUserJWT,
-  checkUserPermission,
-} = require("../middleware/JWTaction");
-
-// Lấy tất cả các sản phẩm
-router.get(
-  "/",
-  // checkUserJWT,
-  // checkUserPermission("products", "view"),
-  getAllProducts
-);
-
-// Tạo sản phẩm
+// Tạo sản phẩm với upload ảnh
 router.post(
   "/",
   // checkUserJWT,
   // checkUserPermission("products", "create"),
+  upload.single("IMAGE_URL_PRODUCTS"),
   createProduct
 );
 
-// Lấy sản phẩm theo ID
-router.get(
-  "/:id",
-  // checkUserJWT,
-  // checkUserPermission("products", "view"),
-  getProductById
-);
-
-// Cập nhật sản phẩm
+// Cập nhật sản phẩm có upload ảnh
 router.put(
   "/:id",
   // checkUserJWT,
   // checkUserPermission("products", "update"),
+  upload.single("IMAGE_URL_PRODUCTS"),
   updateProduct
 );
 
-// Xóa sản phẩm
-router.delete(
-  "/:id",
-  // checkUserJWT,
-  // checkUserPermission("products", "delete"),
-  deleteProduct
-);
+// Các route khác giữ nguyên
+router.get("/", getAllProducts);
+router.get("/:id", getProductById);
+router.delete("/:id", deleteProduct);
 
 module.exports = router;

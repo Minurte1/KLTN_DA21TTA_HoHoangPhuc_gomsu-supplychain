@@ -1,14 +1,4 @@
-Dựa vào đoạn code mẫu của " Material" bạn hãy viết lại cho " transport_service_fees " biết Bảng bang gồm : transport_service_fees 
-ID_FEE INT
-ID_COMPANY_SHIP INT
-SERVICE_NAME VARCHAR(100)
-UNIT VARCHAR(50)
-PRICE FLOAT
-NOTE TEXT
-STATUS VARCHAR(50)
-CREATED_AT DATETIME
- UPDATED_AT DATETIME
-
+Dựa vào đoạn code mẫu của " Material" bạn hãy viết lại cho "production_steps  " biết Bảng production_plans gồm: ID_PRODUCTION_PLANS, ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS,  ID_COMPANY, NAME_PRODUCTION_PLAN
 
 
 đoạn code mẫu Material là 

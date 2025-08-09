@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DynamicTable from "../../share-view/dynamic/table/table";
 
 import productServices from "../../services/productServices";
+import ProductsFormModal from "../modal/products-modal";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -63,7 +64,7 @@ const Product = () => {
               <img
                 src={value}
                 alt="Product"
-                style={{ width: 50, height: 50 }}
+                style={{ width: 80, height: 80, borderRadius: "8px" }}
               />
             ),
           },
@@ -84,12 +85,12 @@ const Product = () => {
         ]}
       />
 
-      {/* <ProductFormModal
+      <ProductsFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         product={selectedProduct}
         onSuccess={fetchProducts}
-      /> */}
+      />
     </Box>
   );
 };

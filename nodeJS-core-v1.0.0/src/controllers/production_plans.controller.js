@@ -1,9 +1,13 @@
-const ProductionPlanService = require("../services/production_plans.service");
+const ProductionPlansService = require("../services/production_plans.service");
 
 const getAllProductionPlans = async (req, res) => {
   try {
-    const data = await ProductionPlanService.getAll();
-    res.json(data);
+    const { ID_COMPANY, STATUS_PRODUCTION_PLANS } = req.query;
+    const plans = await ProductionPlansService.getAll(
+      ID_COMPANY,
+      STATUS_PRODUCTION_PLANS
+    );
+    res.json(plans);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -11,8 +15,33 @@ const getAllProductionPlans = async (req, res) => {
 
 const createProductionPlan = async (req, res) => {
   try {
-    const id = await ProductionPlanService.create(req.body);
-    res.status(201).json({ message: "Created", id });
+    const {
+      ID_PRODUCT,
+      ID_USERS,
+      PLANNED_START_PRODUCTION_PLANS,
+      PLANNED_END_PRODUCTION_PLANS,
+      ACTUAL_START_PRODUCTION_PLANS,
+      ACTUAL_END_PRODUCTION_PLANS,
+      STATUS_PRODUCTION_PLANS,
+      NOTE_PRODUCTION_PLANS,
+      ID_COMPANY,
+      NAME_PRODUCTION_PLAN,
+    } = req.body;
+
+    const id = await ProductionPlansService.create({
+      ID_PRODUCT: parseInt(ID_PRODUCT, 10),
+      ID_USERS: parseInt(ID_USERS, 10),
+      PLANNED_START_PRODUCTION_PLANS,
+      PLANNED_END_PRODUCTION_PLANS,
+      ACTUAL_START_PRODUCTION_PLANS,
+      ACTUAL_END_PRODUCTION_PLANS,
+      STATUS_PRODUCTION_PLANS,
+      NOTE_PRODUCTION_PLANS,
+      ID_COMPANY: parseInt(ID_COMPANY, 10),
+      NAME_PRODUCTION_PLAN,
+    });
+
+    res.status(201).json({ message: "Production plan created", id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -20,9 +49,12 @@ const createProductionPlan = async (req, res) => {
 
 const getProductionPlanById = async (req, res) => {
   try {
-    const data = await ProductionPlanService.getById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Not found" });
-    res.json(data);
+    const { id } = req.params;
+    const plan = await ProductionPlansService.getById(id);
+    if (!plan) {
+      return res.status(404).json({ message: "Production plan not found" });
+    }
+    res.json(plan);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -30,9 +62,38 @@ const getProductionPlanById = async (req, res) => {
 
 const updateProductionPlan = async (req, res) => {
   try {
-    const success = await ProductionPlanService.update(req.params.id, req.body);
-    if (!success) return res.status(404).json({ message: "Not found" });
-    res.json({ message: "Updated" });
+    const { id } = req.params;
+    const {
+      ID_PRODUCT,
+      ID_USERS,
+      PLANNED_START_PRODUCTION_PLANS,
+      PLANNED_END_PRODUCTION_PLANS,
+      ACTUAL_START_PRODUCTION_PLANS,
+      ACTUAL_END_PRODUCTION_PLANS,
+      STATUS_PRODUCTION_PLANS,
+      NOTE_PRODUCTION_PLANS,
+      ID_COMPANY,
+      NAME_PRODUCTION_PLAN,
+    } = req.body;
+
+    const updated = await ProductionPlansService.update(id, {
+      ID_PRODUCT: parseInt(ID_PRODUCT, 10),
+      ID_USERS: parseInt(ID_USERS, 10),
+      PLANNED_START_PRODUCTION_PLANS,
+      PLANNED_END_PRODUCTION_PLANS,
+      ACTUAL_START_PRODUCTION_PLANS,
+      ACTUAL_END_PRODUCTION_PLANS,
+      STATUS_PRODUCTION_PLANS,
+      NOTE_PRODUCTION_PLANS,
+      ID_COMPANY: parseInt(ID_COMPANY, 10),
+      NAME_PRODUCTION_PLAN,
+    });
+
+    if (!updated) {
+      return res.status(404).json({ message: "Production plan not found" });
+    }
+
+    res.json({ message: "Production plan updated" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -40,9 +101,12 @@ const updateProductionPlan = async (req, res) => {
 
 const deleteProductionPlan = async (req, res) => {
   try {
-    const success = await ProductionPlanService.delete(req.params.id);
-    if (!success) return res.status(404).json({ message: "Not found" });
-    res.json({ message: "Deleted" });
+    const { id } = req.params;
+    const deleted = await ProductionPlansService.delete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Production plan not found" });
+    }
+    res.json({ message: "Production plan deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

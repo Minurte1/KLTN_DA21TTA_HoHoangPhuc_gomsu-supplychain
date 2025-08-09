@@ -17,13 +17,33 @@ const productServices = {
 
   // Tạo sản phẩm mới
   createProduct: async (data) => {
-    const res = await axiosInstance.post(PRODUCT_API, data);
+    // Nếu data có file (ví dụ IMAGE_URL_PRODUCTS là File), tạo FormData
+    const formData = new FormData();
+
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    const res = await axiosInstance.post(PRODUCT_API, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
   },
 
-  // Cập nhật sản phẩm
   updateProduct: async (id, data) => {
-    const res = await axiosInstance.put(`${PRODUCT_API}/${id}`, data);
+    const formData = new FormData();
+
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    const res = await axiosInstance.put(`${PRODUCT_API}/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
   },
 

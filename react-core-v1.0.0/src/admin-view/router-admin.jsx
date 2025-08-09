@@ -26,6 +26,7 @@ import Transport_ordersShipFAILED from "./pages/material-order/transport_ordersS
 import Transport_ordersBuyDELIVERED from "./pages/material-order/order-success/transport_ordersShipDELIVERED";
 import Equipment from "./pages/Equipment";
 import ProductionSteps from "./pages/productionStep-page";
+import ProductionPlans from "./pages/productionPlans-page";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -155,10 +156,10 @@ const RouterAdmin = () => {
     //   path: "/don-vat-lieu",
     //   element: <MaterialOrder />,
     // },
-    // {
-    //   path: "/ke-hoach-san-xuat",
-    //   element: <ProductionPlanList />,
-    // },
+    {
+      path: "/production_plans",
+      element: <ProductionPlans />,
+    },
     {
       path: "/production_steps",
       element: <ProductionSteps />,

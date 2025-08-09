@@ -58,7 +58,7 @@ export const adminMenuConfig = [
     children: [
       {
         label: "Kế hoạch sản xuất",
-        path: "/admin/ke-hoach-san-xuat",
+        path: "/admin/production_plans",
       },
       {
         label: "Bước sản xuất",
