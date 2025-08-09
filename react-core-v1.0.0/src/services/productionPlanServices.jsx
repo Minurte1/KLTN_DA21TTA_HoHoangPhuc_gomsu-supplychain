@@ -4,9 +4,9 @@ const PRODUCTION_PLAN_API = `${process.env.REACT_APP_URL_SERVER}/production-plan
 
 const productionPlanServices = {
   // Lấy danh sách tất cả kế hoạch sản xuất
-  getProductionPlans: async (companyId) => {
+  getProductionPlans: async (ID_COMPANY) => {
     const res = await axiosInstance.get(PRODUCTION_PLAN_API, {
-      params: { ID_COMPANY: companyId },
+      params: { ID_COMPANY: ID_COMPANY },
     });
     return res.data;
   },

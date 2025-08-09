@@ -6,9 +6,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
 
-import ProductionPlansFormModal from "../modal/productionPlans-modal";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import productionPlanServices from "../../services/productionPlanServices";
+import ProductionPlansFormModal from "../modal/productionPlans-modal";
 
 const ProductionPlans = () => {
   const [plans, setPlans] = useState([]);
@@ -17,10 +17,8 @@ const ProductionPlans = () => {
   const { userInfo } = ReduxExportUseAuthState();
 
   const fetchPlans = async () => {
-    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-    const data = await productionPlanServices.getProductionPlans({
-      ID_COMPANY: companyId,
-    });
+    const ID_COMPANY = userInfo?.companyInfo?.ID_COMPANY || null;
+    const data = await productionPlanServices.getProductionPlans(ID_COMPANY);
     setPlans(data);
   };
 
