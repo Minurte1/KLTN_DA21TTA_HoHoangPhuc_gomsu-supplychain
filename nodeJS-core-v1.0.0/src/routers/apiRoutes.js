@@ -25,6 +25,7 @@ const materialsRoute = require("./materials.route.js");
 const materialTypesRoute = require("./material_types.route.js");
 const addressRoute = require("./provincesRoute.js");
 const transportServiceFeesRoutes = require("./transportServiceFees.router.js");
+const equipmentRoute = require("./equipment.route.js");
 
 // Kết nối tất cả các router
 router.use("/api/permissions", permissionRoutes);
@@ -37,9 +38,11 @@ router.use("/companies", companiesRoute);
 router.use("/quality-control", qualityControlRoute);
 router.use("/order-items", orderItemsRoute);
 router.use("/orders", ordersRoute);
+
 router.use("/production-materials", productionMaterialsRoute);
 router.use("/production-steps", productionStepsRoute);
 router.use("/production-plans", productionPlansRoute);
+router.use("/equipment", equipmentRoute);
 router.use("/categories", categoriesRoute);
 router.use("/products", productsRoute);
 router.use("/cart", cartRoute);

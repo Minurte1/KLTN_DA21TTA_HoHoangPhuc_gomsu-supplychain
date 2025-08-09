@@ -24,6 +24,7 @@ import Transport_ordersShipDELIVERED from "./pages/material-order/transport_orde
 import Transport_ordersShipSUCCESS from "./pages/material-order/transport_ordersShip/transport_ordersShipSUCCESS";
 import Transport_ordersShipFAILED from "./pages/material-order/transport_ordersShip/transport_ordersShipFAILED";
 import Transport_ordersBuyDELIVERED from "./pages/material-order/order-success/transport_ordersShipDELIVERED";
+import Equipment from "./pages/Equipment";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -150,28 +151,28 @@ const RouterAdmin = () => {
     },
 
     // {
-    //   path: "/admin/don-vat-lieu",
+    //   path: "/don-vat-lieu",
     //   element: <MaterialOrder />,
     // },
     // {
-    //   path: "/admin/ke-hoach-san-xuat",
+    //   path: "/ke-hoach-san-xuat",
     //   element: <ProductionPlanList />,
     // },
     // {
-    //   path: "/admin/buoc-san-xuat",
+    //   path: "/buoc-san-xuat",
     //   element: <ProductionStep />,
     // },
     // {
     //   path: "/admin/kiem-tra-chat-luong",
     //   element: <QualityControl />,
     // },
-    // {
-    //   path: "/admin/thiet-bi",
-    //   element: <Equipment />,
-    // },
+    {
+      path: "/equipment",
+      element: <Equipment />,
+    },
 
     // {
-    //   path: "/admin/bao-cao",
+    //   path: "/bao-cao",
     //   element: <ReportAndStats />,
     // },
     {
