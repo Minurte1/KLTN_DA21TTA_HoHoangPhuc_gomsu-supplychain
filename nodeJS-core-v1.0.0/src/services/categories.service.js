@@ -1,3 +1,5 @@
+const db = require("../config/database");
+
 const create = async (data) => {
   const { NAME_CATEGORIES_, ID_COMPANY } = data;
   const [result] = await db.query(

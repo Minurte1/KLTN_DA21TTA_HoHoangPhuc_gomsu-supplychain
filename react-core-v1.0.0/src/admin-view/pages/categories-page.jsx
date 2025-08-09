@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DynamicTable from "../../share-view/dynamic/table/table";
 
 import categoryServices from "../../services/categoryServices";
+import CategoriesFormModal from "../modal/category/category-modal";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -70,12 +71,12 @@ const Category = () => {
         ]}
       />
 
-      {/* <CategoryFormModal
+      <CategoriesFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         category={selectedCategory}
         onSuccess={fetchCategories}
-      /> */}
+      />
     </Box>
   );
 };
