@@ -63,7 +63,8 @@ const spService = {
       DELIVERED: "Đã giao",
       CANCELLED: "Đã huỷ",
       RETURNED: "Đã hoàn trả",
-
+      SUCCESS: "Giao thành công",
+      FAILED: "Giao thất bại",
       // Trạng thái mới thêm
       NEED_TO_SHIP: "Cần vận chuyển",
     };

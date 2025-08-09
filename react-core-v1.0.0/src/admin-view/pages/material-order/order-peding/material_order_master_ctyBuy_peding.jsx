@@ -13,6 +13,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MaterialsOrdersModal from "../../../modal/material-order.jsx/MaterialsOrdersModal";
 import MaterialsOrderViewModal from "../../../modal/material-order.jsx/MaterialsOrderViewModal";
 import materialOrderMasterServices from "../../../../services/materialOrderMasterServices";
+import MaterialOrderViewModal from "../../../modal/material-order.jsx/view-orderAll-modal-order";
+import ViewOrderModal from "../../../modal/material-order.jsx/view-order-all";
+import { enqueueSnackbar } from "notistack";
 
 const MaterialOrderMaster_BuyPending = () => {
   const [materials, setMaterials] = useState([]);
@@ -27,7 +30,7 @@ const MaterialOrderMaster_BuyPending = () => {
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
         idBuyer: companyId, // nếu đang lọc theo công ty mua
-        status: "PENDING", // hoặc trạng thái nếu cần
+        //  status: "PENDING", // hoặc trạng thái nếu cần
       });
 
       setOrders(data);
@@ -62,13 +65,29 @@ const MaterialOrderMaster_BuyPending = () => {
     setSelectedMaterial(material);
     setOpenViewOrdersModal(true);
   };
-
+  const handleUpdateStatusOrder = async (id) => {
+    const response =
+      await materialOrderMasterServices.updateStatusMaterialOrderMaster(
+        id,
+        "SUCCESS"
+      );
+    if (response.status === 200) {
+      enqueueSnackbar("Cập nhật trạng thái đơn hàng thành công", {
+        variant: "success",
+      });
+      setOpenViewOrdersModal(false);
+    } else {
+      enqueueSnackbar("Cập nhật trạng thái đơn hàng thất bại", {
+        variant: "error",
+      });
+    }
+    fetchOrders();
+  };
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
         Đơn hàng Cty SS mua vật liệu đang xử lý
       </Typography>
-
       <DynamicTable
         data={orders}
         columns={[
@@ -111,28 +130,25 @@ const MaterialOrderMaster_BuyPending = () => {
 
               return (
                 <>
-                  {isSameCompany ? (
-                    <>
-                      <IconButton onClick={() => handleViewOrders(row)}>
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(row.ID_MATERIALS_)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  ) : (
-                    // Nếu là công ty khác, có thể đặt mua
-                    <IconButton onClick={() => handleOpenOrderModal(row)}>
-                      <ShoppingCartIcon />
+                  <>
+                    <IconButton onClick={() => handleViewOrders(row)}>
+                      <VisibilityIcon />
                     </IconButton>
-                  )}
+                    {/* <IconButton onClick={() => handleDelete(row.ID_MATERIALS_)}>
+                      <DeleteIcon />
+                    </IconButton> */}
+                  </>
                 </>
               );
             },
           },
         ]}
+      />{" "}
+      <ViewOrderModal
+        open={openViewOrdersModal}
+        onClose={() => setOpenViewOrdersModal(false)}
+        data={selectedMaterial}
+        handleConfirmOrder={handleUpdateStatusOrder}
       />
     </Box>
   );
