@@ -74,7 +74,8 @@ const ProductionPlansFormModal = ({
 
   const fetchCompanies = async () => {
     try {
-      const data = await companyServices.getCompanies();
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await companyServices.getCompanies(companyId);
       setCompanies(data.DT || []);
     } catch (error) {
       console.error("Error fetching companies:", error);
@@ -128,7 +129,7 @@ const ProductionPlansFormModal = ({
       );
     }
   }, [open, productionPlan, userInfo]);
-  console.log("user", users);
+
   // Chỉnh sửa fields cho 3 trường select
   const fields = [
     {

@@ -63,7 +63,8 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
 
   const fetchCompanies = async () => {
     try {
-      const data = await companyServices.getCompanies();
+      const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await companyServices.getCompanies(companyId);
       setCompaniesOptions(data.DT);
     } catch (error) {
       console.error("Error fetching companies:", error);
