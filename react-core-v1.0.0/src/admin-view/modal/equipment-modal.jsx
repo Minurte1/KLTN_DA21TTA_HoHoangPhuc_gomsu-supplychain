@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import DynamicModal from "../../share-view/dynamic/modal/modal";
 
-import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import companyServices from "../../services/companies-service";
 import equipmentServices from "../../services/equipmentServices";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const EquipmentFormModal = ({ open, onClose, equipment, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -11,8 +12,10 @@ const EquipmentFormModal = ({ open, onClose, equipment, onSuccess }) => {
     TYPE_EQUIPMENT: "",
     STATUS: "",
     LAST_MAINTENANCE: "",
+    ID_COMPANY: "",
   });
 
+  const [companiesOptions, setCompaniesOptions] = useState([]);
   const { userInfo } = ReduxExportUseAuthState();
 
   useEffect(() => {
@@ -26,21 +29,35 @@ const EquipmentFormModal = ({ open, onClose, equipment, onSuccess }) => {
               LAST_MAINTENANCE: equipment.LAST_MAINTENANCE
                 ? equipment.LAST_MAINTENANCE.split("T")[0]
                 : "",
+              ID_COMPANY: equipment.ID_COMPANY || "",
             }
           : {
               NAME_EQUIPMENT: "",
               TYPE_EQUIPMENT: "",
-              STATUS: "ACTIVE", // mặc định trạng thái
+              STATUS: "",
               LAST_MAINTENANCE: "",
+              ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
             }
       );
     }
+
+    fetchCompanies();
   }, [open, equipment]);
 
+  const fetchCompanies = async () => {
+    try {
+      const data = await companyServices.getCompanies();
+      setCompaniesOptions(data.DT);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+
   const optionStatus = [
-    { value: "ACTIVE", label: "Đang sử dụng" },
-    { value: "INACTIVE", label: "Không sử dụng" },
-    { value: "MAINTENANCE", label: "Đang bảo trì" },
+    { value: "ACTIVE", label: "Hoạt động", STATUS: "ACTIVE" },
+    { value: "INACTIVE", label: "Không hoạt động", STATUS: "INACTIVE" },
+    { value: "MAINTENANCE", label: "Đang bảo trì", STATUS: "MAINTENANCE" },
+    { value: "RETIRED", label: "Đã ngưng sử dụng", STATUS: "RETIRED" },
   ];
 
   const fields = [
@@ -66,8 +83,17 @@ const EquipmentFormModal = ({ open, onClose, equipment, onSuccess }) => {
     },
     {
       key: "LAST_MAINTENANCE",
-      label: "Ngày bảo trì lần cuối",
+      label: "Ngày bảo trì gần nhất",
       inputType: "date",
+    },
+    {
+      key: "ID_COMPANY",
+      label: "Thuộc công ty",
+      inputType: "autocomplete",
+      options: companiesOptions,
+      optionsLabel: "NAME_COMPANY",
+      required: true,
+      disabled: userInfo?.companyInfo?.ID_COMPANY ? true : false,
     },
   ];
 
@@ -79,17 +105,18 @@ const EquipmentFormModal = ({ open, onClose, equipment, onSuccess }) => {
   };
 
   const handleSubmit = async (submittedFormData) => {
-    const dataToSubmit = {
-      NAME_EQUIPMENT:
-        submittedFormData.NAME_EQUIPMENT || formData.NAME_EQUIPMENT,
-      TYPE_EQUIPMENT:
-        submittedFormData.TYPE_EQUIPMENT || formData.TYPE_EQUIPMENT,
-      STATUS: submittedFormData.STATUS || formData.STATUS,
-      LAST_MAINTENANCE:
-        submittedFormData.LAST_MAINTENANCE || formData.LAST_MAINTENANCE,
-    };
-
     try {
+      const dataToSubmit = {
+        NAME_EQUIPMENT:
+          submittedFormData.NAME_EQUIPMENT || formData.NAME_EQUIPMENT,
+        TYPE_EQUIPMENT:
+          submittedFormData.TYPE_EQUIPMENT || formData.TYPE_EQUIPMENT,
+        STATUS: submittedFormData.STATUS || formData.STATUS,
+        LAST_MAINTENANCE:
+          submittedFormData.LAST_MAINTENANCE || formData.LAST_MAINTENANCE,
+        ID_COMPANY: submittedFormData.ID_COMPANY || formData.ID_COMPANY,
+      };
+
       if (equipment) {
         await equipmentServices.updateEquipment(
           equipment.ID_EQUIPMENT,
@@ -98,10 +125,11 @@ const EquipmentFormModal = ({ open, onClose, equipment, onSuccess }) => {
       } else {
         await equipmentServices.createEquipment(dataToSubmit);
       }
+
       onSuccess();
     } catch (error) {
-      console.error("Lỗi khi lưu thiết bị:", error);
-      throw new Error("Có lỗi xảy ra khi lưu thiết bị. Vui lòng thử lại.");
+      console.error("Error saving equipment:", error);
+      throw new Error("Có lỗi xảy ra khi lưu. Vui lòng thử lại.");
     }
   };
 

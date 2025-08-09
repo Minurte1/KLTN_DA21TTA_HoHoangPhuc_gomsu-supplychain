@@ -17,7 +17,13 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import spService from "../../../share-service/spService";
 
-const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
+const DynamicTable = ({
+  data,
+  columns,
+  rowsPerPageOptions = [5, 10, 20],
+  subStatus = true,
+  keyStatus,
+}) => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
@@ -189,9 +195,19 @@ const DynamicTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20] }) => {
                           fontSize: "0.875rem",
                         }}
                       >
-                        {column.key === "STATUS"
-                          ? spService.mapStatusToVietnamese(row[column.key])
-                          : row[column.key]}
+                        {subStatus ? (
+                          <>
+                            {" "}
+                            {column.key === "STATUS"
+                              ? spService.mapStatusToVietnamese(
+                                  row[column.key],
+                                  keyStatus
+                                )
+                              : row[column.key]}
+                          </>
+                        ) : (
+                          <> {row[column.key]}</>
+                        )}
                       </Typography>
                     )}
                   </TableCell>

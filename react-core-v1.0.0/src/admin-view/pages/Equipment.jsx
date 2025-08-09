@@ -5,10 +5,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
-
+import equipmentServices from "../../services/equipmentServices"; // bạn cần tạo service tương ứng
+import EquipmentFormModal from "../modal/equipment-modal"; // modal form cho Equipment bạn cũng cần tạo
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
-import equipmentServices from "../../services/equipmentServices";
-import EquipmentFormModal from "../modal/equipment-modal";
 
 const Equipment = () => {
   const [equipments, setEquipments] = useState([]);
@@ -21,6 +20,7 @@ const Equipment = () => {
     const data = await equipmentServices.getEquipments({
       ID_COMPANY: companyId,
     });
+
     setEquipments(data);
   };
 
@@ -57,6 +57,8 @@ const Equipment = () => {
 
       <DynamicTable
         data={equipments}
+        keyStatus="equipment"
+        subStatus={true}
         columns={[
           { key: "NAME_EQUIPMENT", label: "Tên thiết bị" },
           { key: "TYPE_EQUIPMENT", label: "Loại thiết bị" },
@@ -64,6 +66,7 @@ const Equipment = () => {
           { key: "LAST_MAINTENANCE", label: "Bảo trì lần cuối" },
           { key: "CREATED_AT", label: "Ngày tạo" },
           { key: "UPDATED_AT", label: "Ngày cập nhật" },
+          { key: "NAME_COMPANY", label: "Tên công ty" }, // nếu bạn join bảng công ty để lấy tên
           {
             key: "actions",
             label: "Hành động",

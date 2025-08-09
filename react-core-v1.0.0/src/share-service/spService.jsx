@@ -48,31 +48,70 @@ const spService = {
       .replace(/\-{2,}/g, "-") // Gộp nhiều dấu - thành 1
       .replace(/^-+|-+$/g, ""); // Xóa dấu - ở đầu/cuối
   },
-  mapStatusToVietnamese: (status) => {
-    const statusMap = {
-      // Trạng thái sản phẩm
-      ACTIVE: "Đang bán",
-      HIDDEN: "Đã ẩn",
-      OUT: "Hết hàng",
-      STOP: "Ngừng kinh doanh",
-      PENDING: "Chờ duyệt",
+  // mapStatusToVietnamese: (status, key) => {
+  //   const statusMap = {
+  //     // Trạng thái sản phẩm
+  //     ACTIVE: "Đang bán",
+  //     HIDDEN: "Đã ẩn",
+  //     OUT: "Hết hàng",
+  //     STOP: "Ngừng kinh doanh",
+  //     PENDING: "Chờ duyệt",
 
-      READY: "Sẵn sàng",
+  //     READY: "Sẵn sàng",
 
-      // Trạng thái đơn hàng
-      CONFIRMED: "Đã xác nhận",
-      DELIVERING: "Đang giao",
-      DELIVERED: "Đã giao",
-      CANCELLED: "Đã huỷ",
-      RETURNED: "Đã hoàn trả",
-      SUCCESS: "Giao thành công",
-      FAILED: "Giao thất bại",
+  //     // Trạng thái đơn hàng
+  //     CONFIRMED: "Đã xác nhận",
+  //     DELIVERING: "Đang giao",
+  //     DELIVERED: "Đã giao",
+  //     CANCELLED: "Đã huỷ",
+  //     RETURNED: "Đã hoàn trả",
+  //     SUCCESS: "Giao thành công",
+  //     FAILED: "Giao thất bại",
 
-      // Trạng thái mới thêm
-      NEED_TO_SHIP: "Cần vận chuyển",
+  //     // Trạng thái mới thêm
+  //     NEED_TO_SHIP: "Cần vận chuyển",
+  //   };
+
+  //   return statusMap[status] || status || "Không xác định";
+  // },
+
+  mapStatusToVietnamese: (status, key) => {
+    const statusMaps = {
+      product: {
+        ACTIVE: "Đang bán",
+        HIDDEN: "Đã ẩn",
+        OUT: "Hết hàng",
+        STOP: "Ngừng kinh doanh",
+        PENDING: "Chờ duyệt",
+        READY: "Sẵn sàng",
+      },
+      order: {
+        CONFIRMED: "Đã xác nhận",
+        DELIVERING: "Đang giao",
+        DELIVERED: "Đã giao",
+        CANCELLED: "Đã huỷ",
+        RETURNED: "Đã hoàn trả",
+        SUCCESS: "Giao thành công",
+        FAILED: "Giao thất bại",
+        NEED_TO_SHIP: "Cần vận chuyển",
+      },
+      equipment: {
+        ACTIVE: "Hoạt động",
+        INACTIVE: "Không hoạt động",
+        MAINTENANCE: "Đang bảo trì",
+        RETIRED: "Đã ngưng sử dụng",
+      },
+      default: {
+        ACTIVE: "Hoạt động",
+        INACTIVE: "Không hoạt động",
+        MAINTENANCE: "Đang bảo trì",
+        RETIRED: "Đã ngưng sử dụng",
+      },
     };
 
-    return statusMap[status] || status || "Không xác định";
+    // Nếu key ko truyền hoặc không có, sẽ dùng default (để giữ tương thích cũ)
+    const map = key && statusMaps[key] ? statusMaps[key] : statusMaps.default;
+    return map[status] || status || "Không xác định";
   },
 };
 export default spService;
