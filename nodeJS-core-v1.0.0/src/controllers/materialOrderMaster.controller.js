@@ -318,36 +318,89 @@ const updateStatusMaterialOrderMaster = async (req, res) => {
 
     // Nếu trạng thái là SUCCESS thì truy vấn lại dữ liệu chi tiết đơn hàng
     if (status === "SUCCESS") {
-      // 1. Lấy dữ liệu chi tiết đơn hàng
+      // 1. Lấy dữ liệu chi tiết vật liệu cũ
       const [rows] = await db.execute(
-        `SELECT * FROM materials
-         WHERE ID_MATERIALS_ = ?`,
+        `SELECT * FROM materials WHERE ID_MATERIALS_ = ?`,
         [data?.ID_MATERIALS_]
       );
-      const STATUS = "READY";
+
       if (rows.length > 0) {
         const detail = rows[0];
 
-        // 2. Tạo bản ghi mới trong materials
-        const insertMaterials = `
-          INSERT INTO materials 
+        // 2. Lấy tên loại vật liệu từ bảng material_types cũ
+        const [material_types] = await db.execute(
+          `SELECT * FROM material_types WHERE ID_MATERIAL_TYPES = ?`,
+          [detail.ID_MATERIAL_TYPES]
+        );
+        const oldMaterialType = material_types[0];
+
+        // 3. Kiểm tra xem công ty mua có đã có loại material_types với NAME_MATERIAL_TYPES đó chưa
+        const [existingMaterialTypes] = await db.execute(
+          `SELECT * FROM material_types WHERE NAME_MATERIAL_TYPES = ? AND ID_COMPANY = ?`,
+          [oldMaterialType.NAME_MATERIAL_TYPES, data.ID_COMPANY_BUYER]
+        );
+
+        let materialTypeId;
+
+        if (existingMaterialTypes.length > 0) {
+          // Đã có loại material_types cho công ty mới, lấy ID_MATERIAL_TYPES
+          materialTypeId = existingMaterialTypes[0].ID_MATERIAL_TYPES;
+        } else {
+          // Chưa có, tạo mới material_types cho công ty mới
+          const insertMaterialTypeSQL = `
+        INSERT INTO material_types (NAME_MATERIAL_TYPES, ID_COMPANY)
+        VALUES (?, ?)
+      `;
+          const [result] = await db.execute(insertMaterialTypeSQL, [
+            oldMaterialType.NAME_MATERIAL_TYPES,
+            data.ID_COMPANY_BUYER,
+          ]);
+          materialTypeId = result.insertId;
+        }
+
+        // 4. Kiểm tra materials của công ty mới với ID_MATERIAL_TYPES và NAME_ trùng nhau
+        const [existingMaterials] = await db.execute(
+          `SELECT * FROM materials WHERE ID_MATERIAL_TYPES = ? AND NAME_ = ? AND ID_COMPANY = ?`,
+          [materialTypeId, detail.NAME_, data.ID_COMPANY_BUYER]
+        );
+
+        const STATUS = "READY";
+
+        if (existingMaterials.length > 0) {
+          // Đã có materials, cập nhật số lượng bằng cách cộng thêm
+          const currentQuantity = existingMaterials[0].QUANTITY || 0;
+          const newQuantity = currentQuantity + (data.QUANTITY_ORDERED || 0);
+
+          const updateMaterialsSQL = `
+        UPDATE materials
+        SET QUANTITY = ?, UPDATED_AT_PRODUCTS = NOW()
+        WHERE ID_MATERIALS_ = ?
+      `;
+
+          await db.execute(updateMaterialsSQL, [
+            newQuantity,
+            existingMaterials[0].ID_MATERIALS_,
+          ]);
+        } else {
+          // Chưa có materials, tạo mới bản ghi
+          const insertMaterialsSQL = `
+        INSERT INTO materials 
           (ID_MATERIAL_TYPES, NAME_, UNIT_, QUANTITY, COST_PER_UNIT_, CREATED_AT_PRODUCTS, UPDATED_AT_PRODUCTS, ORIGIN, EXPIRY_DATE, ID_COMPANY, STATUS)
-          VALUES (?,  ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?,?)
-        `;
+        VALUES (?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?)
+      `;
 
-        await db.execute(insertMaterials, [
-          detail.ID_MATERIAL_TYPES, // nếu ID_MATERIAL_TYPES có cột khác bạn sửa lại
-
-          detail.NAME_,
-          detail.UNIT_,
-          data.QUANTITY_ORDERED, // hoặc detail.QUANTITY tuỳ dữ liệu đúng
-          detail.COST_PER_UNIT_,
-
-          detail.ORIGIN,
-          detail.EXPIRY_DATE,
-          data.ID_COMPANY_BUYER,
-          STATUS,
-        ]);
+          await db.execute(insertMaterialsSQL, [
+            materialTypeId,
+            detail.NAME_,
+            detail.UNIT_,
+            data.QUANTITY_ORDERED,
+            detail.COST_PER_UNIT_,
+            detail.ORIGIN,
+            detail.EXPIRY_DATE,
+            data.ID_COMPANY_BUYER,
+            STATUS,
+          ]);
+        }
       }
     }
 

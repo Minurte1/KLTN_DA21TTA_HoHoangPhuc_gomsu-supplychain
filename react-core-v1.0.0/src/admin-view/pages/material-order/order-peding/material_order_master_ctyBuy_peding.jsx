@@ -29,17 +29,22 @@ const MaterialOrderMaster_BuyPending = () => {
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
 
       const data = await materialOrderMasterServices.getMaterialOrdersMaster({
-        idBuyer: companyId, // nếu đang lọc theo công ty mua
-        //  status: "PENDING", // hoặc trạng thái nếu cần
+        idBuyer: companyId,
+        // status: "PENDING",
       });
 
-      setOrders(data);
+      // Sắp xếp data theo UPDATED_AT giảm dần (mới nhất lên đầu)
+      const sortedData = data.sort(
+        (a, b) => new Date(b.UPDATED_AT) - new Date(a.UPDATED_AT)
+      );
+
+      setOrders(sortedData);
     } catch (error) {
       console.error("Lỗi khi tải đơn đặt hàng:", error);
       setOrders([]);
-    } finally {
     }
   };
+
   useEffect(() => {
     fetchOrders();
   }, []);

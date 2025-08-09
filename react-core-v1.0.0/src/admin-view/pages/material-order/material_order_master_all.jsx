@@ -25,7 +25,7 @@ const MaterialOrderAll = () => {
 
   useEffect(() => {
     fetchMaterialOrders();
-  }, []);
+  }, [userInfo]);
 
   const handleEdit = (order) => {
     setSelectedOrder(order);
