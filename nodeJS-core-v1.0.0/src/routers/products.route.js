@@ -9,13 +9,14 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/products.controller");
-
+const { uploadAndConvert } = require("../config/uploadAndConvert.js");
 // Tạo sản phẩm với upload ảnh
 router.post(
   "/",
   // checkUserJWT,
   // checkUserPermission("products", "create"),
   upload.single("IMAGE_URL_PRODUCTS"),
+  uploadAndConvert,
   createProduct
 );
 
@@ -25,6 +26,7 @@ router.put(
   // checkUserJWT,
   // checkUserPermission("products", "update"),
   upload.single("IMAGE_URL_PRODUCTS"),
+  uploadAndConvert,
   updateProduct
 );
 
