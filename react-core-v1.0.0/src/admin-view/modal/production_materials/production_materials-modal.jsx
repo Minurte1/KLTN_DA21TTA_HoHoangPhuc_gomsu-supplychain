@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { TextField, Autocomplete } from "@mui/material";
 import materialServices from "../../../services/materialServices";
 
-const Step2Materials = ({ companyId, onChange }) => {
+const Step2Materials = ({ companyId, onChange, formData }) => {
   const [rows, setRows] = useState([]);
   const [materialsOptions, setMaterialsOptions] = useState([]);
 

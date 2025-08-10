@@ -241,14 +241,18 @@ const ProductionPlansFormModal = ({
 
   const handleSubmit = async () => {
     try {
+      const dataInput = {
+        ...formData,
+        production_material: materialsData,
+      };
       if (productionPlan) {
         await productionPlanServices.updateProductionPlan(
           productionPlan.ID_PRODUCTION_PLANS,
-          formData
+          dataInput
         );
       } else {
         const newPlan = await productionPlanServices.createProductionPlan(
-          formData
+          dataInput
         );
         setMaterialsData((prev) => ({
           ...prev,
@@ -277,7 +281,7 @@ const ProductionPlansFormModal = ({
     setMaterialsData(materials);
   }, []);
 
-  console.log("formData", formData);
+  console.log("materialsData", materialsData);
   return (
     <>
       {currentStep === 0 ? (
@@ -328,6 +332,7 @@ const ProductionPlansFormModal = ({
             <Step2Materials
               companyId={userInfo?.companyInfo?.ID_COMPANY}
               onChange={handleMaterialsChange}
+              formData={formData}
             />
           </DialogContent>
 
