@@ -164,10 +164,11 @@ const RouterAdmin = () => {
       path: "/production_steps",
       element: <ProductionSteps />,
     },
-    // {
-    //   path: "/admin/kiem-tra-chat-luong",
-    //   element: <QualityControl />,
-    // },
+    {
+      path: "/product_instances",
+      element: <ProductionSteps />,
+    },
+
     {
       path: "/equipment",
       element: <Equipment />,
