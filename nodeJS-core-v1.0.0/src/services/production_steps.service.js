@@ -1,5 +1,6 @@
 const db = require("../config/database");
 const moment = require("moment");
+const { v4: uuidv4 } = require("uuid"); // nhớ import thư viện uuid nếu chưa có
 
 const create = async (data) => {
   try {
@@ -177,6 +178,7 @@ const update = async (id, data) => {
       ? moment(END_TIME_PRODUCTION_STEPS).format("YYYY-MM-DD HH:mm:ss")
       : null;
 
+    // Cập nhật production_steps
     const [result] = await db.query(
       `UPDATE production_steps
        SET ID_PRODUCTION_PLANS = ?, ID_USERS = ?, ID_EQUIPMENT = ?, STEP_NAME_PRODUCTION_STEPS = ?, START_TIME_PRODUCTION_STEPS = ?, END_TIME_PRODUCTION_STEPS = ?, STATUS_PRODUCTION_STEPS = ?, ID_COMPANY = ?
@@ -194,7 +196,115 @@ const update = async (id, data) => {
       ]
     );
 
-    return result.affectedRows > 0;
+    if (result.affectedRows === 0) return false;
+
+    // Lấy tất cả bước của kế hoạch production_plans
+    const [steps] = await db.query(
+      `SELECT STATUS_PRODUCTION_STEPS, ID_USERS FROM production_steps WHERE ID_PRODUCTION_PLANS = ?`,
+      [ID_PRODUCTION_PLANS]
+    );
+
+    // Kiểm tra xem tất cả bước đã hoàn thành chưa
+    const allCompleted = steps.every(
+      (step) => step.STATUS_PRODUCTION_STEPS === "COMPLETED"
+    );
+
+    if (allCompleted) {
+      // Cập nhật trạng thái kế hoạch sản xuất thành COMPLETED
+      await db.query(
+        `UPDATE production_plans SET STATUS_PRODUCTION_PLANS = ? WHERE ID_PRODUCTION_PLANS = ?`,
+        ["COMPLETED", ID_PRODUCTION_PLANS]
+      );
+
+      // Lấy thông tin kế hoạch sản xuất
+      const [plans] = await db.query(
+        `SELECT ID_PRODUCT, ID_USERS FROM production_plans WHERE ID_PRODUCTION_PLANS = ?`,
+        [ID_PRODUCTION_PLANS]
+      );
+      if (plans.length === 0) throw new Error("Production plan not found");
+
+      const plan = plans[0];
+
+      // Lấy thông tin sản phẩm
+      const [products] = await db.query(
+        `SELECT * FROM products WHERE ID_PRODUCT = ?`,
+        [plan.ID_PRODUCT]
+      );
+      if (products.length === 0) throw new Error("Product not found");
+
+      const product = products[0];
+
+      // Tổng hợp ID_USERS từ tất cả bước (có thể là JSON hoặc id đơn)
+      let usersSet = new Set();
+
+      for (const step of steps) {
+        try {
+          let usersInStep = JSON.parse(step.ID_USERS);
+          if (Array.isArray(usersInStep)) {
+            usersInStep.forEach((u) => usersSet.add(u));
+          } else {
+            usersSet.add(usersInStep);
+          }
+        } catch {
+          usersSet.add(step.ID_USERS);
+        }
+      }
+
+      // Thêm người chịu trách nhiệm kế hoạch sản xuất
+      try {
+        let planUsers = JSON.parse(plan.ID_USERS);
+        if (Array.isArray(planUsers)) {
+          planUsers.forEach((u) => usersSet.add(u));
+        } else {
+          usersSet.add(planUsers);
+        }
+      } catch {
+        usersSet.add(plan.ID_USERS);
+      }
+
+      // Lấy thông tin user chi tiết từ bảng users
+      const userIds = Array.from(usersSet);
+
+      const [usersDetails] = await db.query(
+        `SELECT ID_USERS, HO_TEN, EMAIL, SO_DIEN_THOAI, AVATAR, DIA_CHI_Provinces, DIA_CHI_Districts, DIA_CHI_Wards, DIA_CHI_STREETNAME, TRANG_THAI_USER, ID_COMPANY 
+         FROM users 
+         WHERE ID_USERS IN (?) AND IS_DELETE_USERS = 0`,
+        [userIds]
+      );
+
+      const usersJsonDetailed = JSON.stringify(usersDetails);
+
+      // Tạo UID và SERIAL_CODE cho product_instances
+      const uid = uuidv4();
+      const serialCode = `PROD${product.ID_PRODUCT}${Date.now()}`;
+
+      const STATUS = {
+        AVAILABLE: "AVAILABLE",
+        OUT_OF_STOCK: "OUT_OF_STOCK",
+        DISCONTINUED: "DISCONTINUED",
+        SOLD: "SOLD",
+        RESERVED: "RESERVED",
+        DAMAGED: "DAMAGED",
+      };
+
+      // Insert bản ghi mới vào product_instances với thông tin user chi tiết
+      await db.query(
+        `INSERT INTO product_instances 
+         (UID, ID_PRODUCT, SERIAL_CODE, ID_USERS, ID_PRODUCTION_PLANS, DATE_CREATED, STATUS, ID_COMPANY) 
+         VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)`,
+        [
+          uid,
+          product.ID_PRODUCT,
+          serialCode,
+          usersJsonDetailed,
+          ID_PRODUCTION_PLANS,
+          STATUS.AVAILABLE,
+          product.ID_COMPANY,
+        ]
+      );
+    }
+
+    return true;
   } catch (error) {
     console.error("Error in update production_steps:", error);
     throw error;

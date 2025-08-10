@@ -101,6 +101,14 @@ const spService = {
         MAINTENANCE: "Đang bảo trì",
         RETIRED: "Đã ngưng sử dụng",
       },
+      product_instances: {
+        AVAILABLE: "Còn hàng",
+        OUT_OF_STOCK: "Hết hàng",
+        DISCONTINUED: "Ngừng kinh doanh",
+        SOLD: "Đã bán",
+        RESERVED: "Đã đặt trước",
+        DAMAGED: "Bị hư hỏng",
+      },
       productionPlans: {
         PLANNED: "Đã Lập Kế Hoạch",
         IN_PROGRESS: "Đang Tiến Hành",

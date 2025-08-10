@@ -78,7 +78,7 @@ const createProductionPlan = async (req, res) => {
         [
           parseInt(material.ID_PRODUCT_MATERIALS, 10) || null,
           newProductionPlanId,
-          parseInt(material.ID_MATERIALS, 10) || null,
+          parseInt(material.ID_MATERIALS_, 10) || null,
           material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS || null,
           material.UNIT_PRODUCT_MATERIALS || null,
           parseInt(material.ID_COMPANY, 10),
@@ -188,7 +188,7 @@ const updateProductionPlan = async (req, res) => {
         [
           parseInt(material.ID_PRODUCT_MATERIALS, 10) || null,
           parseInt(id, 10),
-          parseInt(material.ID_MATERIALS, 10) || null,
+          parseInt(material.ID_MATERIALS_, 10) || null,
           material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS || null,
           material.UNIT_PRODUCT_MATERIALS || null,
           parseInt(material.ID_COMPANY, 10),
