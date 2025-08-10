@@ -46,17 +46,15 @@ const ProductionSteps = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedStep, setSelectedStep] = useState(null);
   const { userInfo } = ReduxExportUseAuthState();
-
+  // Kiểm tra quyền view role
+  const canViewRole = spService.hasPermission(
+    userInfo?.LIST_PERMISION,
+    "role",
+    "view"
+  );
   const fetchSteps = async () => {
     const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
     const userId = userInfo?.ID_USERS || null;
-
-    // Kiểm tra quyền view role
-    const canViewRole = spService.hasPermission(
-      userInfo?.LIST_PERMISION,
-      "role",
-      "view"
-    );
 
     const params = { ID_COMPANY: companyId };
     if (!canViewRole) {
@@ -120,18 +118,20 @@ const ProductionSteps = () => {
 
   return (
     <Box>
-      {" "}
-      <Button
-        variant="contained"
-        startIcon={<AddIcon />}
-        sx={{ mb: 2, mt: 4 }}
-        onClick={() => {
-          setSelectedStep(null);
-          setOpenModal(true);
-        }}
-      >
-        Thêm Công Đoạn
-      </Button>
+      {canViewRole && (
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{ mb: 2, mt: 4 }}
+          onClick={() => {
+            setSelectedStep(null);
+            setOpenModal(true);
+          }}
+        >
+          Thêm Công Đoạn
+        </Button>
+      )}
+
       <Typography variant="h5" gutterBottom mt={4}>
         Quản lý Công Đoạn Sản Xuất - Hôm nay
       </Typography>
@@ -155,6 +155,7 @@ const ProductionSteps = () => {
         onClose={() => setOpenModal(false)}
         productionStep={selectedStep}
         onSuccess={fetchSteps}
+        canViewRole={canViewRole}
       />
     </Box>
   );

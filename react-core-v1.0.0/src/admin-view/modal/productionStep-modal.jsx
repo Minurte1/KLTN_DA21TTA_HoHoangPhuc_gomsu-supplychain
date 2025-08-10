@@ -14,6 +14,7 @@ const ProductionStepsFormModal = ({
   onClose,
   productionStep,
   onSuccess,
+  canViewRole,
 }) => {
   const [formData, setFormData] = useState({
     ID_PRODUCTION_PLANS: "",
@@ -137,6 +138,7 @@ const ProductionStepsFormModal = ({
       options: productionPlansOptions,
       optionsLabel: "NAME_PRODUCTION_PLAN", // chỉnh theo tên trường đúng bên API
       required: true,
+      disabled: !canViewRole ? true : false,
     },
     {
       key: "ID_USERS",
@@ -145,6 +147,7 @@ const ProductionStepsFormModal = ({
       options: usersOptions,
       optionsLabel: "HO_TEN", // chỉnh theo tên trường đúng bên API
       required: true,
+      disabled: !canViewRole ? true : false,
     },
     {
       key: "ID_EQUIPMENT",
@@ -153,24 +156,28 @@ const ProductionStepsFormModal = ({
       options: equipmentOptions,
       optionsLabel: "NAME_EQUIPMENT", // chỉnh theo tên trường đúng bên API
       required: true,
+      disabled: !canViewRole ? true : false,
     },
     {
       key: "STEP_NAME_PRODUCTION_STEPS",
       label: "Tên bước sản xuất",
       inputType: "text",
       required: true,
+      disabled: !canViewRole ? true : false,
     },
     {
       key: "START_TIME_PRODUCTION_STEPS",
       label: "Thời gian bắt đầu",
       inputType: "datetime",
       required: true,
+      disabled: !canViewRole ? true : false,
     },
     {
       key: "END_TIME_PRODUCTION_STEPS",
       label: "Thời gian kết thúc",
       inputType: "datetime",
       required: true,
+      disabled: !canViewRole ? true : false,
     },
     {
       key: "STATUS_PRODUCTION_STEPS",
