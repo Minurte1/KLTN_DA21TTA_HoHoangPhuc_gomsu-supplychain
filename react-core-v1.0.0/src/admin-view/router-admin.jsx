@@ -27,6 +27,7 @@ import Transport_ordersBuyDELIVERED from "./pages/material-order/order-success/t
 import Equipment from "./pages/Equipment";
 import ProductionSteps from "./pages/productionStep-page";
 import ProductionPlans from "./pages/productionPlans-page";
+import ProductInstances from "./pages/product_instances-page";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -166,7 +167,7 @@ const RouterAdmin = () => {
     },
     {
       path: "/product_instances",
-      element: <ProductionSteps />,
+      element: <ProductInstances />,
     },
 
     {
