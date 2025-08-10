@@ -57,7 +57,6 @@ const ProductionSteps = () => {
       "role",
       "view"
     );
-    console.log("canViewRole", canViewRole);
 
     const params = { ID_COMPANY: companyId };
     if (!canViewRole) {
@@ -89,9 +88,9 @@ const ProductionSteps = () => {
       render: (value) => spService.formatDateTime(value),
     },
     { key: "STATUS_PRODUCTION_STEPS", label: "Trạng thái" },
-    { key: "ID_PRODUCTION_PLANS", label: "ID kế hoạch sản xuất" },
-    { key: "ID_USERS", label: "ID người dùng" },
-    { key: "ID_EQUIPMENT", label: "ID thiết bị" },
+    { key: "NAME_PRODUCTION_PLAN", label: "ID kế hoạch sản xuất" },
+    { key: "USER_HO_TEN", label: "ID người dùng" },
+    { key: "NAME_EQUIPMENT", label: "ID thiết bị" },
     {
       key: "actions",
       label: "Hành động",
@@ -108,6 +107,7 @@ const ProductionSteps = () => {
     },
   ];
 
+  console.log("steps", steps);
   const handleEdit = (step) => {
     setSelectedStep(step);
     setOpenModal(true);

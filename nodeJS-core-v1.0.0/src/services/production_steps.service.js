@@ -69,8 +69,29 @@ const getAll = async (ID_COMPANY, STATUS, ID_USERS) => {
       SELECT 
         ps.*, 
         pp.NAME_PRODUCTION_PLAN, 
-        u.HO_TEN, 
-        e.NAME_EQUIPMENT, 
+
+        -- Thông tin người dùng (users)
+        u.HO_TEN AS USER_HO_TEN, 
+        u.EMAIL AS USER_EMAIL,
+        u.SO_DIEN_THOAI AS USER_PHONE,
+        u.AVATAR AS USER_AVATAR,
+        u.TRANG_THAI_USER AS USER_STATUS,
+        u.ID_ROLE AS USER_ROLE,
+        u.DIA_CHI_Provinces AS USER_PROVINCE,
+        u.DIA_CHI_Districts AS USER_DISTRICT,
+        u.DIA_CHI_Wards AS USER_WARD,
+        u.DIA_CHI_STREETNAME AS USER_STREET,
+
+        -- Thông tin thiết bị (equipment)
+        e.NAME_EQUIPMENT,
+        e.TYPE_EQUIPMENT,
+        e.STATUS AS EQUIPMENT_STATUS,
+        e.LAST_MAINTENANCE,
+        e.CREATED_AT AS EQUIPMENT_CREATED_AT,
+        e.UPDATED_AT AS EQUIPMENT_UPDATED_AT,
+        e.ID_COMPANY AS EQUIPMENT_COMPANY_ID,
+
+        -- Thông tin công ty (companies)
         c.NAME_COMPANY,
         c.TYPE_COMPANY,
         c.ADDRESS,
@@ -96,17 +117,17 @@ const getAll = async (ID_COMPANY, STATUS, ID_USERS) => {
     const params = [];
     const conditions = [];
 
-    if (ID_COMPANY) {
+    if (ID_COMPANY != null) {
       conditions.push(`ps.ID_COMPANY = ?`);
       params.push(ID_COMPANY);
     }
 
-    if (STATUS) {
+    if (STATUS != null) {
       conditions.push(`ps.STATUS_PRODUCTION_STEPS = ?`);
       params.push(STATUS);
     }
 
-    if (ID_USERS) {
+    if (ID_USERS != null) {
       conditions.push(`ps.ID_USERS = ?`);
       params.push(ID_USERS);
     }
