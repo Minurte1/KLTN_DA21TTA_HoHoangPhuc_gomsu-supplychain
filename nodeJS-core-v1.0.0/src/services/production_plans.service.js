@@ -65,7 +65,10 @@ const create = async (data) => {
 const getAll = async (ID_COMPANY, STATUS_PRODUCTION_PLANS) => {
   try {
     let query = `
-      SELECT pp.*, c.NAME_COMPANY, c.TYPE_COMPANY, c.ADDRESS, c.DIA_CHI_Provinces, c.DIA_CHI_Districts, c.DIA_CHI_Wards, c.DIA_CHI_STREETNAME, c.PHONE, c.EMAIL, c.AVATAR, c.SLUG, c.CREATED_AT, c.UPDATED_AT, c.STATUS as COMPANY_STATUS
+      SELECT pp.*, 
+             c.NAME_COMPANY, c.TYPE_COMPANY, c.ADDRESS, c.DIA_CHI_Provinces, c.DIA_CHI_Districts, 
+             c.DIA_CHI_Wards, c.DIA_CHI_STREETNAME, c.PHONE, c.EMAIL, c.AVATAR, c.SLUG, 
+             c.CREATED_AT, c.UPDATED_AT, c.STATUS as COMPANY_STATUS
       FROM production_plans pp
       LEFT JOIN companies c ON pp.ID_COMPANY = c.ID_COMPANY
     `;
@@ -87,8 +90,19 @@ const getAll = async (ID_COMPANY, STATUS_PRODUCTION_PLANS) => {
       query += " WHERE " + conditions.join(" AND ");
     }
 
-    const [rows] = await db.query(query, params);
-    return rows;
+    const [plans] = await db.query(query, params);
+
+    // Lấy thêm production_material cho từng plan
+    for (let plan of plans) {
+      const [materials] = await db.query(
+        `SELECT * FROM production_materials WHERE ID_PRODUCTION_PLANS = ?`,
+        [plan.ID_PRODUCTION_PLANS]
+      );
+
+      plan.production_material = materials; // Gắn vào payload
+    }
+
+    return plans;
   } catch (error) {
     console.error("Error in getAll production_plans:", error);
     throw error;
