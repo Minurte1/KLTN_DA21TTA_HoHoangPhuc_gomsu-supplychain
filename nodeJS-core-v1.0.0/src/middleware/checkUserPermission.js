@@ -45,10 +45,10 @@ const baseListPermission = [
     actions: ["view", "create", "update", "delete"],
   },
   // Material Order: Quản lý đơn đặt hàng nguyên vật liệu, dành cho MANUFACTURER (đặt hàng) và SUPPLIER (cung cấp)
-  {
-    router: "material_order",
-    actions: ["view", "create", "update", "delete", "approve"],
-  },
+  // {
+  //   router: "material_order",
+  //   actions: ["view", "create", "update", "delete", "approve"],
+  // },
   {
     router: "material_order_master",
     actions: ["view", "create", "update", "delete", "approve"],

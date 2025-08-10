@@ -42,7 +42,7 @@ const ProductInstances = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Quản lý Sản phẩm (Product Instances)
+        Quản lý Sản phẩm chi tiết (Product Instances)
       </Typography>
       <Button
         variant="contained"
@@ -63,10 +63,23 @@ const ProductInstances = () => {
         columns={[
           { key: "UID", label: "UID" },
           { key: "SERIAL_CODE", label: "Mã Serial" },
-          { key: "ID_PRODUCT", label: "ID Sản phẩm" },
+          { key: "Danh mục", label: "NAME_CATEGORIES_" },
+          { key: "NAME_PRODUCTS", label: "ID Sản phẩm" },
+          {
+            key: "IMAGE_URL_PRODUCTS",
+            label: "Ảnh sản phẩm",
+            render: (value) => (
+              <img
+                src={value}
+                alt="Product"
+                style={{ width: 80, height: 80, borderRadius: "8px" }}
+              />
+            ),
+          },
           { key: "ID_USERS", label: "ID Người dùng" },
-          { key: "ID_PRODUCTION_PLANS", label: "ID Kế hoạch sản xuất" },
+          { key: "NAME_PRODUCTION_PLAN", label: "Kế hoạch sản xuất" },
           { key: "DATE_CREATED", label: "Ngày tạo" },
+          { key: "DESCRIPTION_PRODUCTS", label: "Mô tả sản phẩm" },
           { key: "STATUS", label: "Trạng thái" },
           { key: "ID_COMPANY", label: "ID Công ty" },
           {

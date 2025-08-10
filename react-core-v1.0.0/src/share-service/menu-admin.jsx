@@ -80,10 +80,10 @@ export const adminMenuConfig = [
         label: "Kho hàng",
         path: "/admin/inventory",
       },
-      {
-        label: "Đơn đặt vật liệu",
-        path: "/admin/material_order",
-      },
+      // {
+      //   label: "Đơn đặt vật liệu",
+      //   path: "/admin/material_order",
+      // },
       {
         label: "Thiết bị",
         path: "/admin/equipment",
