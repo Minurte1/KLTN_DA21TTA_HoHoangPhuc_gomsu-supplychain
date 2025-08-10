@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { TextField, Autocomplete } from "@mui/material";
 import materialServices from "../../../services/materialServices";
@@ -19,96 +19,101 @@ const Step2Materials = ({ companyId, onChange }) => {
         ID_COMPANY: companyId,
       });
 
-      // options cho autocomplete
-      setMaterialsOptions(
-        data.map((m) => ({
-          label: m.TEN_MATERIALS, // tên hiển thị
-          value: m.ID_MATERIALS, // giá trị lưu
-        }))
-      );
+      console.log("data", data);
 
-      // map dữ liệu ban đầu
-      setRows(
-        data.map((m, index) => ({
-          id: index + 1,
-          ID_PRODUCT_MATERIALS: "",
-          ID_PRODUCTION_PLANS: "",
-          ID_MATERIALS: m.ID_MATERIALS,
-          QUANTITY_PER_UNIT_PRODUCT_MATERIALS: "",
-          UNIT_PRODUCT_MATERIALS: "",
-          ID_COMPANY: companyId,
-        }))
-      );
+      const options = data.map((m) => ({
+        label: m.NAME_,
+        value: m.ID_MATERIALS_,
+      }));
+
+      const rows = data.map((m, index) => ({
+        id: index + 1,
+        ID_PRODUCT_MATERIALS: "",
+        ID_PRODUCTION_PLANS: "",
+        ID_MATERIALS: m.ID_MATERIALS_,
+        QUANTITY_PER_UNIT_PRODUCT_MATERIALS: "",
+        UNIT_PRODUCT_MATERIALS: "",
+        ID_COMPANY: companyId,
+      }));
+
+      setMaterialsOptions(options);
+      setRows(rows);
     } catch (error) {
       console.error("Error fetching materials:", error);
     }
   };
 
-  const columns = [
-    {
-      field: "ID_PRODUCT_MATERIALS",
-      headerName: "Mã Nguyên Liệu",
-      flex: 1,
-      editable: true,
-    },
-    {
-      field: "ID_PRODUCTION_PLANS",
-      headerName: "Mã Kế Hoạch SX",
-      flex: 1,
-      editable: true,
-    },
-    {
-      field: "ID_MATERIALS",
-      headerName: "Nguyên Liệu",
-      flex: 1,
-      editable: true,
-      renderEditCell: (params) => (
-        <Autocomplete
-          options={materialsOptions}
-          value={
-            materialsOptions.find((opt) => opt.value === params.value) || null
-          }
-          onChange={(_, newValue) => {
-            params.api.setEditCellValue({
-              id: params.id,
-              field: "ID_MATERIALS",
-              value: newValue ? newValue.value : "",
-            });
-          }}
-          renderInput={(paramsInput) => (
-            <TextField {...paramsInput} variant="standard" />
-          )}
-        />
-      ),
-    },
-    {
-      field: "QUANTITY_PER_UNIT_PRODUCT_MATERIALS",
-      headerName: "Số Lượng/Đơn Vị",
-      flex: 1,
-      editable: true,
-    },
-    {
-      field: "UNIT_PRODUCT_MATERIALS",
-      headerName: "Đơn Vị",
-      flex: 1,
-      editable: true,
-    },
-    { field: "ID_COMPANY", headerName: "Công Ty", flex: 1 },
-  ];
+  const columns = useMemo(
+    () => [
+      {
+        field: "ID_MATERIALS",
+        headerName: "Nguyên Liệu",
+        flex: 1,
+        editable: true,
+        renderCell: (params) => {
+          const material = materialsOptions.find(
+            (opt) => opt.value === params.value
+          );
+          return material ? material.label : "";
+        },
+        renderEditCell: (params) => (
+          <Autocomplete
+            fullWidth
+            options={materialsOptions}
+            value={
+              materialsOptions.find((opt) => opt.value === params.value) || null
+            }
+            onChange={(_, newValue) => {
+              params.api.setEditCellValue({
+                id: params.id,
+                field: "ID_MATERIALS",
+                value: newValue ? newValue.value : "",
+              });
+            }}
+            renderInput={(paramsInput) => (
+              <TextField {...paramsInput} variant="standard" />
+            )}
+          />
+        ),
+      },
+      {
+        field: "QUANTITY_PER_UNIT_PRODUCT_MATERIALS",
+        headerName: "Số Lượng/Đơn Vị",
+        flex: 1,
+        editable: true,
+      },
+      {
+        field: "UNIT_PRODUCT_MATERIALS",
+        headerName: "Đơn Vị",
+        flex: 1,
+        editable: true,
+      },
+      { field: "ID_COMPANY", headerName: "Công Ty", flex: 1 },
+    ],
+    [materialsOptions]
+  );
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div style={{ height: 400, width: "100%", marginTop: "40px" }}>
       <DataGrid
         rows={rows}
         columns={columns}
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
         processRowUpdate={(newRow) => {
-          const updatedRows = rows.map((row) =>
-            row.id === newRow.id ? newRow : row
-          );
-          setRows(updatedRows);
-          onChange(updatedRows);
+          setRows((prevRows) => {
+            const isChanged = prevRows.some(
+              (row) =>
+                row.id === newRow.id &&
+                JSON.stringify(row) !== JSON.stringify(newRow)
+            );
+            if (!isChanged) return prevRows; // Không thay đổi gì → không re-render
+            const updated = prevRows.map((row) =>
+              row.id === newRow.id ? newRow : row
+            );
+            onChange(updated);
+            return updated;
+          });
           return newRow;
         }}
       />

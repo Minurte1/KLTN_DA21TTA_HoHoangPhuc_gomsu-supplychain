@@ -1,5 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Stepper, Step, StepLabel, Box } from "@mui/material";
+import {
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 import DynamicModal from "../../share-view/dynamic/modal/modal";
 import productionPlanServices from "../../services/productionPlanServices";
 import productServices from "../../services/productServices";
@@ -267,6 +277,7 @@ const ProductionPlansFormModal = ({
     setMaterialsData(materials);
   }, []);
 
+  console.log("formData", formData);
   return (
     <>
       {currentStep === 0 ? (
@@ -287,37 +298,47 @@ const ProductionPlansFormModal = ({
           beforeContent={renderStepper}
         />
       ) : (
-        <DynamicModal
+        <Dialog
           open={open}
           onClose={onClose}
-          title={steps[currentStep]}
-          beforeContent={() => (
-            <>
-              {" "}
-              <Box sx={{ marginBottom: "-10px" }}>
-                <Stepper activeStep={currentStep}>
-                  {steps.map((label) => (
-                    <Step key={label}>
-                      <StepLabel>{label}</StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
-              </Box>{" "}
-              <Step2Materials
-                companyId={userInfo?.companyInfo?.ID_COMPANY}
-                onChange={handleMaterialsChange}
-              />
-            </>
-          )}
-          renderActions={() => (
-            <>
-              <Button onClick={handleBack}>Quay lại</Button>
-              <Button variant="contained" onClick={handleSubmit}>
-                Hoàn tất
-              </Button>
-            </>
-          )}
-        ></DynamicModal>
+          maxWidth={false} // bỏ giới hạn chiều rộng mặc định
+          fullWidth
+          PaperProps={{
+            sx: {
+              width: "90%", // chiếm 90% chiều ngang màn hình
+              maxWidth: "1200px", // giới hạn tối đa nếu muốn
+            },
+          }}
+        >
+          {/* Tiêu đề */}
+          <DialogTitle>{steps[currentStep]}</DialogTitle>
+
+          {/* Nội dung */}
+          <DialogContent>
+            <Box sx={{ marginBottom: "-10px" }}>
+              <Stepper activeStep={currentStep}>
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </Box>
+
+            <Step2Materials
+              companyId={userInfo?.companyInfo?.ID_COMPANY}
+              onChange={handleMaterialsChange}
+            />
+          </DialogContent>
+
+          {/* Footer */}
+          <DialogActions>
+            <Button onClick={handleBack}>Quay lại</Button>
+            <Button variant="contained" onClick={handleSubmit}>
+              Hoàn tất
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
     </>
   );
