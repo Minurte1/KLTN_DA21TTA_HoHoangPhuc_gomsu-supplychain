@@ -29,6 +29,8 @@ const ProductionPlansFormModal = ({
   const { userInfo } = ReduxExportUseAuthState();
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [rows, setRows] = useState([]);
+  const [materialsOptions, setMaterialsOptions] = useState([]);
 
   const [formData, setFormData] = useState({
     ID_PRODUCT: "",
@@ -100,9 +102,13 @@ const ProductionPlansFormModal = ({
       console.error("Error fetching companies:", error);
     }
   };
-
   useEffect(() => {
     if (open) {
+      setMaterialsData(
+        Array.isArray(productionPlan?.production_material)
+          ? productionPlan.production_material
+          : []
+      );
       setFormData(
         productionPlan
           ? {
@@ -281,13 +287,19 @@ const ProductionPlansFormModal = ({
     setMaterialsData(materials);
   }, []);
 
-  console.log("materialsData", materialsData);
+  const handleClose = () => {
+    setCurrentStep(0);
+    setRows([]); // reset dữ liệu vật liệu
+    setMaterialsOptions([]); // reset options nếu cần
+    onClose(); // hoặc setOpen(false)
+  };
+
   return (
     <>
       {currentStep === 0 ? (
         <DynamicModal
           open={open}
-          onClose={onClose}
+          onClose={handleClose}
           fields={step1Fields}
           initialData={formData}
           title={steps[currentStep]}
@@ -304,7 +316,7 @@ const ProductionPlansFormModal = ({
       ) : (
         <Dialog
           open={open}
-          onClose={onClose}
+          onClose={handleClose}
           maxWidth={false} // bỏ giới hạn chiều rộng mặc định
           fullWidth
           PaperProps={{
@@ -332,7 +344,13 @@ const ProductionPlansFormModal = ({
             <Step2Materials
               companyId={userInfo?.companyInfo?.ID_COMPANY}
               onChange={handleMaterialsChange}
-              formData={formData}
+              productionPlan={productionPlan}
+              //
+              materialsOptions={materialsOptions}
+              setMaterialsOptions={setMaterialsOptions}
+              //
+              rows={rows}
+              setRows={setRows}
             />
           </DialogContent>
 

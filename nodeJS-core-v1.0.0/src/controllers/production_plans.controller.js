@@ -73,7 +73,7 @@ const createProductionPlan = async (req, res) => {
     for (const material of production_material) {
       await connection.query(
         `INSERT INTO production_materials 
-          (ID_PRODUCT_MATERIALS, ID_PRODUCTION_PLANS, ID_MATERIALS, QUANTITY_PER_UNIT_PRODUCT_MATERIALS, UNIT_PRODUCT_MATERIALS, ID_COMPANY)
+          (ID_PRODUCT_MATERIALS, ID_PRODUCTION_PLANS, ID_MATERIALS_, QUANTITY_PER_UNIT_PRODUCT_MATERIALS, UNIT_PRODUCT_MATERIALS, ID_COMPANY)
         VALUES (?, ?, ?, ?, ?, ?)`,
         [
           parseInt(material.ID_PRODUCT_MATERIALS, 10) || null,

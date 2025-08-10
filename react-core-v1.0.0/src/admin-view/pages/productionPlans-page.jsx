@@ -100,7 +100,10 @@ const ProductionPlans = () => {
 
       <ProductionPlansFormModal
         open={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {
+          setOpenModal(false);
+          setSelectedPlan(null);
+        }}
         productionPlan={selectedPlan}
         onSuccess={fetchPlans}
       />
