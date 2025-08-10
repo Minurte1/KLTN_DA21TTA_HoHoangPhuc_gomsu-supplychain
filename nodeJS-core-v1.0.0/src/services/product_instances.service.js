@@ -1,5 +1,6 @@
 const db = require("../config/database");
 const moment = require("moment");
+const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 
 const create = async (data) => {
   try {
@@ -98,7 +99,14 @@ const getAll = async (ID_COMPANY, STATUS) => {
 
     const [rows] = await db.query(query, params);
 
-    return rows;
+    // Map lại IMAGE_URL_PRODUCTS thành đường dẫn đầy đủ
+    const results = rows.map((item) => ({
+      ...item,
+      IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
+        ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
+        : null,
+    }));
+    return results;
   } catch (error) {
     console.error("Error in getAll product_instances:", error);
     throw error;
@@ -124,8 +132,14 @@ const getById = async (id) => {
       WHERE pi.ID_PRODUCT_INSTANCE = ?
     `;
 
-    const [rows] = await db.query(query, [id]);
-    return rows;
+    const [rows] = await db.query(query, [id]); // Map lại IMAGE_URL_PRODUCTS thành đường dẫn đầy đủ
+    const results = rows.map((item) => ({
+      ...item,
+      IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
+        ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
+        : null,
+    }));
+    return results;
   } catch (error) {
     console.error("Error in getById product_instance:", error);
     throw error;
