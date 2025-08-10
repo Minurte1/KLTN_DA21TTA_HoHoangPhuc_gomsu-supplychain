@@ -1,11 +1,11 @@
 const ProductionStepsService = require("../services/production_steps.service");
-
 const getAllProductionSteps = async (req, res) => {
   try {
-    const { ID_COMPANY, STATUS } = req.query;
+    const { ID_COMPANY, STATUS, ID_USERS } = req.query;
     const productionSteps = await ProductionStepsService.getAll(
       ID_COMPANY,
-      STATUS
+      STATUS,
+      ID_USERS
     );
     res.json(productionSteps);
   } catch (error) {

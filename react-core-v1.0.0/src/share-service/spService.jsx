@@ -120,5 +120,23 @@ const spService = {
     const map = key && statusMaps[key] ? statusMaps[key] : statusMaps.default;
     return map[status] || status || "Không xác định";
   },
+  formatDateTime: (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+
+    // Tạo giờ theo múi giờ Việt Nam (UTC+7)
+    // Cách đơn giản: +7 giờ với UTC
+    const offset = 7 * 60; // phút
+    const localDate = new Date(date.getTime() + offset * 60000);
+
+    const day = localDate.getDate().toString().padStart(2, "0");
+    const month = (localDate.getMonth() + 1).toString().padStart(2, "0");
+    const year = localDate.getFullYear();
+
+    const hours = localDate.getHours().toString().padStart(2, "0");
+    const minutes = localDate.getMinutes().toString().padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  },
 };
 export default spService;

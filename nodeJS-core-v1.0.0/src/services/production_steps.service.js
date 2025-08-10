@@ -63,7 +63,7 @@ const create = async (data) => {
   }
 };
 
-const getAll = async (ID_COMPANY, STATUS) => {
+const getAll = async (ID_COMPANY, STATUS, ID_USERS) => {
   try {
     let query = `
       SELECT 
@@ -104,6 +104,11 @@ const getAll = async (ID_COMPANY, STATUS) => {
     if (STATUS) {
       conditions.push(`ps.STATUS_PRODUCTION_STEPS = ?`);
       params.push(STATUS);
+    }
+
+    if (ID_USERS) {
+      conditions.push(`ps.ID_USERS = ?`);
+      params.push(ID_USERS);
     }
 
     if (conditions.length > 0) {

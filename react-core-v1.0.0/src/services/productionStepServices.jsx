@@ -4,8 +4,14 @@ const PRODUCTION_STEP_API = `${process.env.REACT_APP_URL_SERVER}/production-step
 
 const productionStepServices = {
   // Lấy danh sách tất cả các bước sản xuất
-  getProductionSteps: async ({}) => {
-    const res = await axiosInstance.get(PRODUCTION_STEP_API);
+  getProductionSteps: async ({ ID_COMPANY, STATUS, ID_USERS }) => {
+    const params = {};
+
+    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
+    if (STATUS) params.STATUS = STATUS;
+    if (ID_USERS) params.ID_USERS = ID_USERS;
+
+    const res = await axiosInstance.get(PRODUCTION_STEP_API, { params });
     return res.data;
   },
 
