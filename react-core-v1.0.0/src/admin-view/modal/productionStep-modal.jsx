@@ -126,6 +126,7 @@ const ProductionStepsFormModal = ({
     { value: "IN_PROGRESS", label: "Đang tiến hành" },
     { value: "COMPLETED", label: "Hoàn thành" },
     { value: "CANCELLED", label: "Đã hủy" },
+    { value: "FAILED", label: "Thất bại" },
   ];
 
   const fields = [

@@ -51,11 +51,21 @@ const ProductionSteps = () => {
     const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
     const userId = userInfo?.ID_USERS || null;
 
-    const data = await productionStepServices.getProductionSteps({
-      ID_COMPANY: companyId,
-      ID_USERS: userId,
-    });
+    // Kiểm tra quyền view role
+    const canViewRole = spService.hasPermission(
+      userInfo?.LIST_PERMISION,
+      "role",
+      "view"
+    );
+    console.log("canViewRole", canViewRole);
 
+    const params = { ID_COMPANY: companyId };
+    if (!canViewRole) {
+      // Nếu không có quyền view role thì truyền userId
+      params.ID_USERS = userId;
+    }
+
+    const data = await productionStepServices.getProductionSteps(params);
     setSteps(data);
   };
 
@@ -125,11 +135,21 @@ const ProductionSteps = () => {
       <Typography variant="h5" gutterBottom mt={4}>
         Quản lý Công Đoạn Sản Xuất - Hôm nay
       </Typography>
-      <DynamicTable data={todaySteps} columns={columns} />
+      <DynamicTable
+        data={todaySteps}
+        columns={columns}
+        keyStatus={"productionSteps"}
+        subStatus={true}
+      />
       <Typography variant="h5" gutterBottom mt={4}>
         Quản lý Công Đoạn Sản Xuất - Trước đó
       </Typography>
-      <DynamicTable data={previousSteps} columns={columns} />
+      <DynamicTable
+        data={previousSteps}
+        columns={columns}
+        subStatus={true}
+        keyStatus={"productionSteps"}
+      />
       <ProductionStepsFormModal
         open={openModal}
         onClose={() => setOpenModal(false)}

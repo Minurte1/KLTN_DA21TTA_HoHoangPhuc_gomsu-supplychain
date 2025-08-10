@@ -107,6 +107,13 @@ const spService = {
         COMPLETED: "Đã Hoàn Thành",
         CANCELED: "Đã Hủy",
       },
+      productionSteps: {
+        PENDING: "Chờ xử lý",
+        IN_PROGRESS: "Đang Tiến Hành",
+        COMPLETED: "Đã Hoàn Thành",
+        CANCELED: "Đã Hủy",
+        FAILED: "Thất bại",
+      },
 
       default: {
         ACTIVE: "Hoạt động",
@@ -137,6 +144,25 @@ const spService = {
     const minutes = localDate.getMinutes().toString().padStart(2, "0");
 
     return `${day}/${month}/${year} ${hours}:${minutes}`;
+  },
+
+  hasPermission: (listPermissionStr, routerName, action) => {
+    if (!listPermissionStr) return false;
+    try {
+      let permissions = JSON.parse(listPermissionStr);
+
+      // Nếu parse 1 lần ra vẫn là chuỗi, parse tiếp
+      if (typeof permissions === "string") {
+        permissions = JSON.parse(permissions);
+      }
+
+      // permissions bây giờ chắc chắn là mảng rồi
+      const routerPerm = permissions.find((p) => p.router === routerName);
+      return routerPerm?.actions.includes(action);
+    } catch (error) {
+      console.error("Parse LIST_PERMISION error:", error);
+      return false;
+    }
   },
 };
 export default spService;
