@@ -28,6 +28,7 @@ const DynamicModal = ({
   renderActions,
   onChange,
   renderExtraFields,
+  beforeContent,
 }) => {
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
@@ -279,9 +280,10 @@ const DynamicModal = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
         <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>{beforeContent ? beforeContent() : ""}</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
-            {fields.map((field) => (
+            {fields?.map((field) => (
               <div key={field.key}>{renderInput(field)}</div>
             ))}
             {renderExtraFields && renderExtraFields()}

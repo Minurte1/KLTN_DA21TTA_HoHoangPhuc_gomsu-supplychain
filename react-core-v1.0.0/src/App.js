@@ -57,8 +57,8 @@ const RouterUser = () => (
   <>
     {/* <HeaderUser /> */}
     <Grid container style={{ height: "100vh" }}>
-      <Grid item xs={3} md={2.5}></Grid>
-      <Grid item xs={9} md={9}>
+      <Grid item xs={3} md={3}></Grid>
+      <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
         <Routes>
           <Route path="/*" element={<UserRouter />} />
         </Routes>
@@ -72,10 +72,10 @@ const AdminLayout = () => (
     <HeaderAdmin />
 
     <Grid container style={{ height: "100vh" }}>
-      <Grid item xs={3} md={2.5}>
+      <Grid item xs={3} md="auto" sx={{ flexBasis: "20.8333%" }}>
         <NavBarAdmin />
       </Grid>
-      <Grid item xs={9} md={9}>
+      <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
         <Routes>
           <Route path="/*" element={<RouterAdmin />} />
         </Routes>
