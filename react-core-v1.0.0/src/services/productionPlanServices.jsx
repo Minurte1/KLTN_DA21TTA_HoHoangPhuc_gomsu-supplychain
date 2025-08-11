@@ -1,3 +1,4 @@
+import { enqueueSnackbar } from "notistack";
 import axiosInstance from "../authentication/axiosInstance";
 
 const PRODUCTION_PLAN_API = `${process.env.REACT_APP_URL_SERVER}/production-plans`;
@@ -16,17 +17,31 @@ const productionPlanServices = {
     const res = await axiosInstance.get(`${PRODUCTION_PLAN_API}/${id}`);
     return res.data;
   },
-
-  // Tạo kế hoạch sản xuất mới
   createProductionPlan: async (data) => {
-    const res = await axiosInstance.post(PRODUCTION_PLAN_API, data);
-    return res.data;
+    try {
+      const res = await axiosInstance.post(PRODUCTION_PLAN_API, data);
+      if (res.status === 200) {
+        return res.data;
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Lỗi khi tạo kế hoạch sản xuất";
+      enqueueSnackbar(message, { variant: "error" });
+    }
   },
 
-  // Cập nhật kế hoạch sản xuất
   updateProductionPlan: async (id, data) => {
-    const res = await axiosInstance.put(`${PRODUCTION_PLAN_API}/${id}`, data);
-    return res.data;
+    try {
+      const res = await axiosInstance.put(`${PRODUCTION_PLAN_API}/${id}`, data);
+      if (res.status === 200) {
+        return res.data;
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Lỗi khi cập nhật kế hoạch sản xuất";
+      enqueueSnackbar(message, { variant: "error" });
+      console.error("Error saving production plan:", error);
+    }
   },
 
   // Xóa kế hoạch sản xuất

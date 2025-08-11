@@ -271,7 +271,7 @@ const ProductionPlansFormModal = ({
         );
         setMaterialsData((prev) => ({
           ...prev,
-          ID_PRODUCTION_PLANS: newPlan.ID_PRODUCTION_PLANS,
+          ID_PRODUCTION_PLANS: newPlan?.ID_PRODUCTION_PLANS,
         }));
       }
       // TODO: gọi API lưu materialsData
