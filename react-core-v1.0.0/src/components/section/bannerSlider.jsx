@@ -1,30 +1,27 @@
-// src/components/BannerSlider.jsx
 import React from "react";
-import Carousel from "react-material-ui-carousel";
-import { Paper } from "@mui/material";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import banner1 from "../../public/images/banner/banner1.jpg";
+import banner2 from "../../public/images/banner/banner2.jpg";
+import banner3 from "../../public/images/banner/banner3.jpg";
 
 const items = [
-  {
-    name: "Banner 1",
-    image: "/assets/banners/banner1.jpg",
-  },
-  {
-    name: "Banner 2",
-    image: "/assets/banners/banner2.jpg",
-  },
+  { name: "Banner 1", image: banner1 },
+  { name: "Banner 2", image: banner2 },
+  { name: "Banner 3", image: banner3 },
 ];
 
 const BannerSlider = () => {
   return (
-    <Carousel indicators={true}>
+    <Carousel showThumbs={false} autoPlay infiniteLoop>
       {items.map((item, index) => (
-        <Paper key={index}>
+        <div key={index}>
           <img
             src={item.image}
             alt={item.name}
             style={{ width: "100%", height: "400px", objectFit: "cover" }}
           />
-        </Paper>
+        </div>
       ))}
     </Carousel>
   );

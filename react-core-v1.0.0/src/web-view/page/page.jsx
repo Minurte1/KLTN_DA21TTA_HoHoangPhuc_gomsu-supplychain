@@ -1,9 +1,12 @@
 import React from "react";
+import BannerSlider from "../../components/section/bannerSlider";
 
 const MainPage = () => {
   return (
     <>
-      <h1>oke</h1>
+      <h1>
+        <BannerSlider />
+      </h1>
     </>
   );
 };

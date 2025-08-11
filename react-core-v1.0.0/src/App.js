@@ -14,7 +14,7 @@ import RouterAdmin from "./admin-view/router-admin";
 import NavBarAdmin from "./admin-view/components/navBarAdmin";
 import HeaderAdmin from "./admin-view/components/headerAdmin";
 
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 function App() {
   return (
@@ -45,13 +45,23 @@ function App() {
 }
 
 // Giao diện cơ bản
-const MainLayout = () => (
-  <>
-    <Routes>
-      <Route path="/*" element={<RouterView />} />
-    </Routes>
-  </>
-);
+const MainLayout = () => {
+  return (
+    <div
+      style={{
+        maxWidth: "1440px", // max width laptop size L (bạn điều chỉnh theo ý)
+        width: "100%", // full width trên màn nhỏ hơn 1280px
+        margin: "0 auto", // căn giữa ngang
+        paddingLeft: "5px",
+        paddingRight: "5px",
+      }}
+    >
+      <Routes>
+        <Route path="/*" element={<RouterView />} />
+      </Routes>
+    </div>
+  );
+};
 
 const RouterUser = () => (
   <>
