@@ -43,6 +43,7 @@ const ProductionPlansFormModal = ({
     NOTE_PRODUCTION_PLANS: "",
     ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
     NAME_PRODUCTION_PLAN: "",
+    QUANTITY_PRODUCT: 0,
   });
 
   const [materialsData, setMaterialsData] = useState({
@@ -133,6 +134,7 @@ const ProductionPlansFormModal = ({
                 userInfo?.companyInfo?.ID_COMPANY ||
                 "",
               NAME_PRODUCTION_PLAN: productionPlan.NAME_PRODUCTION_PLAN || "",
+              QUANTITY_PRODUCT: productionPlan.QUANTITY_PRODUCT || 0,
             }
           : {
               ID_PRODUCT: "",
@@ -145,6 +147,7 @@ const ProductionPlansFormModal = ({
               NOTE_PRODUCTION_PLANS: "",
               ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
               NAME_PRODUCTION_PLAN: "",
+              QUANTITY_PRODUCT: 0,
             }
       );
     }
@@ -168,11 +171,17 @@ const ProductionPlansFormModal = ({
       },
       {
         key: "ID_USERS",
-        label: "Người Thực Hiện",
+        label: "Người Lên Kế Hoạch",
         inputType: "autocomplete",
         required: true,
         options: users,
         optionsLabel: "HO_TEN",
+      },
+      {
+        key: "QUANTITY_PRODUCT",
+        label: "Số lượng sản xuất",
+        inputType: "text",
+        required: true,
       },
       {
         key: "PLANNED_START_PRODUCTION_PLANS",

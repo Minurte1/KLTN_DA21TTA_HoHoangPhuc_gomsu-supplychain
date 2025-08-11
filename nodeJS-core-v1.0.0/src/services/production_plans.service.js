@@ -15,6 +15,7 @@ const create = async (data) => {
       NOTE_PRODUCTION_PLANS,
       ID_COMPANY,
       NAME_PRODUCTION_PLAN,
+      QUANTITY_PRODUCT,
     } = data;
 
     // Format ngày giờ (nếu có)
@@ -38,8 +39,8 @@ const create = async (data) => {
 
     const [result] = await db.query(
       `INSERT INTO production_plans 
-        (ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS, ID_COMPANY, NAME_PRODUCTION_PLAN)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS, ID_COMPANY,QUANTITY_PRODUCT, NAME_PRODUCTION_PLAN)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)`,
       [
         idProduct,
         idUsers,
@@ -50,6 +51,7 @@ const create = async (data) => {
         STATUS_PRODUCTION_PLANS,
         NOTE_PRODUCTION_PLANS,
         idCompany,
+        QUANTITY_PRODUCT,
         NAME_PRODUCTION_PLAN,
       ]
     );
@@ -137,6 +139,7 @@ const update = async (id, data) => {
       NOTE_PRODUCTION_PLANS,
       ID_COMPANY,
       NAME_PRODUCTION_PLAN,
+      QUANTITY_PRODUCT,
     } = data;
 
     const plannedStart = PLANNED_START_PRODUCTION_PLANS
@@ -158,7 +161,7 @@ const update = async (id, data) => {
 
     const [result] = await db.query(
       `UPDATE production_plans
-       SET ID_PRODUCT = ?, ID_USERS = ?, PLANNED_START_PRODUCTION_PLANS = ?, PLANNED_END_PRODUCTION_PLANS = ?, ACTUAL_START_PRODUCTION_PLANS = ?, ACTUAL_END_PRODUCTION_PLANS = ?, STATUS_PRODUCTION_PLANS = ?, NOTE_PRODUCTION_PLANS = ?, ID_COMPANY = ?, NAME_PRODUCTION_PLAN = ?
+       SET ID_PRODUCT = ?, ID_USERS = ?, PLANNED_START_PRODUCTION_PLANS = ?, PLANNED_END_PRODUCTION_PLANS = ?, ACTUAL_START_PRODUCTION_PLANS = ?, ACTUAL_END_PRODUCTION_PLANS = ?, STATUS_PRODUCTION_PLANS = ?, NOTE_PRODUCTION_PLANS = ?, ID_COMPANY = ?, QUANTITY_PRODUCT = ?, NAME_PRODUCTION_PLAN = ?
        WHERE ID_PRODUCTION_PLANS = ?`,
       [
         idProduct,
@@ -170,6 +173,7 @@ const update = async (id, data) => {
         STATUS_PRODUCTION_PLANS,
         NOTE_PRODUCTION_PLANS,
         idCompany,
+        QUANTITY_PRODUCT,
         NAME_PRODUCTION_PLAN,
         id,
       ]

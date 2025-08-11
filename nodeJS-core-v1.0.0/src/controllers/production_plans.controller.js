@@ -31,6 +31,7 @@ const createProductionPlan = async (req, res) => {
       NOTE_PRODUCTION_PLANS,
       ID_COMPANY,
       NAME_PRODUCTION_PLAN,
+      QUANTITY_PRODUCT,
       production_material = [],
     } = req.body;
 
@@ -48,11 +49,46 @@ const createProductionPlan = async (req, res) => {
       ? moment(ACTUAL_END_PRODUCTION_PLANS).format("YYYY-MM-DD HH:mm:ss")
       : null;
 
-    // Thêm vào production_plans
+    // Kiểm tra QUANTITY_PER_UNIT_PRODUCT_MATERIALS với QUANTITY trong bảng materials
+    for (const material of production_material) {
+      const ID_MATERIALS = material.ID_MATERIALS_
+        ? material.ID_MATERIALS_
+        : material.ID_MATERIALS;
+
+      // Lấy số lượng QUANTITY trong materials của vật liệu này
+      const [rows] = await connection.query(
+        "SELECT QUANTITY FROM materials WHERE ID_MATERIALS_ = ? AND ID_COMPANY = ?",
+        [parseInt(ID_MATERIALS, 10), parseInt(material.ID_COMPANY, 10)]
+      );
+
+      if (rows.length === 0) {
+        // Không tìm thấy vật liệu tương ứng
+        await connection.rollback();
+        return res.status(400).json({
+          error: `Material with ID ${ID_MATERIALS} not found in materials table`,
+        });
+      }
+
+      const availableQuantity = rows[0].QUANTITY;
+
+      // So sánh với QUANTITY_PER_UNIT_PRODUCT_MATERIALS
+      if (
+        material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS !== null &&
+        material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS !== undefined &&
+        Number(material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS) > availableQuantity
+      ) {
+        await connection.rollback();
+        return res.status(400).json({
+          error: `Số lượng nguyên liệu trên mỗi đơn vị sản phẩm (${material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS}) lớn hơn số lượng hiện có (${availableQuantity}) đối với nguyên liệu ID ${ID_MATERIALS}`,
+        });
+      }
+    }
+
+    // Nếu qua hết vòng kiểm tra, bắt đầu tạo kế hoạch sản xuất
     const [planResult] = await connection.query(
       `INSERT INTO production_plans 
-        (ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS, ID_COMPANY, NAME_PRODUCTION_PLAN)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS, ID_COMPANY, QUANTITY_PRODUCT, NAME_PRODUCTION_PLAN)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         parseInt(ID_PRODUCT, 10) || null,
         parseInt(ID_USERS, 10) || null,
@@ -62,7 +98,8 @@ const createProductionPlan = async (req, res) => {
         actualEnd,
         STATUS_PRODUCTION_PLANS || null,
         NOTE_PRODUCTION_PLANS || null,
-        parseInt(ID_COMPANY, 10),
+        parseInt(ID_COMPANY, 10) || null,
+        parseInt(QUANTITY_PRODUCT, 10) || null,
         NAME_PRODUCTION_PLAN || null,
       ]
     );
@@ -71,6 +108,10 @@ const createProductionPlan = async (req, res) => {
 
     // Thêm dữ liệu vào production_materials
     for (const material of production_material) {
+      const ID_MATERIALS = material.ID_MATERIALS_
+        ? material.ID_MATERIALS_
+        : material.ID_MATERIALS;
+
       await connection.query(
         `INSERT INTO production_materials 
           (ID_PRODUCT_MATERIALS, ID_PRODUCTION_PLANS, ID_MATERIALS_, QUANTITY_PER_UNIT_PRODUCT_MATERIALS, UNIT_PRODUCT_MATERIALS, ID_COMPANY)
@@ -78,7 +119,7 @@ const createProductionPlan = async (req, res) => {
         [
           parseInt(material.ID_PRODUCT_MATERIALS, 10) || null,
           newProductionPlanId,
-          parseInt(material.ID_MATERIALS_, 10) || null,
+          parseInt(ID_MATERIALS, 10) || null,
           material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS || null,
           material.UNIT_PRODUCT_MATERIALS || null,
           parseInt(material.ID_COMPANY, 10),
@@ -131,6 +172,7 @@ const updateProductionPlan = async (req, res) => {
       NOTE_PRODUCTION_PLANS,
       ID_COMPANY,
       NAME_PRODUCTION_PLAN,
+      QUANTITY_PRODUCT,
       production_material = [],
     } = req.body;
 
@@ -148,11 +190,49 @@ const updateProductionPlan = async (req, res) => {
       ? moment(ACTUAL_END_PRODUCTION_PLANS).format("YYYY-MM-DD HH:mm:ss")
       : null;
 
-    // Cập nhật production_plans
+    // Kiểm tra số lượng nguyên liệu có đủ trong materials hay không
+    for (const material of production_material) {
+      const materialId = material.ID_MATERIALS_
+        ? material.ID_MATERIALS_
+        : material.ID_MATERIALS;
+
+      const requestedQuantity = parseFloat(
+        material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS
+      );
+
+      if (!materialId) {
+        await connection.rollback();
+        return res.status(400).json({ message: "Invalid material ID" });
+      }
+
+      // Lấy số lượng hiện tại trong materials
+      const [rows] = await connection.query(
+        `SELECT QUANTITY FROM materials WHERE ID_MATERIALS_ = ? AND ID_COMPANY = ?`,
+        [materialId, parseInt(material.ID_COMPANY, 10)]
+      );
+
+      if (rows.length === 0) {
+        await connection.rollback();
+        return res
+          .status(404)
+          .json({ message: `Material with ID ${materialId} not found` });
+      }
+
+      const availableQuantity = parseFloat(rows[0].QUANTITY);
+
+      if (requestedQuantity > availableQuantity) {
+        await connection.rollback();
+        return res.status(400).json({
+          message: `Số lượng yêu cầu (${requestedQuantity}) cho nguyên liệu ID ${materialId} vượt quá số lượng hiện có (${availableQuantity})`,
+        });
+      }
+    }
+
+    // Nếu qua kiểm tra, thực hiện cập nhật production_plans
     const [updateResult] = await connection.query(
       `UPDATE production_plans
-        SET ID_PRODUCT = ?, ID_USERS = ?, PLANNED_START_PRODUCTION_PLANS = ?, PLANNED_END_PRODUCTION_PLANS = ?, ACTUAL_START_PRODUCTION_PLANS = ?, ACTUAL_END_PRODUCTION_PLANS = ?, STATUS_PRODUCTION_PLANS = ?, NOTE_PRODUCTION_PLANS = ?, ID_COMPANY = ?, NAME_PRODUCTION_PLAN = ?
-      WHERE ID_PRODUCTION_PLANS = ?`,
+       SET ID_PRODUCT = ?, ID_USERS = ?, PLANNED_START_PRODUCTION_PLANS = ?, PLANNED_END_PRODUCTION_PLANS = ?, ACTUAL_START_PRODUCTION_PLANS = ?, ACTUAL_END_PRODUCTION_PLANS = ?, STATUS_PRODUCTION_PLANS = ?, NOTE_PRODUCTION_PLANS = ?, ID_COMPANY = ?, QUANTITY_PRODUCT = ?, NAME_PRODUCTION_PLAN = ?
+       WHERE ID_PRODUCTION_PLANS = ?`,
       [
         parseInt(ID_PRODUCT, 10) || null,
         parseInt(ID_USERS, 10) || null,
@@ -163,6 +243,7 @@ const updateProductionPlan = async (req, res) => {
         STATUS_PRODUCTION_PLANS || null,
         NOTE_PRODUCTION_PLANS || null,
         parseInt(ID_COMPANY, 10),
+        parseInt(QUANTITY_PRODUCT, 10),
         NAME_PRODUCTION_PLAN || null,
         parseInt(id, 10),
       ]
@@ -181,6 +262,10 @@ const updateProductionPlan = async (req, res) => {
 
     // Thêm dữ liệu mới vào production_materials
     for (const material of production_material) {
+      const ID_MATERIALS = material.ID_MATERIALS_
+        ? material.ID_MATERIALS_
+        : material.ID_MATERIALS;
+
       await connection.query(
         `INSERT INTO production_materials 
           (ID_PRODUCT_MATERIALS, ID_PRODUCTION_PLANS, ID_MATERIALS_, QUANTITY_PER_UNIT_PRODUCT_MATERIALS, UNIT_PRODUCT_MATERIALS, ID_COMPANY)
@@ -188,7 +273,7 @@ const updateProductionPlan = async (req, res) => {
         [
           parseInt(material.ID_PRODUCT_MATERIALS, 10) || null,
           parseInt(id, 10),
-          parseInt(material.ID_MATERIALS_, 10) || null,
+          parseInt(ID_MATERIALS, 10) || null,
           material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS || null,
           material.UNIT_PRODUCT_MATERIALS || null,
           parseInt(material.ID_COMPANY, 10),
@@ -207,6 +292,7 @@ const updateProductionPlan = async (req, res) => {
     connection.release();
   }
 };
+
 const deleteProductionPlan = async (req, res) => {
   const connection = await db.getConnection();
   try {

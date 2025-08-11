@@ -218,7 +218,7 @@ const update = async (id, data) => {
 
       // Lấy thông tin kế hoạch sản xuất
       const [plans] = await db.query(
-        `SELECT ID_PRODUCT, ID_USERS FROM production_plans WHERE ID_PRODUCTION_PLANS = ?`,
+        `SELECT ID_PRODUCT, ID_USERS, QUANTITY_PRODUCT FROM production_plans WHERE ID_PRODUCTION_PLANS = ?`,
         [ID_PRODUCTION_PLANS]
       );
       if (plans.length === 0) throw new Error("Production plan not found");
@@ -290,8 +290,8 @@ const update = async (id, data) => {
       // Insert bản ghi mới vào product_instances với thông tin user chi tiết
       await db.query(
         `INSERT INTO product_instances 
-         (UID, ID_PRODUCT, SERIAL_CODE, ID_USERS, ID_PRODUCTION_PLANS, DATE_CREATED, STATUS, ID_COMPANY) 
-         VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)`,
+         (UID, ID_PRODUCT, SERIAL_CODE, ID_USERS, ID_PRODUCTION_PLANS, DATE_CREATED, STATUS, ID_COMPANY,QUANTITY) 
+         VALUES (?, ?, ?, ?, ?, NOW(), ?, ? , ?)`,
         [
           uid,
           product.ID_PRODUCT,
@@ -300,8 +300,35 @@ const update = async (id, data) => {
           ID_PRODUCTION_PLANS,
           STATUS.AVAILABLE,
           product.ID_COMPANY,
+          plan?.QUANTITY_PRODUCT,
         ]
+      ); // Lấy danh sách nguyên liệu cần dùng cho kế hoạch sản xuất đó
+
+      const [materialsNeeded] = await db.query(
+        `SELECT pm.ID_MATERIALS_, pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, m.QUANTITY
+   FROM production_materials pm
+   JOIN materials m ON pm.ID_MATERIALS_ = m.ID_MATERIALS_
+   WHERE pm.ID_PRODUCTION_PLANS = ? AND pm.ID_COMPANY = ? AND m.ID_COMPANY = ?`,
+        [ID_PRODUCTION_PLANS, product.ID_COMPANY, product.ID_COMPANY]
       );
+
+      // Cập nhật lại số lượng nguyên liệu sau khi tạo product_instance (giả sử tạo 1 sản phẩm mới)
+      for (const material of materialsNeeded) {
+        const newQuantity =
+          material.QUANTITY - material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS;
+
+        // Bạn có thể thêm kiểm tra newQuantity không âm, tránh âm kho nếu muốn
+        if (newQuantity < 0) {
+          console.warn(
+            `Warning: Nguyên liệu ${material.ID_MATERIALS_} bị trừ vượt mức (âm).`
+          );
+        }
+
+        await db.query(
+          `UPDATE materials SET QUANTITY = ? WHERE ID_MATERIALS_ = ? AND ID_COMPANY = ?`,
+          [newQuantity, material.ID_MATERIALS_, product.ID_COMPANY]
+        );
+      }
     }
 
     return true;
