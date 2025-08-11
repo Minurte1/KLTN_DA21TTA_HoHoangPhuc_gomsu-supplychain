@@ -1,17 +1,8 @@
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import banner1 from "../../public/images/banner/banner1.jpg";
-import banner2 from "../../public/images/banner/banner2.jpg";
-import banner3 from "../../public/images/banner/banner3.jpg";
 
-const items = [
-  { name: "Banner 1", image: banner1 },
-  { name: "Banner 2", image: banner2 },
-  { name: "Banner 3", image: banner3 },
-];
-
-const BannerSlider = () => {
+const BannerSlider = ({ items = [] }) => {
   return (
     <Carousel showThumbs={false} autoPlay infiniteLoop>
       {items.map((item, index) => (

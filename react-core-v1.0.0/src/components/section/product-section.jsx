@@ -1,7 +1,7 @@
 // src/components/ProductSection.jsx
 import React from "react";
 import PropTypes from "prop-types";
-ư;
+
 import "./ProductSection.css";
 
 const ProductSection = ({ products }) => {
