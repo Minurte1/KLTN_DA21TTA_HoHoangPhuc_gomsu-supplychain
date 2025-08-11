@@ -56,7 +56,7 @@ const MainLayout = () => {
         paddingRight: "5px",
         display: "flex",
         justifyContent: "center",
-        backgroundColor: "#fff",
+        backgroundColor: "#f5f5fa",
       }}
     >
       <Routes>

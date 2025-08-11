@@ -41,6 +41,13 @@ const MainPage = () => {
     setProductInstances(data);
   };
 
+  const stylePadding = {
+    marginTop: "20px",
+    backgroundColor: "#ffffff",
+    width: "100%",
+    borderRadius: "8px",
+    padding: "16px 0px",
+  };
   return (
     <>
       <div
@@ -52,11 +59,10 @@ const MainPage = () => {
         }}
       >
         <BannerSlider items={items} />
-        <div style={{ marginTop: "20px" }}>
-          {" "}
+        <div style={stylePadding}>
           <ProductList products={productInstances} />
         </div>
-        <div style={{ marginTop: "20px" }}>
+        <div style={stylePadding}>
           {" "}
           <Footer />
         </div>

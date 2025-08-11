@@ -21,48 +21,47 @@ const Footer = () => {
           <li>Chính sách hàng nhập khẩu</li>
         </ul>
         <p>
-          Hỗ trợ khách hàng: <a href="mailto:hotro@tiki.vn">hotro@tiki.vn</a>
+          Hỗ trợ khách hàng: <a href="mailto:hotro@gomsu.vn">hotro@gomsu.vn</a>
         </p>
         <p>
           Báo lỗi bảo mật:{" "}
-          <a href="mailto:security@tiki.vn">security@tiki.vn</a>
+          <a href="mailto:security@gomsu.vn">security@gomsu.vn</a>
         </p>
       </div>
 
       <div className={styles.about}>
-        <h4>Về Tiki</h4>
+        <h4>Về Gốm Sứ</h4>
         <ul>
-          <li>Giới thiệu Tiki</li>
-          <li>Tiki Blog</li>
+          <li>Giới thiệu Gốm Sứ</li>
+          <li>Blog Gốm Sứ</li>
           <li>Tuyển dụng</li>
           <li>Chính sách bảo mật thanh toán</li>
           <li>Chính sách bảo mật thông tin cá nhân</li>
           <li>Chính sách giải quyết khiếu nại</li>
           <li>Điều khoản sử dụng</li>
-          <li>Giới thiệu Tiki Xu</li>
-          <li>Tiếp thị liên kết cùng Tiki</li>
+          <li>Giới thiệu Gốm Sứ Xu</li>
+          <li>Tiếp thị liên kết cùng Gốm Sứ</li>
           <li>Bán hàng doanh nghiệp</li>
           <li>Điều kiện vận chuyển</li>
           <li>Hợp tác và liên kết</li>
           <li>Quy chế hoạt động Sàn GDTMĐT</li>
-          <li>Bán hàng cùng Tiki</li>
+          <li>Bán hàng cùng Gốm Sứ</li>
         </ul>
       </div>
 
       <div className={styles.certify}>
         <h4>Chứng nhận bởi</h4>
         <ul>
-          <li>bo-cong-thuong-2</li>
-          <li>bo-cong-thuong</li>
+          <li>Bộ Công Thương</li>
           <li>DMCA.com Protection Status</li>
         </ul>
         <h4>Phương thức thanh toán</h4>
         <h4>Dịch vụ giao hàng</h4>
         <h4>Kết nối với chúng tôi</h4>
         <h4>Tải ứng dụng trên điện thoại</h4>
-        <p>Công ty TNHH TI KI</p>
+        <p>Công ty TNHH Gốm Sứ Truyền Thống</p>
         <address>
-          Tòa nhà số 52 đường Út Tịch, Phường 4, Quận Tân Bình, Thành phố Hồ Chí
+          Tòa nhà số 52 đường Gốm Sứ, Phường 4, Quận Tân Bình, Thành phố Hồ Chí
           Minh
         </address>
         <p>
