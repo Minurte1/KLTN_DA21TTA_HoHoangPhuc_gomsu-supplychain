@@ -1,9 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import styles from "./scss/productSection.module.scss";
+
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/product-details/${product.SERIAL_CODE}`);
+  };
+
   return (
-    <div className={styles["product-card"]}>
+    <div
+      className={styles["product-card"]}
+      onClick={handleClick}
+      style={{ cursor: "pointer" }}
+    >
       <img
         src={product.IMAGE_URL_PRODUCTS}
         alt={product.NAME_PRODUCTS}

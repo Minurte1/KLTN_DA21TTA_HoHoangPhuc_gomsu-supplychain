@@ -2,6 +2,7 @@ import { useRoutes, Navigate } from "react-router-dom";
 
 import MainPage from "./page/page";
 import Login from "./page/login/login";
+import ProductDetails from "./page/product-details";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -12,6 +13,10 @@ const RouterView = () => {
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/product-details/:serialCode",
+      element: <ProductDetails />,
     },
 
     {

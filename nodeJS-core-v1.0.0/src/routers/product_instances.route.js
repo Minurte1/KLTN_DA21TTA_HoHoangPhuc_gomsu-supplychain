@@ -52,7 +52,7 @@ router.get(
   "/public",
   // checkUserJWT,
   // checkUserPermission("product_instance", "view"),
-  getAllProductInstances
+  getAllProductInstancesPublic
 );
 // public ===================
 

@@ -208,108 +208,62 @@ const deleteProductInstance = async (id) => {
 };
 
 // ======================WEB USER=================================
-const getAllProductInstancesPublic = async (ID_COMPANY, STATUS) => {
+const getAllProductInstancesPublic = async (
+  STATUS = "AVAILABLE",
+  LIMIT = 1,
+  SERIAL_CODE
+) => {
   try {
-    // Bước 1: Lấy danh sách công ty (hoặc 1 công ty nếu ID_COMPANY truyền vào)
-    let companiesQuery = `SELECT ID_COMPANY FROM companies`;
-    const companiesParams = [];
-    if (ID_COMPANY) {
-      companiesQuery += ` WHERE ID_COMPANY = ?`;
-      companiesParams.push(ID_COMPANY);
-    }
-    const [companies] = await db.query(companiesQuery, companiesParams);
-
-    if (companies.length === 0) return [];
-
-    // Bước 2: Lấy sản phẩm mỗi công ty tối đa 2 sản phẩm mới nhất
-    // Dùng UNION ALL các query con cho từng công ty với LIMIT 2
-    // Query dạng: (SELECT ... FROM product_instances WHERE ID_COMPANY = x ORDER BY ID_PRODUCT_INSTANCE DESC LIMIT 2) UNION ALL ...
-
-    const companyProductQueries = companies.map((c) => {
-      return `
-        SELECT 
-          pi.*, 
-          p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS, p.PRICE_PRODUCTS, p.STOCK_PRODUCTS, p.IMAGE_URL_PRODUCTS, p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
-          c.ID_CATEGORIES_, c.NAME_CATEGORIES_, c.ID_COMPANY AS CATEGORY_ID_COMPANY,
-          pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS, pm.ID_COMPANY AS PROD_MATERIALS_COMPANY,
-          mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES, mt.ID_COMPANY AS MATERIAL_TYPES_COMPANY,
-          m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, m.QUANTITY, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.QUANTITY AS MATERIAL_QUANTITY, m.COST_PER_UNIT_, m.CREATED_AT_PRODUCTS AS MATERIAL_CREATED_AT, m.UPDATED_AT_PRODUCTS AS MATERIAL_UPDATED_AT, m.ORIGIN, m.EXPIRY_DATE, m.ID_COMPANY AS MATERIAL_COMPANY,
-          pp.NAME_PRODUCTION_PLAN
-        FROM product_instances pi
-        JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT AND pi.ID_COMPANY = p.ID_COMPANY
-        JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_ AND p.ID_COMPANY = c.ID_COMPANY
-        LEFT JOIN production_materials pm ON pm.ID_PRODUCTION_PLANS = pi.ID_PRODUCTION_PLANS AND pm.ID_COMPANY = pi.ID_COMPANY
-        LEFT JOIN materials m ON pm.ID_MATERIALS_ = m.ID_MATERIALS_ AND m.ID_COMPANY = pi.ID_COMPANY
-        LEFT JOIN material_types mt ON m.ID_MATERIAL_TYPES = mt.ID_MATERIAL_TYPES AND mt.ID_COMPANY = pi.ID_COMPANY
-        LEFT JOIN production_plans pp ON pi.ID_PRODUCTION_PLANS = pp.ID_PRODUCTION_PLANS AND pi.ID_COMPANY = pp.ID_COMPANY
-        WHERE pi.ID_COMPANY = ${c.ID_COMPANY}
-        ${STATUS ? `AND pi.STATUS = ${db.escape(STATUS)}` : ""}
-        ORDER BY pi.ID_PRODUCT_INSTANCE DESC
-        LIMIT 2
-      `;
-    });
-
-    let query = companyProductQueries.join(" UNION ALL ");
-
-    let [rows] = await db.query(query);
-
-    // Nếu đã đủ 12 sản phẩm hoặc đã có >= 6 công ty thì return luôn
-    if (rows.length >= 12 || companies.length >= 6) {
-      return rows.slice(0, 12).map((item) => ({
-        ...item,
-        IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
-          ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
-          : null,
-      }));
+    let safeLimit = Number(LIMIT);
+    if (isNaN(safeLimit) || safeLimit <= 0) {
+      safeLimit = 1;
     }
 
-    // Nếu ít công ty < 6, cần lấy thêm sản phẩm nữa cho đủ 12
-    // Lấy thêm sản phẩm từ các công ty theo thứ tự mới nhất, bỏ qua các sản phẩm đã lấy (theo ID_PRODUCT_INSTANCE)
-    const takenIds = rows.map((r) => r.ID_PRODUCT_INSTANCE);
-    const needed = 12 - rows.length;
+    const serialCodeCondition = SERIAL_CODE
+      ? `AND pi.SERIAL_CODE = '${SERIAL_CODE.replace(/'/g, "''")}'`
+      : "";
 
-    // Lấy thêm sản phẩm theo ID_COMPANY và STATUS nếu có, bỏ qua những ID đã lấy
-    const additionalQueries = companies.map(
-      (c) => `
+    const statusCondition = STATUS
+      ? `AND pi.STATUS = '${STATUS.replace(/'/g, "''")}'`
+      : "";
+
+    const query = `
       SELECT 
-        pi.*, 
+        pi.*,
         p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS, p.PRICE_PRODUCTS, p.STOCK_PRODUCTS, p.IMAGE_URL_PRODUCTS, p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
         c.ID_CATEGORIES_, c.NAME_CATEGORIES_, c.ID_COMPANY AS CATEGORY_ID_COMPANY,
-        pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS, pm.ID_COMPANY AS PROD_MATERIALS_COMPANY,
-        mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES, mt.ID_COMPANY AS MATERIAL_TYPES_COMPANY,
-        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, m.QUANTITY, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.QUANTITY AS MATERIAL_QUANTITY, m.COST_PER_UNIT_, m.CREATED_AT_PRODUCTS AS MATERIAL_CREATED_AT, m.UPDATED_AT_PRODUCTS AS MATERIAL_UPDATED_AT, m.ORIGIN, m.EXPIRY_DATE, m.ID_COMPANY AS MATERIAL_COMPANY,
+        comp.ID_COMPANY, comp.NAME_COMPANY, comp.TYPE_COMPANY, comp.ADDRESS, comp.DIA_CHI_Provinces, comp.DIA_CHI_Districts, comp.DIA_CHI_Wards, comp.DIA_CHI_STREETNAME,
+        comp.PHONE, comp.EMAIL, comp.AVATAR, comp.SLUG, comp.CREATED_AT, comp.UPDATED_AT, comp.STATUS, comp.ID_COMPANY_TYPE,
+        pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS,
+        mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES,
+        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, m.QUANTITY, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.COST_PER_UNIT_, m.ORIGIN, m.EXPIRY_DATE,
         pp.NAME_PRODUCTION_PLAN
       FROM product_instances pi
       JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT AND pi.ID_COMPANY = p.ID_COMPANY
       JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_ AND p.ID_COMPANY = c.ID_COMPANY
+      LEFT JOIN companies comp ON pi.ID_COMPANY = comp.ID_COMPANY
       LEFT JOIN production_materials pm ON pm.ID_PRODUCTION_PLANS = pi.ID_PRODUCTION_PLANS AND pm.ID_COMPANY = pi.ID_COMPANY
       LEFT JOIN materials m ON pm.ID_MATERIALS_ = m.ID_MATERIALS_ AND m.ID_COMPANY = pi.ID_COMPANY
       LEFT JOIN material_types mt ON m.ID_MATERIAL_TYPES = mt.ID_MATERIAL_TYPES AND mt.ID_COMPANY = pi.ID_COMPANY
       LEFT JOIN production_plans pp ON pi.ID_PRODUCTION_PLANS = pp.ID_PRODUCTION_PLANS AND pi.ID_COMPANY = pp.ID_COMPANY
-      WHERE pi.ID_COMPANY = ${c.ID_COMPANY}
-        ${STATUS ? `AND pi.STATUS = ${db.escape(STATUS)}` : ""}
-        AND pi.ID_PRODUCT_INSTANCE NOT IN (${
-          takenIds.length > 0 ? takenIds.join(",") : 0
-        })
+      WHERE 1=1
+        ${statusCondition}
+        ${serialCodeCondition}
       ORDER BY pi.ID_PRODUCT_INSTANCE DESC
-      LIMIT ${needed}
-    `
-    );
+      LIMIT ${safeLimit}
+    `;
 
-    const additionalQuery = additionalQueries.join(" UNION ALL ");
+    const [rows] = await db.query(query);
 
-    const [additionalRows] = await db.query(additionalQuery);
-
-    const finalRows = [...rows, ...additionalRows].slice(0, 12);
-
-    return finalRows.map((item) => ({
+    return rows.map((item) => ({
       ...item,
       IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
         ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
         : null,
+      AVATAR: item.AVATAR ? URL_IMAGE_BASE + item.AVATAR : null,
     }));
   } catch (error) {
-    console.error("Error in getAll product_instances:", error);
+    console.error("Error in getAllProductInstancesPublic:", error);
     throw error;
   }
 };
