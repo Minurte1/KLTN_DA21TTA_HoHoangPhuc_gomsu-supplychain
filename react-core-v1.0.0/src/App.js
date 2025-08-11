@@ -18,7 +18,7 @@ import { Box, Grid } from "@mui/material";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: "#f5f5fa" }}>
       <SnackbarProvider
         maxSnack={3}
         anchorOrigin={{
@@ -56,6 +56,7 @@ const MainLayout = () => {
         paddingRight: "5px",
         display: "flex",
         justifyContent: "center",
+        backgroundColor: "#fff",
       }}
     >
       <Routes>
@@ -67,7 +68,6 @@ const MainLayout = () => {
 
 const RouterUser = () => (
   <>
-    {/* <HeaderUser /> */}
     <Grid container style={{ height: "100vh" }}>
       <Grid item xs={3} md={3}></Grid>
       <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
@@ -81,18 +81,21 @@ const RouterUser = () => (
 
 const AdminLayout = () => (
   <>
-    <HeaderAdmin />
+    {" "}
+    <div style={{ backgroundColor: "#fff" }}>
+      <HeaderAdmin />
 
-    <Grid container style={{ height: "100vh" }}>
-      <Grid item xs={3} md="auto" sx={{ flexBasis: "20.8333%" }}>
-        <NavBarAdmin />
+      <Grid container style={{ height: "100vh" }}>
+        <Grid item xs={3} md="auto" sx={{ flexBasis: "20.8333%" }}>
+          <NavBarAdmin />
+        </Grid>
+        <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
+          <Routes>
+            <Route path="/*" element={<RouterAdmin />} />
+          </Routes>
+        </Grid>
       </Grid>
-      <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
-        <Routes>
-          <Route path="/*" element={<RouterAdmin />} />
-        </Routes>
-      </Grid>
-    </Grid>
+    </div>
   </>
 );
 

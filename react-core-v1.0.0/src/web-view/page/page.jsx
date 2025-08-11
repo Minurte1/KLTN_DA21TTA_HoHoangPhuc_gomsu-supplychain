@@ -5,6 +5,7 @@ import banner2 from "../../public/images/banner/banner2.jpg";
 import banner3 from "../../public/images/banner/banner3.jpg";
 import productInstancesServices from "../../services/product_instancesServices";
 import ProductList from "../../components/productList";
+import Footer from "../../components/footer";
 
 const MainPage = () => {
   const [productInstances, setProductInstances] = useState([]);
@@ -54,6 +55,10 @@ const MainPage = () => {
         <div style={{ marginTop: "20px" }}>
           {" "}
           <ProductList products={productInstances} />
+        </div>
+        <div style={{ marginTop: "20px" }}>
+          {" "}
+          <Footer />
         </div>
       </div>
     </>
