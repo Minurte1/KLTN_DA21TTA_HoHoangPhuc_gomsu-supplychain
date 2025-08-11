@@ -4,6 +4,7 @@ import banner1 from "../../public/images/banner/banner1.jpg";
 import banner2 from "../../public/images/banner/banner2.jpg";
 import banner3 from "../../public/images/banner/banner3.jpg";
 import productInstancesServices from "../../services/product_instancesServices";
+import ProductList from "../../components/productList";
 
 const MainPage = () => {
   const [productInstances, setProductInstances] = useState([]);
@@ -42,6 +43,7 @@ const MainPage = () => {
   return (
     <>
       <BannerSlider items={items} />
+      <ProductList products={productInstances} />
     </>
   );
 };

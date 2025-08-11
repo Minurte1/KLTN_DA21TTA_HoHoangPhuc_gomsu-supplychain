@@ -1,24 +1,50 @@
-// src/components/ProductSection.jsx
 import React from "react";
 import PropTypes from "prop-types";
+import styles from "./scss/productSection.scss";
 
-import "./ProductSection.css";
-
-const ProductSection = ({ products }) => {
+const ProductCard = ({ product }) => {
   return (
-    <div className="section-container">
-      <h2 className="section-title">Sản phẩm nổi bật</h2>
-      <div className="product-grid">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+    <div className={styles["product-card"]}>
+      <img
+        src={product.IMAGE_URL_PRODUCTS}
+        alt={product.NAME_PRODUCTS}
+        className={styles["product-img"]}
+      />
+      <h3 className={styles["product-name"]}>{product.NAME_PRODUCTS}</h3>
+      <p className={styles["product-description"]}>
+        {product.DESCRIPTION_PRODUCTS}
+      </p>
+      <div className={styles["product-price"]}>
+        {product.PRICE_PRODUCTS.toLocaleString("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        })}
+      </div>
+      <div className={styles["product-stock"]}>
+        {product.STOCK_PRODUCTS > 0
+          ? `Còn hàng: ${product.STOCK_PRODUCTS}`
+          : "Hết hàng"}
+      </div>
+      <div className={styles["product-category"]}>
+        {product.NAME_CATEGORIES_}
+      </div>
+      <div className={styles["product-serial"]}>
+        Mã sản phẩm: {product.SERIAL_CODE}
       </div>
     </div>
   );
 };
 
-ProductSection.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.object).isRequired,
+ProductCard.propTypes = {
+  product: PropTypes.shape({
+    IMAGE_URL_PRODUCTS: PropTypes.string.isRequired,
+    NAME_PRODUCTS: PropTypes.string.isRequired,
+    DESCRIPTION_PRODUCTS: PropTypes.string.isRequired,
+    PRICE_PRODUCTS: PropTypes.number.isRequired,
+    STOCK_PRODUCTS: PropTypes.number.isRequired,
+    NAME_CATEGORIES_: PropTypes.string.isRequired,
+    SERIAL_CODE: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-export default ProductSection;
+export default ProductCard;
