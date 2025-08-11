@@ -31,7 +31,7 @@ const BannerSlider = ({ items = [] }) => {
                 <h3 style={{ margin: "0 0 8px 0" }}>{item.title}</h3>
               )}
               {item.description && (
-                <small style={{ margin: 0 }}>{item.description}</small>
+                <p style={{ margin: 0 }}>{item.description}</p>
               )}
             </div>
           )}

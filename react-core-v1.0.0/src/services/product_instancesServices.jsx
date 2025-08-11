@@ -12,6 +12,16 @@ const productInstancesServices = {
     const res = await axiosInstance.get(PRODUCT_INSTANCES_API, { params });
     return res.data;
   },
+  getProductInstancesPublic: async ({ ID_COMPANY = null, STATUS = null }) => {
+    const params = {};
+    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
+    if (STATUS) params.STATUS = STATUS;
+
+    const res = await axiosInstance.get(`${PRODUCT_INSTANCES_API}/public`, {
+      params,
+    });
+    return res.data;
+  },
 
   // Lấy product_instance theo ID
   getProductInstanceById: async (id) => {

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BannerSlider from "../../components/section/bannerSlider";
 import banner1 from "../../public/images/banner/banner1.jpg";
 import banner2 from "../../public/images/banner/banner2.jpg";
 import banner3 from "../../public/images/banner/banner3.jpg";
+import productInstancesServices from "../../services/product_instancesServices";
 
 const MainPage = () => {
+  const [productInstances, setProductInstances] = useState([]);
   const items = [
     {
       name: "Banner 1",
@@ -27,11 +29,19 @@ const MainPage = () => {
     },
   ];
 
+  useEffect(() => {
+    fetchProductInstances();
+  }, []);
+  // Hàm lấy danh sách product instances theo company
+  const fetchProductInstances = async () => {
+    const data = await productInstancesServices.getProductInstancesPublic({});
+
+    setProductInstances(data);
+  };
+
   return (
     <>
-      <h1>
-        <BannerSlider items={items} />
-      </h1>
+      <BannerSlider items={items} />
     </>
   );
 };

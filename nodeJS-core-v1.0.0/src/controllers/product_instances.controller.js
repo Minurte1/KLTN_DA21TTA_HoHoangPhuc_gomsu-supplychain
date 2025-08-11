@@ -103,6 +103,18 @@ const deleteProductInstance = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const getAllProductInstancesPublic = async (req, res) => {
+  try {
+    const { ID_COMPANY, STATUS } = req.query;
+    const productInstances = await ProductInstancesService.getAll(
+      ID_COMPANY,
+      STATUS
+    );
+    res.json(productInstances);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   getAllProductInstances,

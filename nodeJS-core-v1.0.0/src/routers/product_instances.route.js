@@ -7,6 +7,7 @@ const {
   getProductInstanceById,
   updateProductInstance,
   deleteProductInstance,
+  getAllProductInstancesPublic,
 } = require("../controllers/product_instances.controller");
 
 const {
@@ -30,14 +31,6 @@ router.post(
   createProductInstance
 );
 
-// Lấy product_instance theo ID
-router.get(
-  "/:id",
-  // checkUserJWT,
-  // checkUserPermission("product_instance", "view"),
-  getProductInstanceById
-);
-
 // Cập nhật product_instance
 router.put(
   "/:id",
@@ -52,6 +45,23 @@ router.delete(
   // checkUserJWT,
   // checkUserPermission("product_instance", "delete"),
   deleteProductInstance
+);
+
+// public ===================
+router.get(
+  "/public",
+  // checkUserJWT,
+  // checkUserPermission("product_instance", "view"),
+  getAllProductInstances
+);
+// public ===================
+
+// Lấy product_instance theo ID
+router.get(
+  "/:id",
+  // checkUserJWT,
+  // checkUserPermission("product_instance", "view"),
+  getProductInstanceById
 );
 
 module.exports = router;
