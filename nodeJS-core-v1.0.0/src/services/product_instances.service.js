@@ -210,10 +210,11 @@ const deleteProductInstance = async (id) => {
 // ======================WEB USER=================================
 const getAllProductInstancesPublic = async (
   STATUS = "AVAILABLE",
-  LIMIT = 1,
+  LIMIT = 12,
   SERIAL_CODE
 ) => {
   try {
+    console.log("LIMIT", LIMIT);
     let safeLimit = Number(LIMIT);
     if (isNaN(safeLimit) || safeLimit <= 0) {
       safeLimit = 1;

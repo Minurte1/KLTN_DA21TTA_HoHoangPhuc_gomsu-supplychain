@@ -105,14 +105,13 @@ const deleteProductInstance = async (req, res) => {
 };
 const getAllProductInstancesPublic = async (req, res) => {
   try {
-    const { ID_COMPANY, STATUS, SERIAL_CODE, LIMIT } = req.query;
+    const { STATUS, SERIAL_CODE, LIMIT } = req.query;
     const parsedLimit = LIMIT ? parseInt(LIMIT, 10) : 12;
     const productInstances =
       await ProductInstancesService.getAllProductInstancesPublic(
-        ID_COMPANY,
         STATUS,
-        SERIAL_CODE,
-        parsedLimit
+        parsedLimit,
+        SERIAL_CODE
       );
     res.json(productInstances);
   } catch (error) {

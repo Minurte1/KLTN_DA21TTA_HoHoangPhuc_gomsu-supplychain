@@ -36,7 +36,10 @@ const MainPage = () => {
   }, []);
   // Hàm lấy danh sách product instances theo company
   const fetchProductInstances = async () => {
-    const data = await productInstancesServices.getProductInstancesPublic({});
+    const data = await productInstancesServices.getProductInstancesPublic({
+      LIMIT: 12,
+      STATUS: "AVAILABLE",
+    });
 
     setProductInstances(data);
   };
