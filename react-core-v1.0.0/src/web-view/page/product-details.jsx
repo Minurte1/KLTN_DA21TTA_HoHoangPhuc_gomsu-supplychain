@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import productInstancesServices from "../../services/product_instancesServices";
+import cartServices from "../../services/cartServices"; // giả sử bạn có service này
+import CartModal from "../modal/CartModal";
+import { Button } from "@mui/material";
 
 const ProductDetails = () => {
   const { serialCode } = useParams(); // lấy param SERIAL_CODE từ URL
@@ -25,7 +28,6 @@ const ProductDetails = () => {
           LIMIT: 1,
         });
 
-        // data trả về là mảng, lấy phần tử đầu tiên
         setProduct(data[0] || null);
       } catch (err) {
         setError("Lỗi khi lấy dữ liệu sản phẩm");
@@ -37,26 +39,50 @@ const ProductDetails = () => {
     fetchProductDetail();
   }, [serialCode]);
 
+  // Hàm giả định lấy ID người dùng (có thể từ token hoặc localStorage)
+  const getUserId = () => {
+    // ví dụ hardcode hoặc lấy từ auth context/token
+    return 7;
+  };
+
   // Thêm sản phẩm vào giỏ hàng
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product) return;
+    const userId = getUserId();
 
     // Kiểm tra xem sản phẩm đã có trong giỏ chưa
     const existingIndex = cart.findIndex(
       (item) => item.ID_PRODUCT_INSTANCE === product.ID_PRODUCT_INSTANCE
     );
 
-    if (existingIndex >= 0) {
-      // Cập nhật số lượng
-      const newCart = [...cart];
-      newCart[existingIndex].quantity += quantity;
-      setCart(newCart);
-    } else {
-      // Thêm mới
-      setCart([...cart, { ...product, quantity }]);
+    try {
+      // Gửi request lên backend để thêm vào bảng cart
+      await cartServices.createCart({
+        ID_PRODUCT_INSTANCE: product.ID_PRODUCT_INSTANCE,
+        ID_USERS: userId,
+        ID_COMPANY: product.ID_COMPANY,
+        QUANTITY: quantity,
+        CREATED_AT_CART: new Date().toISOString(),
+      });
+
+      if (existingIndex >= 0) {
+        // Cập nhật số lượng trong local cart
+        const newCart = [...cart];
+        newCart[existingIndex].quantity += quantity;
+        setCart(newCart);
+      } else {
+        // Thêm mới
+        setCart([...cart, { ...product, quantity }]);
+      }
+
+      alert("Đã thêm vào giỏ hàng!");
+    } catch (error) {
+      alert("Lỗi khi thêm sản phẩm vào giỏ hàng.");
     }
-    alert("Đã thêm vào giỏ hàng!");
   };
+  const [openCart, setOpenCart] = useState(false);
+  const handleOpenCart = () => setOpenCart(true);
+  const handleCloseCart = () => setOpenCart(false);
   if (loading) return <div>Đang tải...</div>;
   if (error) return <div>{error}</div>;
   if (!product) return <div>Không tìm thấy sản phẩm</div>;
@@ -123,7 +149,10 @@ const ProductDetails = () => {
       >
         Thêm vào giỏ hàng
       </button>
-
+      <Button variant="contained" onClick={handleOpenCart}>
+        Xem Giỏ Hàng
+      </Button>
+      <CartModal open={openCart} handleClose={handleCloseCart} />
       {/* Giỏ hàng đơn giản */}
       {cart.length > 0 && (
         <div

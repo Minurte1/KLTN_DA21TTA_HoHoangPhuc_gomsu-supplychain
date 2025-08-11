@@ -1,8 +1,13 @@
 const CartService = require("../services/cart.service");
 
-const getAllCarts = async (req, res) => {
+const getCartsByUser = async (req, res) => {
   try {
-    const carts = await CartService.getAll();
+    const { ID_USERS } = req.params; // lấy ID_USERS từ params hoặc có thể từ query hoặc body tùy bạn
+    if (!ID_USERS) {
+      return res.status(400).json({ error: "ID_USERS is required" });
+    }
+
+    const carts = await CartService.getByUser(ID_USERS);
     res.json(carts);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -11,9 +16,24 @@ const getAllCarts = async (req, res) => {
 
 const createCart = async (req, res) => {
   try {
-    const { ID_PRODUCT, ID_USERS } = req.body;
-    const id = await CartService.create({ ID_PRODUCT, ID_USERS });
-    res.status(201).json({ message: "Cart created", id });
+    const {
+      ID_PRODUCT_INSTANCE,
+      ID_USERS,
+      CREATED_AT_CART,
+      ID_COMPANY,
+      QUANTITY,
+    } = req.body;
+
+    // Gọi service để xử lý thêm hoặc cập nhật
+    const id = await CartService.createOrUpdate({
+      ID_PRODUCT_INSTANCE,
+      ID_USERS,
+      CREATED_AT_CART,
+      ID_COMPANY,
+      QUANTITY,
+    });
+
+    res.status(201).json({ message: "Cart created or updated", id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -60,7 +80,7 @@ const deleteCart = async (req, res) => {
 };
 
 module.exports = {
-  getAllCarts,
+  getCartsByUser,
   createCart,
   getCartById,
   updateCart,

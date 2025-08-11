@@ -51,6 +51,7 @@ const MainPage = () => {
     borderRadius: "8px",
     padding: "16px 0px",
   };
+
   return (
     <>
       <div

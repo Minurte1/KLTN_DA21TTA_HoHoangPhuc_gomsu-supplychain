@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getAllCarts,
+  getCartsByUser,
   createCart,
   getCartById,
   updateCart,
@@ -18,7 +18,7 @@ router.get(
   "/",
   // checkUserJWT,
   // checkUserPermission("cart", "view"),
-  getAllCarts
+  getCartsByUser
 );
 
 // Tạo giỏ hàng

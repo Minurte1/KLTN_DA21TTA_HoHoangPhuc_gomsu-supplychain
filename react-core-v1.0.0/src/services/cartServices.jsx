@@ -3,12 +3,11 @@ import axiosInstance from "../authentication/axiosInstance";
 const CART_API = `${process.env.REACT_APP_URL_SERVER}/cart`;
 
 const cartServices = {
-  // Lấy danh sách tất cả các sản phẩm trong giỏ hàng
-  getCarts: async () => {
-    const res = await axiosInstance.get(CART_API);
-    return res.data;
+  getCartsByUser: async (ID_USERS) => {
+    if (!ID_USERS) return;
+    const res = await axiosInstance.get(`${CART_API}/${ID_USERS}`);
+    return res.data; // mảng giỏ hàng
   },
-
   // Lấy giỏ hàng theo ID người dùng và ID sản phẩm
   getCartById: async (userId, productId) => {
     const res = await axiosInstance.get(`${CART_API}/${userId}/${productId}`);
