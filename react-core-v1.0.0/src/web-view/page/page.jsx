@@ -42,8 +42,20 @@ const MainPage = () => {
 
   return (
     <>
-      <BannerSlider items={items} />
-      <ProductList products={productInstances} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center", // Căn giữa theo chiều ngang
+          width: "100%", // Đảm bảo full rộng
+        }}
+      >
+        <BannerSlider items={items} />
+        <div style={{ marginTop: "20px" }}>
+          {" "}
+          <ProductList products={productInstances} />
+        </div>
+      </div>
     </>
   );
 };

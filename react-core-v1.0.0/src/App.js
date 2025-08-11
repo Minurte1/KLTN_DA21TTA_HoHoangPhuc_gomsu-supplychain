@@ -54,6 +54,8 @@ const MainLayout = () => {
         margin: "0 auto", // căn giữa ngang
         paddingLeft: "5px",
         paddingRight: "5px",
+        display: "flex",
+        justifyContent: "center",
       }}
     >
       <Routes>

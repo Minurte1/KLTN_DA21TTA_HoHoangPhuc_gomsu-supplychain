@@ -7,7 +7,7 @@ import ProductCard from "./section/product-section";
 const ProductList = ({
   products,
   ProductComponent = ProductCard,
-  itemsPerRow = 6,
+  itemsPerRow = 5,
   rows = 2,
 }) => {
   // Tính số lượng sản phẩm hiển thị max
@@ -15,9 +15,12 @@ const ProductList = ({
 
   // Lấy sản phẩm cần hiển thị
   const displayProducts = products.slice(0, maxItems);
+  const gridStyle = {
+    gridTemplateColumns: `repeat(${itemsPerRow}, 1fr)`,
+  };
 
   return (
-    <div className={styles["product-list"]}>
+    <div className={styles["product-list"]} style={gridStyle}>
       {displayProducts.map((product) => (
         <ProductComponent
           key={product.ID_PRODUCT_INSTANCE || product.id}

@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styles from "./scss/productSection.scss";
-
+import styles from "./scss/productSection.module.scss";
 const ProductCard = ({ product }) => {
   return (
     <div className={styles["product-card"]}>
