@@ -15,6 +15,7 @@ import NavBarAdmin from "./admin-view/components/navBarAdmin";
 import HeaderAdmin from "./admin-view/components/headerAdmin";
 
 import { Box, Grid } from "@mui/material";
+import CartIcon from "./web-view/icon-component/iconCart";
 
 function App() {
   return (
@@ -49,9 +50,9 @@ const MainLayout = () => {
   return (
     <div
       style={{
-        maxWidth: "1440px", // max width laptop size L (bạn điều chỉnh theo ý)
-        width: "100%", // full width trên màn nhỏ hơn 1280px
-        margin: "0 auto", // căn giữa ngang
+        maxWidth: "1440px",
+        width: "100%",
+        margin: "0 auto",
         paddingLeft: "5px",
         paddingRight: "5px",
         display: "flex",
@@ -59,6 +60,7 @@ const MainLayout = () => {
         backgroundColor: "#f5f5fa",
       }}
     >
+      <CartIcon /> {/* Icon giỏ hàng */}
       <Routes>
         <Route path="/*" element={<RouterView />} />
       </Routes>

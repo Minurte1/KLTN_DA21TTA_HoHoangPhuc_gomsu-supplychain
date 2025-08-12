@@ -5,15 +5,20 @@ import productInstancesServices from "../../services/product_instancesServices";
 import cartServices from "../../services/cartServices"; // giả sử bạn có service này
 import CartModal from "../modal/CartModal";
 import { Button } from "@mui/material";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const ProductDetails = () => {
   const { serialCode } = useParams(); // lấy param SERIAL_CODE từ URL
   const [product, setProduct] = useState(null);
+  const { userInfo } = ReduxExportUseAuthState();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cart, setCart] = useState([]); // giỏ hàng lưu các sản phẩm thêm vào
   const [quantity, setQuantity] = useState(1); // số lượng mua
-
+  const [openCart, setOpenCart] = useState(false);
+  const handleOpenCart = () => setOpenCart(true);
+  const handleCloseCart = () => setOpenCart(false);
   useEffect(() => {
     if (!serialCode) return;
 
@@ -40,15 +45,11 @@ const ProductDetails = () => {
   }, [serialCode]);
 
   // Hàm giả định lấy ID người dùng (có thể từ token hoặc localStorage)
-  const getUserId = () => {
-    // ví dụ hardcode hoặc lấy từ auth context/token
-    return 7;
-  };
-
+  console.log("userInfo", userInfo);
   // Thêm sản phẩm vào giỏ hàng
   const handleAddToCart = async () => {
-    if (!product) return;
-    const userId = getUserId();
+    if (!userInfo) return;
+    const userId = userInfo?.ID_USERS;
 
     // Kiểm tra xem sản phẩm đã có trong giỏ chưa
     const existingIndex = cart.findIndex(
@@ -80,9 +81,7 @@ const ProductDetails = () => {
       alert("Lỗi khi thêm sản phẩm vào giỏ hàng.");
     }
   };
-  const [openCart, setOpenCart] = useState(false);
-  const handleOpenCart = () => setOpenCart(true);
-  const handleCloseCart = () => setOpenCart(false);
+
   if (loading) return <div>Đang tải...</div>;
   if (error) return <div>{error}</div>;
   if (!product) return <div>Không tìm thấy sản phẩm</div>;
@@ -149,10 +148,7 @@ const ProductDetails = () => {
       >
         Thêm vào giỏ hàng
       </button>
-      <Button variant="contained" onClick={handleOpenCart}>
-        Xem Giỏ Hàng
-      </Button>
-      <CartModal open={openCart} handleClose={handleCloseCart} />
+
       {/* Giỏ hàng đơn giản */}
       {cart.length > 0 && (
         <div

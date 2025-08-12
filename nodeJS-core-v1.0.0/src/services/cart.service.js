@@ -1,4 +1,5 @@
 const db = require("../config/database");
+const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 
 const create = async (data) => {
   const { ID_PRODUCT, ID_USERS, CREATED_AT_CART, ID_COMPANY } = data;
@@ -89,7 +90,13 @@ const deleteCart = async (id) => {
   const [result] = await db.query(`DELETE FROM cart WHERE ID_CART = ?`, [id]);
   return result.affectedRows > 0;
 };
+
 const getByUser = async (ID_USERS) => {
+  const userId = Number(ID_USERS);
+  if (isNaN(userId)) {
+    throw new Error("ID_USERS không hợp lệ");
+  }
+
   const query = `
     SELECT
       c.ID_CART,
@@ -98,8 +105,14 @@ const getByUser = async (ID_USERS) => {
       c.CREATED_AT_CART,
       c.ID_COMPANY AS CART_ID_COMPANY,
       c.QUANTITY,
-      p.ID_PRODUCT,
-      p.ID_CATEGORIES_,
+
+      pi.UID,
+      pi.SERIAL_CODE,
+      pi.ID_PRODUCT AS PI_ID_PRODUCT,
+      pi.ID_COMPANY AS PI_ID_COMPANY,
+      pi.QUANTITY AS PI_QUANTITY,
+      pi.STATUS AS PI_STATUS,
+
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
@@ -108,7 +121,10 @@ const getByUser = async (ID_USERS) => {
       p.CREATED_AT_PRODUCTS,
       p.UPDATED_AT_PRODUCTS,
       p.ID_COMPANY AS PRODUCT_ID_COMPANY,
+
       cat.NAME_CATEGORIES_,
+      cat.ID_COMPANY AS CATEGORY_ID_COMPANY,
+
       comp.NAME_COMPANY,
       comp.TYPE_COMPANY,
       comp.ADDRESS,
@@ -120,17 +136,30 @@ const getByUser = async (ID_USERS) => {
       comp.EMAIL,
       comp.AVATAR,
       comp.SLUG,
-      comp.STATUS,
-      comp.ID_COMPANY_TYPE
+      comp.STATUS AS COMPANY_STATUS
+
     FROM cart c
-    INNER JOIN products p ON c.ID_PRODUCT_INSTANCE = p.ID_PRODUCT
-    LEFT JOIN categories cat ON p.ID_CATEGORIES_ = cat.ID_CATEGORIES_
-    LEFT JOIN companies comp ON p.ID_COMPANY = comp.ID_COMPANY
+    INNER JOIN product_instances pi 
+      ON c.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
+    INNER JOIN products p 
+      ON pi.ID_PRODUCT = p.ID_PRODUCT
+    LEFT JOIN categories cat 
+      ON p.ID_CATEGORIES_ = cat.ID_CATEGORIES_
+    LEFT JOIN companies comp 
+      ON p.ID_COMPANY = comp.ID_COMPANY
     WHERE c.ID_USERS = ?
+      AND comp.ID_COMPANY = c.ID_COMPANY
   `;
 
-  const [rows] = await db.query(query, [ID_USERS]);
-  return rows;
+  const [rows] = await db.query(query, [userId]);
+
+  return rows.map((item) => ({
+    ...item,
+    IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
+      ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
+      : null,
+    AVATAR: item.AVATAR ? URL_IMAGE_BASE + item.AVATAR : null,
+  }));
 };
 
 module.exports = {

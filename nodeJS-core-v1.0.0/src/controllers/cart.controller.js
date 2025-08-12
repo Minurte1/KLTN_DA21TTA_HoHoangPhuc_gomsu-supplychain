@@ -2,12 +2,17 @@ const CartService = require("../services/cart.service");
 
 const getCartsByUser = async (req, res) => {
   try {
-    const { ID_USERS } = req.params; // lấy ID_USERS từ params hoặc có thể từ query hoặc body tùy bạn
+    const { ID_USERS } = req.params;
     if (!ID_USERS) {
       return res.status(400).json({ error: "ID_USERS is required" });
     }
 
     const carts = await CartService.getByUser(ID_USERS);
+
+    if (!carts || carts.length === 0) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
     res.json(carts);
   } catch (error) {
     res.status(500).json({ error: error.message });

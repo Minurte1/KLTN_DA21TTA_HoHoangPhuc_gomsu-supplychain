@@ -15,7 +15,7 @@ const {
 
 // Lấy tất cả các giỏ hàng
 router.get(
-  "/",
+  "/:ID_USERS",
   // checkUserJWT,
   // checkUserPermission("cart", "view"),
   getCartsByUser
@@ -30,12 +30,12 @@ router.post(
 );
 
 // Lấy giỏ hàng theo ID
-router.get(
-  "/:id",
-  // checkUserJWT,
-  // checkUserPermission("cart", "view"),
-  getCartById
-);
+// router.get(
+//   "/:id",
+//   // checkUserJWT,
+//   // checkUserPermission("cart", "view"),
+//   getCartById
+// );
 
 // Cập nhật giỏ hàng
 router.put(
