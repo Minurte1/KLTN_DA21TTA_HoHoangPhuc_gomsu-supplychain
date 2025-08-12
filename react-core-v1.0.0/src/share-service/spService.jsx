@@ -1,3 +1,6 @@
+import CryptoJS from "crypto-js";
+const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || "my-secret-key";
+
 const spService = {
   /**
    * Parse chuỗi JSON nếu hợp lệ, nếu không thì trả về giá trị mặc định
@@ -170,6 +173,29 @@ const spService = {
     } catch (error) {
       console.error("Parse LIST_PERMISION error:", error);
       return false;
+    }
+  },
+
+  // Hàm mã hóa dữ liệu
+  encryptData: (data) => {
+    try {
+      const jsonData = JSON.stringify(data);
+      return CryptoJS.AES.encrypt(jsonData, SECRET_KEY).toString();
+    } catch (error) {
+      console.error("Lỗi mã hóa:", error);
+      return null;
+    }
+  },
+
+  // Hàm giải mã dữ liệu
+  decryptData: (encryptedData) => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
+      const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
+      return JSON.parse(decryptedString);
+    } catch (error) {
+      console.error("Lỗi giải mã:", error);
+      return null;
     }
   },
 };

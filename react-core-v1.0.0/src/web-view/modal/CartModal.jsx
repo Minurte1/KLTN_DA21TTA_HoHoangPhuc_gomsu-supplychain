@@ -11,10 +11,16 @@ import {
   ListItemText,
   Divider,
   Button,
+  Checkbox,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import cartServices from "../../services/cartServices";
+import CryptoJS from "crypto-js";
+import { enqueueSnackbar } from "notistack";
+import spService from "../../share-service/spService";
+// Khóa bí mật để mã hóa (nên lưu trong .env để bảo mật hơn)
+const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || "my-secret-key";
 
 const style = {
   position: "absolute",
@@ -33,36 +39,61 @@ const style = {
 export default function CartModal({ open, handleClose }) {
   const { userInfo } = ReduxExportUseAuthState();
   const [listCart, setListCart] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     if (open) {
       fetchCartUser();
     }
   }, [userInfo, open]);
-  // Hàm lấy danh sách product instances theo company
+
   const fetchCartUser = async () => {
     if (!userInfo) return;
-
     const ID_USERS = userInfo.ID_USERS || null;
     const data = await cartServices.getCartsByUser(ID_USERS);
-    console.log("data", data);
-    setListCart(data);
+    setListCart(data || []);
+    setSelectedItems([]);
   };
-  // Đảm bảo listCart luôn là mảng
+
   const safeCart = Array.isArray(listCart) ? listCart : [];
 
-  const totalPrice = safeCart.reduce(
-    (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
-    0
-  );
+  const handleSelect = (id) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedItems.length === safeCart.length) {
+      setSelectedItems([]); // bỏ chọn hết
+    } else {
+      setSelectedItems(safeCart.map((item) => item.ID_CART)); // chọn hết
+    }
+  };
+
+  const totalPrice = safeCart
+    .filter((item) => selectedItems.includes(item.ID_CART))
+    .reduce(
+      (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
+      0
+    );
+
+  const handleCheckout = () => {
+    const selectedProducts = safeCart.filter((item) =>
+      selectedItems.includes(item.ID_CART)
+    );
+    if (selectedProducts.length === 0) {
+      enqueueSnackbar("Vui lòng chọn sản phẩm để thanh toán");
+      return;
+    }
+    console.log("selectedProducts", selectedProducts);
+    const encryptedData = spService.encryptData(selectedProducts);
+    localStorage.setItem("orderGomSu", encryptedData);
+    enqueueSnackbar(`Thanh toán ${selectedProducts.length} sản phẩm`);
+  };
 
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="cart-modal-title"
-      aria-describedby="cart-modal-description"
-    >
+    <Modal open={open} onClose={handleClose} aria-labelledby="cart-modal-title">
       <Box sx={style}>
         <Box
           display="flex"
@@ -70,22 +101,40 @@ export default function CartModal({ open, handleClose }) {
           alignItems="center"
           mb={2}
         >
-          <Typography id="cart-modal-title" variant="h6" component="h2">
-            Giỏ Hàng Của Bạn
-          </Typography>
+          <Typography variant="h6">Giỏ Hàng Của Bạn</Typography>
           <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         </Box>
 
         {safeCart.length === 0 ? (
-          <Typography variant="body1">Giỏ hàng của bạn đang trống.</Typography>
+          <Typography>Giỏ hàng của bạn đang trống.</Typography>
         ) : (
           <>
+            {/* ✅ Checkbox chọn tất cả */}
+            <Box display="flex" alignItems="center" mb={1}>
+              <Checkbox
+                checked={
+                  selectedItems.length === safeCart.length &&
+                  safeCart.length > 0
+                }
+                indeterminate={
+                  selectedItems.length > 0 &&
+                  selectedItems.length < safeCart.length
+                }
+                onChange={handleSelectAll}
+              />
+              <Typography variant="body1">Chọn tất cả</Typography>
+            </Box>
+
             <List>
               {safeCart.map((item) => (
                 <React.Fragment key={item.ID_CART}>
                   <ListItem alignItems="flex-start">
+                    <Checkbox
+                      checked={selectedItems.includes(item.ID_CART)}
+                      onChange={() => handleSelect(item.ID_CART)}
+                    />
                     <ListItemAvatar>
                       <Avatar
                         variant="square"
@@ -98,23 +147,14 @@ export default function CartModal({ open, handleClose }) {
                       primary={item.NAME_PRODUCTS}
                       secondary={
                         <>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
+                          <Typography variant="body2" color="text.primary">
                             Số lượng: {item.QUANTITY} x{" "}
                             {item.PRICE_PRODUCTS.toLocaleString("vi-VN", {
                               style: "currency",
                               currency: "VND",
                             })}
                           </Typography>
-                          <br />
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            color="text.secondary"
-                          >
+                          <Typography variant="body2" color="text.secondary">
                             Công ty: {item.NAME_COMPANY} ({item.TYPE_COMPANY})
                           </Typography>
                         </>
@@ -128,23 +168,17 @@ export default function CartModal({ open, handleClose }) {
             <Box mt={2} textAlign="right">
               <Typography variant="h6">
                 Tổng tiền:{" "}
-                {safeCart
-                  .reduce(
-                    (acc, item) =>
-                      acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
-                    0
-                  )
-                  .toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                {totalPrice.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </Typography>
             </Box>
             <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => alert("Tiến hành thanh toán")}
+                onClick={handleCheckout}
               >
                 Thanh Toán
               </Button>
