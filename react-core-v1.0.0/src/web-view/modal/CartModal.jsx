@@ -18,6 +18,8 @@ import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import cartServices from "../../services/cartServices";
 import CryptoJS from "crypto-js";
 import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+
 import spService from "../../share-service/spService";
 // Khóa bí mật để mã hóa (nên lưu trong .env để bảo mật hơn)
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || "my-secret-key";
@@ -40,7 +42,7 @@ export default function CartModal({ open, handleClose }) {
   const { userInfo } = ReduxExportUseAuthState();
   const [listCart, setListCart] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (open) {
       fetchCartUser();
@@ -90,6 +92,8 @@ export default function CartModal({ open, handleClose }) {
     const encryptedData = spService.encryptData(selectedProducts);
     localStorage.setItem("orderGomSu", encryptedData);
     enqueueSnackbar(`Thanh toán ${selectedProducts.length} sản phẩm`);
+    handleClose();
+    navigate("/thanh-toan");
   };
 
   return (

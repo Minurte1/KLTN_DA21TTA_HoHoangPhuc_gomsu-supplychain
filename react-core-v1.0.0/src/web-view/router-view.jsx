@@ -3,6 +3,7 @@ import { useRoutes, Navigate } from "react-router-dom";
 import MainPage from "./page/page";
 import Login from "./page/login/login";
 import ProductDetails from "./page/product-details";
+import ThanhToan from "./page/thanhToan";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -17,6 +18,10 @@ const RouterView = () => {
     {
       path: "/product-details/:serialCode",
       element: <ProductDetails />,
+    },
+    {
+      path: "/thanh-toan",
+      element: <ThanhToan />,
     },
 
     {
