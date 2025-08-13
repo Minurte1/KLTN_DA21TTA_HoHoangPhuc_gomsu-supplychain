@@ -5,6 +5,9 @@ import Footer from "../../components/footer";
 import CeramicLanding from "../component-view/ceramic";
 
 const CeramicPage = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   const stylePadding = {
     marginTop: "20px",
     backgroundColor: "#ffffff",

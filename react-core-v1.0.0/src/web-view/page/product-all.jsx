@@ -34,6 +34,7 @@ const ProductAllPage = () => {
 
   useEffect(() => {
     fetchProductInstances();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   // Hàm lấy danh sách product instances theo company
   const fetchProductInstances = async () => {

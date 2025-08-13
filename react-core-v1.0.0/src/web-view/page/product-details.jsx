@@ -21,7 +21,7 @@ const ProductDetails = () => {
   const handleCloseCart = () => setOpenCart(false);
   useEffect(() => {
     if (!serialCode) return;
-
+    window.scrollTo({ top: 0, behavior: "smooth" });
     const fetchProductDetail = async () => {
       try {
         setLoading(true);

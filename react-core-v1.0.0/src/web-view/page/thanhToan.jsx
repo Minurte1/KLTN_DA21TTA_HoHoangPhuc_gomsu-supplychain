@@ -29,6 +29,7 @@ export default function ThanhToan() {
       navigate("/");
       return;
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
     const decryptedData = spService.decryptData(encryptedData);
     if (!decryptedData || decryptedData.length === 0) {
       navigate("/");

@@ -10,6 +10,9 @@ import Home from "../component-view/homePage";
 import CompaniesLandingPage from "../component-view/companies";
 
 const CompaniesPage = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   const stylePadding = {
     marginTop: "20px",
     backgroundColor: "#ffffff",
