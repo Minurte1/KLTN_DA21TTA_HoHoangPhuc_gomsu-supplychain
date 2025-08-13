@@ -120,10 +120,10 @@ const Header = () => {
               Tài khoản
             </button>
           )}
-
+          {/* 
           <button onClick={() => navigate("/cart")} className="cart-btn">
             Giỏ hàng
-          </button>
+          </button> */}
         </div>
       </div>
     </header>
