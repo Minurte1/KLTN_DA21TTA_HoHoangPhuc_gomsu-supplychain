@@ -22,13 +22,31 @@ const companyServices = {
 
   // Tạo công ty mới
   createCompany: async (data) => {
-    const res = await axiosInstance.post(COMPANY_API, data);
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    const res = await axiosInstance.post(`${COMPANY_API}/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
   },
 
   // Cập nhật công ty
   updateCompany: async (id, data) => {
-    const res = await axiosInstance.put(`${COMPANY_API}/${id}`, data);
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    const res = await axiosInstance.put(`${COMPANY_API}/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return res.data;
   },
 

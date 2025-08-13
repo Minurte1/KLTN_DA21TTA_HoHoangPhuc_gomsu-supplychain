@@ -34,7 +34,7 @@ export default function CompaniesLandingPage() {
   };
 
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       {/* Banner */}
       <div className="banner">
         <Typography variant="h3">CÁC CÔNG TY SẢN XUẤT GỐM SỨ</Typography>

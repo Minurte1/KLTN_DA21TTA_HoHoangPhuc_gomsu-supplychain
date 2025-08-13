@@ -12,6 +12,7 @@ const {
   checkUserJWT,
   checkUserPermission,
 } = require("../middleware/JWTaction");
+const upload = require("../config/multerConfig");
 
 // Lấy tất cả công ty
 router.get(
@@ -21,28 +22,29 @@ router.get(
   getCompanies
 );
 
-// Tạo công ty
 router.post(
   "/",
-  // checkUserJWT,
-  // checkUserPermission("company", "create"),
+  upload.fields([
+    { name: "AVATAR", maxCount: 1 },
+    { name: "BACKGROUND", maxCount: 1 },
+  ]),
   createCompany
 );
 
+router.put(
+  "/:id",
+  upload.fields([
+    { name: "AVATAR", maxCount: 1 },
+    { name: "BACKGROUND", maxCount: 1 },
+  ]),
+  updateCompany
+);
 // Lấy công ty theo ID
 router.get(
   "/:id",
   // checkUserJWT,
   // checkUserPermission("company", "view"),
   getCompanyById
-);
-
-// Cập nhật công ty
-router.put(
-  "/:id",
-  // checkUserJWT,
-  // checkUserPermission("company", "update"),
-  updateCompany
 );
 
 // Xóa công ty

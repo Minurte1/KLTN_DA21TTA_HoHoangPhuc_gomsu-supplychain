@@ -17,6 +17,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     PHONE: "",
     EMAIL: "",
     AVATAR: "",
+    BACKGROUND: "",
     SLUG: "",
     STATUS: "ACTIVE",
     ID_COMPANY_TYPE: 0,
@@ -50,6 +51,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
           PHONE: company.PHONE || "",
           EMAIL: company.EMAIL || "",
           AVATAR: company.AVATAR || "",
+          BACKGROUND: company.BACKGROUND || "",
           SLUG: company.SLUG || "",
           STATUS: company.STATUS || "ACTIVE",
           ID_COMPANY_TYPE: company.ID_COMPANY_TYPE || "",
@@ -78,6 +80,7 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
         PHONE: submittedFormData.PHONE || formData.PHONE,
         EMAIL: submittedFormData.EMAIL || formData.EMAIL,
         AVATAR: submittedFormData.AVATAR || formData.AVATAR,
+        BACKGROUND: submittedFormData.BACKGROUND || formData.BACKGROUND,
         SLUG: submittedFormData.SLUG || formData.SLUG,
         STATUS: submittedFormData.STATUS || formData.STATUS,
         ID_COMPANY_TYPE:
@@ -156,7 +159,8 @@ const CompanyFormModal = ({ open, onClose, company, onSuccess }) => {
     { key: "ADDRESS", label: "Địa chỉ", inputType: "text", disabled: true },
     { key: "PHONE", label: "Số điện thoại", inputType: "text" },
     { key: "EMAIL", label: "Email", inputType: "email" },
-    { key: "AVATAR", label: "Ảnh đại diện", inputType: "text" },
+    { key: "AVATAR", label: "Ảnh đại diện", inputType: "file" },
+    { key: "BACKGROUND", label: "Ảnh bìa", inputType: "file" },
 
     {
       key: "STATUS",

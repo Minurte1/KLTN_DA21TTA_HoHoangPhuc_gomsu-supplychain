@@ -15,17 +15,6 @@ const getCompanies = async (req, res) => {
   }
 };
 
-const createCompany = async (req, res) => {
-  try {
-    const data = req.body;
-    const id = await CompanyService.createCompany(data);
-    res.status(201).json({ message: "Company created", id });
-  } catch (error) {
-    console.log("company", error);
-    res.status(500).json({ error: error.message });
-  }
-};
-
 const getCompanyById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -39,11 +28,42 @@ const getCompanyById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const createCompany = async (req, res) => {
+  try {
+    const data = req.body;
+
+    if (req.files) {
+      if (req.files.AVATAR && req.files.AVATAR[0]) {
+        data.AVATAR = `/images/${req.files.AVATAR[0].filename}`;
+      }
+      if (req.files.BACKGROUND && req.files.BACKGROUND[0]) {
+        data.BACKGROUND = `/images/${req.files.BACKGROUND[0].filename}`;
+      }
+    }
+
+    const id = await CompanyService.createCompany(data);
+    res.status(201).json({ message: "Company created", id });
+  } catch (error) {
+    console.log("company", error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const updateCompany = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = await CompanyService.updateCompany(id, req.body);
+    const data = req.body;
+
+    if (req.files) {
+      if (req.files.AVATAR && req.files.AVATAR[0]) {
+        data.AVATAR = `/images/${req.files.AVATAR[0].filename}`;
+      }
+      if (req.files.BACKGROUND && req.files.BACKGROUND[0]) {
+        data.BACKGROUND = `/images/${req.files.BACKGROUND[0].filename}`;
+      }
+    }
+
+    const updated = await CompanyService.updateCompany(id, data);
     if (!updated) {
       return res.status(404).json({ message: "Company not found" });
     }

@@ -34,6 +34,7 @@ const Company = () => {
     fetchCompanies();
   };
 
+  console.log("come", companies);
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
@@ -56,6 +57,38 @@ const Company = () => {
       <DynamicTable
         data={companies}
         columns={[
+          {
+            key: "AVATAR",
+            label: "Logo",
+            render: (value) => (
+              <img
+                src={value}
+                alt="Product"
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "8px",
+                  objectFit: "cover", // giữ tỷ lệ, cắt phần thừa
+                }}
+              />
+            ),
+          },
+          {
+            key: "BACKGROUND",
+            label: "Ảnh bìa",
+            render: (value) => (
+              <img
+                src={value}
+                alt="Product"
+                style={{
+                  width: 100,
+                  height: 60,
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+              />
+            ),
+          },
           { key: "NAME_COMPANY", label: "Tên công ty" },
           // { key: "TYPE_COMPANY", label: "Loại công ty" },
           { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố" },
