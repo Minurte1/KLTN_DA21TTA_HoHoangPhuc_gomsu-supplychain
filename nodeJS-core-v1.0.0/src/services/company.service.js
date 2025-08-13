@@ -82,48 +82,42 @@ const createCompany = async (data) => {
 };
 
 const updateCompany = async (id, data) => {
-  const {
-    NAME_COMPANY,
-    TYPE_COMPANY,
-    ADDRESS,
-    DIA_CHI_Provinces,
-    DIA_CHI_Districts,
-    DIA_CHI_Wards,
-    DIA_CHI_STREETNAME,
-    PHONE,
-    EMAIL,
-    AVATAR,
-    BACKGROUND,
-    SLUG,
-    STATUS,
-    ID_COMPANY_TYPE,
-  } = data;
+  // Tạo mảng dynamic để chỉ update field có giá trị
+  const fields = [];
+  const values = [];
 
-  const [result] = await db.query(
-    `UPDATE companies SET 
-      NAME_COMPANY = ?, TYPE_COMPANY = ?, ADDRESS = ?, DIA_CHI_Provinces = ?,
-      DIA_CHI_Districts = ?, DIA_CHI_Wards = ?, DIA_CHI_STREETNAME = ?, PHONE = ?,
-      EMAIL = ?, AVATAR = ?, BACKGROUND = ?, SLUG = ?, STATUS = ?, ID_COMPANY_TYPE = ?
-     WHERE ID_COMPANY = ?`,
-    [
-      NAME_COMPANY,
-      TYPE_COMPANY,
-      ADDRESS,
-      DIA_CHI_Provinces,
-      DIA_CHI_Districts,
-      DIA_CHI_Wards,
-      DIA_CHI_STREETNAME,
-      PHONE,
-      EMAIL,
-      AVATAR,
-      BACKGROUND,
-      SLUG,
-      STATUS,
-      ID_COMPANY_TYPE,
-      id,
-    ]
-  );
+  // Map các cột cho phép update
+  const allowedFields = [
+    "NAME_COMPANY",
+    "TYPE_COMPANY",
+    "ADDRESS",
+    "DIA_CHI_Provinces",
+    "DIA_CHI_Districts",
+    "DIA_CHI_Wards",
+    "DIA_CHI_STREETNAME",
+    "PHONE",
+    "EMAIL",
+    "AVATAR",
+    "BACKGROUND",
+    "SLUG",
+    "STATUS",
+    "ID_COMPANY_TYPE",
+  ];
 
+  allowedFields.forEach((field) => {
+    if (data[field] !== undefined) {
+      // Chỉ push nếu có dữ liệu
+      fields.push(`${field} = ?`);
+      values.push(data[field]);
+    }
+  });
+
+  if (fields.length === 0) return false; // Không có gì để update
+
+  const sql = `UPDATE companies SET ${fields.join(", ")} WHERE ID_COMPANY = ?`;
+  values.push(id);
+
+  const [result] = await db.query(sql, values);
   return result.affectedRows > 0;
 };
 
