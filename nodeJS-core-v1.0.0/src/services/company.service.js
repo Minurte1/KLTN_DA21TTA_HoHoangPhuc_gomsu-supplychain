@@ -57,24 +57,24 @@ const createCompany = async (data) => {
 
   const [result] = await db.query(
     `INSERT INTO companies 
-     (NAME_COMPANY, TYPE_COMPANY, ADDRESS, DIA_CHI_Provinces, DIA_CHI_Districts,
-      DIA_CHI_Wards, DIA_CHI_STREETNAME, PHONE, EMAIL, AVATAR, BACKGROUND, SLUG, STATUS, ID_COMPANY_TYPE)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+   (NAME_COMPANY, TYPE_COMPANY, ADDRESS, DIA_CHI_Provinces, DIA_CHI_Districts,
+    DIA_CHI_Wards, DIA_CHI_STREETNAME, PHONE, EMAIL, AVATAR, BACKGROUND, SLUG, STATUS, ID_COMPANY_TYPE)
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      NAME_COMPANY,
-      TYPE_COMPANY,
-      ADDRESS,
-      DIA_CHI_Provinces,
-      DIA_CHI_Districts,
-      DIA_CHI_Wards,
-      DIA_CHI_STREETNAME,
-      PHONE,
-      EMAIL,
-      AVATAR,
-      BACKGROUND,
-      SLUG,
-      STATUS,
-      ID_COMPANY_TYPE,
+      NAME_COMPANY || null,
+      TYPE_COMPANY || null,
+      ADDRESS || null,
+      DIA_CHI_Provinces || null,
+      DIA_CHI_Districts || null,
+      DIA_CHI_Wards || null,
+      DIA_CHI_STREETNAME || null,
+      PHONE || null,
+      EMAIL || null,
+      AVATAR || null,
+      BACKGROUND || null,
+      SLUG || null,
+      STATUS || "ACTIVE",
+      ID_COMPANY_TYPE || null,
     ]
   );
 

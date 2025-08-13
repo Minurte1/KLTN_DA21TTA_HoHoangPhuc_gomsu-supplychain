@@ -20,7 +20,7 @@ import spService from "../../../share-service/spService";
 const DynamicTable = ({
   data,
   columns,
-  rowsPerPageOptions = [5, 10, 20],
+  rowsPerPageOptions = [30, 20, 10, 5],
   subStatus = true,
   keyStatus,
 }) => {

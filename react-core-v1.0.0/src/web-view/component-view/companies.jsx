@@ -34,15 +34,19 @@ export default function CompaniesLandingPage() {
   };
 
   return (
-    <div style={{ width: "100%" }}>
+    <div>
       {/* Banner */}
       <div className="banner">
         <Typography variant="h3">CÁC CÔNG TY SẢN XUẤT GỐM SỨ</Typography>
       </div>
 
       {/* Công ty sản xuất gốm sứ */}
-      <Container className="section">
-        <Typography variant="h4" className="section-title">
+      <div className="section">
+        <Typography
+          variant="h5"
+          className="section-title"
+          sx={{ color: "#8b5e3c" }}
+        >
           Doanh nghiệp nổi bật
         </Typography>
         <Grid container spacing={3}>
@@ -52,6 +56,7 @@ export default function CompaniesLandingPage() {
                 <CardMedia
                   component="img"
                   height="200"
+                  sx={{ objectFit: "auto" }}
                   image={getLogo(company.AVATAR)}
                   alt={company.NAME_COMPANY}
                 />
@@ -73,11 +78,15 @@ export default function CompaniesLandingPage() {
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </div>
 
       {/* Các công ty vận chuyển và cung cấp */}
-      <Container className="section">
-        <Typography variant="h5" className="section-title">
+      <div className="section">
+        <Typography
+          variant="h5"
+          className="section-title"
+          sx={{ color: "#8b5e3c" }}
+        >
           Đối tác hợp tác
         </Typography>
         <Grid container spacing={3}>
@@ -108,7 +117,7 @@ export default function CompaniesLandingPage() {
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </div>
     </div>
   );
 }

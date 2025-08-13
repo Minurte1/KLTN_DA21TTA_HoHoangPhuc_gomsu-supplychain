@@ -38,6 +38,7 @@ const CompaniesPage = () => {
       // Không có title và description ở đây ví dụ
     },
   ];
+
   return (
     <>
       <div
@@ -49,8 +50,10 @@ const CompaniesPage = () => {
         }}
       >
         {" "}
-        <CompaniesLandingPage />
-        <BannerSlider items={items} />
+        <CompaniesLandingPage />{" "}
+        <div style={stylePadding}>
+          <BannerSlider items={items} />{" "}
+        </div>
         <div style={stylePadding}>
           {" "}
           <Footer />
