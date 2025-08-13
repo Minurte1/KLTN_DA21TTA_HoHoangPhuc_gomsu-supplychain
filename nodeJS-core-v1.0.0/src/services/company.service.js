@@ -42,13 +42,21 @@ const createCompany = async (data) => {
   return result.insertId;
 };
 
-const getAllCompanies = async (ID_COMPANY) => {
+const getAllCompanies = async (ID_COMPANY, STATUS) => {
   let query = "SELECT * FROM companies";
   let params = [];
 
-  if (ID_COMPANY) {
-    query += " WHERE ID_COMPANY = ?";
-    params.push(ID_COMPANY);
+  // Nếu có ID_COMPANY hoặc STATUS thì thêm WHERE
+  if (ID_COMPANY || STATUS) {
+    query += " WHERE 1=1"; // đặt điều kiện mặc định để dễ nối
+    if (ID_COMPANY) {
+      query += " AND ID_COMPANY = ?";
+      params.push(ID_COMPANY);
+    }
+    if (STATUS) {
+      query += " AND STATUS = ?";
+      params.push(STATUS);
+    }
   }
 
   const [rows] = await db.query(query, params);

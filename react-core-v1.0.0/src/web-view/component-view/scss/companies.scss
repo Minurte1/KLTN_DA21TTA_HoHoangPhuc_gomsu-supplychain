@@ -1,0 +1,46 @@
+.banner {
+    background-image: url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c");
+    background-size: cover;
+    background-position: center;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+
+    h3 {
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+}
+
+.section {
+    margin: 40px 0;
+
+    .section-title {
+        margin-bottom: 16px;
+    }
+
+    .company-card {
+        height: 100%;
+
+        img {
+            object-fit: cover;
+        }
+
+        .card-content {
+            .company-name {
+                font-weight: 600;
+            }
+
+            .company-address {
+                color: #666;
+            }
+
+            .company-phone,
+            .company-email {
+                font-size: 14px;
+            }
+        }
+    }
+}

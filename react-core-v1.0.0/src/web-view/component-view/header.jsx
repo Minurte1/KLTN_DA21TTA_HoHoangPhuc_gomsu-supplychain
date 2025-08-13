@@ -1,31 +1,31 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../component-view/scss/header.scss";
 import logo from "../../public/images/logo.png";
+
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header className="main-header">
       <div className="container">
         {/* Logo */}
-        <div className="logo">
-          <a href="/">
-            <img src={logo || ""} alt="Logo" />
-          </a>
+        <div
+          className="logo"
+          onClick={() => navigate("/")}
+          style={{ cursor: "pointer" }}
+        >
+          <img src={logo} alt="Logo" />
         </div>
 
         {/* Navbar */}
         <nav className="navbar">
           <ul>
-            <li>
-              <a href="/gioi-thieu">Giới thiệu</a>
-            </li>
-            <li>
-              <a href="/companies">Các công ty</a>
-            </li>
-            <li>
-              <a href="/san-pham">Sản phẩm công ty</a>
-            </li>
-            <li>
-              <a href="/van-hoa-nguon-goc">Văn hóa & Nguồn gốc</a>
+            <li onClick={() => navigate("/")}>Giới thiệu</li>
+            <li onClick={() => navigate("/companies")}>Các công ty</li>
+            <li onClick={() => navigate("/san-pham")}>Sản phẩm công ty</li>
+            <li onClick={() => navigate("/van-hoa-nguon-goc")}>
+              Văn hóa & Nguồn gốc
             </li>
           </ul>
         </nav>
@@ -33,12 +33,12 @@ const Header = () => {
         {/* Search + Account */}
         <div className="header-actions">
           <input type="text" placeholder="Tìm kiếm..." />
-          <a href="/account" className="account-btn">
+          <button onClick={() => navigate("/account")} className="account-btn">
             Tài khoản
-          </a>
-          <a href="/cart" className="cart-btn">
+          </button>
+          <button onClick={() => navigate("/cart")} className="cart-btn">
             Giỏ hàng
-          </a>
+          </button>
         </div>
       </div>
     </header>

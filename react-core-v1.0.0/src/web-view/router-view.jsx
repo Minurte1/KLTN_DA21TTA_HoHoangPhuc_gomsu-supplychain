@@ -5,10 +5,24 @@ import Login from "./page/login/login";
 import ProductDetails from "./page/product-details";
 import ThanhToan from "./page/thanhToan";
 
+import CompaniesPage from "./page/compoanies-page";
+
 const RouterView = () => {
   const element = useRoutes([
     {
       path: "/",
+      element: <MainPage />,
+    },
+    {
+      path: "/companies",
+      element: <CompaniesPage />,
+    },
+    {
+      path: "/san-pham",
+      element: <MainPage />,
+    },
+    {
+      path: "/van-hoa-nguon-goc",
       element: <MainPage />,
     },
     {

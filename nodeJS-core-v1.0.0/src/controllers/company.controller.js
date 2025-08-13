@@ -2,8 +2,8 @@ const CompanyService = require("../services/company.service");
 
 const getCompanies = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
-    const companies = await CompanyService.getAllCompanies(ID_COMPANY);
+    const { ID_COMPANY, STATUS } = req.query;
+    const companies = await CompanyService.getAllCompanies(ID_COMPANY, STATUS);
     res.json({
       EM: "Lấy danh sách công ty thành công",
       EC: 1,
