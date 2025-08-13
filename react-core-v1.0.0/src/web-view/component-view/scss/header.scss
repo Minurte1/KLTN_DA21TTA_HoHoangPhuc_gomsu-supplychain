@@ -1,0 +1,80 @@
+.main-header {
+    background-color: #8b5e3c; // Nâu đất
+    border-bottom: 1px solid #70412a;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    color: #fff;
+
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo img {
+        height: 50px;
+    }
+
+    .navbar {
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+
+            li {
+                a {
+                    text-decoration: none;
+                    color: #f8f1e7; // Nâu nhạt sáng
+                    font-weight: bold;
+                    transition: color 0.3s ease;
+
+                    &:hover {
+                        text-decoration: none;
+                        color: #ffd28f; // Nâu vàng nhạt
+                    }
+                }
+            }
+        }
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        input {
+            padding: 5px 10px;
+            border: 1px solid #d2b48c; // Nâu nhạt
+            border-radius: 20px;
+            outline: none;
+            background-color: #fdf7f2;
+            color: #333;
+
+            &:focus {
+                border-color: #ffd28f;
+            }
+        }
+
+        .account-btn,
+        .cart-btn {
+            text-decoration: none;
+            color: #f8f1e7;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+
+
+            &:hover {
+                background-color: #70412a; // Nâu đậm
+            }
+        }
+    }
+}

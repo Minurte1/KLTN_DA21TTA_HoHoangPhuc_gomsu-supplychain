@@ -1,16 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Avatar, Divider, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Avatar,
+  Divider,
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import spService from "../../share-service/spService";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 export default function ThanhToan() {
   const [orderData, setOrderData] = useState([]);
+  const [shippingAddress, setShippingAddress] = useState("");
+  const [shippingMethod, setShippingMethod] = useState("");
+  const [shippingCost, setShippingCost] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
   const navigate = useNavigate();
-
+  const { userInfo } = ReduxExportUseAuthState();
   useEffect(() => {
     const encryptedData = localStorage.getItem("orderGomSu");
     if (!encryptedData) {
-      navigate("/"); // Nếu không có dữ liệu thì quay về trang chủ
+      navigate("/");
       return;
     }
     const decryptedData = spService.decryptData(encryptedData);
@@ -25,6 +41,40 @@ export default function ThanhToan() {
     (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
     0
   );
+
+  const handleShippingMethodChange = (method) => {
+    setShippingMethod(method);
+    // Ví dụ: phí ship tạm tính
+    if (method === "Nhanh") setShippingCost(30000);
+    else if (method === "TietKiem") setShippingCost(20000);
+    else setShippingCost(0);
+  };
+
+  const handleConfirm = () => {
+    if (!shippingAddress || !shippingMethod || !paymentMethod) {
+      alert("Vui lòng nhập đầy đủ thông tin giao hàng và thanh toán");
+      return;
+    }
+
+    const newOrder = {
+      ID_USERS: 1, // Lấy từ state đăng nhập
+      DATE_ORDER: new Date(),
+      TOTAL_AMOUNT_ORDER: totalPrice + shippingCost,
+      PAYMENT_STATUS_ORDER: "PENDING",
+      SHIPPING_STATUS_ORDER: "PENDING",
+      SHIPPING_ADDRESS: shippingAddress,
+      SHIPPING_METHOD: shippingMethod,
+      SHIPPING_COST: shippingCost,
+      ID_COMPANY: orderData[0]?.ID_COMPANY || null,
+      ID_TRANSPORT_ORDER: null,
+      PAYMENT_METHOD: paymentMethod,
+    };
+
+    console.log("Dữ liệu đơn hàng:", newOrder);
+    console.log("Chi tiết sản phẩm:", orderData);
+
+    alert("Đơn hàng đã được tạo!");
+  };
 
   return (
     <Box p={3}>
@@ -59,10 +109,46 @@ export default function ThanhToan() {
         </React.Fragment>
       ))}
 
+      <Box mt={3}>
+        <TextField
+          label="Địa chỉ giao hàng"
+          fullWidth
+          value={shippingAddress}
+          onChange={(e) => setShippingAddress(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel>Phương thức thanh toán</InputLabel>
+          <Select
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          >
+            <MenuItem value="COD">Thanh toán khi nhận hàng (COD)</MenuItem>
+            <MenuItem value="MOMO">Momo</MenuItem>
+            <MenuItem value="VNPAY">VNPay</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
       <Box textAlign="right" mt={2}>
         <Typography variant="h6">
-          Tổng tiền:{" "}
+          Tổng tiền hàng:{" "}
           {totalPrice.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </Typography>
+        <Typography variant="h6">
+          Phí vận chuyển:{" "}
+          {shippingCost.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </Typography>
+        <Typography variant="h5" mt={1}>
+          Tổng cộng:{" "}
+          {(totalPrice + shippingCost).toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
           })}
@@ -73,11 +159,7 @@ export default function ThanhToan() {
         <Button variant="outlined" onClick={() => navigate(-1)}>
           Quay lại
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => alert("Thanh toán thành công!")}
-        >
+        <Button variant="contained" color="primary" onClick={handleConfirm}>
           Xác nhận thanh toán
         </Button>
       </Box>

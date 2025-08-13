@@ -16,6 +16,8 @@ import HeaderAdmin from "./admin-view/components/headerAdmin";
 
 import { Box, Grid } from "@mui/material";
 import CartIcon from "./web-view/icon-component/iconCart";
+import Footer from "./components/footer";
+import Header from "./web-view/component-view/header";
 
 function App() {
   return (
@@ -48,23 +50,27 @@ function App() {
 // Giao diện cơ bản
 const MainLayout = () => {
   return (
-    <div
-      style={{
-        maxWidth: "1440px",
-        width: "100%",
-        margin: "0 auto",
-        paddingLeft: "5px",
-        paddingRight: "5px",
-        display: "flex",
-        justifyContent: "center",
-        backgroundColor: "#f5f5fa",
-      }}
-    >
-      <CartIcon /> {/* Icon giỏ hàng */}
-      <Routes>
-        <Route path="/*" element={<RouterView />} />
-      </Routes>
-    </div>
+    <>
+      <Header />
+      <div
+        style={{
+          maxWidth: "1440px",
+          width: "100%",
+          margin: "0 auto",
+          paddingLeft: "5px",
+          paddingRight: "5px",
+          display: "flex",
+          justifyContent: "center",
+          backgroundColor: "#f5f5fa",
+          marginTop: "5px",
+        }}
+      >
+        <CartIcon /> {/* Icon giỏ hàng */}
+        <Routes>
+          <Route path="/*" element={<RouterView />} />
+        </Routes>
+      </div>
+    </>
   );
 };
 
