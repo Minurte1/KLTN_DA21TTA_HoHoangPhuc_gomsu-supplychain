@@ -30,8 +30,9 @@
   }
 
   .history {
+    margin-top: 20px;
     padding: 60px 20px;
-    background-color: #fff8f0;
+    background-color: #fff;
 
     h2 {
       text-align: center;
@@ -66,6 +67,13 @@
         }
       }
     }
+  }
+
+  .fun-facts {
+    margin-top: 20px;
+    padding: 60px 20px;
+    background-color: #fff;
+    border-radius: 10px;
   }
 
   footer {
