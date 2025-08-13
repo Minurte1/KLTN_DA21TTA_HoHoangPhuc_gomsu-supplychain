@@ -42,6 +42,12 @@
         }
     }
 
+    .navbar ul li.active {
+        color: #ffd28f; // màu nâu vàng nhạt nổi bật
+        font-weight: bold;
+        border-bottom: 0.5px solid #fff;
+    }
+
     .header-actions {
         display: flex;
         align-items: center;

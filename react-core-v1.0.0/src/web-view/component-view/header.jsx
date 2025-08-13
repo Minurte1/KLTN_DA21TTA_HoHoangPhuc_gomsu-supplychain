@@ -1,10 +1,14 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../component-view/scss/header.scss";
 import logo from "../../public/images/logo.png";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Lấy URL hiện tại
+
+  // Hàm kiểm tra URL hiện tại có trùng với menu không
+  const isActive = (path) => location.pathname === path;
 
   return (
     <header className="main-header">
@@ -21,10 +25,28 @@ const Header = () => {
         {/* Navbar */}
         <nav className="navbar">
           <ul>
-            <li onClick={() => navigate("/")}>Giới thiệu</li>
-            <li onClick={() => navigate("/companies")}>Các công ty</li>
-            <li onClick={() => navigate("/san-pham")}>Sản phẩm công ty</li>
-            <li onClick={() => navigate("/van-hoa-nguon-goc")}>
+            <li
+              onClick={() => navigate("/")}
+              className={isActive("/") ? "active" : ""}
+            >
+              Giới thiệu
+            </li>
+            <li
+              onClick={() => navigate("/companies")}
+              className={isActive("/companies") ? "active" : ""}
+            >
+              Các công ty
+            </li>
+            <li
+              onClick={() => navigate("/san-pham")}
+              className={isActive("/san-pham") ? "active" : ""}
+            >
+              Sản phẩm công ty
+            </li>
+            <li
+              onClick={() => navigate("/van-hoa-nguon-goc")}
+              className={isActive("/van-hoa-nguon-goc") ? "active" : ""}
+            >
               Văn hóa & Nguồn gốc
             </li>
           </ul>

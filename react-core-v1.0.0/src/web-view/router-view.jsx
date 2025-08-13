@@ -7,6 +7,7 @@ import ThanhToan from "./page/thanhToan";
 
 import CompaniesPage from "./page/compoanies-page";
 import CeramicPage from "./page/ceramic-page";
+import ProductAllPage from "./page/product-all";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -20,7 +21,7 @@ const RouterView = () => {
     },
     {
       path: "/san-pham",
-      element: <MainPage />,
+      element: <ProductAllPage />,
     },
     {
       path: "/van-hoa-nguon-goc",
