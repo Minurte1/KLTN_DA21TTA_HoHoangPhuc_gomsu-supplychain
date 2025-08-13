@@ -1,6 +1,6 @@
 import React from "react";
 import "../component-view/scss/header.scss";
-
+import logo from "../../public/images/logo.png";
 const Header = () => {
   return (
     <header className="main-header">
@@ -8,7 +8,7 @@ const Header = () => {
         {/* Logo */}
         <div className="logo">
           <a href="/">
-            <img src="/logo.png" alt="Logo" />
+            <img src={logo || ""} alt="Logo" />
           </a>
         </div>
 

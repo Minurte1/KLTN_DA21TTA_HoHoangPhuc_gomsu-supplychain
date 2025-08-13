@@ -7,52 +7,51 @@
     font-family: Arial, sans-serif;
     font-size: 14px;
     color: #333;
+}
 
+.section {
+    flex: 1 1 300px;
+    min-width: 280px;
+}
 
-    .footer>div {
-        flex: 1 1 300px;
-        min-width: 280px;
-    }
+.title {
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #222;
+}
 
-    h4 {
-        margin-bottom: 12px;
-        font-weight: 700;
-        font-size: 16px;
-        color: #222;
-    }
+.list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 12px;
+}
 
-    ul {
-        list-style: none;
-        padding-left: 0;
-        margin-bottom: 12px;
-    }
+.listItem {
+    margin-bottom: 6px;
+    cursor: pointer;
+    color: #555;
 
-    ul li {
-        margin-bottom: 6px;
-        cursor: pointer;
-        color: #555;
-    }
-
-    ul li:hover {
+    &:hover {
         text-decoration: underline;
         color: #0073e6;
     }
+}
 
-    a {
-        color: #0073e6;
-        text-decoration: none;
-    }
+.link {
+    color: #0073e6;
+    text-decoration: none;
 
-    a:hover {
+    &:hover {
         text-decoration: underline;
     }
+}
 
-    address {
-        font-style: normal;
-        margin: 8px 0;
-    }
+.address {
+    font-style: normal;
+    margin: 8px 0;
+}
 
-    p {
-        margin: 6px 0;
-    }
+.text {
+    margin: 6px 0;
 }

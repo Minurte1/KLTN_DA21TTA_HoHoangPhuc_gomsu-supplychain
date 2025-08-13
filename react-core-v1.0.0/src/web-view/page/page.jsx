@@ -6,6 +6,7 @@ import banner3 from "../../public/images/banner/banner3.jpg";
 import productInstancesServices from "../../services/product_instancesServices";
 import ProductList from "../../components/productList";
 import Footer from "../../components/footer";
+import Home from "../component-view/homePage";
 
 const MainPage = () => {
   const [productInstances, setProductInstances] = useState([]);
@@ -62,10 +63,12 @@ const MainPage = () => {
           width: "100%", // Đảm bảo full rộng
         }}
       >
+        {" "}
+        <Home />
         <BannerSlider items={items} />
-        <div style={stylePadding}>
+        {/* <div style={stylePadding}>
           <ProductList products={productInstances} />
-        </div>
+        </div> */}
         <div style={stylePadding}>
           {" "}
           <Footer />

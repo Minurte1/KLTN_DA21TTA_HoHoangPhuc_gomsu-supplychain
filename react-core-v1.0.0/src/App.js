@@ -62,7 +62,7 @@ const MainLayout = () => {
           display: "flex",
           justifyContent: "center",
           backgroundColor: "#f5f5fa",
-          marginTop: "5px",
+          marginTop: "0px",
         }}
       >
         <CartIcon /> {/* Icon giỏ hàng */}
