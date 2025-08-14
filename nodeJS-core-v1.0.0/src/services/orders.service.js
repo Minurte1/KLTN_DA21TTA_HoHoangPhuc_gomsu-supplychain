@@ -1,5 +1,7 @@
 const db = require("../config/database");
 const moment = require("moment");
+const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
+
 const create = async (orderData) => {
   const {
     ID_USERS,
@@ -208,7 +210,9 @@ const getById = async (id) => {
       DESCRIPTION_PRODUCTS: r.DESCRIPTION_PRODUCTS,
       PRICE_PRODUCTS: r.PRICE_PRODUCTS,
       STOCK_PRODUCTS: r.STOCK_PRODUCTS,
-      IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS,
+      IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS
+        ? URL_IMAGE_BASE + r.IMAGE_URL_PRODUCTS
+        : null,
       category: {
         ID_CATEGORIES_: r.ID_CATEGORIES_,
         NAME_CATEGORIES_: r.NAME_CATEGORIES_,
