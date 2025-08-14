@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import DynamicModal from "../../share-view/dynamic/modal/modal";
+import DynamicModal from "../../../share-view/dynamic/modal/modal";
 
-import companyServices from "../../services/companies-service";
+import companyServices from "../../../services/companies-service";
 
-import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
-import orderServices from "../../services/orderServices";
+import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
+import orderServices from "../../../services/orderServices";
+import OrderDetailsViewModal from "./orders-details-modal";
 
 const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -26,7 +27,7 @@ const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
 
   const [companiesOptions, setCompaniesOptions] = useState([]);
   const { userInfo } = ReduxExportUseAuthState();
-
+  const [selectedOrder, setSelectedOrder] = useState(null);
   useEffect(() => {
     if (open) {
       setFormData(
@@ -65,8 +66,20 @@ const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
             }
       );
     }
+    fetchOrderId(order?.ID_ORDERS_);
     fetchCompanies();
   }, [open, order]);
+
+  const fetchOrderId = async (ID_ORDERS_) => {
+    if (!ID_ORDERS_) return;
+    try {
+      const data = await orderServices.getOrderById(ID_ORDERS_);
+      console.log("data", data);
+      setSelectedOrder(data);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
 
   const fetchCompanies = async () => {
     try {
@@ -221,17 +234,26 @@ const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
     </>
   );
 
+  const onUpdateStatus = () => {};
   return (
-    <DynamicModal
-      open={open}
-      onClose={onClose}
-      onSubmit={handleSubmit}
-      fields={fields}
-      initialData={formData}
-      title={order ? "Sửa đơn hàng" : "Thêm đơn hàng"}
-      renderActions={customActions}
-      onChange={handleFormChange}
-    />
+    <>
+      {/* <DynamicModal
+        open={open}
+        onClose={onClose}
+        onSubmit={handleSubmit}
+        fields={fields}
+        initialData={formData}
+        title={order ? "Sửa đơn hàng" : "Thêm đơn hàng"}
+        renderActions={customActions}
+        onChange={handleFormChange}
+      /> */}
+      <OrderDetailsViewModal
+        order={selectedOrder}
+        open={open}
+        onClose={onClose}
+        onUpdateStatus={onUpdateStatus}
+      />
+    </>
   );
 };
 

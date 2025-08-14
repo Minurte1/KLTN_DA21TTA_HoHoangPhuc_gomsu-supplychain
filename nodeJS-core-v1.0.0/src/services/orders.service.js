@@ -140,7 +140,7 @@ const getById = async (id) => {
       o.ID_TRANSPORT_ORDER,
       o.FULLNAME_ORDER,
       o.PHONE_ORDER,
-
+      o.PAYMENT_METHOD,
       u.ID_USERS AS USER_ID,
       u.HO_TEN,
       u.EMAIL,
@@ -189,6 +189,7 @@ const getById = async (id) => {
     SHIPPING_METHOD: rows[0].SHIPPING_METHOD,
     SHIPPING_COST: rows[0].SHIPPING_COST,
     ID_COMPANY: rows[0].ID_COMPANY,
+    PAYMENT_METHOD: rows[0].PAYMENT_METHOD,
     ID_TRANSPORT_ORDER: rows[0].ID_TRANSPORT_ORDER,
     FULLNAME_ORDER: rows[0].FULLNAME_ORDER,
     PHONE_ORDER: rows[0].PHONE_ORDER,

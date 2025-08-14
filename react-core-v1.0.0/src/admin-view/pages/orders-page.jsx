@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import DynamicTable from "../../share-view/dynamic/table/table";
 
-import OrdersFormModal from "../modal/orders-modal";
+import OrdersFormModal from "../modal/orders/orders-modal";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import moment from "moment";
 import orderServices from "../../services/orderServices";
