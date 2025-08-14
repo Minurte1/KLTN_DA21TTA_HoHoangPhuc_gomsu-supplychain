@@ -4,8 +4,12 @@ const ORDER_API = `${process.env.REACT_APP_URL_SERVER}/orders`;
 
 const orderServices = {
   // Lấy danh sách tất cả đơn hàng
-  getOrders: async () => {
-    const res = await axiosInstance.get(ORDER_API);
+  getOrders: async ({ ID_COMPANY, STATUS }) => {
+    const params = {};
+    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
+    if (STATUS) params.STATUS = STATUS;
+
+    const res = await axiosInstance.get(ORDER_API, { params });
     return res.data;
   },
 

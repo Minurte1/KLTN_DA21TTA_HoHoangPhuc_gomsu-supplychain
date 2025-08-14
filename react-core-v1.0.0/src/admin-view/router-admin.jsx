@@ -28,6 +28,7 @@ import Equipment from "./pages/Equipment";
 import ProductionSteps from "./pages/productionStep-page";
 import ProductionPlans from "./pages/productionPlans-page";
 import ProductInstances from "./pages/product_instances-page";
+import Orders from "./pages/orders-page";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -90,7 +91,7 @@ const RouterAdmin = () => {
     },
     {
       path: "/order_item",
-      element: <MaterialOrderAll />,
+      element: <Orders />,
     },
     // {
     //   path: "/admin/don-hang/dang-xu-ly",
