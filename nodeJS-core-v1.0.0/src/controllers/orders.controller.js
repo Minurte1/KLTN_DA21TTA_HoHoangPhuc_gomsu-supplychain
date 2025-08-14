@@ -1,8 +1,10 @@
 const OrderService = require("../services/orders.service");
 
+// controllers/orderController.js
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await OrderService.getAll();
+    const { ID_COMPANY, ID_USERS } = req.query; // hoặc req.body nếu bạn POST
+    const orders = await OrderService.getAll({ ID_COMPANY, ID_USERS });
     res.json(orders);
   } catch (err) {
     console.error("orders", err);

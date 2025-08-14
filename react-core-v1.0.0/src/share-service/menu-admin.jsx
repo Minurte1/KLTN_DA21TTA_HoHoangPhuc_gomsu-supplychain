@@ -150,6 +150,10 @@ export const adminMenuConfig = [
         path: "/admin/order/tat-ca",
       },
       {
+        label: "Đơn hàng gốm sứ",
+        path: "/admin/order_item",
+      },
+      {
         label: "Kinh doanh vật liệu",
         path: "/admin/material_order_master",
       },

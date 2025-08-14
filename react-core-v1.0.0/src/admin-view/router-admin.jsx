@@ -88,6 +88,10 @@ const RouterAdmin = () => {
       path: "/order/tat-ca",
       element: <MaterialOrderAll />,
     },
+    {
+      path: "/order_item",
+      element: <MaterialOrderAll />,
+    },
     // {
     //   path: "/admin/don-hang/dang-xu-ly",
     //   element: <OrderProcessing />,

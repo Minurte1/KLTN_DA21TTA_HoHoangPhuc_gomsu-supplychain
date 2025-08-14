@@ -76,14 +76,14 @@ const baseListPermission = [
 
   // Order: Quản lý đơn hàng, chủ yếu dành cho RETAILER (xử lý bán hàng), TRANSPORT có thể xem để sắp xếp vận chuyển
   {
-    router: "order",
+    router: "order_item",
     actions: ["view", "create", "update", "delete", "ship"],
   },
   // Order Item: Quản lý chi tiết đơn hàng, chủ yếu dành cho RETAILER
-  {
-    router: "order_item",
-    actions: ["view", "create", "update", "delete"],
-  },
+  // {
+  //   router: "order_item",
+  //   actions: ["view", "create", "update", "delete"],
+  // },
   // Production Plan: Quản lý kế hoạch sản xuất, chỉ dành cho MANUFACTURER
   {
     router: "production_plans",
