@@ -19,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import Footer from "../../../components/footer";
 
 const Login = () => {
   const api = process.env.REACT_APP_URL_SERVER;

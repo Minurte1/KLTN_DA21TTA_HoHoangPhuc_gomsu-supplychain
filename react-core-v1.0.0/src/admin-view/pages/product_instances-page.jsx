@@ -42,7 +42,7 @@ const ProductInstances = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Quản lý Sản phẩm chi tiết (Product Instances)
+        Quản lý Sản phẩm chi tiết
       </Typography>
       <Button
         variant="contained"
@@ -76,7 +76,7 @@ const ProductInstances = () => {
               />
             ),
           },
-          { key: "ID_USERS", label: "ID Người dùng" },
+          // { key: "ID_USERS", label: "Thông tin người chế tác" },
           { key: "NAME_PRODUCTION_PLAN", label: "Kế hoạch sản xuất" },
           { key: "DATE_CREATED", label: "Ngày tạo" },
           { key: "DESCRIPTION_PRODUCTS", label: "Mô tả sản phẩm" },

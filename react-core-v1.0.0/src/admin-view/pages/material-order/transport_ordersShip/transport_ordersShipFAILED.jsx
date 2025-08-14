@@ -62,7 +62,7 @@ const Transport_ordersShipFAILED = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Đơn hàng Cty VC vật liệu giao thất bại
+        Đơn hàng Công ty vận huyển vật liệu giao thất bại
       </Typography>
 
       <DynamicTable

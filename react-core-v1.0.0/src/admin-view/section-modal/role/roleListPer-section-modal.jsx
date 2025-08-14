@@ -156,7 +156,34 @@ const PermissionManagerModal = ({
   // Hàm convert tên router sang tiếng Việt
   const reverseRouterName = (translatedName) => {
     const routerTranslations = {
+      dashboard: "Bảng điều khiển",
       role: "Quản lý phân quyền",
+      user: "Quản lý người dùng",
+      company: "Quản lý công ty",
+      company_type: "Quản lý loại công ty",
+      product: "Sản phẩm",
+      category: "Danh mục sản phẩm",
+      material: "Nguyên vật liệu",
+      material_type: "Loại nguyên vật liệu",
+      material_order_master: "Đơn đặt hàng nguyên vật liệu",
+      material_order_master_pending: "Đơn nguyên vật liệu (Chờ duyệt)",
+      material_order_master_buy_pending: "Đơn nguyên vật liệu (Chờ mua)",
+      material_order_master_ship_confirmed:
+        "Đơn nguyên vật liệu (Đã xác nhận vận chuyển)",
+      material_order_master_seller_confirmed:
+        "Đơn nguyên vật liệu (Người bán đã xác nhận)",
+      order_item: "Đơn hàng",
+      production_plans: "Kế hoạch sản xuất",
+      production_steps: "Bước sản xuất",
+      equipment: "Thiết bị",
+      production_material: "Nguyên liệu sản xuất",
+      product_instances: "Sản phẩm cụ thể",
+      transport_orders: "Đơn vận chuyển",
+      transport_service_fees: "Phí dịch vụ vận chuyển",
+      transport_orders_delivered: "Đơn vận chuyển (Đã giao)",
+      transport_orders_success: "Đơn vận chuyển (Thành công)",
+      transport_orders_failed: "Đơn vận chuyển (Thất bại)",
+      cart: "Giỏ hàng",
     };
 
     const entry = Object.entries(routerTranslations).find(
@@ -167,7 +194,34 @@ const PermissionManagerModal = ({
   };
   const convertRouterName = (routerName) => {
     const routerTranslations = {
+      dashboard: "Bảng điều khiển",
       role: "Quản lý phân quyền",
+      user: "Quản lý người dùng",
+      company: "Quản lý công ty",
+      company_type: "Quản lý loại công ty",
+      product: "Sản phẩm",
+      category: "Danh mục sản phẩm",
+      material: "Nguyên vật liệu",
+      material_type: "Loại nguyên vật liệu",
+      material_order_master: "Đơn đặt hàng nguyên vật liệu",
+      material_order_master_pending: "Đơn nguyên vật liệu (Chờ duyệt)",
+      material_order_master_buy_pending: "Đơn nguyên vật liệu (Chờ mua)",
+      material_order_master_ship_confirmed:
+        "Đơn nguyên vật liệu (Đã xác nhận vận chuyển)",
+      material_order_master_seller_confirmed:
+        "Đơn nguyên vật liệu (Người bán đã xác nhận)",
+      order_item: "Đơn hàng",
+      production_plans: "Kế hoạch sản xuất",
+      production_steps: "Bước sản xuất",
+      equipment: "Thiết bị",
+      production_material: "Nguyên liệu sản xuất",
+      product_instances: "Sản phẩm cụ thể",
+      transport_orders: "Đơn vận chuyển",
+      transport_service_fees: "Phí dịch vụ vận chuyển",
+      transport_orders_delivered: "Đơn vận chuyển (Đã giao)",
+      transport_orders_success: "Đơn vận chuyển (Thành công)",
+      transport_orders_failed: "Đơn vận chuyển (Thất bại)",
+      cart: "Giỏ hàng",
     };
 
     return routerTranslations[routerName] || routerName;

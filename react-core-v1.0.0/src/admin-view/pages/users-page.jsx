@@ -40,7 +40,7 @@ const User = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Quản lý Người Dùng
+        Quản lý nhân viên
       </Typography>
       <Button
         variant="contained"
@@ -51,7 +51,7 @@ const User = () => {
           setOpenModal(true);
         }}
       >
-        Thêm Người Dùng
+        Thêm nhân viên
       </Button>
 
       <DynamicTable
@@ -63,7 +63,7 @@ const User = () => {
           { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố" },
           { key: "DIA_CHI_Districts", label: "Quận/Huyện" },
           { key: "DIA_CHI_Wards", label: "Phường/Xã" },
-          { key: "DIA_CHI_STREETNAME", label: "Tên đường" },
+          // { key: "DIA_CHI_STREETNAME", label: "Tên đường" },
           { key: "TRANG_THAI_USER", label: "Trạng thái" },
           {
             key: "actions",

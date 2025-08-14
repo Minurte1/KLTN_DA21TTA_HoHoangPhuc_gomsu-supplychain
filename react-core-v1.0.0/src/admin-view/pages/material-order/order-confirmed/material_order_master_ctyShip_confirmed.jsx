@@ -67,7 +67,7 @@ const MaterialOrderMaster_ShipConfirmed = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Đơn hàng Cty VC vật liệu đang xử lý
+        Đơn hàng công ty vận chuyển vật liệu đang xử lý
       </Typography>
 
       <DynamicTable

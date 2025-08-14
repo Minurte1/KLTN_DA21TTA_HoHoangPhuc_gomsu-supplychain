@@ -113,14 +113,14 @@ const MaterialOrderMaster_BuyPending = () => {
                 ? new Date(row.ORDER_DATE).toLocaleDateString("vi-VN")
                 : "",
           },
-          {
-            key: "DELIVERY_DATE",
-            label: "Ngày giao hàng",
-            render: (_, row) =>
-              row.DELIVERY_DATE
-                ? new Date(row.DELIVERY_DATE).toLocaleDateString("vi-VN")
-                : "",
-          },
+          // {
+          //   key: "DELIVERY_DATE",
+          //   label: "Ngày giao hàng",
+          //   render: (_, row) =>
+          //     row.DELIVERY_DATE
+          //       ? new Date(row.DELIVERY_DATE).toLocaleDateString("vi-VN")
+          //       : "",
+          // },
           { key: "STATUS", label: "Trạng thái" },
           {
             key: "TOTAL_COST",

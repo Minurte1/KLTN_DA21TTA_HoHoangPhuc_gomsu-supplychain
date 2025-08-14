@@ -169,7 +169,7 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
         onSubmit={handleSubmit}
         fields={fields}
         initialData={formData}
-        title={role ? "Sửa Role" : "Thêm Role"}
+        title={role ? "Sửa phân quyền" : "Thêm phân quyền"}
         renderActions={customActions}
         onChange={handleFormChange} // Pass onChange handler
       />

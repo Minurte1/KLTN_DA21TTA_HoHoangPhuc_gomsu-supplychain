@@ -159,7 +159,7 @@ export const adminMenuConfig = [
       },
       // ============================Pending==========================
       {
-        label: "Đơn hàng Cty CC bán vật liệu đang xử lý",
+        label: "Đơn hàng công ty cung cấp bán vật liệu đang xử lý",
         path: "/admin/material_order_master_pending",
       },
       {
@@ -169,11 +169,11 @@ export const adminMenuConfig = [
 
       // ============================Confirmed==========================
       {
-        label: "Đơn hàng Cty VC vật liệu đang xử lý",
+        label: "Đơn hàng công ty vận chuyển vật liệu đang xử lý",
         path: "/admin/material_order_master_ship_confirmed",
       },
       {
-        label: "Đơn hàng Cty CC bán vật liệu đã xác nhận",
+        label: "Đơn hàng công ty cung cấp bán vật liệu đã xác nhận",
         path: "/admin/material_order_master_seller_confirmed",
       },
 

@@ -62,7 +62,7 @@ const Transport_ordersShipSUCCESS = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Đơn hàng Cty VC vật liệu giao thành công
+        Đơn hàng Cty vận chuyển vật liệu giao thành công
       </Typography>
 
       <DynamicTable

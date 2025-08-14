@@ -248,7 +248,7 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
       onSubmit={handleSubmit}
       fields={fields}
       initialData={formData}
-      title={user ? "Sửa người dùng" : "Thêm người dùng"}
+      title={user ? "Sửa nhân viên" : "Thêm nhân viên"}
       renderActions={customActions}
       onChange={handleFormChange}
       renderExtraFields={() => (

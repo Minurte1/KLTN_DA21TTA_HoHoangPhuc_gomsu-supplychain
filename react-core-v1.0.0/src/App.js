@@ -70,7 +70,7 @@ const MainLayout = () => {
         <Routes>
           <Route path="/*" element={<RouterView />} />
         </Routes>
-      </div>
+      </div>{" "}
     </>
   );
 };

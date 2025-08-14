@@ -38,7 +38,7 @@ const Role = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Quản lý Role
+        Quản lý phân quyền
       </Typography>
       <Button
         variant="contained"
@@ -49,7 +49,7 @@ const Role = () => {
           setOpenModal(true);
         }}
       >
-        Thêm Role
+        Thêm phân quyền
       </Button>
 
       <DynamicTable
