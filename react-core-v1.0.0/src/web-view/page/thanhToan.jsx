@@ -14,6 +14,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import spService from "../../share-service/spService";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import orderServices from "../../services/orderServices";
+import { toast } from "react-toastify";
+import { enqueueSnackbar } from "notistack";
 
 export default function ThanhToan() {
   const [orderData, setOrderData] = useState([]);
@@ -42,7 +45,7 @@ export default function ThanhToan() {
     (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
     0
   );
-
+  console.log(";,userInfo?.value?.ID_USERS", userInfo);
   const handleShippingMethodChange = (method) => {
     setShippingMethod(method);
     // Ví dụ: phí ship tạm tính
@@ -51,14 +54,19 @@ export default function ThanhToan() {
     else setShippingCost(0);
   };
 
-  const handleConfirm = () => {
-    if (!shippingAddress || !shippingMethod || !paymentMethod) {
-      alert("Vui lòng nhập đầy đủ thông tin giao hàng và thanh toán");
+  const handleConfirm = async () => {
+    // if (!shippingAddress || !shippingMethod || !paymentMethod) {
+    //   alert("Vui lòng nhập đầy đủ thông tin giao hàng và thanh toán");
+    //   return;
+    // }
+
+    if (!userInfo) {
+      enqueueSnackbar("Vui lòng đăng nhập để tiếp tục");
       return;
     }
 
     const newOrder = {
-      ID_USERS: 1, // Lấy từ state đăng nhập
+      ID_USERS: userInfo?.ID_USERS, // Lấy từ state đăng nhập
       DATE_ORDER: new Date(),
       TOTAL_AMOUNT_ORDER: totalPrice + shippingCost,
       PAYMENT_STATUS_ORDER: "PENDING",
@@ -69,11 +77,9 @@ export default function ThanhToan() {
       ID_COMPANY: orderData[0]?.ID_COMPANY || null,
       ID_TRANSPORT_ORDER: null,
       PAYMENT_METHOD: paymentMethod,
+      orderItems: orderData,
     };
-
-    console.log("Dữ liệu đơn hàng:", newOrder);
-    console.log("Chi tiết sản phẩm:", orderData);
-
+    await orderServices.createOrder(newOrder);
     alert("Đơn hàng đã được tạo!");
   };
 
@@ -140,13 +146,7 @@ export default function ThanhToan() {
             currency: "VND",
           })}
         </Typography>
-        <Typography variant="h6">
-          Phí vận chuyển:{" "}
-          {shippingCost.toLocaleString("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          })}
-        </Typography>
+
         <Typography variant="h5" mt={1}>
           Tổng cộng:{" "}
           {(totalPrice + shippingCost).toLocaleString("vi-VN", {

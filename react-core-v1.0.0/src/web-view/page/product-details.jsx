@@ -45,7 +45,7 @@ const ProductDetails = () => {
   }, [serialCode]);
 
   // Hàm giả định lấy ID người dùng (có thể từ token hoặc localStorage)
-  console.log("userInfo", userInfo);
+
   // Thêm sản phẩm vào giỏ hàng
   const handleAddToCart = async () => {
     if (!userInfo) return;

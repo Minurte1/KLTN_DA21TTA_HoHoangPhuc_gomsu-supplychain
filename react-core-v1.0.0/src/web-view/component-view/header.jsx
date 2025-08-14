@@ -8,11 +8,12 @@ import { logout } from "../../redux/authSlice";
 import { useDispatch } from "react-redux";
 import Cookies from "js-cookie";
 import { Menu, MenuItem } from "@mui/material";
+import useAuthInit from "../../hook/useAuthInit";
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userInfo } = ReduxExportUseAuthState();
-
+  useAuthInit();
   const dispatch = useDispatch();
   const isActive = (path) => location.pathname === path;
 
