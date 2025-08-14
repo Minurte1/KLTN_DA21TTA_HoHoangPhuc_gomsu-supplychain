@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import spService from "../../share-service/spService";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import orderServices from "../../services/orderServices";
-import { toast } from "react-toastify";
 import { enqueueSnackbar } from "notistack";
 
 export default function ThanhToan() {
@@ -24,8 +23,12 @@ export default function ThanhToan() {
   const [shippingMethod, setShippingMethod] = useState("");
   const [shippingCost, setShippingCost] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+
   const navigate = useNavigate();
   const { userInfo } = ReduxExportUseAuthState();
+
   useEffect(() => {
     const encryptedData = localStorage.getItem("orderGomSu");
     if (!encryptedData) {
@@ -45,28 +48,29 @@ export default function ThanhToan() {
     (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
     0
   );
-  console.log(";,userInfo?.value?.ID_USERS", userInfo);
+
   const handleShippingMethodChange = (method) => {
     setShippingMethod(method);
-    // Ví dụ: phí ship tạm tính
     if (method === "Nhanh") setShippingCost(30000);
     else if (method === "TietKiem") setShippingCost(20000);
     else setShippingCost(0);
   };
 
   const handleConfirm = async () => {
-    // if (!shippingAddress || !shippingMethod || !paymentMethod) {
-    //   alert("Vui lòng nhập đầy đủ thông tin giao hàng và thanh toán");
-    //   return;
-    // }
-
     if (!userInfo) {
       enqueueSnackbar("Vui lòng đăng nhập để tiếp tục");
       return;
     }
 
+    if (!fullName || !phone || !shippingAddress) {
+      enqueueSnackbar("Vui lòng nhập đầy đủ thông tin giao hàng", {
+        variant: "warning",
+      });
+      return;
+    }
+
     const newOrder = {
-      ID_USERS: userInfo?.ID_USERS, // Lấy từ state đăng nhập
+      ID_USERS: userInfo?.ID_USERS,
       DATE_ORDER: new Date(),
       TOTAL_AMOUNT_ORDER: totalPrice + shippingCost,
       PAYMENT_STATUS_ORDER: "PENDING",
@@ -77,10 +81,14 @@ export default function ThanhToan() {
       ID_COMPANY: orderData[0]?.ID_COMPANY || null,
       ID_TRANSPORT_ORDER: null,
       PAYMENT_METHOD: paymentMethod,
+      FULLNAME_ORDER: fullName, // 📌 Họ tên người mua
+      PHONE_ORDER: phone, // 📌 Số điện thoại
       orderItems: orderData,
     };
+
     await orderServices.createOrder(newOrder);
-    alert("Đơn hàng đã được tạo!");
+    enqueueSnackbar("Đơn hàng đã được tạo thành công!", { variant: "success" });
+    navigate("/");
   };
 
   return (
@@ -118,12 +126,40 @@ export default function ThanhToan() {
 
       <Box mt={3}>
         <TextField
+          label="Họ tên người mua"
+          fullWidth
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          label="Số điện thoại"
+          fullWidth
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
           label="Địa chỉ giao hàng"
           fullWidth
           value={shippingAddress}
           onChange={(e) => setShippingAddress(e.target.value)}
           sx={{ mb: 2 }}
         />
+
+        {/* <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel>Phương thức vận chuyển</InputLabel>
+          <Select
+            value={shippingMethod}
+            onChange={(e) => handleShippingMethodChange(e.target.value)}
+          >
+            <MenuItem value="Nhanh">Giao hàng nhanh (30,000đ)</MenuItem>
+            <MenuItem value="TietKiem">Giao hàng tiết kiệm (20,000đ)</MenuItem>
+            <MenuItem value="Free">Miễn phí</MenuItem>
+          </Select>
+        </FormControl> */}
 
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Phương thức thanh toán</InputLabel>
@@ -146,7 +182,13 @@ export default function ThanhToan() {
             currency: "VND",
           })}
         </Typography>
-
+        {/* <Typography variant="h6">
+          Phí vận chuyển:{" "}
+          {shippingCost.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </Typography> */}
         <Typography variant="h5" mt={1}>
           Tổng cộng:{" "}
           {(totalPrice + shippingCost).toLocaleString("vi-VN", {
