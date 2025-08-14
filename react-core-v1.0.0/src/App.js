@@ -18,6 +18,7 @@ import { Box, Grid } from "@mui/material";
 import CartIcon from "./web-view/icon-component/iconCart";
 import Footer from "./components/footer";
 import Header from "./web-view/component-view/header";
+import NavBarUser from "./user-view/components/navBarAdmin";
 
 function App() {
   return (
@@ -76,14 +77,21 @@ const MainLayout = () => {
 
 const RouterUser = () => (
   <>
-    <Grid container style={{ height: "100vh" }}>
-      <Grid item xs={3} md={3}></Grid>
-      <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
-        <Routes>
-          <Route path="/*" element={<UserRouter />} />
-        </Routes>
-      </Grid>
-    </Grid>
+    {" "}
+    <div style={{ backgroundColor: "#fff" }}>
+      {" "}
+      <HeaderAdmin />
+      <Grid container style={{ height: "100vh" }}>
+        <Grid item xs={3} md="auto" sx={{ flexBasis: "20.8333%" }}>
+          <NavBarUser />
+        </Grid>
+        <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
+          <Routes>
+            <Route path="/*" element={<UserRouter />} />
+          </Routes>
+        </Grid>
+      </Grid>{" "}
+    </div>
   </>
 );
 
