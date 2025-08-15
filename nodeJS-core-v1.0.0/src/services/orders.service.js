@@ -281,10 +281,10 @@ const getOrdersByUserId = async (id) => {
       o.FULLNAME_ORDER,
       o.PHONE_ORDER,
       o.PAYMENT_METHOD,
+
       u.ID_USERS AS USER_ID,
       u.HO_TEN,
       u.EMAIL,
-
 
       oi.ID_ORDER_ITEMS,
       oi.QUANTITY_INVENTORY,
@@ -311,35 +311,44 @@ const getOrdersByUserId = async (id) => {
     JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT
     JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_
     WHERE o.ID_USERS = ?
+    ORDER BY o.DATE_ORDER DESC
   `,
     [id]
   );
 
-  if (rows.length === 0) return null;
+  if (rows.length === 0) return [];
 
-  // Gom nhóm dữ liệu: đơn hàng + sản phẩm
-  const orderInfo = {
-    ID_ORDERS_: rows[0].ID_ORDERS_,
-    ID_USERS: rows[0].ID_USERS,
-    DATE_ORDER: rows[0].DATE_ORDER,
-    TOTAL_AMOUNT_ORDER: rows[0].TOTAL_AMOUNT_ORDER,
-    PAYMENT_STATUS_ORDER: rows[0].PAYMENT_STATUS_ORDER,
-    SHIPPING_STATUS_ORDER: rows[0].SHIPPING_STATUS_ORDER,
-    SHIPPING_ADDRESS: rows[0].SHIPPING_ADDRESS,
-    SHIPPING_METHOD: rows[0].SHIPPING_METHOD,
-    SHIPPING_COST: rows[0].SHIPPING_COST,
-    ID_COMPANY: rows[0].ID_COMPANY,
-    PAYMENT_METHOD: rows[0].PAYMENT_METHOD,
-    ID_TRANSPORT_ORDER: rows[0].ID_TRANSPORT_ORDER,
-    FULLNAME_ORDER: rows[0].FULLNAME_ORDER,
-    PHONE_ORDER: rows[0].PHONE_ORDER,
-    user: {
-      ID_USERS: rows[0].USER_ID,
-      HO_TEN: rows[0].HO_TEN,
-      EMAIL: rows[0].EMAIL,
-      AVATAR: rows[0].HO_TEN,
-    },
-    products: rows.map((r) => ({
+  // Gom nhóm các sản phẩm theo từng đơn hàng
+  const ordersMap = new Map();
+
+  for (const r of rows) {
+    if (!ordersMap.has(r.ID_ORDERS_)) {
+      ordersMap.set(r.ID_ORDERS_, {
+        ID_ORDERS_: r.ID_ORDERS_,
+        ID_USERS: r.ID_USERS,
+        DATE_ORDER: r.DATE_ORDER,
+        TOTAL_AMOUNT_ORDER: r.TOTAL_AMOUNT_ORDER,
+        PAYMENT_STATUS_ORDER: r.PAYMENT_STATUS_ORDER,
+        SHIPPING_STATUS_ORDER: r.SHIPPING_STATUS_ORDER,
+        SHIPPING_ADDRESS: r.SHIPPING_ADDRESS,
+        SHIPPING_METHOD: r.SHIPPING_METHOD,
+        SHIPPING_COST: r.SHIPPING_COST,
+        ID_COMPANY: r.ID_COMPANY,
+        PAYMENT_METHOD: r.PAYMENT_METHOD,
+        ID_TRANSPORT_ORDER: r.ID_TRANSPORT_ORDER,
+        FULLNAME_ORDER: r.FULLNAME_ORDER,
+        PHONE_ORDER: r.PHONE_ORDER,
+        user: {
+          ID_USERS: r.USER_ID,
+          HO_TEN: r.HO_TEN,
+          EMAIL: r.EMAIL,
+          AVATAR: r.HO_TEN,
+        },
+        products: [],
+      });
+    }
+
+    ordersMap.get(r.ID_ORDERS_).products.push({
       ID_ORDER_ITEMS: r.ID_ORDER_ITEMS,
       QUANTITY_INVENTORY: r.QUANTITY_INVENTORY,
       PRICE_ORDER_ITEMS: r.PRICE_ORDER_ITEMS,
@@ -358,11 +367,12 @@ const getOrdersByUserId = async (id) => {
         ID_CATEGORIES_: r.ID_CATEGORIES_,
         NAME_CATEGORIES_: r.NAME_CATEGORIES_,
       },
-    })),
-  };
+    });
+  }
 
-  return orderInfo;
+  return Array.from(ordersMap.values());
 };
+
 module.exports = {
   create,
   getAll,
