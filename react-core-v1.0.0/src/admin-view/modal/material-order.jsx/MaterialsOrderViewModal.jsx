@@ -129,15 +129,13 @@ const MaterialsOrderViewModal = ({ open, onClose, material }) => {
   };
 
   const handleAddShipping = (company, fee) => {
-    console.log("fee", fee);
-
     setSelectedShipCompanies((prev) => ({
       ...prev,
       [selectOrder?.ID_MATERIAL_ORDER_MASTER]: company.ID_COMPANY,
       freeServices: fee,
     }));
   };
-  console.log("orders", orders);
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <>

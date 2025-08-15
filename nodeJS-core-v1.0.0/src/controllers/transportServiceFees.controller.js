@@ -2,7 +2,9 @@ const TransportServiceFeesService = require("../services/transportServiceFees.se
 
 const getAllFees = async (req, res) => {
   try {
-    const data = await TransportServiceFeesService.getAll();
+    const { ID_COMPANY_SHIP } = req.query;
+
+    const data = await TransportServiceFeesService.getAll(ID_COMPANY_SHIP);
     res.json(data);
   } catch (err) {
     console.error("transport_service_fees", err);

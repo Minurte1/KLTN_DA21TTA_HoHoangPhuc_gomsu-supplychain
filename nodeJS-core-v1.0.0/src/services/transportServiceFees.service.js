@@ -22,10 +22,17 @@ const create = async (data) => {
 
   return result.insertId;
 };
-
 // GET ALL
-const getAll = async () => {
-  const [rows] = await db.query("SELECT * FROM transport_service_fees");
+const getAll = async (ID_COMPANY_SHIP) => {
+  let query = "SELECT * FROM transport_service_fees";
+  let values = [];
+
+  if (ID_COMPANY_SHIP) {
+    query += " WHERE ID_COMPANY_SHIP = ?";
+    values.push(ID_COMPANY_SHIP);
+  }
+
+  const [rows] = await db.query(query, values);
   return rows;
 };
 

@@ -16,7 +16,13 @@ const getTransportOrders = async (req, res) => {
 const createTransportOrder = async (req, res) => {
   try {
     const id = await TransportOrderService.create(req.body);
-    res.status(201).json({ message: "Created", id });
+    if (!id) {
+      res
+        .status(400)
+        .json({ message: "Thiếu thông tin người ship người dùng" });
+    } else {
+      res.status(201).json({ message: "Created", id });
+    }
   } catch (error) {
     console.log("transport_order", error);
     res.status(500).json({ error: error.message });

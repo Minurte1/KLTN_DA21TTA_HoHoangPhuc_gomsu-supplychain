@@ -79,10 +79,12 @@ const OrderShipDetailView = ({ open, onClose, data }) => {
     setOpenUserShipModal(false);
     setSelectUserShip(user);
   };
-  console.log("selel", selectUserShip);
+
   const onConfirmShip = async () => {
     if (!selectUserShip?.ID_USERS) {
-      enqueueSnackbar("Vui lòng chọn người vận chuyển");
+      enqueueSnackbar("Vui lòng chọn người vận chuyển", { variant: "error" });
+
+      return;
     }
     const input = {
       ID_COMPANY_SHIP: selectOrderShip?.ID_COMPANY_SHIP || "",

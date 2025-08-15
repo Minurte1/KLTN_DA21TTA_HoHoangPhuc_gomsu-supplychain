@@ -86,8 +86,9 @@ const OrderShipDetailViewDELIVERING = ({
   };
 
   const onConfirmShip = async (key) => {
-    if (!selectUserShip) {
+    if (!selectOrderShip?.ID_USERS_SHIP) {
       enqueueSnackbar("Vui lòng chọn người vận chuyển");
+      return;
     }
     const input = {
       ID_COMPANY_SHIP: selectOrderShip?.ID_COMPANY_SHIP || "",

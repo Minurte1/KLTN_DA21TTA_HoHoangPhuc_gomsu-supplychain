@@ -16,6 +16,9 @@ const create = async (data) => {
   } = data;
   console.log("data ", data);
   const DELIVERY_DATE = null;
+  if (!ID_USERS_SHIP) {
+    return;
+  }
   const [result] = await db.query(
     `INSERT INTO transport_orders (
       ID_COMPANY_SHIP, ID_MATERIAL_ORDER, ID_ORDER,

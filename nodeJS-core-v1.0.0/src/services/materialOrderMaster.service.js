@@ -305,6 +305,8 @@ const getOrdersByCompanyAndMaterial = async (idCompanySeller, idMaterial) => {
 
     WHERE mom.ID_COMPANY_SELLER = ?
       AND (? IS NULL OR m.ID_MATERIALS_ = ?)
+
+    ORDER BY mom.ORDER_DATE DESC
     `,
     [idCompanySeller, idMaterial, idMaterial]
   );
