@@ -32,6 +32,17 @@ const getOrderById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const getOrderUsersById = async (req, res) => {
+  try {
+    if (!req.params.id) return;
+    const order = await OrderService.getOrdersByUserId(req.params.id);
+    if (!order) return res.status(404).json({ message: "Not found" });
+    res.json(order);
+  } catch (err) {
+    console.error("orders", err);
+    res.status(500).json({ error: err.message });
+  }
+};
 
 const updateOrder = async (req, res) => {
   try {
@@ -61,4 +72,5 @@ module.exports = {
   getOrderById,
   updateOrder,
   deleteOrder,
+  getOrderUsersById,
 };

@@ -263,11 +263,111 @@ const deleteRecord = async (id) => {
   ]);
   return result.affectedRows > 0;
 };
+const getOrdersByUserId = async (id) => {
+  const [rows] = await db.query(
+    `
+    SELECT 
+      o.ID_ORDERS_,
+      o.ID_USERS,
+      o.DATE_ORDER,
+      o.TOTAL_AMOUNT_ORDER,
+      o.PAYMENT_STATUS_ORDER,
+      o.SHIPPING_STATUS_ORDER,
+      o.SHIPPING_ADDRESS,
+      o.SHIPPING_METHOD,
+      o.SHIPPING_COST,
+      o.ID_COMPANY,
+      o.ID_TRANSPORT_ORDER,
+      o.FULLNAME_ORDER,
+      o.PHONE_ORDER,
+      o.PAYMENT_METHOD,
+      u.ID_USERS AS USER_ID,
+      u.HO_TEN,
+      u.EMAIL,
 
+
+      oi.ID_ORDER_ITEMS,
+      oi.QUANTITY_INVENTORY,
+      oi.PRICE_ORDER_ITEMS,
+
+      pi.ID_PRODUCT_INSTANCE,
+      pi.SERIAL_CODE,
+      pi.QUANTITY,
+
+      p.ID_PRODUCT,
+      p.NAME_PRODUCTS,
+      p.DESCRIPTION_PRODUCTS,
+      p.PRICE_PRODUCTS,
+      p.STOCK_PRODUCTS,
+      p.IMAGE_URL_PRODUCTS,
+
+      c.ID_CATEGORIES_,
+      c.NAME_CATEGORIES_
+
+    FROM orders o
+    JOIN users u ON o.ID_USERS = u.ID_USERS
+    JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
+    JOIN product_instances pi ON oi.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
+    JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT
+    JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_
+    WHERE o.ID_USERS = ?
+  `,
+    [id]
+  );
+
+  if (rows.length === 0) return null;
+
+  // Gom nhóm dữ liệu: đơn hàng + sản phẩm
+  const orderInfo = {
+    ID_ORDERS_: rows[0].ID_ORDERS_,
+    ID_USERS: rows[0].ID_USERS,
+    DATE_ORDER: rows[0].DATE_ORDER,
+    TOTAL_AMOUNT_ORDER: rows[0].TOTAL_AMOUNT_ORDER,
+    PAYMENT_STATUS_ORDER: rows[0].PAYMENT_STATUS_ORDER,
+    SHIPPING_STATUS_ORDER: rows[0].SHIPPING_STATUS_ORDER,
+    SHIPPING_ADDRESS: rows[0].SHIPPING_ADDRESS,
+    SHIPPING_METHOD: rows[0].SHIPPING_METHOD,
+    SHIPPING_COST: rows[0].SHIPPING_COST,
+    ID_COMPANY: rows[0].ID_COMPANY,
+    PAYMENT_METHOD: rows[0].PAYMENT_METHOD,
+    ID_TRANSPORT_ORDER: rows[0].ID_TRANSPORT_ORDER,
+    FULLNAME_ORDER: rows[0].FULLNAME_ORDER,
+    PHONE_ORDER: rows[0].PHONE_ORDER,
+    user: {
+      ID_USERS: rows[0].USER_ID,
+      HO_TEN: rows[0].HO_TEN,
+      EMAIL: rows[0].EMAIL,
+      AVATAR: rows[0].HO_TEN,
+    },
+    products: rows.map((r) => ({
+      ID_ORDER_ITEMS: r.ID_ORDER_ITEMS,
+      QUANTITY_INVENTORY: r.QUANTITY_INVENTORY,
+      PRICE_ORDER_ITEMS: r.PRICE_ORDER_ITEMS,
+      ID_PRODUCT_INSTANCE: r.ID_PRODUCT_INSTANCE,
+      SERIAL_CODE: r.SERIAL_CODE,
+      QUANTITY: r.QUANTITY,
+      ID_PRODUCT: r.ID_PRODUCT,
+      NAME_PRODUCTS: r.NAME_PRODUCTS,
+      DESCRIPTION_PRODUCTS: r.DESCRIPTION_PRODUCTS,
+      PRICE_PRODUCTS: r.PRICE_PRODUCTS,
+      STOCK_PRODUCTS: r.STOCK_PRODUCTS,
+      IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS
+        ? URL_IMAGE_BASE + r.IMAGE_URL_PRODUCTS
+        : null,
+      category: {
+        ID_CATEGORIES_: r.ID_CATEGORIES_,
+        NAME_CATEGORIES_: r.NAME_CATEGORIES_,
+      },
+    })),
+  };
+
+  return orderInfo;
+};
 module.exports = {
   create,
   getAll,
   getById,
   update,
   delete: deleteRecord,
+  getOrdersByUserId,
 };

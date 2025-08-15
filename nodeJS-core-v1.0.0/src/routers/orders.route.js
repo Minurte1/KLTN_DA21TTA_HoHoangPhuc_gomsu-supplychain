@@ -6,6 +6,7 @@ const {
   getOrderById,
   updateOrder,
   deleteOrder,
+  getOrderUsersById,
 } = require("../controllers/orders.controller");
 
 const {
@@ -28,7 +29,12 @@ router.post(
   // checkUserPermission("orders", "create"),
   createOrder
 );
-
+router.get(
+  "/user/:id",
+  // checkUserJWT,
+  // checkUserPermission("orders", "view"),
+  getOrderUsersById
+); //get orders theo users
 // Lấy đơn hàng theo ID
 router.get(
   "/:id",

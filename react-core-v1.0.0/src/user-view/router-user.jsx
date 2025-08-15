@@ -1,12 +1,16 @@
 import { useRoutes, Navigate } from "react-router-dom";
-
-import ProfileUsers from "./pages/page";
+import ProfileUsers from "./pages/profile-page";
+import OrdersUsers from "./pages/orders-page";
 
 const UserRouter = () => {
   const element = useRoutes([
     {
       path: "/",
       element: <ProfileUsers />,
+    },
+    {
+      path: "/orders",
+      element: <OrdersUsers />,
     },
 
     {

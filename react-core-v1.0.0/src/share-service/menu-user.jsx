@@ -18,6 +18,6 @@ export const userMenuConfig = [
   {
     label: "Đơn hàng của tôi",
     icon: <ShoppingCartIcon />,
-    path: "/user/orders",
+    path: "/profile/orders",
   },
 ];

@@ -18,7 +18,10 @@ const orderServices = {
     const res = await axiosInstance.get(`${ORDER_API}/${id}`);
     return res.data;
   },
-
+  getOrderByUsers: async (id) => {
+    const res = await axiosInstance.get(`${ORDER_API}/user/${id}`);
+    return res.data;
+  },
   // Tạo đơn hàng mới
   createOrder: async (data) => {
     const res = await axiosInstance.post(ORDER_API, data);
