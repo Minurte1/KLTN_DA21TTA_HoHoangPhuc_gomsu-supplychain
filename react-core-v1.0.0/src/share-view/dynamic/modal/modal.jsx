@@ -149,9 +149,12 @@ const DynamicModal = ({
             renderOption={(props, option) => (
               <Box component="li" {...props}>
                 {/* Nếu có field.optionsImage thì mới render ảnh */}
-                {field.optionsImage && option[field.optionsImage] && (
+                {field.optionsImage && (
                   <img
-                    src={option[field.optionsImage]}
+                    src={
+                      option[field.optionsImage] ||
+                      "https://static.vecteezy.com/system/resources/previews/000/439/863/non_2x/vector-users-icon.jpg"
+                    }
                     alt={option[field.optionsLabel]}
                     style={{
                       width: 40,
@@ -160,8 +163,14 @@ const DynamicModal = ({
                       marginRight: 8,
                       borderRadius: 4,
                     }}
+                    onError={(e) => {
+                      e.target.onerror = null; // tránh loop nếu default cũng lỗi
+                      e.target.src =
+                        "https://static.vecteezy.com/system/resources/previews/000/439/863/non_2x/vector-users-icon.jpg";
+                    }}
                   />
                 )}
+
                 {option[field.optionsLabel]}
               </Box>
             )}
