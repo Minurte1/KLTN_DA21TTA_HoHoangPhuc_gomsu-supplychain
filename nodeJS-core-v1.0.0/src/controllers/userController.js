@@ -10,6 +10,7 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const otpStorage = new Map();
 const { checkUserPermission } = require("../middleware/JWTaction");
+const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 
 const saltRounds = 10;
 
@@ -97,7 +98,7 @@ const getUser_ById = async (req, res) => {
       TRANG_THAI_USER: row.TRANG_THAI_USER,
       NGAY_TAO_USER: row.NGAY_TAO_USER,
       NGAY_CAP_NHAT_USER: row.NGAY_CAP_NHAT_USER,
-      AVATAR: row.AVATAR,
+      AVATAR: row.AVATAR ? URL_IMAGE_BASE + row.AVATAR : null,
       ID_COMPANY: row.ID_COMPANY,
       DIA_CHI_Provinces: row.DIA_CHI_Provinces,
       DIA_CHI_Districts: row.DIA_CHI_Districts,
@@ -253,7 +254,6 @@ const updateUserById_User = async (req, res) => {
     DIA_CHI_STREETNAME,
     TRANG_THAI_USER,
     ID_COMPANY,
-    AVATAR,
     IS_DELETE_USERS,
     _PASSWORD_HASH_USERS,
   } = req.body;
@@ -299,10 +299,15 @@ const updateUserById_User = async (req, res) => {
     addField("DIA_CHI_Districts", DIA_CHI_Districts);
     addField("DIA_CHI_Wards", DIA_CHI_Wards);
     addField("DIA_CHI_STREETNAME", DIA_CHI_STREETNAME);
-    addField("AVATAR", AVATAR);
     addField("_PASSWORD_HASH_USERS", _PASSWORD_HASH_USERS);
     addField("ID_COMPANY", ID_COMPANY);
     addField("IS_DELETE_USERS", IS_DELETE_USERS);
+
+    // Nếu có file ảnh mới upload
+    if (req.file) {
+      const avatarPath = `/images/${req.file.filename}`;
+      addField("AVATAR", avatarPath);
+    }
 
     if (
       TRANG_THAI_USER !== undefined &&
@@ -395,9 +400,7 @@ const updateUserById_User = async (req, res) => {
       return res.status(200).json({
         EM: "Cập nhật thành công",
         EC: 1,
-        DT: {
-          ...user,
-        },
+        DT: { ...user },
         accessToken: token,
       });
     } else {

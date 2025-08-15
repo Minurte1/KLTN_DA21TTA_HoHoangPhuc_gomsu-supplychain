@@ -74,19 +74,31 @@ export const createUser = async (newUser) => {
 };
 
 // Update User
-export const updateUserById = async (id, updatedUser) => {
+// services/userAccountService.js
+export const updateUserById = async (id, updatedUser, avatarFile) => {
   try {
-    const response = await axiosInstance.put(
-      `${apiUrl}/user/update/${id}`,
-      updatedUser
-    );
-    if (response.data.EC === 200) {
-      return true; // User updated successfully
+    const formData = new FormData();
+
+    // Append các field thông tin user
+    for (const key in updatedUser) {
+      formData.append(key, updatedUser[key]);
     }
-    return false;
+
+    // Nếu có file avatar
+    if (avatarFile) {
+      formData.append("avatar", avatarFile);
+    }
+
+    const response = await axiosInstance.put(`${apiUrl}/user/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
   } catch (error) {
     console.error("Error updating user:", error);
-    return false;
+    throw error;
   }
 };
 

@@ -1,11 +1,191 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Typography,
+  Divider,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import { getUserById, updateUserById } from "../../services/userAccountService";
+
+const Input = styled("input")({
+  display: "none",
+});
 
 const ProfileUsers = () => {
+  const { userInfo } = ReduxExportUseAuthState();
+  const [infoUser, setInfoUser] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null); // Lưu file ảnh
+
+  useEffect(() => {
+    if (userInfo) {
+      getInfoUsers(userInfo.ID_USERS);
+    }
+  }, [userInfo]);
+
+  const getInfoUsers = async (ID_USERS) => {
+    const response = await getUserById(ID_USERS);
+    setInfoUser(response);
+    setFormData(response);
+    if (response?.AVATAR) {
+      setAvatarPreview(response.AVATAR);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file); // Lưu file để upload
+      setAvatarPreview(URL.createObjectURL(file)); // Preview ảnh
+    }
+  };
+
+  const handleUpdateUsers = async () => {
+    try {
+      const res = await updateUserById(
+        userInfo?.ID_USERS,
+        formData,
+        avatarFile
+      );
+      console.log("Cập nhật thành công:", res);
+    } catch (err) {
+      console.error("Lỗi cập nhật:", err);
+    }
+  };
+
+  if (!infoUser) return null;
+
   return (
-    <div>
-      <h1>Welcome to the Page Component</h1>
-      <p>This is a simple page component.</p>
-    </div>
+    <Card sx={{ maxWidth: 900, margin: "auto", mt: 4, p: 2 }}>
+      <CardContent>
+        <Grid container spacing={3}>
+          {/* Avatar */}
+          <Grid item xs={12} md={3} sx={{ textAlign: "center" }}>
+            <Avatar
+              alt={formData.HO_TEN}
+              src={avatarPreview}
+              sx={{ width: 120, height: 120, margin: "auto" }}
+            />
+            {editMode && (
+              <label htmlFor="avatar-upload">
+                <Input
+                  accept="image/*"
+                  id="avatar-upload"
+                  type="file"
+                  onChange={handleAvatarChange}
+                />
+                <Button variant="outlined" component="span" sx={{ mt: 1 }}>
+                  Upload
+                </Button>
+              </label>
+            )}
+          </Grid>
+
+          {/* Thông tin cơ bản */}
+          <Grid item xs={12} md={9}>
+            <Typography variant="h6" gutterBottom>
+              Thông tin cá nhân
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Họ tên"
+                  name="HO_TEN"
+                  fullWidth
+                  value={formData.HO_TEN || ""}
+                  onChange={handleChange}
+                  InputProps={{ readOnly: !editMode }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Email"
+                  name="EMAIL"
+                  fullWidth
+                  value={formData.EMAIL || ""}
+                  onChange={handleChange}
+                  InputProps={{ readOnly: !editMode }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Số điện thoại"
+                  name="SO_DIEN_THOAI"
+                  fullWidth
+                  value={formData.SO_DIEN_THOAI || ""}
+                  onChange={handleChange}
+                  InputProps={{ readOnly: !editMode }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Địa chỉ"
+                  name="DIA_CHI_STREETNAME"
+                  fullWidth
+                  value={formData.DIA_CHI_STREETNAME || ""}
+                  onChange={handleChange}
+                  InputProps={{ readOnly: !editMode }}
+                />
+              </Grid>
+            </Grid>
+
+            {/* Nút Edit / Save */}
+            <Button
+              variant="contained"
+              color={editMode ? "success" : "primary"}
+              sx={{ mt: 2 }}
+              onClick={() => {
+                if (editMode) {
+                  handleUpdateUsers();
+                }
+                setEditMode(!editMode);
+              }}
+            >
+              {editMode ? "Lưu" : "Chỉnh sửa"}
+            </Button>
+          </Grid>
+        </Grid>
+
+        {/* Thông tin công ty */}
+        {infoUser.companyInfo && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <Typography variant="h6" gutterBottom>
+              Thông tin công ty
+            </Typography>
+            <Typography>
+              <strong>Tên công ty:</strong> {infoUser.companyInfo.NAME_COMPANY}
+            </Typography>
+            <Typography>
+              <strong>Loại hình:</strong>{" "}
+              {infoUser.companyInfo.NAME_COMPANY_TYPE || "N/A"}
+            </Typography>
+            <Typography>
+              <strong>Địa chỉ:</strong> {infoUser.companyInfo.ADDRESS}
+            </Typography>
+            <Typography>
+              <strong>Email:</strong> {infoUser.companyInfo.EMAIL}
+            </Typography>
+            <Typography>
+              <strong>Điện thoại:</strong> {infoUser.companyInfo.PHONE}
+            </Typography>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
