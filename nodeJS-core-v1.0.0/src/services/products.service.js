@@ -8,19 +8,21 @@ const create = async (data) => {
     NAME_PRODUCTS,
     DESCRIPTION_PRODUCTS,
     PRICE_PRODUCTS,
-    STOCK_PRODUCTS,
+
     IMAGE_URL_PRODUCTS,
+    ID_COMPANY,
   } = data;
   const [result] = await db.query(
-    `INSERT INTO products (ID_CATEGORIES_, NAME_PRODUCTS, DESCRIPTION_PRODUCTS, PRICE_PRODUCTS, STOCK_PRODUCTS, IMAGE_URL_PRODUCTS) 
-    VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO products (ID_CATEGORIES_, NAME_PRODUCTS, DESCRIPTION_PRODUCTS, PRICE_PRODUCTS, IMAGE_URL_PRODUCTS , ID_COMPANY) 
+    VALUES (?, ?, ?,  ?, ? , ?)`,
     [
       ID_CATEGORIES_,
       NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS,
       PRICE_PRODUCTS,
-      STOCK_PRODUCTS,
+
       IMAGE_URL_PRODUCTS,
+      ID_COMPANY,
     ]
   );
   return result.insertId;
@@ -61,13 +63,13 @@ const getById = async (id) => {
 
 const update = async (id, data) => {
   // Tạo câu query linh hoạt khi có/không IMAGE_URL_PRODUCTS
-  let query = `UPDATE products SET ID_CATEGORIES_ = ?, NAME_PRODUCTS = ?, DESCRIPTION_PRODUCTS = ?, PRICE_PRODUCTS = ?, STOCK_PRODUCTS = ?, ID_COMPANY = ?, UPDATED_AT_PRODUCTS = NOW()`;
+  let query = `UPDATE products SET ID_CATEGORIES_ = ?, NAME_PRODUCTS = ?, DESCRIPTION_PRODUCTS = ?, PRICE_PRODUCTS = ?, ID_COMPANY = ?, UPDATED_AT_PRODUCTS = NOW()`;
   const params = [
     data.ID_CATEGORIES_,
     data.NAME_PRODUCTS,
     data.DESCRIPTION_PRODUCTS,
     data.PRICE_PRODUCTS,
-    data.STOCK_PRODUCTS,
+
     data.ID_COMPANY,
   ];
 

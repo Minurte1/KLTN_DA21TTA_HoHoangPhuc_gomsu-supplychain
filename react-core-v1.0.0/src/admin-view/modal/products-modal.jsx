@@ -13,7 +13,7 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
     NAME_PRODUCTS: "",
     DESCRIPTION_PRODUCTS: "",
     PRICE_PRODUCTS: "",
-    STOCK_PRODUCTS: "",
+
     IMAGE_URL_PRODUCTS: "",
     ID_COMPANY: "",
   });
@@ -31,7 +31,7 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
               NAME_PRODUCTS: product.NAME_PRODUCTS || "",
               DESCRIPTION_PRODUCTS: product.DESCRIPTION_PRODUCTS || "",
               PRICE_PRODUCTS: product.PRICE_PRODUCTS || "",
-              STOCK_PRODUCTS: product.STOCK_PRODUCTS || "",
+
               IMAGE_URL_PRODUCTS: product.IMAGE_URL_PRODUCTS || "",
               ID_COMPANY: product.ID_COMPANY || "",
             }
@@ -40,7 +40,7 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
               NAME_PRODUCTS: "",
               DESCRIPTION_PRODUCTS: "",
               PRICE_PRODUCTS: "",
-              STOCK_PRODUCTS: "",
+
               IMAGE_URL_PRODUCTS: "",
               ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
             }
@@ -101,12 +101,7 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
       inputType: "number",
       required: true,
     },
-    {
-      key: "STOCK_PRODUCTS",
-      label: "Số lượng tồn kho",
-      inputType: "number",
-      required: true,
-    },
+
     {
       key: "IMAGE_URL_PRODUCTS",
       label: "URL hình ảnh",
@@ -142,11 +137,12 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
           formData.DESCRIPTION_PRODUCTS,
         PRICE_PRODUCTS:
           submittedFormData.PRICE_PRODUCTS || formData.PRICE_PRODUCTS,
-        STOCK_PRODUCTS:
-          submittedFormData.STOCK_PRODUCTS || formData.STOCK_PRODUCTS,
+
         IMAGE_URL_PRODUCTS:
           submittedFormData.IMAGE_URL_PRODUCTS || formData.IMAGE_URL_PRODUCTS,
-        ID_COMPANY: submittedFormData.ID_COMPANY || formData.ID_COMPANY,
+        ID_COMPANY:
+          userInfo?.companyInfo?.ID_COMPANY ||
+          userInfo?.companyInfo?.ID_COMPANY,
       };
 
       if (product) {

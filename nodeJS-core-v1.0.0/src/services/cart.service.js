@@ -116,7 +116,7 @@ const getByUser = async (ID_USERS) => {
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
-      p.STOCK_PRODUCTS,
+  
       p.IMAGE_URL_PRODUCTS,
       p.CREATED_AT_PRODUCTS,
       p.UPDATED_AT_PRODUCTS,

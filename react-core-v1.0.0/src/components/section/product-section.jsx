@@ -31,11 +31,11 @@ const ProductCard = ({ product }) => {
           currency: "VND",
         })}
       </div>
-      <div className={styles["product-stock"]}>
+      {/* <div className={styles["product-stock"]}>
         {product.STOCK_PRODUCTS > 0
           ? `Còn hàng: ${product.STOCK_PRODUCTS}`
           : "Hết hàng"}
-      </div>
+      </div> */}
       <div className={styles["product-category"]}>
         {product.NAME_CATEGORIES_}
       </div>
@@ -52,7 +52,7 @@ ProductCard.propTypes = {
     NAME_PRODUCTS: PropTypes.string.isRequired,
     DESCRIPTION_PRODUCTS: PropTypes.string.isRequired,
     PRICE_PRODUCTS: PropTypes.number.isRequired,
-    STOCK_PRODUCTS: PropTypes.number.isRequired,
+    // STOCK_PRODUCTS: PropTypes.number.isRequired,
     NAME_CATEGORIES_: PropTypes.string.isRequired,
     SERIAL_CODE: PropTypes.string.isRequired,
   }).isRequired,

@@ -59,7 +59,7 @@ const Product = () => {
           { key: "NAME_PRODUCTS", label: "Tên sản phẩm" },
           { key: "DESCRIPTION_PRODUCTS", label: "Mô tả" },
           { key: "PRICE_PRODUCTS", label: "Giá" },
-          { key: "STOCK_PRODUCTS", label: "Số lượng tồn kho" },
+
           {
             key: "IMAGE_URL_PRODUCTS",
             label: "Ảnh sản phẩm",

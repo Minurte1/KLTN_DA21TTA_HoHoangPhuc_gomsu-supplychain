@@ -57,6 +57,10 @@ export const adminMenuConfig = [
     icon: <PrecisionManufacturingIcon />,
     children: [
       {
+        label: "Thiết bị",
+        path: "/admin/equipment",
+      },
+      {
         label: "Danh mục sản phẩm",
         path: "/admin/category",
       },
@@ -86,10 +90,7 @@ export const adminMenuConfig = [
       //   label: "Đơn đặt vật liệu",
       //   path: "/admin/material_order",
       // },
-      {
-        label: "Thiết bị",
-        path: "/admin/equipment",
-      },
+
       {
         label: "Sản phẩm đã sản xuất",
         path: "/admin/product_instances",

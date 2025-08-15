@@ -158,7 +158,7 @@ const getById = async (id) => {
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
-      p.STOCK_PRODUCTS,
+     
       p.IMAGE_URL_PRODUCTS,
 
       c.ID_CATEGORIES_,
@@ -210,7 +210,7 @@ const getById = async (id) => {
       NAME_PRODUCTS: r.NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS: r.DESCRIPTION_PRODUCTS,
       PRICE_PRODUCTS: r.PRICE_PRODUCTS,
-      STOCK_PRODUCTS: r.STOCK_PRODUCTS,
+
       IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS
         ? URL_IMAGE_BASE + r.IMAGE_URL_PRODUCTS
         : null,
@@ -298,7 +298,7 @@ const getOrdersByUserId = async (id) => {
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
-      p.STOCK_PRODUCTS,
+    
       p.IMAGE_URL_PRODUCTS,
 
       c.ID_CATEGORIES_,
@@ -359,7 +359,7 @@ const getOrdersByUserId = async (id) => {
       NAME_PRODUCTS: r.NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS: r.DESCRIPTION_PRODUCTS,
       PRICE_PRODUCTS: r.PRICE_PRODUCTS,
-      STOCK_PRODUCTS: r.STOCK_PRODUCTS,
+
       IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS
         ? URL_IMAGE_BASE + r.IMAGE_URL_PRODUCTS
         : null,

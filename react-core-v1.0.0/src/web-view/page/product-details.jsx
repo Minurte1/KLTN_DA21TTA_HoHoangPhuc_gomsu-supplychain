@@ -102,17 +102,17 @@ const ProductDetails = () => {
           currency: "VND",
         })}
       </p>
-      <p>
+      {/* <p>
         Tình trạng:{" "}
         {product.STOCK_PRODUCTS > 0
           ? `Còn hàng: ${product.STOCK_PRODUCTS}`
           : "Hết hàng"}
-      </p>
+      </p> */}
       <p>Danh mục: {product.NAME_CATEGORIES_}</p>
       <p>Mã sản phẩm: {product.SERIAL_CODE}</p>
 
       <div style={{ marginTop: 20 }}>
-        <label>
+        {/* <label>
           Số lượng:{" "}
           <input
             type="number"
@@ -129,10 +129,10 @@ const ProductDetails = () => {
             }
             style={{ width: 60 }}
           />
-        </label>
+        </label> */}
       </div>
 
-      <button
+      {/* <button
         onClick={handleAddToCart}
         disabled={product.STOCK_PRODUCTS === 0}
         style={{
@@ -147,7 +147,7 @@ const ProductDetails = () => {
         }}
       >
         Thêm vào giỏ hàng
-      </button>
+      </button> */}
 
       {/* Giỏ hàng đơn giản */}
       {cart.length > 0 && (
