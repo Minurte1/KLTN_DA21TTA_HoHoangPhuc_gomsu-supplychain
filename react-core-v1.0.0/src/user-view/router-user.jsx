@@ -1,12 +1,12 @@
 import { useRoutes, Navigate } from "react-router-dom";
 
-import Page from "./pages/page";
+import ProfileUsers from "./pages/page";
 
 const UserRouter = () => {
   const element = useRoutes([
     {
       path: "/",
-      element: <Page />,
+      element: <ProfileUsers />,
     },
 
     {
