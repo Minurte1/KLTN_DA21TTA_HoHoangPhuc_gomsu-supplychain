@@ -26,8 +26,17 @@ const create = async (data) => {
   return result.insertId;
 };
 
-const getAll = async () => {
-  const [rows] = await db.query(`SELECT * FROM products`);
+const getAll = async (ID_COMPANY) => {
+  let query = `SELECT * FROM products`;
+  const params = [];
+
+  if (ID_COMPANY) {
+    query += ` WHERE ID_COMPANY = ?`;
+    params.push(ID_COMPANY);
+  }
+
+  const [rows] = await db.query(query, params);
+
   return rows.map((item) => ({
     ...item,
     IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS

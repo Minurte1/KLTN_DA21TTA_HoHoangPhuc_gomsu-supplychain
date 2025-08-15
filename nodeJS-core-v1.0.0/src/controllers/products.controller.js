@@ -2,7 +2,9 @@ const ProductService = require("../services/products.service");
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await ProductService.getAll();
+    const { ID_COMPANY } = req.query; // Lấy param từ URL
+
+    const products = await ProductService.getAll(ID_COMPANY);
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });

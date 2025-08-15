@@ -2,7 +2,7 @@ const CategoryService = require("../services/categories.service");
 
 const getAllCategories = async (req, res) => {
   try {
-    const companyId = req.query.companyId; // lấy companyId từ query param
+    const companyId = req.query.ID_COMPANY; // lấy companyId từ query param
     const categories = await CategoryService.getAll(companyId);
     res.json(categories);
   } catch (error) {

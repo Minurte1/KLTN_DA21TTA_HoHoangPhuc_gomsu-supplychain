@@ -4,8 +4,11 @@ const PRODUCT_API = `${process.env.REACT_APP_URL_SERVER}/products`;
 
 const productServices = {
   // Lấy danh sách tất cả sản phẩm
-  getProducts: async () => {
-    const res = await axiosInstance.get(PRODUCT_API);
+  getProducts: async ({ ID_COMPANY }) => {
+    const params = {};
+    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
+
+    const res = await axiosInstance.get(PRODUCT_API, { params });
     return res.data;
   },
 

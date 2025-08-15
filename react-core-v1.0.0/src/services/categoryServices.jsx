@@ -4,8 +4,11 @@ const CATEGORY_API = `${process.env.REACT_APP_URL_SERVER}/categories`;
 
 const categoryServices = {
   // Lấy danh sách tất cả danh mục
-  getCategories: async () => {
-    const res = await axiosInstance.get(CATEGORY_API);
+  getCategories: async ({ ID_COMPANY }) => {
+    const params = {};
+    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
+
+    const res = await axiosInstance.get(CATEGORY_API, { params });
     return res.data;
   },
 

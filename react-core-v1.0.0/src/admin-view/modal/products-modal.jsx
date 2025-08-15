@@ -49,12 +49,15 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
 
     fetchCategories();
     fetchCompanies();
-  }, [open, product]);
+  }, [open, product, userInfo]);
 
   const fetchCategories = async () => {
     try {
+      if (!userInfo) return;
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
-      const data = await categoryServices.getCategories(companyId);
+      const data = await categoryServices.getCategories({
+        ID_COMPANY: companyId,
+      });
       setCategoryOptions(data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -63,6 +66,7 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
 
   const fetchCompanies = async () => {
     try {
+      if (!userInfo) return;
       const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
       const data = await companyServices.getCompanies(companyId);
       setCompaniesOptions(data.DT);

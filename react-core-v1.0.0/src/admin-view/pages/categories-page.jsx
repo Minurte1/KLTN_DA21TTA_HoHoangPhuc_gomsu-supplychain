@@ -8,14 +8,19 @@ import DynamicTable from "../../share-view/dynamic/table/table";
 
 import categoryServices from "../../services/categoryServices";
 import CategoriesFormModal from "../modal/category/category-modal";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const { userInfo } = ReduxExportUseAuthState();
 
   const fetchCategories = async () => {
-    const data = await categoryServices.getCategories();
+    const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
+    const data = await categoryServices.getCategories({
+      ID_COMPANY: companyId,
+    });
     setCategories(data);
   };
 
