@@ -21,7 +21,6 @@ const getAllUser_Admin = async (req, res) => {
     let query = "SELECT * FROM users";
     let values = [];
 
-    // Nếu có ID_COMPANY thì thêm điều kiện WHERE
     if (ID_COMPANY) {
       query += " WHERE ID_COMPANY = ?";
       values.push(ID_COMPANY);
@@ -29,10 +28,16 @@ const getAllUser_Admin = async (req, res) => {
 
     const [rows] = await pool.query(query, values);
 
+    // Map thêm URL ảnh
+    const usersWithAvatar = rows.map((row) => ({
+      ...row,
+      AVATAR: row.AVATAR ? URL_IMAGE_BASE + row.AVATAR : null,
+    }));
+
     return res.status(200).json({
       EM: "Lấy thông tin người dùng thành công",
       EC: 1,
-      DT: rows,
+      DT: usersWithAvatar,
     });
   } catch (error) {
     console.error("Error in getAllUser_Admin:", error);

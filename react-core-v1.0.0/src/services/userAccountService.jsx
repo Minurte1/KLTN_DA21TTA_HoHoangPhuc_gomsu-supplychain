@@ -86,7 +86,7 @@ export const updateUserById = async (id, updatedUser, avatarFile) => {
 
     // Nếu có file avatar
     if (avatarFile) {
-      formData.append("avatar", avatarFile);
+      formData.append("AVATAR", avatarFile);
     }
 
     const response = await axiosInstance.put(`${apiUrl}/user/${id}`, formData, {

@@ -46,7 +46,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.put("/user/:id/avatar", upload.single("images"), updateAvatarController);
 
-router.put("/user/:id", upload.single("avatar"), updateUserById_User);
+router.put("/user/:id", upload.single("AVATAR"), updateUserById_User);
 router.put("/user/update/:id", updateUserById_Admin);
 
 router.post("/send-otp", sendOtp);

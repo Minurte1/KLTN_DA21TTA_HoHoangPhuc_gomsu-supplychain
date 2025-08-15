@@ -8,6 +8,7 @@ const equipmentServices = {
     const params = {};
     if (STATUS) params.STATUS = STATUS;
     if (TYPE_EQUIPMENT) params.TYPE_EQUIPMENT = TYPE_EQUIPMENT;
+    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
 
     const res = await axiosInstance.get(EQUIPMENT_API, { params });
     return res.data;

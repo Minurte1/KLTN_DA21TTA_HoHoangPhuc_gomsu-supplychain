@@ -146,6 +146,25 @@ const DynamicModal = ({
             }
             onChange={handleChange(field.key, field, true)}
             disabled={field.disabled}
+            renderOption={(props, option) => (
+              <Box component="li" {...props}>
+                {/* Nếu có field.optionsImage thì mới render ảnh */}
+                {field.optionsImage && option[field.optionsImage] && (
+                  <img
+                    src={option[field.optionsImage]}
+                    alt={option[field.optionsLabel]}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      objectFit: "cover",
+                      marginRight: 8,
+                      borderRadius: 4,
+                    }}
+                  />
+                )}
+                {option[field.optionsLabel]}
+              </Box>
+            )}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -158,6 +177,7 @@ const DynamicModal = ({
             )}
           />
         );
+
       case "autocomplete-multiple":
         return (
           <Autocomplete

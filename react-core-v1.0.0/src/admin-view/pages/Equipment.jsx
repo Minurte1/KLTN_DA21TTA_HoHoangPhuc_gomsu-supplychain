@@ -16,6 +16,7 @@ const Equipment = () => {
   const { userInfo } = ReduxExportUseAuthState();
 
   const fetchEquipments = async () => {
+    if (!userInfo) return;
     const companyId = userInfo?.companyInfo?.ID_COMPANY || null;
     const data = await equipmentServices.getEquipments({
       ID_COMPANY: companyId,

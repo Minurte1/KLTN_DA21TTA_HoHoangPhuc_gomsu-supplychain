@@ -216,7 +216,7 @@ const UsersFormModal = ({ open, onClose, user, onSuccess }) => {
     {
       key: "AVATAR",
       label: "Ảnh đại diện",
-      inputType: "text",
+      inputType: "file",
     },
     { key: "DIA_CHI_STREETNAME", label: "Tên đường", inputType: "text" },
     {

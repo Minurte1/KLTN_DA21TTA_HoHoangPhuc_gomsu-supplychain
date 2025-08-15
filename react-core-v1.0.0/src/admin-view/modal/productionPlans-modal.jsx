@@ -168,6 +168,7 @@ const ProductionPlansFormModal = ({
         required: true,
         options: products,
         optionsLabel: "NAME_PRODUCTS",
+        optionsImage: "IMAGE_URL_PRODUCTS", // thêm key để lấy ảnh
       },
       {
         key: "ID_USERS",
@@ -176,6 +177,7 @@ const ProductionPlansFormModal = ({
         required: true,
         options: users,
         optionsLabel: "HO_TEN",
+        optionsImage: "AVATAR",
       },
       {
         key: "QUANTITY_PRODUCT",
