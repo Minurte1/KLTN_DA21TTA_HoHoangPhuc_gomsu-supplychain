@@ -255,7 +255,9 @@ const updateUserById_User = async (req, res) => {
     TRANG_THAI_USER,
     ID_COMPANY,
     IS_DELETE_USERS,
-    _PASSWORD_HASH_USERS,
+    _PASSWORD_HASH_USERS, // nếu bạn vẫn muốn dùng cho reset mật khẩu admin
+    oldPassword, // thêm cho đổi mật khẩu người dùng
+    newPassword, // thêm cho đổi mật khẩu người dùng
   } = req.body;
 
   const { id } = req.params;
@@ -278,7 +280,6 @@ const updateUserById_User = async (req, res) => {
 
     const updateFields = [];
     const updateValues = [];
-
     const addField = (field, value) => {
       if (value !== undefined && value !== null && value !== "") {
         updateFields.push(`${field} = ?`);
@@ -286,7 +287,6 @@ const updateUserById_User = async (req, res) => {
       }
     };
 
-    // Các field cập nhật bình thường
     addField("EMAIL", EMAIL);
     addField("HO_TEN", HO_TEN);
     addField("SO_DIEN_THOAI", SO_DIEN_THOAI);
@@ -294,9 +294,31 @@ const updateUserById_User = async (req, res) => {
     addField("DIA_CHI_Districts", DIA_CHI_Districts);
     addField("DIA_CHI_Wards", DIA_CHI_Wards);
     addField("DIA_CHI_STREETNAME", DIA_CHI_STREETNAME);
-    addField("_PASSWORD_HASH_USERS", _PASSWORD_HASH_USERS);
+
+    // 🔒 Đổi mật khẩu — kiểm tra mật khẩu cũ
+    if (oldPassword && newPassword) {
+      const user = existingUser[0];
+      const isMatch = await bcrypt.compare(
+        oldPassword,
+        user._PASSWORD_HASH_USERS
+      );
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ EM: "Mật khẩu cũ không đúng", EC: 0, DT: [] });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      addField("_PASSWORD_HASH_USERS", hashedPassword);
+    }
+
+    // 🔒 Reset mật khẩu từ admin
+    if (_PASSWORD_HASH_USERS && !oldPassword) {
+      const hashedPassword = await bcrypt.hash(_PASSWORD_HASH_USERS, 10);
+      addField("_PASSWORD_HASH_USERS", hashedPassword);
+    }
+
     if (ID_COMPANY === null) {
-      addField("ID_COMPANY", null); // set NULL trong DB
+      addField("ID_COMPANY", null);
     } else if (
       ID_COMPANY !== undefined &&
       ID_COMPANY !== "" &&
@@ -307,12 +329,10 @@ const updateUserById_User = async (req, res) => {
 
     addField("IS_DELETE_USERS", IS_DELETE_USERS);
 
-    // Avatar
     if (req.file) {
       addField("AVATAR", `/images/${req.file.filename}`);
     }
 
-    // Trạng thái hợp lệ
     if (
       TRANG_THAI_USER &&
       ["ACTIVE", "INACTIVE", "DELETED"].includes(TRANG_THAI_USER)
@@ -320,7 +340,6 @@ const updateUserById_User = async (req, res) => {
       addField("TRANG_THAI_USER", TRANG_THAI_USER);
     }
 
-    // Role hợp lệ
     if (ID_ROLE) {
       const [roleCheck] = await pool.execute(
         "SELECT ID_ROLE FROM role WHERE ID_ROLE = ? AND IS_DELETE = 0",
@@ -334,7 +353,6 @@ const updateUserById_User = async (req, res) => {
       addField("ID_ROLE", ID_ROLE);
     }
 
-    // Ngày cập nhật
     addField("NGAY_CAP_NHAT_USER", new Date());
 
     if (!updateFields.length) {
@@ -352,9 +370,9 @@ const updateUserById_User = async (req, res) => {
 
     if (updateResult.affectedRows > 0) {
       const [updatedUser] = await pool.execute(
-        `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME 
-         FROM users u 
-         LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE 
+        `SELECT u.*, r.LIST_PERMISION, r.NAME_ROLE, r.CODE_NAME
+         FROM users u
+         LEFT JOIN role r ON u.ID_ROLE = r.ID_ROLE
          WHERE u.ID_USERS = ? AND r.IS_DELETE = 0`,
         [id]
       );

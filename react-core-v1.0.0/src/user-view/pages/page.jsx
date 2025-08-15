@@ -12,6 +12,8 @@ import {
 import { styled } from "@mui/material/styles";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import { getUserById, updateUserById } from "../../services/userAccountService";
+import { toast } from "react-toastify";
+import { enqueueSnackbar } from "notistack";
 
 const Input = styled("input")({
   display: "none",
@@ -24,6 +26,8 @@ const ProfileUsers = () => {
   const [formData, setFormData] = useState({});
   const [avatarPreview, setAvatarPreview] = useState("");
   const [avatarFile, setAvatarFile] = useState(null); // Lưu file ảnh
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     if (userInfo) {
@@ -54,13 +58,31 @@ const ProfileUsers = () => {
   };
 
   const handleUpdateUsers = async () => {
+    // Kiểm tra đổi mật khẩu
+    if (newPassword || oldPassword) {
+      if (!oldPassword || !newPassword) {
+        enqueueSnackbar("Vui lòng nhập đầy đủ mật khẩu cũ và mật khẩu mới! ", {
+          variant: "info",
+        });
+        return;
+      }
+    }
     try {
       const res = await updateUserById(
         userInfo?.ID_USERS,
-        formData,
+        {
+          ...formData,
+          oldPassword: oldPassword || undefined,
+          newPassword: newPassword || undefined,
+        },
         avatarFile
       );
-      console.log("Cập nhật thành công:", res);
+
+      if (res.EC === 1) {
+        enqueueSnackbar(res.EM, { variant: "success" });
+      } else {
+        enqueueSnackbar(res.EM, { variant: "error" });
+      }
     } catch (err) {
       console.error("Lỗi cập nhật:", err);
     }
@@ -129,14 +151,24 @@ const ProfileUsers = () => {
                   onChange={handleChange}
                   InputProps={{ readOnly: !editMode }}
                 />
+              </Grid>{" "}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Mật khẩu cũ"
+                  type="password"
+                  fullWidth
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  InputProps={{ readOnly: !editMode }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Địa chỉ"
-                  name="DIA_CHI_STREETNAME"
+                  label="Mật khẩu mới"
+                  type="password"
                   fullWidth
-                  value={formData.DIA_CHI_STREETNAME || ""}
-                  onChange={handleChange}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   InputProps={{ readOnly: !editMode }}
                 />
               </Grid>
@@ -162,26 +194,44 @@ const ProfileUsers = () => {
         {/* Thông tin công ty */}
         {infoUser.companyInfo && (
           <>
-            <Divider sx={{ my: 3 }} />
-            <Typography variant="h6" gutterBottom>
-              Thông tin công ty
-            </Typography>
-            <Typography>
-              <strong>Tên công ty:</strong> {infoUser.companyInfo.NAME_COMPANY}
-            </Typography>
-            <Typography>
-              <strong>Loại hình:</strong>{" "}
-              {infoUser.companyInfo.NAME_COMPANY_TYPE || "N/A"}
-            </Typography>
-            <Typography>
-              <strong>Địa chỉ:</strong> {infoUser.companyInfo.ADDRESS}
-            </Typography>
-            <Typography>
-              <strong>Email:</strong> {infoUser.companyInfo.EMAIL}
-            </Typography>
-            <Typography>
-              <strong>Điện thoại:</strong> {infoUser.companyInfo.PHONE}
-            </Typography>
+            {infoUser.companyInfo.NAME_COMPANY && (
+              <>
+                {" "}
+                <Divider sx={{ my: 3 }} />
+                <Typography variant="h6" gutterBottom>
+                  Thông tin công ty
+                </Typography>
+                <Typography>
+                  <strong>Tên công ty:</strong>{" "}
+                  {infoUser.companyInfo.NAME_COMPANY}
+                </Typography>{" "}
+              </>
+            )}
+
+            {infoUser.companyInfo.NAME_COMPANY_TYPE && (
+              <Typography>
+                <strong>Loại hình:</strong>{" "}
+                {infoUser.companyInfo.NAME_COMPANY_TYPE}
+              </Typography>
+            )}
+
+            {infoUser.companyInfo.ADDRESS && (
+              <Typography>
+                <strong>Địa chỉ:</strong> {infoUser.companyInfo.ADDRESS}
+              </Typography>
+            )}
+
+            {infoUser.companyInfo.EMAIL && (
+              <Typography>
+                <strong>Email:</strong> {infoUser.companyInfo.EMAIL}
+              </Typography>
+            )}
+
+            {infoUser.companyInfo.PHONE && (
+              <Typography>
+                <strong>Điện thoại:</strong> {infoUser.companyInfo.PHONE}
+              </Typography>
+            )}
           </>
         )}
       </CardContent>
