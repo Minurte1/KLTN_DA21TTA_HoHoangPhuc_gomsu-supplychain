@@ -45,7 +45,6 @@ const HeaderAdmin = () => {
   };
 
   const handleMenuClose = () => {
-    console.log("handleMenuClose");
     setAnchorEl(null);
     setIsOpen(false);
   };
@@ -89,7 +88,7 @@ const HeaderAdmin = () => {
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
           {" "}
-          {isAuthenticated ? (
+          {userInfo ? (
             <>
               {" "}
               <p style={{ color: "black" }}>
@@ -106,10 +105,7 @@ const HeaderAdmin = () => {
               >
                 {" "}
                 {userInfo.AVATAR ? (
-                  <Avatar
-                    src={`${api}/images/${userInfo.AVATAR}`}
-                    alt={userInfo.AVATAR}
-                  />
+                  <Avatar src={userInfo.AVATAR} alt={userInfo.AVATAR} />
                 ) : (
                   <AccountCircle sx={{ color: "#333333" }} />
                 )}

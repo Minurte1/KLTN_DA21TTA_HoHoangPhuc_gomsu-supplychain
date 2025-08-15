@@ -61,6 +61,7 @@ const HeaderAdmin = () => {
     }
   };
 
+  console.log(" sd ", userInfo);
   return (
     <AppBar position="static" sx={{ backgroundColor: "#f5f7fa" }}>
       <Toolbar>
@@ -106,10 +107,7 @@ const HeaderAdmin = () => {
               >
                 {" "}
                 {userInfo.AVATAR ? (
-                  <Avatar
-                    src={`${api}/images/${userInfo.AVATAR}`}
-                    alt={userInfo.AVATAR}
-                  />
+                  <Avatar src={userInfo.AVATAR} alt={userInfo.AVATAR} />
                 ) : (
                   <AccountCircle sx={{ color: "#333333" }} />
                 )}

@@ -261,11 +261,7 @@ const updateUserById_User = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
-    return res.status(400).json({
-      EM: "Thiếu ID người dùng",
-      EC: 0,
-      DT: [],
-    });
+    return res.status(400).json({ EM: "Thiếu ID người dùng", EC: 0, DT: [] });
   }
 
   try {
@@ -274,12 +270,10 @@ const updateUserById_User = async (req, res) => {
       [id]
     );
 
-    if (existingUser.length === 0) {
-      return res.status(404).json({
-        EM: "Không tìm thấy người dùng",
-        EC: 0,
-        DT: [],
-      });
+    if (!existingUser.length) {
+      return res
+        .status(404)
+        .json({ EM: "Không tìm thấy người dùng", EC: 0, DT: [] });
     }
 
     const updateFields = [];
@@ -292,6 +286,7 @@ const updateUserById_User = async (req, res) => {
       }
     };
 
+    // Các field cập nhật bình thường
     addField("EMAIL", EMAIL);
     addField("HO_TEN", HO_TEN);
     addField("SO_DIEN_THOAI", SO_DIEN_THOAI);
@@ -300,56 +295,57 @@ const updateUserById_User = async (req, res) => {
     addField("DIA_CHI_Wards", DIA_CHI_Wards);
     addField("DIA_CHI_STREETNAME", DIA_CHI_STREETNAME);
     addField("_PASSWORD_HASH_USERS", _PASSWORD_HASH_USERS);
-    addField("ID_COMPANY", ID_COMPANY);
-    addField("IS_DELETE_USERS", IS_DELETE_USERS);
-
-    // Nếu có file ảnh mới upload
-    if (req.file) {
-      const avatarPath = `/images/${req.file.filename}`;
-      addField("AVATAR", avatarPath);
+    if (ID_COMPANY === null) {
+      addField("ID_COMPANY", null); // set NULL trong DB
+    } else if (
+      ID_COMPANY !== undefined &&
+      ID_COMPANY !== "" &&
+      ID_COMPANY !== "null"
+    ) {
+      addField("ID_COMPANY", ID_COMPANY);
     }
 
+    addField("IS_DELETE_USERS", IS_DELETE_USERS);
+
+    // Avatar
+    if (req.file) {
+      addField("AVATAR", `/images/${req.file.filename}`);
+    }
+
+    // Trạng thái hợp lệ
     if (
-      TRANG_THAI_USER !== undefined &&
+      TRANG_THAI_USER &&
       ["ACTIVE", "INACTIVE", "DELETED"].includes(TRANG_THAI_USER)
     ) {
       addField("TRANG_THAI_USER", TRANG_THAI_USER);
     }
 
-    if (ID_ROLE !== undefined && ID_ROLE !== null && ID_ROLE !== "") {
+    // Role hợp lệ
+    if (ID_ROLE) {
       const [roleCheck] = await pool.execute(
         "SELECT ID_ROLE FROM role WHERE ID_ROLE = ? AND IS_DELETE = 0",
         [ID_ROLE]
       );
-      if (roleCheck.length === 0) {
-        return res.status(400).json({
-          EM: "Vai trò không hợp lệ",
-          EC: 0,
-          DT: [],
-        });
+      if (!roleCheck.length) {
+        return res
+          .status(400)
+          .json({ EM: "Vai trò không hợp lệ", EC: 0, DT: [] });
       }
-      updateFields.push("ID_ROLE = ?");
-      updateValues.push(ID_ROLE);
+      addField("ID_ROLE", ID_ROLE);
     }
 
-    // Cập nhật thời gian
-    const now = new Date();
-    updateFields.push("NGAY_CAP_NHAT_USER = ?");
-    updateValues.push(now);
+    // Ngày cập nhật
+    addField("NGAY_CAP_NHAT_USER", new Date());
 
-    if (updateFields.length === 0) {
-      return res.status(400).json({
-        EM: "Không có thông tin nào để cập nhật",
-        EC: 0,
-        DT: [],
-      });
+    if (!updateFields.length) {
+      return res
+        .status(400)
+        .json({ EM: "Không có thông tin nào để cập nhật", EC: 0, DT: [] });
     }
 
-    const updateQuery = `
-      UPDATE users 
-      SET ${updateFields.join(", ")}
-      WHERE ID_USERS = ?
-    `;
+    const updateQuery = `UPDATE users SET ${updateFields.join(
+      ", "
+    )} WHERE ID_USERS = ?`;
     updateValues.push(id);
 
     const [updateResult] = await pool.execute(updateQuery, updateValues);
@@ -363,7 +359,7 @@ const updateUserById_User = async (req, res) => {
         [id]
       );
 
-      if (updatedUser.length === 0) {
+      if (!updatedUser.length) {
         return res.status(404).json({
           EM: "Không tìm thấy người dùng sau khi cập nhật",
           EC: 0,
@@ -372,7 +368,6 @@ const updateUserById_User = async (req, res) => {
       }
 
       const user = updatedUser[0];
-
       const token = jwt.sign(
         {
           ID_USERS: user.ID_USERS,
@@ -403,20 +398,16 @@ const updateUserById_User = async (req, res) => {
         DT: { ...user },
         accessToken: token,
       });
-    } else {
-      return res.status(400).json({
-        EM: "Không thể cập nhật người dùng",
-        EC: 0,
-        DT: [],
-      });
     }
+
+    return res
+      .status(400)
+      .json({ EM: "Không thể cập nhật người dùng", EC: 0, DT: [] });
   } catch (error) {
     console.error("Lỗi trong updateUserById_User:", error);
-    return res.status(500).json({
-      EM: `Lỗi hệ thống: ${error.message}`,
-      EC: -1,
-      DT: [],
-    });
+    return res
+      .status(500)
+      .json({ EM: `Lỗi hệ thống: ${error.message}`, EC: -1, DT: [] });
   }
 };
 
