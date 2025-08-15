@@ -14,7 +14,7 @@ const create = async (data) => {
     ID_USERS_SHIP,
     ID_MATERIAL_ORDER_MASTER,
   } = data;
-  console.log("data ", data);
+
   const DELIVERY_DATE = null;
   if (!ID_USERS_SHIP) {
     return;
@@ -49,7 +49,12 @@ const create = async (data) => {
     WHERE ID_MATERIAL_ORDER_MASTER = ?`,
     [STATUS, ID_MATERIAL_ORDER_MASTER]
   );
-
+  const statusUsers = "WORKING";
+  const [users] = await db.query(
+    `UPDATE users SET TRANG_THAI_USER = ?
+    WHERE ID_USERS = ?`,
+    [statusUsers, ID_USERS_SHIP]
+  );
   return result.insertId;
 };
 
@@ -339,7 +344,12 @@ const update = async (id, data) => {
     WHERE ID_MATERIAL_ORDER_MASTER = ?`,
     [STATUS, ID_MATERIAL_ORDER_MASTER]
   );
-
+  const statusUsers = "ACTIVE";
+  const [users] = await db.query(
+    `UPDATE users SET TRANG_THAI_USER = ?
+    WHERE ID_USERS = ?`,
+    [statusUsers, ID_USERS_SHIP]
+  );
   return result.affectedRows > 0;
 };
 

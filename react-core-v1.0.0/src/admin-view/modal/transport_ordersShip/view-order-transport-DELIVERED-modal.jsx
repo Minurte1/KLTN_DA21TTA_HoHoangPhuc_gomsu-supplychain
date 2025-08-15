@@ -112,7 +112,7 @@ const OrderShipDetailViewDELIVERING = ({
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <>
         <DialogTitle sx={{ fontWeight: "bold", color: "primary.main" }}>
-          Chi tiết đơn hàng vận chuyển
+          Chi tiết đơn hàng đang vận chuyển vận chuyển
         </DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
