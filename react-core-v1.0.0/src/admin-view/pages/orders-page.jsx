@@ -57,7 +57,12 @@ const Orders = () => {
 
       <DynamicTable
         data={orders}
-        keyStatus = {}
+        statusColumns={[
+          "STATUS",
+          "PAYMENT_STATUS_ORDER",
+          "SHIPPING_STATUS_ORDER",
+        ]}
+        keyStatus={"order"}
         columns={[
           { key: "FULLNAME_ORDER", label: "Người nhận" },
           { key: "PHONE_ORDER", label: "SĐT" },
@@ -70,6 +75,8 @@ const Orders = () => {
           { key: "TOTAL_AMOUNT_ORDER", label: "Tổng tiền" },
           { key: "PAYMENT_STATUS_ORDER", label: "Thanh toán" },
           { key: "SHIPPING_STATUS_ORDER", label: "Vận chuyển" },
+
+          { key: "STATUS", label: "Trạng thái đơn hàng" },
           { key: "PAYMENT_METHOD", label: "PT Thanh toán" },
           {
             key: "actions",

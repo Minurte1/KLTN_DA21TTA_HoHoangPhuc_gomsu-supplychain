@@ -23,6 +23,7 @@ const DynamicTable = ({
   rowsPerPageOptions = [30, 20, 10, 5],
   subStatus = true,
   keyStatus,
+  statusColumns,
 }) => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -162,54 +163,72 @@ const DynamicTable = ({
                   },
                 }}
               >
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.key}
-                    sx={{ py: 1.2, fontSize: "0.875rem", color: "#444" }}
-                  >
-                    {column.render ? (
-                      column.render(row[column.key], row)
-                    ) : column.type === "image" ? (
-                      <Box
-                        component="img"
-                        src={row[column.key]}
-                        alt={column.label}
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          objectFit: "cover",
-                          borderRadius: 1,
-                          display: "block",
-                          margin: "0 auto",
-                          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-                        }}
-                      />
-                    ) : (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          maxWidth: 250,
-                          fontSize: "0.875rem",
-                        }}
-                      >
-                        {subStatus ? (
-                          <>
-                            {" "}
-                            {spService.mapStatusToVietnamese(
+                {columns.map((column) => {
+                  const isStatusColumn = statusColumns?.includes(column.key); // ✅ chỉ những key trong list mới styled
+
+                  return (
+                    <TableCell
+                      key={column.key}
+                      sx={{ py: 1.2, fontSize: "0.875rem", color: "#444" }}
+                    >
+                      {column.render ? (
+                        column.render(row[column.key], row)
+                      ) : column.type === "image" ? (
+                        <Box
+                          component="img"
+                          src={row[column.key]}
+                          alt={column.label}
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            objectFit: "cover",
+                            borderRadius: 1,
+                            display: "block",
+                            margin: "0 auto",
+                            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                          }}
+                        />
+                      ) : isStatusColumn ? ( // ✅ chỉ áp dụng badge cho status
+                        <Typography
+                          component="span"
+                          sx={{
+                            display: "inline-block",
+                            px: 1.5,
+                            py: 0.5,
+                            fontSize: "0.75rem",
+                            borderRadius: "12px",
+                            fontWeight: 500,
+                            color: spService.mapStatusToVietnamese(
                               row[column.key],
                               keyStatus
-                            )}
-                          </>
-                        ) : (
-                          <> {row[column.key]}</>
-                        )}
-                      </Typography>
-                    )}
-                  </TableCell>
-                ))}
+                            ).color,
+                            backgroundColor: spService.mapStatusToVietnamese(
+                              row[column.key],
+                              keyStatus
+                            ).bgColor,
+                            border: `1px solid ${
+                              spService.mapStatusToVietnamese(
+                                row[column.key],
+                                keyStatus
+                              ).borderColor
+                            }`,
+                          }}
+                        >
+                          {
+                            spService.mapStatusToVietnamese(
+                              row[column.key],
+                              keyStatus
+                            ).label
+                          }
+                        </Typography>
+                      ) : (
+                        <Typography component="span">
+                          {row[column.key]}
+                        </Typography> // ✅ cột khác hiển thị bình thường
+                      )}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             ))}
           </TableBody>
