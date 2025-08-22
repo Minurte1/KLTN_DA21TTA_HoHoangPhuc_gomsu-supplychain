@@ -16,13 +16,16 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import { getUserById, updateUserById } from "../../services/userAccountService";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import { enqueueSnackbar } from "notistack";
 import orderServices from "../../services/orderServices";
+import OrderDetailModal from "../modal/orderDetailsModal";
 
 const Input = styled("input")({
   display: "none",
@@ -38,6 +41,9 @@ const OrdersUsers = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [orders, setOrders] = useState([]);
+
+  const [open, setOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -69,76 +75,77 @@ const OrdersUsers = () => {
   if (!infoUser) return null;
 
   return (
-    <Card sx={{ maxWidth: 900, margin: "auto", mt: 4, p: 2 }}>
-      <CardContent>
-        {/* Lịch sử đơn hàng */}
-        <Divider sx={{ my: 3 }} />
-        <Typography variant="h6" gutterBottom>
-          Lịch sử đơn hàng
-        </Typography>
-        {Array.isArray(orders) && orders.length > 0 ? (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Mã đơn hàng</TableCell>
-                  <TableCell>Ngày đặt</TableCell>
-                  <TableCell>Tổng tiền</TableCell>
-                  <TableCell>Trạng thái thanh toán</TableCell>
-                  <TableCell>Trạng thái vận chuyển</TableCell>
-                  <TableCell>Sản phẩm</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.ID_ORDERS_}>
-                    <TableCell>{order.ID_ORDERS_ || "N/A"}</TableCell>
-                    <TableCell>
-                      {order.DATE_ORDER
-                        ? new Date(order.DATE_ORDER).toLocaleDateString("vi-VN")
-                        : "N/A"}
-                    </TableCell>
-                    <TableCell>
-                      {order.TOTAL_AMOUNT_ORDER != null
-                        ? `${order.TOTAL_AMOUNT_ORDER.toLocaleString()} VNĐ`
-                        : "N/A"}
-                    </TableCell>
-                    <TableCell>{order.PAYMENT_STATUS_ORDER || "N/A"}</TableCell>
-                    <TableCell>
-                      {order.SHIPPING_STATUS_ORDER || "N/A"}
-                    </TableCell>
-                    <TableCell>
-                      {Array.isArray(order.products) &&
-                      order.products.length > 0 ? (
-                        order.products.map((product) => (
-                          <Box key={product.ID_ORDER_ITEMS} sx={{ mb: 1 }}>
-                            <Typography variant="body2">
-                              {product.NAME_PRODUCTS || "Sản phẩm không tên"}
-                            </Typography>
-                            <Typography variant="caption">
-                              Số lượng: {product.QUANTITY_INVENTORY ?? 0} - Giá:{" "}
-                              {product.PRICE_ORDER_ITEMS != null
-                                ? `${product.PRICE_ORDER_ITEMS.toLocaleString()} VNĐ`
-                                : "N/A"}
-                            </Typography>
-                          </Box>
-                        ))
-                      ) : (
-                        <Typography variant="caption">
-                          Không có sản phẩm
-                        </Typography>
-                      )}
-                    </TableCell>
+    <>
+      {" "}
+      <Card sx={{ maxWidth: 900, margin: "auto", mt: 4, p: 2 }}>
+        <CardContent>
+          {/* Lịch sử đơn hàng */}
+          <Divider sx={{ my: 3 }} />
+          <Typography variant="h6" gutterBottom>
+            Lịch sử đơn hàng
+          </Typography>
+          {Array.isArray(orders) && orders.length > 0 ? (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Mã đơn hàng</TableCell>
+                    <TableCell>Ngày đặt</TableCell>
+                    <TableCell>Tổng tiền</TableCell>
+                    <TableCell>Trạng thái thanh toán</TableCell>
+                    <TableCell>Trạng thái vận chuyển</TableCell>
+                    <TableCell>Hành động</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ) : (
-          <Typography>Không có đơn hàng nào.</Typography>
-        )}
-      </CardContent>
-    </Card>
+                </TableHead>
+                <TableBody>
+                  {orders.map((order) => (
+                    <TableRow key={order.ID_ORDERS_}>
+                      <TableCell>{order.ID_ORDERS_ || "N/A"}</TableCell>
+                      <TableCell>
+                        {order.DATE_ORDER
+                          ? new Date(order.DATE_ORDER).toLocaleDateString(
+                              "vi-VN"
+                            )
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        {order.TOTAL_AMOUNT_ORDER != null
+                          ? `${order.TOTAL_AMOUNT_ORDER.toLocaleString()} VNĐ`
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        {order.PAYMENT_STATUS_ORDER || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        {order.SHIPPING_STATUS_ORDER || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="primary"
+                          onClick={() => {
+                            setSelectedOrder(order); // lưu đơn hàng được chọn
+                            setOpen(true); // mở modal
+                          }}
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Typography>Không có đơn hàng nào.</Typography>
+          )}
+        </CardContent>
+      </Card>
+      <OrderDetailModal
+        open={open}
+        onClose={() => setOpen(false)}
+        order={selectedOrder}
+      />
+    </>
   );
 };
 
