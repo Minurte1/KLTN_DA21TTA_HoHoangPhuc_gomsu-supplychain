@@ -18,6 +18,7 @@ import productInstancesServices from "../../services/product_instancesServices";
 import cartServices from "../../services/cartServices";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import ProductList from "../../components/productList";
+import Footer from "../../components/footer";
 
 const ProductDetails = () => {
   const { serialCode } = useParams();
@@ -115,7 +116,9 @@ const ProductDetails = () => {
 
   return (
     <>
+      {" "}
       <div style={stylePadding}>
+        {" "}
         <Box
           sx={{
             maxWidth: 1000,
@@ -209,8 +212,13 @@ const ProductDetails = () => {
             </Grid>{" "}
           </Grid>{" "}
         </Box>
-
-        <ProductList products={productInstances} rows={20} />
+      </div>{" "}
+      <div style={stylePadding}>
+        <ProductList products={productInstances} rows={20} />{" "}
+      </div>{" "}
+      <div style={stylePadding}>
+        {" "}
+        <Footer />
       </div>
     </>
   );
