@@ -313,6 +313,9 @@ const getAll = async ({ ID_COMPANY, ID_USERS }) => {
     params.push(ID_USERS);
   }
 
+  // Sắp xếp theo ngày tạo mới nhất
+  query += " ORDER BY uo.DATE_CREATED DESC, o.DATE_ORDER DESC";
+
   const [rows] = await db.query(query, params);
   return rows;
 };
