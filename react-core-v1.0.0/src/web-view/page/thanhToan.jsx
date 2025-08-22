@@ -16,6 +16,7 @@ import spService from "../../share-service/spService";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import orderServices from "../../services/orderServices";
 import { enqueueSnackbar } from "notistack";
+import Footer from "../../components/footer";
 
 export default function ThanhToan() {
   const [orderData, setOrderData] = useState([]);
@@ -92,107 +93,113 @@ export default function ThanhToan() {
   };
 
   return (
-    <div style={stylePadding}>
+    <>
       {" "}
-      <Box p={3}>
-        <Typography variant="h5" mb={2}>
-          Xác Nhận Thanh Toán
-        </Typography>
+      <div style={stylePadding}>
+        {" "}
+        <Box p={3}>
+          <Typography variant="h5" mb={2}>
+            Xác Nhận Thanh Toán
+          </Typography>
 
-        {orderData.map((item) => (
-          <React.Fragment key={item.ID_CART}>
-            <Box display="flex" alignItems="center" mb={2}>
-              <Avatar
-                variant="square"
-                src={item.IMAGE_URL_PRODUCTS}
-                alt={item.NAME_PRODUCTS}
-                sx={{ width: 80, height: 80, mr: 2 }}
-              />
-              <Box flex={1}>
-                <Typography variant="subtitle1">
-                  {item.NAME_PRODUCTS}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Số lượng: {item.QUANTITY} x{" "}
-                  {item.PRICE_PRODUCTS.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Công ty: {item.NAME_COMPANY}
-                </Typography>
+          {orderData.map((item) => (
+            <React.Fragment key={item.ID_CART}>
+              <Box display="flex" alignItems="center" mb={2}>
+                <Avatar
+                  variant="square"
+                  src={item.IMAGE_URL_PRODUCTS}
+                  alt={item.NAME_PRODUCTS}
+                  sx={{ width: 80, height: 80, mr: 2 }}
+                />
+                <Box flex={1}>
+                  <Typography variant="subtitle1">
+                    {item.NAME_PRODUCTS}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Số lượng: {item.QUANTITY} x{" "}
+                    {item.PRICE_PRODUCTS.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Công ty: {item.NAME_COMPANY}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-            <Divider />
-          </React.Fragment>
-        ))}
+              <Divider />
+            </React.Fragment>
+          ))}
 
-        <Box mt={3}>
-          <TextField
-            label="Họ tên người mua"
-            fullWidth
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            sx={{ mb: 2 }}
-          />
+          <Box mt={3}>
+            <TextField
+              label="Họ tên người mua"
+              fullWidth
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              sx={{ mb: 2 }}
+            />
 
-          <TextField
-            label="Số điện thoại"
-            fullWidth
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            sx={{ mb: 2 }}
-          />
+            <TextField
+              label="Số điện thoại"
+              fullWidth
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              sx={{ mb: 2 }}
+            />
 
-          <TextField
-            label="Địa chỉ giao hàng"
-            fullWidth
-            value={shippingAddress}
-            onChange={(e) => setShippingAddress(e.target.value)}
-            sx={{ mb: 2 }}
-          />
+            <TextField
+              label="Địa chỉ giao hàng"
+              fullWidth
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
+              sx={{ mb: 2 }}
+            />
 
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Phương thức thanh toán</InputLabel>
-            <Select
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            >
-              <MenuItem value="COD">Thanh toán khi nhận hàng (COD)</MenuItem>
-              <MenuItem value="MOMO">Momo</MenuItem>
-              <MenuItem value="VNPAY">VNPay</MenuItem>
-            </Select>
-          </FormControl>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Phương thức thanh toán</InputLabel>
+              <Select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              >
+                <MenuItem value="COD">Thanh toán khi nhận hàng (COD)</MenuItem>
+                <MenuItem value="MOMO">Momo</MenuItem>
+                <MenuItem value="VNPAY">VNPay</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box textAlign="right" mt={2}>
+            <Typography variant="h6">
+              Tổng tiền hàng:{" "}
+              {totalPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Typography>
+
+            <Typography variant="h5" mt={1}>
+              Tổng cộng:{" "}
+              {(totalPrice + shippingCost).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Typography>
+          </Box>
+
+          <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
+            <Button variant="outlined" onClick={() => navigate(-1)}>
+              Quay lại
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleConfirm}>
+              Xác nhận thanh toán
+            </Button>
+          </Box>
         </Box>
-
-        <Box textAlign="right" mt={2}>
-          <Typography variant="h6">
-            Tổng tiền hàng:{" "}
-            {totalPrice.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
-          </Typography>
-
-          <Typography variant="h5" mt={1}>
-            Tổng cộng:{" "}
-            {(totalPrice + shippingCost).toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
-          </Typography>
-        </Box>
-
-        <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-          <Button variant="outlined" onClick={() => navigate(-1)}>
-            Quay lại
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleConfirm}>
-            Xác nhận thanh toán
-          </Button>
-        </Box>
-      </Box>
-    </div>
+      </div>
+      <div style={stylePadding}>
+        <Footer />
+      </div>
+    </>
   );
 }
