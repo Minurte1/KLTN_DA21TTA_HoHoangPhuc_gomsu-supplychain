@@ -57,6 +57,7 @@ const Orders = () => {
 
       <DynamicTable
         data={orders}
+        keyStatus = {}
         columns={[
           { key: "FULLNAME_ORDER", label: "Người nhận" },
           { key: "PHONE_ORDER", label: "SĐT" },

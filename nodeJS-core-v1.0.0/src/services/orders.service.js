@@ -50,9 +50,9 @@ const create = async (orderData) => {
     // 🔹 Tạo user_orders (đơn hàng cha)
     const [userOrderResult] = await conn.query(
       `INSERT INTO user_orders (
-        ID_USERS, DATE_CREATED, TOTAL_AMOUNT, STATUS
-      ) VALUES (?, ?, ?, ?)`,
-      [ID_USERS, formattedDate, totalUserOrder, "PENDING"]
+        ID_USERS, DATE_CREATED, TOTAL_AMOUNT
+      ) VALUES (?, ?, ?)`,
+      [ID_USERS, formattedDate, totalUserOrder]
     );
 
     const newUserOrderId = userOrderResult.insertId;
@@ -287,7 +287,7 @@ const getAll = async ({ ID_COMPANY, ID_USERS }) => {
       uo.ID_USERS,
       uo.DATE_CREATED,
       uo.TOTAL_AMOUNT,
-      uo.STATUS,
+   
       o.ID_ORDERS_,
       o.ID_COMPANY,
       o.DATE_ORDER,
@@ -343,7 +343,7 @@ const getById = async (id) => {
       uo.ID_USERS,
       uo.DATE_CREATED,
       uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
-      uo.STATUS AS STATUS_USER_ORDER,
+
 
       u.ID_USERS AS USER_ID,
       u.HO_TEN,
@@ -399,7 +399,6 @@ const getById = async (id) => {
       ID_USER_ORDER: rows[0].ID_USER_ORDER,
       DATE_CREATED: rows[0].DATE_CREATED,
       TOTAL_AMOUNT: rows[0].TOTAL_AMOUNT_USER_ORDER,
-      STATUS: rows[0].STATUS_USER_ORDER,
     },
 
     user: {
@@ -495,7 +494,7 @@ const getOrdersByUserId = async (id) => {
       uo.ID_USERS AS USER_ID,
       uo.DATE_CREATED,
       uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
-      uo.STATUS AS STATUS_USER_ORDER,
+  
 
       u.HO_TEN,
       u.EMAIL,
@@ -556,7 +555,6 @@ const getOrdersByUserId = async (id) => {
           ID_USER_ORDER: r.ID_USER_ORDER,
           DATE_CREATED: r.DATE_CREATED,
           TOTAL_AMOUNT: r.TOTAL_AMOUNT_USER_ORDER,
-          STATUS: r.STATUS_USER_ORDER,
         },
         user: {
           ID_USERS: r.USER_ID,
