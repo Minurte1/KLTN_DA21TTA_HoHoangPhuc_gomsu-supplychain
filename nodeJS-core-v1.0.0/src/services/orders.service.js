@@ -1,13 +1,13 @@
 const db = require("../config/database");
 const moment = require("moment");
 const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
-
+const nodemailer = require("nodemailer");
 const create = async (orderData) => {
   const {
     ID_USERS,
     DATE_ORDER,
-    FULLNAME_ORDER, // 📌 Họ tên người mua
-    PHONE_ORDER, // 📌 Số điện thoại
+    FULLNAME_ORDER,
+    PHONE_ORDER,
     PAYMENT_STATUS_ORDER = "PENDING",
     SHIPPING_STATUS_ORDER = "PENDING",
     SHIPPING_ADDRESS,
@@ -31,7 +31,6 @@ const create = async (orderData) => {
   try {
     await conn.beginTransaction();
 
-    // 1️⃣ Nhóm sản phẩm theo ID_COMPANY
     const itemsByCompany = orderItems.reduce((acc, item) => {
       if (!acc[item.CART_ID_COMPANY]) {
         acc[item.CART_ID_COMPANY] = [];
@@ -42,15 +41,12 @@ const create = async (orderData) => {
 
     const createdOrderIds = [];
 
-    // 2️⃣ Tạo 1 orders cho mỗi công ty
     for (const [companyId, items] of Object.entries(itemsByCompany)) {
-      // Tính tổng tiền cho công ty này
       const totalAmount = items.reduce(
         (sum, item) => sum + item.PRICE_PRODUCTS * item.QUANTITY,
         0
       );
 
-      // Insert vào bảng orders
       const [orderResult] = await conn.query(
         `INSERT INTO orders (
           ID_USERS, DATE_ORDER, TOTAL_AMOUNT_ORDER,
@@ -71,15 +67,14 @@ const create = async (orderData) => {
           companyId,
           ID_TRANSPORT_ORDER,
           PAYMENT_METHOD,
-          FULLNAME_ORDER, // 📌 Họ tên người mua
-          PHONE_ORDER, // 📌 Số điện thoại
+          FULLNAME_ORDER,
+          PHONE_ORDER,
         ]
       );
 
       const newOrderId = orderResult.insertId;
       createdOrderIds.push(newOrderId);
 
-      // 3️⃣ Thêm các sản phẩm của công ty này vào order_items
       for (const item of items) {
         await conn.query(
           `INSERT INTO order_items (
@@ -97,7 +92,43 @@ const create = async (orderData) => {
       }
     }
 
+    // ✅ Xóa sản phẩm khỏi giỏ
+    const productInstanceIds = orderItems.map(
+      (item) => item.ID_PRODUCT_INSTANCE
+    );
+    await clearCartItems(ID_USERS, productInstanceIds);
+
     await conn.commit();
+
+    // ✅ Lấy email user và gửi email xác nhận đơn hàng
+    // Chuẩn bị dữ liệu đơn hàng
+    const userInfo = await getUserEmail(ID_USERS);
+
+    const orderDetails = {
+      orderId: createdOrderIds.join(", "),
+      tongTien: orderItems.reduce(
+        (sum, item) => sum + item.PRICE_PRODUCTS * item.QUANTITY,
+        0
+      ),
+      NAME_COMPANY: orderItems[0]?.NAME_COMPANY,
+      ngayTaoDonHang: formattedDate,
+      items: orderItems.map((item) => ({
+        tenSanPham: item.NAME_PRODUCTS,
+        soLuong: item.QUANTITY,
+        giaSanPhamChiTiet: item.PRICE_PRODUCTS,
+        moTa: item.DESCRIPTION_PRODUCTS,
+        hinhAnh: item.IMAGE_URL_PRODUCTS,
+      })),
+      user: {
+        name: userInfo.HO_TEN,
+        address: userInfo.FULL_ADDRESS || "Chưa cập nhật",
+        phone: userInfo.SO_DIEN_THOAI,
+      },
+    };
+
+    // Gửi email
+    await sendOrderEmail({ email: userInfo.EMAIL, orderDetails });
+
     return createdOrderIds;
   } catch (error) {
     await conn.rollback();
@@ -106,7 +137,131 @@ const create = async (orderData) => {
     conn.release();
   }
 };
+const getUserEmail = async (userId) => {
+  const conn = await db.getConnection();
+  try {
+    const [rows] = await conn.query(
+      `SELECT EMAIL, HO_TEN, SO_DIEN_THOAI, 
+              CONCAT_WS(', ', DIA_CHI_STREETNAME, DIA_CHI_Wards, DIA_CHI_Districts, DIA_CHI_Provinces) AS FULL_ADDRESS
+       FROM users 
+       WHERE ID_USERS = ? AND IS_DELETE_USERS = 0`,
+      [userId]
+    );
 
+    if (rows.length === 0) {
+      return;
+    }
+
+    return rows[0]; // { EMAIL, HO_TEN, SO_DIEN_THOAI, FULL_ADDRESS }
+  } finally {
+    conn.release();
+  }
+};
+
+// 📌 Hàm xóa sản phẩm trong giỏ hàng theo danh sách ID_PRODUCT_INSTANCE
+const clearCartItems = async (userId, productInstanceIds) => {
+  if (!productInstanceIds || productInstanceIds.length === 0) return;
+
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    await conn.query(
+      `DELETE FROM cart 
+       WHERE ID_USERS = ? 
+       AND ID_PRODUCT_INSTANCE IN (?)`,
+      [userId, productInstanceIds]
+    );
+
+    await conn.commit();
+  } catch (error) {
+    await conn.rollback();
+    throw error;
+  } finally {
+    conn.release();
+  }
+};
+// Hàm gửi email
+const sendOrderEmail = async ({ email, orderDetails }) => {
+  if (!email || !orderDetails) {
+    return { EM: "Email và chi tiết đơn hàng là bắt buộc", EC: -1 };
+  }
+
+  const formattedTongTien = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(orderDetails.tongTien);
+
+  // Nội dung email
+  const orderMessage = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+      <div style="text-align: center; padding: 10px 0;">
+        <h1 style="color: #007BFF;">Cảm Ơn Bạn Đã Đặt Hàng!</h1>
+        <p style="font-size: 16px; color: #555;">Đơn hàng gốm sứ của bạn đã được ghi nhận thành công.</p>
+      </div>
+
+      <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+        <h2 style="color: #007BFF;">Chi Tiết Đơn Hàng</h2>
+        <p><strong>Mã Đơn Hàng:</strong> ${orderDetails.orderId}</p>
+        <p><strong>Tổng Tiền:</strong> ${formattedTongTien}</p>
+        <p><strong>Ngày Đặt:</strong> ${orderDetails.ngayTaoDonHang}</p>
+
+        <h3>Sản Phẩm:</h3>
+        <ul>
+          ${orderDetails.items
+            .map(
+              (item) => `
+              <li style="margin-bottom:10px;">
+       
+                <strong>${item.tenSanPham}</strong> <br/>
+                SL: ${item.soLuong} x ${new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(item.giaSanPhamChiTiet)} <br/>
+                <em>${item.moTa}</em>
+              </li>
+            `
+            )
+            .join("")}
+        </ul>
+
+        <h3>Thông Tin Người Dùng:</h3>
+        <p><strong>Họ Tên:</strong> ${orderDetails.user.name}</p>
+        <p><strong>Địa Chỉ:</strong> ${orderDetails.user.address}</p>
+        <p><strong>Số Điện Thoại:</strong> ${orderDetails.user.phone}</p>
+      </div>
+
+      <div style="margin-top: 20px; text-align: center; color: #888; font-size: 12px;">
+        <p>&copy; 2025 ${
+          orderDetails?.NAME_COMPANY
+        } - Gốm Sứ Nghệ Thuật Việt. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_OTP,
+      pass: process.env.PASSWORD_OTP,
+    },
+  });
+
+  const mailOptions = {
+    from: "hohoangphucjob@gmail.com",
+    to: email,
+    subject: "Thông Tin Đơn Hàng Gốm Sứ Của Bạn",
+    html: orderMessage,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return { EM: "Gửi email đơn hàng thành công", EC: 1 };
+  } catch (error) {
+    console.error("Error sending order email:", error);
+    return { EM: "Gửi email thất bại", EC: -1 };
+  }
+};
 const getAll = async ({ ID_COMPANY, ID_USERS }) => {
   let query = "SELECT * FROM orders";
   let params = [];

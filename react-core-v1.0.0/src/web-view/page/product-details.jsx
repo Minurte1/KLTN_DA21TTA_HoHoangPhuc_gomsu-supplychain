@@ -137,8 +137,9 @@ const ProductDetails = () => {
                 sx={{
                   objectFit: "contain",
                   height: { xs: 250, md: 400 },
-                  p: 2,
+
                   borderRadius: 12,
+                  border: `1px solid ${theme.palette.divider}`,
                 }}
               />
             </Grid>
