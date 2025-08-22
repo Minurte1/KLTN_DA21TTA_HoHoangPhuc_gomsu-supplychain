@@ -2,6 +2,7 @@ const db = require("../config/database");
 const moment = require("moment");
 const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 const nodemailer = require("nodemailer");
+
 const create = async (orderData) => {
   const {
     ID_USERS,
@@ -137,6 +138,7 @@ const create = async (orderData) => {
     conn.release();
   }
 };
+
 const getUserEmail = async (userId) => {
   const conn = await db.getConnection();
   try {
@@ -158,29 +160,6 @@ const getUserEmail = async (userId) => {
   }
 };
 
-// 📌 Hàm xóa sản phẩm trong giỏ hàng theo danh sách ID_PRODUCT_INSTANCE
-const clearCartItems = async (userId, productInstanceIds) => {
-  if (!productInstanceIds || productInstanceIds.length === 0) return;
-
-  const conn = await db.getConnection();
-  try {
-    await conn.beginTransaction();
-
-    await conn.query(
-      `DELETE FROM cart 
-       WHERE ID_USERS = ? 
-       AND ID_PRODUCT_INSTANCE IN (?)`,
-      [userId, productInstanceIds]
-    );
-
-    await conn.commit();
-  } catch (error) {
-    await conn.rollback();
-    throw error;
-  } finally {
-    conn.release();
-  }
-};
 // Hàm gửi email
 const sendOrderEmail = async ({ email, orderDetails }) => {
   if (!email || !orderDetails) {
@@ -260,6 +239,30 @@ const sendOrderEmail = async ({ email, orderDetails }) => {
   } catch (error) {
     console.error("Error sending order email:", error);
     return { EM: "Gửi email thất bại", EC: -1 };
+  }
+};
+
+// 📌 Hàm xóa sản phẩm trong giỏ hàng theo danh sách ID_PRODUCT_INSTANCE
+const clearCartItems = async (userId, productInstanceIds) => {
+  if (!productInstanceIds || productInstanceIds.length === 0) return;
+
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    await conn.query(
+      `DELETE FROM cart 
+       WHERE ID_USERS = ? 
+       AND ID_PRODUCT_INSTANCE IN (?)`,
+      [userId, productInstanceIds]
+    );
+
+    await conn.commit();
+  } catch (error) {
+    await conn.rollback();
+    throw error;
+  } finally {
+    conn.release();
   }
 };
 const getAll = async ({ ID_COMPANY, ID_USERS }) => {
