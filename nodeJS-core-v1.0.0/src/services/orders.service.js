@@ -32,6 +32,7 @@ const create = async (orderData) => {
   try {
     await conn.beginTransaction();
 
+    // 🔹 Nhóm sản phẩm theo công ty
     const itemsByCompany = orderItems.reduce((acc, item) => {
       if (!acc[item.CART_ID_COMPANY]) {
         acc[item.CART_ID_COMPANY] = [];
@@ -40,8 +41,25 @@ const create = async (orderData) => {
       return acc;
     }, {});
 
+    // 🔹 Tổng tiền toàn bộ đơn hàng
+    const totalUserOrder = orderItems.reduce(
+      (sum, item) => sum + item.PRICE_PRODUCTS * item.QUANTITY,
+      0
+    );
+
+    // 🔹 Tạo user_orders (đơn hàng cha)
+    const [userOrderResult] = await conn.query(
+      `INSERT INTO user_orders (
+        ID_USERS, DATE_CREATED, TOTAL_AMOUNT, STATUS
+      ) VALUES (?, ?, ?, ?)`,
+      [ID_USERS, formattedDate, totalUserOrder, "PENDING"]
+    );
+
+    const newUserOrderId = userOrderResult.insertId;
+
     const createdOrderIds = [];
 
+    // 🔹 Tạo orders (đơn hàng con, theo từng công ty)
     for (const [companyId, items] of Object.entries(itemsByCompany)) {
       const totalAmount = items.reduce(
         (sum, item) => sum + item.PRICE_PRODUCTS * item.QUANTITY,
@@ -50,13 +68,14 @@ const create = async (orderData) => {
 
       const [orderResult] = await conn.query(
         `INSERT INTO orders (
-          ID_USERS, DATE_ORDER, TOTAL_AMOUNT_ORDER,
+          ID_USER_ORDER, ID_USERS, DATE_ORDER, TOTAL_AMOUNT_ORDER,
           PAYMENT_STATUS_ORDER, SHIPPING_STATUS_ORDER,
           SHIPPING_ADDRESS, SHIPPING_METHOD, SHIPPING_COST,
           ID_COMPANY, ID_TRANSPORT_ORDER, PAYMENT_METHOD, 
           FULLNAME_ORDER, PHONE_ORDER
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
+          newUserOrderId, // 🔗 liên kết với user_orders
           ID_USERS,
           formattedDate,
           totalAmount,
@@ -76,6 +95,7 @@ const create = async (orderData) => {
       const newOrderId = orderResult.insertId;
       createdOrderIds.push(newOrderId);
 
+      // 🔹 Tạo order_items
       for (const item of items) {
         await conn.query(
           `INSERT INTO order_items (
@@ -93,7 +113,7 @@ const create = async (orderData) => {
       }
     }
 
-    // ✅ Xóa sản phẩm khỏi giỏ
+    // 🔹 Xóa sản phẩm khỏi giỏ
     const productInstanceIds = orderItems.map(
       (item) => item.ID_PRODUCT_INSTANCE
     );
@@ -101,17 +121,13 @@ const create = async (orderData) => {
 
     await conn.commit();
 
-    // ✅ Lấy email user và gửi email xác nhận đơn hàng
-    // Chuẩn bị dữ liệu đơn hàng
+    // 🔹 Gửi email xác nhận đơn hàng
     const userInfo = await getUserEmail(ID_USERS);
 
     const orderDetails = {
-      orderId: createdOrderIds.join(", "),
-      tongTien: orderItems.reduce(
-        (sum, item) => sum + item.PRICE_PRODUCTS * item.QUANTITY,
-        0
-      ),
-      NAME_COMPANY: orderItems[0]?.NAME_COMPANY,
+      userOrderId: newUserOrderId,
+      orderIds: createdOrderIds.join(", "),
+      tongTien: totalUserOrder,
       ngayTaoDonHang: formattedDate,
       items: orderItems.map((item) => ({
         tenSanPham: item.NAME_PRODUCTS,
@@ -127,10 +143,9 @@ const create = async (orderData) => {
       },
     };
 
-    // Gửi email
     await sendOrderEmail({ email: userInfo.EMAIL, orderDetails });
 
-    return createdOrderIds;
+    return { userOrderId: newUserOrderId, orderIds: createdOrderIds };
   } catch (error) {
     await conn.rollback();
     throw error;
@@ -266,14 +281,35 @@ const clearCartItems = async (userId, productInstanceIds) => {
   }
 };
 const getAll = async ({ ID_COMPANY, ID_USERS }) => {
-  let query = "SELECT * FROM orders";
+  let query = `
+    SELECT 
+      uo.ID_USER_ORDER,
+      uo.ID_USERS,
+      uo.DATE_CREATED,
+      uo.TOTAL_AMOUNT,
+      uo.STATUS,
+      o.ID_ORDERS_,
+      o.ID_COMPANY,
+      o.DATE_ORDER,
+      o.TOTAL_AMOUNT_ORDER,
+      o.PAYMENT_STATUS_ORDER,
+      o.SHIPPING_STATUS_ORDER,
+      o.SHIPPING_ADDRESS,
+      o.SHIPPING_METHOD,
+      o.SHIPPING_COST,
+      o.FULLNAME_ORDER,
+      o.PHONE_ORDER
+    FROM user_orders uo
+    LEFT JOIN orders o ON uo.ID_USER_ORDER = o.ID_USER_ORDER
+  `;
+
   let params = [];
 
   if (ID_COMPANY) {
-    query += " WHERE ID_COMPANY = ?";
+    query += " WHERE o.ID_COMPANY = ?";
     params.push(ID_COMPANY);
   } else if (ID_USERS) {
-    query += " WHERE ID_USERS = ?";
+    query += " WHERE uo.ID_USERS = ?";
     params.push(ID_USERS);
   }
 
@@ -286,7 +322,7 @@ const getById = async (id) => {
     `
     SELECT 
       o.ID_ORDERS_,
-      o.ID_USERS,
+      o.ID_USER_ORDER,
       o.DATE_ORDER,
       o.TOTAL_AMOUNT_ORDER,
       o.PAYMENT_STATUS_ORDER,
@@ -299,10 +335,16 @@ const getById = async (id) => {
       o.FULLNAME_ORDER,
       o.PHONE_ORDER,
       o.PAYMENT_METHOD,
+
+      uo.ID_USER_ORDER,
+      uo.ID_USERS,
+      uo.DATE_CREATED,
+      uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
+      uo.STATUS AS STATUS_USER_ORDER,
+
       u.ID_USERS AS USER_ID,
       u.HO_TEN,
       u.EMAIL,
-
 
       oi.ID_ORDER_ITEMS,
       oi.QUANTITY_INVENTORY,
@@ -316,14 +358,13 @@ const getById = async (id) => {
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
-     
       p.IMAGE_URL_PRODUCTS,
 
       c.ID_CATEGORIES_,
       c.NAME_CATEGORIES_
-
     FROM orders o
-    JOIN users u ON o.ID_USERS = u.ID_USERS
+    JOIN user_orders uo ON o.ID_USER_ORDER = uo.ID_USER_ORDER
+    JOIN users u ON uo.ID_USERS = u.ID_USERS
     JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
     JOIN product_instances pi ON oi.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
     JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT
@@ -335,10 +376,9 @@ const getById = async (id) => {
 
   if (rows.length === 0) return null;
 
-  // Gom nhóm dữ liệu: đơn hàng + sản phẩm
   const orderInfo = {
     ID_ORDERS_: rows[0].ID_ORDERS_,
-    ID_USERS: rows[0].ID_USERS,
+    ID_USER_ORDER: rows[0].ID_USER_ORDER,
     DATE_ORDER: rows[0].DATE_ORDER,
     TOTAL_AMOUNT_ORDER: rows[0].TOTAL_AMOUNT_ORDER,
     PAYMENT_STATUS_ORDER: rows[0].PAYMENT_STATUS_ORDER,
@@ -351,12 +391,21 @@ const getById = async (id) => {
     ID_TRANSPORT_ORDER: rows[0].ID_TRANSPORT_ORDER,
     FULLNAME_ORDER: rows[0].FULLNAME_ORDER,
     PHONE_ORDER: rows[0].PHONE_ORDER,
+
+    userOrder: {
+      ID_USER_ORDER: rows[0].ID_USER_ORDER,
+      DATE_CREATED: rows[0].DATE_CREATED,
+      TOTAL_AMOUNT: rows[0].TOTAL_AMOUNT_USER_ORDER,
+      STATUS: rows[0].STATUS_USER_ORDER,
+    },
+
     user: {
       ID_USERS: rows[0].USER_ID,
       HO_TEN: rows[0].HO_TEN,
       EMAIL: rows[0].EMAIL,
-      AVATAR: rows[0].HO_TEN,
+      AVATAR: rows[0].HO_TEN, // chỗ này bạn có thể đổi thành trường avatar thực
     },
+
     products: rows.map((r) => ({
       ID_ORDER_ITEMS: r.ID_ORDER_ITEMS,
       QUANTITY_INVENTORY: r.QUANTITY_INVENTORY,
@@ -368,7 +417,6 @@ const getById = async (id) => {
       NAME_PRODUCTS: r.NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS: r.DESCRIPTION_PRODUCTS,
       PRICE_PRODUCTS: r.PRICE_PRODUCTS,
-
       IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS
         ? URL_IMAGE_BASE + r.IMAGE_URL_PRODUCTS
         : null,
@@ -426,7 +474,7 @@ const getOrdersByUserId = async (id) => {
     `
     SELECT 
       o.ID_ORDERS_,
-      o.ID_USERS,
+      o.ID_USER_ORDER,
       o.DATE_ORDER,
       o.TOTAL_AMOUNT_ORDER,
       o.PAYMENT_STATUS_ORDER,
@@ -440,7 +488,12 @@ const getOrdersByUserId = async (id) => {
       o.PHONE_ORDER,
       o.PAYMENT_METHOD,
 
-      u.ID_USERS AS USER_ID,
+      uo.ID_USER_ORDER,
+      uo.ID_USERS AS USER_ID,
+      uo.DATE_CREATED,
+      uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
+      uo.STATUS AS STATUS_USER_ORDER,
+
       u.HO_TEN,
       u.EMAIL,
 
@@ -456,19 +509,19 @@ const getOrdersByUserId = async (id) => {
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
-    
       p.IMAGE_URL_PRODUCTS,
 
       c.ID_CATEGORIES_,
       c.NAME_CATEGORIES_
 
     FROM orders o
-    JOIN users u ON o.ID_USERS = u.ID_USERS
+    JOIN user_orders uo ON o.ID_USER_ORDER = uo.ID_USER_ORDER
+    JOIN users u ON uo.ID_USERS = u.ID_USERS
     JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
     JOIN product_instances pi ON oi.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
     JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT
     JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_
-    WHERE o.ID_USERS = ?
+    WHERE uo.ID_USERS = ?
     ORDER BY o.DATE_ORDER DESC
   `,
     [id]
@@ -483,7 +536,7 @@ const getOrdersByUserId = async (id) => {
     if (!ordersMap.has(r.ID_ORDERS_)) {
       ordersMap.set(r.ID_ORDERS_, {
         ID_ORDERS_: r.ID_ORDERS_,
-        ID_USERS: r.ID_USERS,
+        ID_USER_ORDER: r.ID_USER_ORDER,
         DATE_ORDER: r.DATE_ORDER,
         TOTAL_AMOUNT_ORDER: r.TOTAL_AMOUNT_ORDER,
         PAYMENT_STATUS_ORDER: r.PAYMENT_STATUS_ORDER,
@@ -496,6 +549,12 @@ const getOrdersByUserId = async (id) => {
         ID_TRANSPORT_ORDER: r.ID_TRANSPORT_ORDER,
         FULLNAME_ORDER: r.FULLNAME_ORDER,
         PHONE_ORDER: r.PHONE_ORDER,
+        userOrder: {
+          ID_USER_ORDER: r.ID_USER_ORDER,
+          DATE_CREATED: r.DATE_CREATED,
+          TOTAL_AMOUNT: r.TOTAL_AMOUNT_USER_ORDER,
+          STATUS: r.STATUS_USER_ORDER,
+        },
         user: {
           ID_USERS: r.USER_ID,
           HO_TEN: r.HO_TEN,
@@ -517,7 +576,6 @@ const getOrdersByUserId = async (id) => {
       NAME_PRODUCTS: r.NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS: r.DESCRIPTION_PRODUCTS,
       PRICE_PRODUCTS: r.PRICE_PRODUCTS,
-
       IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS
         ? URL_IMAGE_BASE + r.IMAGE_URL_PRODUCTS
         : null,

@@ -77,7 +77,7 @@ const OrdersUsers = () => {
   return (
     <>
       {" "}
-      <Card sx={{ maxWidth: 900, margin: "auto", mt: 4, p: 2 }}>
+      <Box sx={{ maxWidth: 900, margin: "auto", mt: 4, p: 2 }}>
         <CardContent>
           {/* Lịch sử đơn hàng */}
           <Divider sx={{ my: 3 }} />
@@ -139,7 +139,7 @@ const OrdersUsers = () => {
             <Typography>Không có đơn hàng nào.</Typography>
           )}
         </CardContent>
-      </Card>
+      </Box>
       <OrderDetailModal
         open={open}
         onClose={() => setOpen(false)}
