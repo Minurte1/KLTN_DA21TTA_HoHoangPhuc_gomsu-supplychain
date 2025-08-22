@@ -8,7 +8,7 @@ import DynamicTable from "../../share-view/dynamic/table/table";
 import materialServices from "../../services/materialServices";
 import MaterialsFormModal from "../modal/materials-modal";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
-
+import moment from "moment";
 const Material = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -55,6 +55,8 @@ const Material = () => {
 
       <DynamicTable
         data={materials}
+        keyStatus={"materials"}
+        statusColumns={["STATUS"]}
         columns={[
           { key: "NAME_MATERIAL_TYPES", label: "Tên loại vật liệu" },
           { key: "NAME_COMPANY", label: "Tên công ty" },
@@ -64,7 +66,12 @@ const Material = () => {
           { key: "COST_PER_UNIT_", label: "Giá mỗi đơn vị" },
           { key: "ORIGIN", label: "Nguồn gốc" },
           { key: "STATUS", label: "Trạng thái" },
-          { key: "EXPIRY_DATE", label: "Ngày hết hạn" },
+          {
+            key: "EXPIRY_DATE",
+            label: "Ngày hết hạn",
+            render: (value) =>
+              value ? moment(value).format("DD/MM/YYYY") : "—",
+          },
           {
             key: "actions",
             label: "Hành động",

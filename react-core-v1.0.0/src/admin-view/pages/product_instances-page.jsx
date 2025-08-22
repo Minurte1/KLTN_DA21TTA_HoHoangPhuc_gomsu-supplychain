@@ -58,7 +58,8 @@ const ProductInstances = () => {
 
       <DynamicTable
         data={productInstances}
-        keyStatus={"product_instances"}
+        keyStatus={"productInstanceStatus"}
+        statusColumns={["STATUS"]}
         subStatus={true}
         columns={[
           { key: "UID", label: "UID" },

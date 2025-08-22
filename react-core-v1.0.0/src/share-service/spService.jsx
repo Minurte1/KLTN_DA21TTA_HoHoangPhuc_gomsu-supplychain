@@ -87,6 +87,7 @@ const spService = {
           bgColor: "#d1e7dd",
           borderColor: "#badbcc",
         },
+
         HIDDEN: {
           label: "Đã ẩn",
           color: "#41464b",
@@ -101,6 +102,45 @@ const spService = {
         },
         STOP: {
           label: "Ngừng kinh doanh",
+          color: "#664d03",
+          bgColor: "#fff3cd",
+          borderColor: "#ffecb5",
+        },
+        PENDING: {
+          label: "Chờ duyệt",
+          color: "#055160",
+          bgColor: "#cff4fc",
+          borderColor: "#b6effb",
+        },
+        READY: {
+          label: "Sẵn sàng",
+          color: "#084298",
+          bgColor: "#cfe2ff",
+          borderColor: "#b6d4fe",
+        },
+      },
+      materials: {
+        ACTIVE: {
+          label: "Đang bán",
+          color: "#0f5132",
+          bgColor: "#d1e7dd",
+          borderColor: "#badbcc",
+        },
+
+        HIDDEN: {
+          label: "Đã ẩn",
+          color: "#41464b",
+          bgColor: "#e2e3e5",
+          borderColor: "#d3d6d8",
+        },
+        OUT: {
+          label: "Hết hàng",
+          color: "#842029",
+          bgColor: "#f8d7da",
+          borderColor: "#f5c2c7",
+        },
+        STOP: {
+          label: "Ngừng hoạt động",
           color: "#664d03",
           bgColor: "#fff3cd",
           borderColor: "#ffecb5",
@@ -172,6 +212,44 @@ const spService = {
           color: "#055160",
           bgColor: "#cff4fc",
           borderColor: "#b6effb",
+        },
+      },
+      productInstanceStatus: {
+        AVAILABLE: {
+          label: "Còn hàng",
+          color: "#0f5132",
+          bgColor: "#d1e7dd",
+          borderColor: "#badbcc",
+        },
+        OUT_OF_STOCK: {
+          label: "Hết hàng",
+          color: "#842029",
+          bgColor: "#f8d7da",
+          borderColor: "#f5c2c7",
+        },
+        DISCONTINUED: {
+          label: "Ngừng kinh doanh",
+          color: "#664d03",
+          bgColor: "#fff3cd",
+          borderColor: "#ffecb5",
+        },
+        SOLD: {
+          label: "Đã bán",
+          color: "#084298",
+          bgColor: "#cfe2ff",
+          borderColor: "#b6d4fe",
+        },
+        RESERVED: {
+          label: "Đã đặt trước",
+          color: "#055160",
+          bgColor: "#cff4fc",
+          borderColor: "#b6effb",
+        },
+        DAMAGED: {
+          label: "Bị hư hỏng",
+          color: "#58151c",
+          bgColor: "#f8d7da",
+          borderColor: "#f5c2c7",
         },
       },
       equipment: {

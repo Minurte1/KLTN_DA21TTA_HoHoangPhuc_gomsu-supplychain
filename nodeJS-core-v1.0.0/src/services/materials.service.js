@@ -78,7 +78,23 @@ const getAll = async (ID_COMPANY, STATUS) => {
       query += " WHERE " + conditions.join(" AND ");
     }
 
+    // Lấy dữ liệu
     const [rows] = await db.query(query, params);
+
+    // Kiểm tra hạn sử dụng & update nếu hết hạn
+    const now = new Date();
+    for (let row of rows) {
+      if (row.EXPIRY_DATE && new Date(row.EXPIRY_DATE) < now) {
+        if (row.STATUS !== "STOP") {
+          await db.query(
+            "UPDATE materials SET STATUS = 'STOP' WHERE ID_MATERIALS_ = ?",
+            [row.ID_MATERIALS_]
+          );
+          row.STATUS = "STOP"; // đồng bộ lại trong kết quả trả về
+        }
+      }
+    }
+
     return rows;
   } catch (error) {
     console.error("Error in getAll:", error);
@@ -113,9 +129,19 @@ const update = async (id, data) => {
       STATUS,
     } = data;
 
+    // Convert ISO string -> MySQL DATETIME format
+    let formattedExpiryDate = null;
+    if (EXPIRY_DATE) {
+      const date = new Date(EXPIRY_DATE);
+      formattedExpiryDate = date
+        .toISOString()
+        .slice(0, 19) // "YYYY-MM-DDTHH:MM:SS"
+        .replace("T", " "); // thành "YYYY-MM-DD HH:MM:SS"
+    }
+
     const [result] = await db.query(
       `UPDATE materials 
-       SET ID_MATERIAL_TYPES = ?, NAME_ = ?, UNIT_ = ?, QUANTITY = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ?,STATUS = ?, ID_COMPANY = ?
+       SET ID_MATERIAL_TYPES = ?, NAME_ = ?, UNIT_ = ?, QUANTITY = ?, COST_PER_UNIT_ = ?, ORIGIN = ?, EXPIRY_DATE = ?, STATUS = ?, ID_COMPANY = ?
        WHERE ID_MATERIALS_ = ?`,
       [
         ID_MATERIAL_TYPES,
@@ -124,7 +150,7 @@ const update = async (id, data) => {
         QUANTITY,
         COST_PER_UNIT_,
         ORIGIN,
-        EXPIRY_DATE,
+        formattedExpiryDate, // chèn ngày đã format
         STATUS,
         ID_COMPANY,
         id,

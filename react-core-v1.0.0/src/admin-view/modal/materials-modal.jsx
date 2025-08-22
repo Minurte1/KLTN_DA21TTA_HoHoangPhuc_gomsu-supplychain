@@ -160,8 +160,6 @@ const MaterialsFormModal = ({ open, onClose, material, onSuccess }) => {
   };
 
   const handleSubmit = async (submittedFormData) => {
-    console.log("submittedFormData", submittedFormData);
-
     try {
       const dataToSubmit = {
         ID_MATERIAL_TYPES:

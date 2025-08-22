@@ -54,6 +54,7 @@ const Step2Materials = ({
     try {
       const data = await materialServices.getMaterials({
         ID_COMPANY: companyId,
+        STATUS: "READY",
       });
 
       console.log("data", data);

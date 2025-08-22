@@ -85,10 +85,11 @@ const ProductionSteps = () => {
       label: "Thời gian kết thúc",
       render: (value) => spService.formatDateTime(value),
     },
-    { key: "STATUS_PRODUCTION_STEPS", label: "Trạng thái" },
+
     { key: "NAME_PRODUCTION_PLAN", label: "ID kế hoạch sản xuất" },
     { key: "USER_HO_TEN", label: "ID người dùng" },
     { key: "NAME_EQUIPMENT", label: "ID thiết bị" },
+    { key: "STATUS_PRODUCTION_STEPS", label: "Trạng thái" },
     {
       key: "actions",
       label: "Hành động",
@@ -136,6 +137,7 @@ const ProductionSteps = () => {
         Quản lý Công Đoạn Sản Xuất - Hôm nay
       </Typography>
       <DynamicTable
+        statusColumns={["STATUS_PRODUCTION_STEPS"]}
         data={todaySteps}
         columns={columns}
         keyStatus={"productionSteps"}
@@ -145,6 +147,7 @@ const ProductionSteps = () => {
         Quản lý Công Đoạn Sản Xuất - Trước đó
       </Typography>
       <DynamicTable
+        statusColumns={["STATUS_PRODUCTION_STEPS"]}
         data={previousSteps}
         columns={columns}
         subStatus={true}

@@ -9,7 +9,7 @@ import DynamicTable from "../../share-view/dynamic/table/table";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import productionPlanServices from "../../services/productionPlanServices";
 import ProductionPlansFormModal from "../modal/productionPlans-modal";
-
+import moment from "moment";
 const ProductionPlans = () => {
   const [plans, setPlans] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -19,6 +19,7 @@ const ProductionPlans = () => {
   const fetchPlans = async () => {
     const ID_COMPANY = userInfo?.companyInfo?.ID_COMPANY || null;
     const data = await productionPlanServices.getProductionPlans(ID_COMPANY);
+    console.log("Fetched production plans:", data);
     setPlans(data);
   };
 
@@ -56,6 +57,7 @@ const ProductionPlans = () => {
       <DynamicTable
         data={plans}
         subStatus={true}
+        statusColumns={["STATUS_PRODUCTION_PLANS"]}
         keyStatus={"productionPlans"}
         columns={[
           { key: "NAME_PRODUCTION_PLAN", label: "Tên kế hoạch" },
@@ -64,18 +66,26 @@ const ProductionPlans = () => {
           {
             key: "PLANNED_START_PRODUCTION_PLANS",
             label: "Ngày bắt đầu dự kiến",
+            render: (value) =>
+              value ? moment(value).format("DD/MM/YYYY") : "—",
           },
           {
             key: "PLANNED_END_PRODUCTION_PLANS",
             label: "Ngày kết thúc dự kiến",
+            render: (value) =>
+              value ? moment(value).format("DD/MM/YYYY") : "—",
           },
           {
             key: "ACTUAL_START_PRODUCTION_PLANS",
             label: "Ngày bắt đầu thực tế",
+            render: (value) =>
+              value ? moment(value).format("DD/MM/YYYY") : "—",
           },
           {
             key: "ACTUAL_END_PRODUCTION_PLANS",
             label: "Ngày kết thúc thực tế",
+            render: (value) =>
+              value ? moment(value).format("DD/MM/YYYY") : "—",
           },
           { key: "STATUS_PRODUCTION_PLANS", label: "Trạng thái" },
           { key: "NOTE_PRODUCTION_PLANS", label: "Ghi chú" },
