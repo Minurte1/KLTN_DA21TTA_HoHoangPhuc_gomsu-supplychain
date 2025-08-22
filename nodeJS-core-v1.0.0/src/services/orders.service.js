@@ -68,15 +68,15 @@ const create = async (orderData) => {
 
       const [orderResult] = await conn.query(
         `INSERT INTO orders (
-          ID_USER_ORDER, ID_USERS, DATE_ORDER, TOTAL_AMOUNT_ORDER,
+          ID_USER_ORDER, DATE_ORDER, TOTAL_AMOUNT_ORDER,
           PAYMENT_STATUS_ORDER, SHIPPING_STATUS_ORDER,
           SHIPPING_ADDRESS, SHIPPING_METHOD, SHIPPING_COST,
           ID_COMPANY, ID_TRANSPORT_ORDER, PAYMENT_METHOD, 
           FULLNAME_ORDER, PHONE_ORDER
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           newUserOrderId, // 🔗 liên kết với user_orders
-          ID_USERS,
+
           formattedDate,
           totalAmount,
           PAYMENT_STATUS_ORDER,
