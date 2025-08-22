@@ -61,7 +61,6 @@ const HeaderAdmin = () => {
     }
   };
 
-  console.log(" sd ", userInfo);
   return (
     <AppBar position="static" sx={{ backgroundColor: "#f5f7fa" }}>
       <Toolbar>
@@ -79,13 +78,62 @@ const HeaderAdmin = () => {
             sx={{
               fontWeight: "bold",
               fontSize: "1.5rem",
-              marginRight: 2,
+              // marginRight: 2,
+              marginLeft: 4,
+              color: "#333333",
+              textDecoration: "none",
+            }}
+          ></Typography>{" "}
+          <Typography
+            variant="h6"
+            component={Link}
+            to="/"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1.5rem",
+              flexGrow: 1,
+              color: "#333333",
+              textDecoration: "none",
+            }}
+          ></Typography>{" "}
+          <Typography
+            variant="h6"
+            component={Link}
+            to="/"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1.5rem",
+              flexGrow: 1,
               color: "#333333",
               textDecoration: "none",
             }}
           >
-            {" "}
+            Trang chủ
           </Typography>{" "}
+          <Typography
+            variant="h6"
+            component={Link}
+            to="/"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1.5rem",
+              flexGrow: 1,
+              color: "#333333",
+              textDecoration: "none",
+            }}
+          ></Typography>{" "}
+          <Typography
+            variant="h6"
+            component={Link}
+            to="/"
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1.5rem",
+              flexGrow: 1,
+              color: "#333333",
+              textDecoration: "none",
+            }}
+          ></Typography>{" "}
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center" }}>

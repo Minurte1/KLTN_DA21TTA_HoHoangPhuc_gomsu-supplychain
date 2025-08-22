@@ -87,7 +87,7 @@ const NavBarUser = () => {
           color: "#333333",
         }}
       >
-        Quản lý hệ thống
+        Thông tin người dùng
       </Typography>
       <List component="nav">
         {userMenuConfig.map((item, index) => {
