@@ -50,8 +50,41 @@ const getMonthlyRevenue = async (req, res) => {
     res.status(500).json({ message: "Error fetching revenue statistics" });
   }
 };
+
+// API thống kê doanh thu bán ra
+const getRevenueByManufacturer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await thongKeService.getRevenueByManufacturer(id);
+
+    if (!data) {
+      return res.status(404).json({ message: "Không có dữ liệu thống kê" });
+    }
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+const getTop10Products = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await thongKeService.getTop10Products(id || null);
+
+    if (!data) {
+      return res.status(404).json({ message: "Không có dữ liệu thống kê" });
+    }
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getThongKeByCompanyId,
   getTopMaterialByCompany,
   getMonthlyRevenue,
+  getRevenueByManufacturer,
+  getTop10Products,
 };

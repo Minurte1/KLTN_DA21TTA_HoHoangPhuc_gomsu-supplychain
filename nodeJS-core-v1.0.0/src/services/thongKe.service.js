@@ -142,10 +142,99 @@ const getYearlyRevenue = async (id) => {
   const [rows] = await db.query(query, params);
   return rows;
 };
+
+// ====================CTY SẢN XUẤT=======================================
+// Thống kê doanh thu bán ra
+const getRevenueByManufacturer = async (id) => {
+  let query = `
+    SELECT 
+      c.ID_COMPANY,
+      c.NAME_COMPANY,
+      SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
+    FROM order_items oi
+    JOIN orders o 
+      ON oi.ID_ORDERS_ = o.ID_ORDERS_
+    JOIN companies c 
+      ON oi.ID_COMPANY = c.ID_COMPANY
+  `;
+
+  const params = [];
+
+  if (id) {
+    query += ` WHERE c.ID_COMPANY = ? `;
+    params.push(id);
+  }
+
+  query += `
+    GROUP BY c.ID_COMPANY, c.NAME_COMPANY
+    ORDER BY TOTAL_REVENUE DESC
+  `;
+
+  const [rows] = await db.query(query, params);
+
+  return rows.length > 0 ? rows : null;
+};
+// Thống kê top 10 sản phẩm bán chạy (lấy đầy đủ thông tin sản phẩm)
+const getTop10Products = async (id) => {
+  let query = `
+    SELECT 
+      p.ID_PRODUCT,
+      p.ID_CATEGORIES_,
+      p.NAME_PRODUCTS,
+      p.DESCRIPTION_PRODUCTS,
+      p.PRICE_PRODUCTS,
+     
+      p.IMAGE_URL_PRODUCTS,
+      p.CREATED_AT_PRODUCTS,
+      p.UPDATED_AT_PRODUCTS,
+      p.ID_COMPANY,
+      SUM(oi.QUANTITY_INVENTORY) AS TOTAL_QUANTITY,
+      SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
+    FROM order_items oi
+    JOIN orders o 
+      ON oi.ID_ORDERS_ = o.ID_ORDERS_
+    JOIN companies c 
+      ON oi.ID_COMPANY = c.ID_COMPANY
+    JOIN product_instances pi 
+      ON oi.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
+    JOIN products p 
+      ON pi.ID_PRODUCT = p.ID_PRODUCT
+  `;
+
+  const params = [];
+
+  if (id) {
+    query += ` WHERE c.ID_COMPANY = ? `;
+    params.push(id);
+  }
+
+  query += `
+    GROUP BY 
+      p.ID_PRODUCT,
+      p.ID_CATEGORIES_,
+      p.NAME_PRODUCTS,
+      p.DESCRIPTION_PRODUCTS,
+      p.PRICE_PRODUCTS,
+   
+      p.IMAGE_URL_PRODUCTS,
+      p.CREATED_AT_PRODUCTS,
+      p.UPDATED_AT_PRODUCTS,
+      p.ID_COMPANY
+    ORDER BY TOTAL_QUANTITY DESC
+    LIMIT 10
+  `;
+
+  const [rows] = await db.query(query, params);
+
+  return rows.length > 0 ? rows : null;
+};
+
 module.exports = {
   getTotalCostByCompany,
   getTop10MaterialByCompany,
   getMonthlyRevenue,
   getDailyRevenue,
   getYearlyRevenue,
+  getRevenueByManufacturer,
+  getTop10Products,
 };
