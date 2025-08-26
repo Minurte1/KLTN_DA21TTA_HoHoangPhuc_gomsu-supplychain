@@ -80,11 +80,23 @@ const getTop10Products = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const getRevenueStatsAllController = async (req, res) => {
+  try {
+    const { companyId } = req.query; // optional
+    const data = await thongKeService.getRevenueStatsAll(companyId || null);
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 module.exports = {
   getThongKeByCompanyId,
   getTopMaterialByCompany,
   getMonthlyRevenue,
+  // ====================CTY SẢN XUẤT=======================================
   getRevenueByManufacturer,
   getTop10Products,
+  getRevenueStatsAllController,
 };

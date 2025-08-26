@@ -228,6 +228,66 @@ const getTop10Products = async (id) => {
 
   return rows.length > 0 ? rows : null;
 };
+const getRevenueStatsAll = async (companyId) => {
+  const params = [];
+  const paramsMonth = [];
+  const paramsDay = [];
+
+  let whereClause = "";
+  if (companyId) {
+    whereClause = "WHERE o.ID_COMPANY = ?";
+    params.push(companyId);
+    paramsMonth.push(companyId);
+    paramsDay.push(companyId);
+  }
+
+  // Doanh thu theo năm
+  const queryYear = `
+    SELECT 
+      YEAR(o.DATE_ORDER) AS YEAR,
+      SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
+    FROM orders o
+    JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
+    ${whereClause}
+    GROUP BY YEAR(o.DATE_ORDER)
+    ORDER BY YEAR(o.DATE_ORDER) DESC
+  `;
+
+  // Doanh thu theo tháng
+  const queryMonth = `
+    SELECT 
+      YEAR(o.DATE_ORDER) AS YEAR,
+      MONTH(o.DATE_ORDER) AS MONTH,
+      SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
+    FROM orders o
+    JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
+    ${whereClause}
+    GROUP BY YEAR(o.DATE_ORDER), MONTH(o.DATE_ORDER)
+    ORDER BY YEAR(o.DATE_ORDER) DESC, MONTH(o.DATE_ORDER) DESC
+  `;
+
+  // Doanh thu theo ngày
+  const queryDay = `
+    SELECT 
+      DATE(o.DATE_ORDER) AS DAY,
+      SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
+    FROM orders o
+    JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
+    ${whereClause}
+    GROUP BY DATE(o.DATE_ORDER)
+    ORDER BY DAY DESC
+  `;
+
+  const [yearRows] = await db.query(queryYear, params);
+  const [monthRows] = await db.query(queryMonth, paramsMonth);
+  const [dayRows] = await db.query(queryDay, paramsDay);
+
+  return {
+    yearlyRevenue: yearRows,
+    monthlyRevenue: monthRows,
+    dailyRevenue: dayRows,
+  };
+};
 
 module.exports = {
   getTotalCostByCompany,
@@ -235,6 +295,8 @@ module.exports = {
   getMonthlyRevenue,
   getDailyRevenue,
   getYearlyRevenue,
+  // ====================CTY SẢN XUẤT=======================================
   getRevenueByManufacturer,
   getTop10Products,
+  getRevenueStatsAll,
 };
