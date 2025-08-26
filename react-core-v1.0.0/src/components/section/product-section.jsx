@@ -10,7 +10,6 @@ const ProductCard = ({ product }) => {
     navigate(`/product-details/${product.SERIAL_CODE}`);
   };
 
-  console.log("product", product);
   return (
     <div
       className={styles["product-card"]}

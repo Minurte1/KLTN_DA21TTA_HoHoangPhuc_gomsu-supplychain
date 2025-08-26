@@ -74,7 +74,7 @@ const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
     if (!ID_ORDERS_) return;
     try {
       const data = await orderServices.getOrderById(ID_ORDERS_);
-      console.log("data", data);
+
       setSelectedOrder(data);
     } catch (error) {
       console.error("Error fetching companies:", error);

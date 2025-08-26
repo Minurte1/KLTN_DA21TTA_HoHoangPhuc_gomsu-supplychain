@@ -81,7 +81,6 @@ const PermissionManagerModal = ({
   }, [open, userInfo]);
   const fetchListBasePermission = async (ROUTER_COMPANY) => {
     try {
-      console.log("ROUTER_COMPANY", ROUTER_COMPANY);
       const response = await permissionService.getPermission();
 
       if (response && Array.isArray(response)) {
@@ -94,7 +93,6 @@ const PermissionManagerModal = ({
           );
         }
 
-        console.log("permissionsToSet", permissionsToSet);
         setPermissions(permissionsToSet);
       } else {
         console.error("Invalid response structure", response);

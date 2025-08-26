@@ -19,7 +19,7 @@ const ProductionPlans = () => {
   const fetchPlans = async () => {
     const ID_COMPANY = userInfo?.companyInfo?.ID_COMPANY || null;
     const data = await productionPlanServices.getProductionPlans(ID_COMPANY);
-    console.log("Fetched production plans:", data);
+
     setPlans(data);
   };
 

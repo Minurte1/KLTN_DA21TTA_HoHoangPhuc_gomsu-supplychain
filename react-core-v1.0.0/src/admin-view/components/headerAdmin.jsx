@@ -45,7 +45,6 @@ const HeaderAdmin = () => {
   };
 
   const handleMenuClose = () => {
-    console.log("handleMenuClose");
     setAnchorEl(null);
     setIsOpen(false);
   };

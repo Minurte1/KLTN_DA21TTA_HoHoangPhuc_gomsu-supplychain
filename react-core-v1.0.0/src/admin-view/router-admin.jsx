@@ -29,6 +29,7 @@ import ProductionSteps from "./pages/productionStep-page";
 import ProductionPlans from "./pages/productionPlans-page";
 import ProductInstances from "./pages/product_instances-page";
 import Orders from "./pages/orders-page";
+import DashboardMaterialAdmin from "./pages/dashboardAdmin/material-dashboadrd";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -40,7 +41,7 @@ const RouterAdmin = () => {
       path: "/thong-ke-vat-lieu",
       element: (
         <PrivateRoute>
-          <DashboardAdmin />
+          <DashboardMaterialAdmin />
         </PrivateRoute>
       ),
     },

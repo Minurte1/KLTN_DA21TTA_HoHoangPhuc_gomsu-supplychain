@@ -88,7 +88,7 @@ export default function CartModal({ open, handleClose }) {
       enqueueSnackbar("Vui lòng chọn sản phẩm để thanh toán");
       return;
     }
-    console.log("selectedProducts", selectedProducts);
+
     const encryptedData = spService.encryptData(selectedProducts);
     localStorage.setItem("orderGomSu", encryptedData);
     enqueueSnackbar(`Thanh toán ${selectedProducts.length} sản phẩm`);

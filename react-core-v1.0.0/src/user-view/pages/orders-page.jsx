@@ -64,7 +64,6 @@ const OrdersUsers = () => {
   const getUserOrders = async (ID_USERS) => {
     try {
       const response = await orderServices.getOrderByUsers(ID_USERS); // New service call to get orders
-      console.log("response", response);
       setOrders(response || []);
     } catch (err) {
       console.error("Error fetching orders:", err);

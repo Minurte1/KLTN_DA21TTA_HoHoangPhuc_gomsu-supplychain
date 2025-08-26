@@ -109,7 +109,7 @@ const Login = () => {
       // Gọi API đăng nhập
       const response = await axios.post(`${api}/login`, { email, password });
       const { EC, DT, EM } = response.data;
-      console.log("response", response);
+
       if (EC === 1) {
         // Đăng nhập thành công
         Cookies.set("accessToken", response.data.DT.accessToken, {

@@ -1,12 +1,15 @@
+// routes/thongKe.route.js
 const express = require("express");
 const router = express.Router();
 const {
   getThongKeByCompanyId,
   getTopMaterialByCompany,
+  getMonthlyRevenue,
 } = require("../controllers/thongKe.controller");
-// Lấy loại vật liệu theo ID
-router.get("/material/:id", getTopMaterialByCompany);
 
-router.get("/:id", getThongKeByCompanyId);
+// Nếu có id thì lọc theo công ty, nếu không thì lấy all
+router.get("/material/:id?", getTopMaterialByCompany);
+router.get("/revenue-stats/:id?", getMonthlyRevenue);
+router.get("/:id?", getThongKeByCompanyId);
 
 module.exports = router;

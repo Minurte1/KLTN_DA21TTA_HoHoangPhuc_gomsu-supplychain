@@ -80,7 +80,7 @@ const OrderShipDetailViewDELIVERING = ({
       ...prev,
       ID_USERS_SHIP: user.ID_USERS,
     }));
-    console.log("user được chọn:", user);
+
     setOpenUserShipModal(false);
     setSelectUserShip(user);
   };

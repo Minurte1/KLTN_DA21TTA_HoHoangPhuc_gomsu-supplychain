@@ -67,7 +67,7 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
       optionsLabel: "name",
     },
   ];
-  console.log("permissions", permissions);
+
   // Xử lý thay đổi form
   const handleFormChange = (updatedFormData) => {
     setFormData((prev) => ({
@@ -120,7 +120,7 @@ const CompanyTypeFormModal = ({ open, onClose, companyType, onSuccess }) => {
       </Button>
     </>
   );
-  console.log("formData", formData);
+
   return (
     <DynamicModal
       open={open}

@@ -77,7 +77,6 @@ const NavBarAdmin = () => {
     })
     .filter(Boolean); // Loại bỏ các null
 
-  console.log("userInfo", userInfo);
   return (
     <Box
       sx={{
