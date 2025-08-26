@@ -122,7 +122,7 @@ const DashboardAdmin = () => {
   };
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Thống kê</h1>
+      <h1>Thống kê 1</h1>
 
       {/* Doanh thu */}
       <div style={{ marginBottom: "20px" }}>

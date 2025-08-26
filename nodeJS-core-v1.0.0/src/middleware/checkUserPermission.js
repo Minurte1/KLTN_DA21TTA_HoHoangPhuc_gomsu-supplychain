@@ -6,6 +6,18 @@ const baseListPermission = [
   },
   // Role: Quản lý vai trò, thường dành cho admin của bất kỳ công ty nào (MANUFACTURER, SUPPLIER, RETAILER, WAREHOUSE, TRANSPORT)
   {
+    router: "thong-ke-vat-lieu",
+    actions: ["view"],
+  },
+  {
+    router: "thong-ke-san-xuat",
+    actions: ["view"],
+  },
+  {
+    router: "thong-ke-van-chuyen",
+    actions: ["view"],
+  },
+  {
     router: "role",
     actions: ["view", "create", "update", "delete"],
   },

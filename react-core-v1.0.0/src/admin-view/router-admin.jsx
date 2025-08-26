@@ -1,6 +1,6 @@
 import { useRoutes, Navigate } from "react-router-dom";
 
-import DashboardAdmin from "./pages/DashboardAdmin";
+import DashboardAdmin from "./pages/dashboardAdmin/DashboardAdmin";
 import Role from "./pages/role-page";
 import Company from "./pages/companies-page";
 import CompanyType from "./pages/company_types-page";
@@ -35,6 +35,30 @@ const RouterAdmin = () => {
     {
       path: "/",
       element: <DashboardAdmin />,
+    },
+    {
+      path: "/thong-ke-vat-lieu",
+      element: (
+        <PrivateRoute>
+          <DashboardAdmin />
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: "/thong-ke-san-xuat",
+      element: (
+        <PrivateRoute>
+          <DashboardAdmin />
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: "/thong-ke-van-chuyen",
+      element: (
+        <PrivateRoute>
+          <DashboardAdmin />
+        </PrivateRoute>
+      ),
     },
     {
       path: "/role",

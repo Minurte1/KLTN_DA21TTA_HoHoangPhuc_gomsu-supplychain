@@ -19,8 +19,26 @@ import {
 export const adminMenuConfig = [
   {
     label: "Thống kê tổng quan",
-    path: "/admin",
+
     icon: <BarChartIcon />,
+    children: [
+      {
+        label: "Thống kê tổng quan",
+        path: "/admin",
+      },
+      {
+        label: "Thống kê sản xuất",
+        path: "/admin/thong-ke-san-xuat",
+      },
+      {
+        label: "Thống kê vận chuyển",
+        path: "/admin/thong-ke-van-chuyen",
+      },
+      {
+        label: "Thống kê vât liệu",
+        path: "/admin/thong-ke-vat-lieu",
+      },
+    ],
   },
   {
     label: "Quản lý hệ thống",
