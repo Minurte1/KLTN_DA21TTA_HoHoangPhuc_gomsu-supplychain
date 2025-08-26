@@ -27,6 +27,7 @@ import { Building2, TrendingUp, Package, DollarSign } from "lucide-react";
 
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
 import { statisticsApi } from "../../../services/thongKeServices";
+import { Box } from "@mui/material";
 
 ChartJS.register(
   ArcElement,
@@ -194,159 +195,233 @@ const DashboardMaterialAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-foreground">
-            Bảng điều khiển thống kê
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Theo dõi hiệu suất kinh doanh và phân tích dữ liệu của bạn
-          </p>
-        </div>
+    <Box sx={{ padding: "40px" }}>
+      {" "}
+      <div className="min-vh-100 p-4" style={{ backgroundColor: "#f0fdf4" }}>
+        <div className="container-xxl">
+          {/* Header */}
+          <div className="mb-4">
+            <h1 className="h2 fw-bold" style={{ color: "#15803d" }}>
+              Bảng điều khiển thống kê
+            </h1>
+            <p className="fs-5" style={{ color: "#374151" }}>
+              Theo dõi hiệu suất kinh doanh và phân tích dữ liệu của bạn
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-border bg-card">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-card-foreground">
-                Công ty
-              </CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-card-foreground">
-                {totalSummary?.NAME_COMPANY || "N/A"}
+          {/* 4 cards */}
+          <div className="row g-4 mb-4">
+            <div className="col-12 col-md-6 col-lg-3">
+              <div
+                className="card shadow-sm border-0"
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                  <h6
+                    className="card-title mb-0 fw-semibold"
+                    style={{ color: "#15803d" }}
+                  >
+                    Công ty
+                  </h6>
+                  <Building2 style={{ color: "#84cc16" }} size={18} />
+                </div>
+                <div className="card-body">
+                  <h4 className="fw-bold" style={{ color: "#374151" }}>
+                    {totalSummary?.NAME_COMPANY || "N/A"}
+                  </h4>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card className="border-border bg-card">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-card-foreground">
-                Tổng doanh thu
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">
-                {totalSummary?.TOTAL_REVENUE?.toLocaleString("vi-VN") || "0"} đ
-              </div>
-              <Badge variant="secondary" className="mt-2">
-                <TrendingUp className="h-3 w-3 mr-1" />
-                Tăng trưởng
-              </Badge>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border bg-card">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-card-foreground">
-                Sản phẩm bán chạy
-              </CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-card-foreground">
-                {topMaterial.length}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Loại vật liệu khác nhau
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border bg-card">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-card-foreground">
-                Dữ liệu doanh thu
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-card-foreground">
-                {revenueStats.monthlyRevenue.length}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Tháng có dữ liệu
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Top selling materials chart */}
-          <Card className="border-border bg-card">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-card-foreground">
-                Top 5 sản phẩm bán chạy nhất
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Thống kê số lượng bán theo từng loại vật liệu
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <Bar data={bestSellersChartData} options={chartOptions} />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Revenue trends chart */}
-          <Card className="border-border bg-card">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-card-foreground">
-                Xu hướng doanh thu
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Biểu đồ doanh thu theo ngày, tháng và năm
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <Line data={combinedChartData} options={chartOptions} />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="border-border bg-card">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-card-foreground">
-              Chi tiết vật liệu bán chạy
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Danh sách đầy đủ các vật liệu và số lượng bán
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {topMaterial.slice(0, 9).map((material, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 rounded-lg border border-border bg-muted/50"
-                >
-                  <div className="space-y-1">
-                    <p className="font-medium text-card-foreground">
-                      {material.MATERIAL_NAME}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Số lượng:{" "}
-                      {Number.parseInt(
-                        material.TOTAL_QUANTITY,
-                        10
-                      ).toLocaleString("vi-VN")}
-                    </p>
-                  </div>
-                  <Badge variant={index < 3 ? "default" : "secondary"}>
-                    #{index + 1}
+            <div className="col-12 col-md-6 col-lg-3">
+              <div
+                className="card shadow-sm border-0"
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                  <h6
+                    className="card-title mb-0 fw-semibold"
+                    style={{ color: "#15803d" }}
+                  >
+                    Tổng doanh thu
+                  </h6>
+                  <DollarSign style={{ color: "#84cc16" }} size={18} />
+                </div>
+                <div className="card-body">
+                  <h4 className="fw-bold" style={{ color: "#15803d" }}>
+                    {totalSummary?.TOTAL_REVENUE?.toLocaleString("vi-VN") ||
+                      "0"}{" "}
+                    đ
+                  </h4>
+                  <Badge
+                    variant="secondary"
+                    className="mt-2 fw-semibold"
+                    style={{ backgroundColor: "#84cc16", color: "#374151" }}
+                  >
+                    <TrendingUp className="me-1" size={12} />
+                    Tăng trưởng
                   </Badge>
                 </div>
-              ))}
+              </div>
             </div>
-          </CardContent>
-        </Card>
+
+            <div className="col-12 col-md-6 col-lg-3">
+              <div
+                className="card shadow-sm border-0"
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                  <h6
+                    className="card-title mb-0 fw-semibold"
+                    style={{ color: "#15803d" }}
+                  >
+                    Sản phẩm bán chạy
+                  </h6>
+                  <Package style={{ color: "#84cc16" }} size={18} />
+                </div>
+                <div className="card-body">
+                  <h4 className="fw-bold" style={{ color: "#374151" }}>
+                    {topMaterial.length}
+                  </h4>
+                  <p className="small mb-0" style={{ color: "#374151" }}>
+                    Loại vật liệu khác nhau
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 col-lg-3">
+              <div
+                className="card shadow-sm border-0"
+                style={{ backgroundColor: "#ffffff" }}
+              >
+                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                  <h6
+                    className="card-title mb-0 fw-semibold"
+                    style={{ color: "#15803d" }}
+                  >
+                    Dữ liệu doanh thu
+                  </h6>
+                  <TrendingUp style={{ color: "#84cc16" }} size={18} />
+                </div>
+                <div className="card-body">
+                  <h4 className="fw-bold" style={{ color: "#374151" }}>
+                    {revenueStats.monthlyRevenue.length}
+                  </h4>
+                  <p className="small mb-0" style={{ color: "#374151" }}>
+                    Tháng có dữ liệu
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Charts */}
+          <div className="row g-4 mb-4">
+            <div className="col-12 col-lg-6">
+              <div className="card shadow-sm border-0">
+                <div className="card-header bg-white border-0">
+                  <h5
+                    className="card-title mb-1 fw-semibold"
+                    style={{ color: "#15803d" }}
+                  >
+                    Top 5 sản phẩm bán chạy nhất
+                  </h5>
+                  <p className="small mb-0" style={{ color: "#374151" }}>
+                    Thống kê số lượng bán theo từng loại vật liệu
+                  </p>
+                </div>
+                <div className="card-body" style={{ height: "320px" }}>
+                  <Bar data={bestSellersChartData} options={chartOptions} />
+                </div>
+              </div>
+            </div>
+
+            <div className="col-12 col-lg-6">
+              <div className="card shadow-sm border-0">
+                <div className="card-header bg-white border-0">
+                  <h5
+                    className="card-title mb-1 fw-semibold"
+                    style={{ color: "#15803d" }}
+                  >
+                    Xu hướng doanh thu
+                  </h5>
+                  <p className="small mb-0" style={{ color: "#374151" }}>
+                    Biểu đồ doanh thu theo ngày, tháng và năm
+                  </p>
+                </div>
+                <div className="card-body" style={{ height: "320px" }}>
+                  <Line data={combinedChartData} options={chartOptions} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Top Materials */}
+          <div className="card shadow-sm border-0">
+            <div className="card-header bg-white border-0">
+              <h5
+                className="card-title mb-1 fw-semibold"
+                style={{ color: "#15803d" }}
+              >
+                Chi tiết vật liệu bán chạy
+              </h5>
+              <p className="small mb-0" style={{ color: "#374151" }}>
+                Danh sách đầy đủ các vật liệu và số lượng bán
+              </p>
+            </div>
+            <div className="card-body">
+              <div className="row g-3">
+                {topMaterial.slice(0, 9).map((material, index) => (
+                  <div className="col-12 col-md-6 col-lg-4" key={index}>
+                    <div
+                      className="d-flex justify-content-between align-items-center p-3 border rounded"
+                      style={{ backgroundColor: "#f0fdf4" }}
+                    >
+                      <div>
+                        <p
+                          className="fw-semibold mb-1"
+                          style={{ color: "#374151" }}
+                        >
+                          {material.MATERIAL_NAME}
+                        </p>
+                        <p className="small mb-0" style={{ color: "#374151" }}>
+                          Số lượng:{" "}
+                          <span
+                            style={{
+                              backgroundColor: "#e5f5eb", // nền nhạt hơn text
+                              color: "#374151", // chữ đậm
+                              padding: "2px 6px",
+                              borderRadius: "6px",
+                              fontWeight: "600",
+                            }}
+                          >
+                            {Number.parseInt(
+                              material.TOTAL_QUANTITY,
+                              10
+                            ).toLocaleString("vi-VN")}
+                          </span>
+                        </p>
+                      </div>
+                      <Badge
+                        variant={index < 3 ? "primary" : "secondary"}
+                        className="fw-semibold"
+                        style={{
+                          backgroundColor: index < 3 ? "#84cc16" : "#15803d",
+                          color: "#ffffff",
+                        }}
+                      >
+                        #{index + 1}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Box>
   );
 };
 
