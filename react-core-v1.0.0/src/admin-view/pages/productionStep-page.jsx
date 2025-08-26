@@ -106,7 +106,6 @@ const ProductionSteps = () => {
     },
   ];
 
-  console.log("steps", steps);
   const handleEdit = (step) => {
     setSelectedStep(step);
     setOpenModal(true);

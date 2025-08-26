@@ -34,7 +34,6 @@ const Company = () => {
     fetchCompanies();
   };
 
-  console.log("come", companies);
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>

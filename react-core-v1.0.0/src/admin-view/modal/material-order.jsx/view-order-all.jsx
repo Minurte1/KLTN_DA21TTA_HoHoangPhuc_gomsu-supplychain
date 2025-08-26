@@ -49,7 +49,7 @@ const ViewOrderModal = ({
   handleConfirmOrder = () => {},
 }) => {
   if (!data) return null;
-  console.log("data ", data);
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Chi tiết đơn hàng công ty đã mua</DialogTitle>

@@ -133,7 +133,7 @@ const getUser_ById = async (req, res) => {
       NAME_COMPANY_TYPE: row.NAME_COMPANY_TYPE,
       ROUTER_COMPANY: row.ROUTER_COMPANY,
     };
-    console.log("companyInfo", companyInfo);
+
     return res.status(200).json({
       EM: "Lấy thông tin người dùng kèm quyền và công ty thành công",
       EC: 1,

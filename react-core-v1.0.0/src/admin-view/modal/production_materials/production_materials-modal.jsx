@@ -57,9 +57,6 @@ const Step2Materials = ({
         STATUS: "READY",
       });
 
-      console.log("data", data);
-      console.log("productionPlan", productionPlan);
-
       const options = data.map((m) => ({
         label: m.NAME_,
         value: m.ID_MATERIALS_,
