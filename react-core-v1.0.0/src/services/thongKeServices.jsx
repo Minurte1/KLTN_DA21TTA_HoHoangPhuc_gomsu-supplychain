@@ -147,4 +147,16 @@ export const statisticsApi = {
     );
     return res.data;
   },
+  top5CompaniesTransport: async ({ ID_COMPANY } = {}) => {
+    const params = {};
+    if (ID_COMPANY) params.companyId = ID_COMPANY;
+
+    const res = await axiosInstance.get(
+      `${statistic_URL}/top5-companies-transport`,
+      {
+        params,
+      }
+    );
+    return res.data;
+  },
 };

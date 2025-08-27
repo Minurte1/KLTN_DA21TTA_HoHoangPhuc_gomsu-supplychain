@@ -49,12 +49,7 @@ const DashboardVanChuyenAdmin = () => {
     byMonth: [],
     byYear: [],
   });
-
-  console.table({
-    revenueStats,
-    topMaterial,
-    totalSummary,
-  });
+  const [totalTranPortUsage, setTotalTranPortUsage] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,7 +64,7 @@ const DashboardVanChuyenAdmin = () => {
         const topMaterialRes = await statisticsApi.getTransportUsage({
           ID_COMPANY: companyId,
         });
-        setTopMaterial(topMaterialRes || []);
+        setTotalTranPortUsage(topMaterialRes || []);
 
         const revenueRes = await statisticsApi.revenueStatsTransport({
           ID_COMPANY: companyId,
@@ -81,6 +76,10 @@ const DashboardVanChuyenAdmin = () => {
             byYear: [],
           }
         );
+
+        const responseTop5Companies =
+          await statisticsApi.top5CompaniesTransport({ ID_COMPANY: companyId });
+        setTopMaterial(responseTop5Companies || []);
       } catch (error) {
         console.error("Error fetching statistics data:", error);
       }
@@ -173,7 +172,7 @@ const DashboardVanChuyenAdmin = () => {
       },
     },
   };
-  console.log("totalSummary", totalSummary);
+  console.log("topMaterial", topMaterial);
   return (
     <Box sx={{ padding: "40px" }}>
       {" "}
@@ -264,7 +263,7 @@ const DashboardVanChuyenAdmin = () => {
                     {totalSummary?.TOTAL_SUCCESS_ORDERS || "0"}
                   </h4>
                   <p className="small mb-0" style={{ color: "#374151" }}>
-                    dịch vụ
+                    Dịch vụ
                   </p>
                 </div>
               </div>
@@ -322,17 +321,19 @@ const DashboardVanChuyenAdmin = () => {
                       <thead>
                         <tr>
                           <th className="fw-semibold">#</th>
-                          <th className="fw-semibold">Tên sản phẩm</th>
-                          <th className="fw-semibold text-end">Số lượng bán</th>
+                          <th className="fw-semibold">Tên công ty</th>
+                          <th className="fw-semibold text-end">
+                            Số lượng sử dụng dịch vụ
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         {topMaterial.map((item, index) => (
                           <tr key={item.MATERIAL_ID || index}>
                             <td>{index + 1}</td>
-                            <td>{item.NAME_PRODUCTS}</td>
+                            <td>{item.NAME_COMPANY}</td>
                             <td className="text-end">
-                              {Number(item.TOTAL_QUANTITY).toLocaleString()}
+                              {Number(item.TOTAL_ORDERS).toLocaleString()}
                             </td>
                           </tr>
                         ))}
