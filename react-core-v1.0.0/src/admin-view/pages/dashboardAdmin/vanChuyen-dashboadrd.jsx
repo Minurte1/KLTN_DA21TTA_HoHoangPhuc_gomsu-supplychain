@@ -173,7 +173,7 @@ const DashboardVanChuyenAdmin = () => {
       },
     },
   };
-
+  console.log("totalSummary", totalSummary);
   return (
     <Box sx={{ padding: "40px" }}>
       {" "}
@@ -255,16 +255,16 @@ const DashboardVanChuyenAdmin = () => {
                     className="card-title mb-0 fw-semibold"
                     style={{ color: "#15803d" }}
                   >
-                    Số sản phẩm đã bán được
+                    Số dịch vụ đã được thuê thành công
                   </h6>
                   <Package style={{ color: "#84cc16" }} size={18} />
                 </div>
                 <div className="card-body">
                   <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {totalSummary?.TOTAL_QUANTITY || "0"}
+                    {totalSummary?.TOTAL_SUCCESS_ORDERS || "0"}
                   </h4>
                   <p className="small mb-0" style={{ color: "#374151" }}>
-                    Loại vật liệu khác nhau
+                    dịch vụ
                   </p>
                 </div>
               </div>
@@ -308,14 +308,38 @@ const DashboardVanChuyenAdmin = () => {
                     className="card-title mb-1 fw-semibold"
                     style={{ color: "#15803d" }}
                   >
-                    Top sản phẩm bán chạy nhất
+                    Top công ty tin tưởng sử dụng dịch vụ nhiều nhất
                   </h5>
                   <p className="small mb-0" style={{ color: "#374151" }}>
-                    Thống kê số lượng bán theo từng loại vật liệu
+                    Thống kê top công ty
                   </p>
                 </div>
-
-                {/* Body */}
+                {/* Body */}{" "}
+                <div className="card-body">
+                  {/* Table chi tiết */}
+                  <div className="mt-3 table-responsive">
+                    <table className="table table-hover align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th className="fw-semibold">#</th>
+                          <th className="fw-semibold">Tên sản phẩm</th>
+                          <th className="fw-semibold text-end">Số lượng bán</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {topMaterial.map((item, index) => (
+                          <tr key={item.MATERIAL_ID || index}>
+                            <td>{index + 1}</td>
+                            <td>{item.NAME_PRODUCTS}</td>
+                            <td className="text-end">
+                              {Number(item.TOTAL_QUANTITY).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="col-12 col-lg-6">

@@ -170,6 +170,17 @@ const getRevenueStatsController = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+const getTop5TransportCompaniesController = async (req, res) => {
+  try {
+    console.log("oke ");
+    const { id } = req.params; // optional
+    const data = await thongKeService.getTop5TransportCompanies(id || null);
+    res.json(data);
+  } catch (err) {
+    console.error("Error in getRevenueStatsController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 module.exports = {
   getThongKeByCompanyId,
@@ -187,4 +198,5 @@ module.exports = {
   getTotalTransportUsageController,
   getTotalTransportRevenueController,
   getRevenueStatsController,
+  getTop5TransportCompaniesController,
 };

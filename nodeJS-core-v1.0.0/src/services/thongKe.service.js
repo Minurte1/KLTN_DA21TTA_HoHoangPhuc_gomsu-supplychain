@@ -493,7 +493,7 @@ const getRevenueByYear = async (idCompany) => {
   return rows;
 };
 
-// Top 5 công ty vận chuyển
+// Top 5 công ty thuê dịch vụ vận chuyển (dựa theo ID_COMPANY_SELLER)
 const getTop5TransportCompanies = async () => {
   const query = `
     SELECT 
@@ -502,15 +502,18 @@ const getTop5TransportCompanies = async () => {
       COUNT(t.ID_TRANSPORT_ORDER) AS TOTAL_ORDERS,
       SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
     FROM transport_orders t
-    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    JOIN material_order_master m ON t.ID_MATERIAL_ORDER = m.ID_MATERIAL_ORDER_MASTER
+    JOIN companies c ON m.ID_COMPANY_SELLER = c.ID_COMPANY
     WHERE t.STATUS = 'SUCCESS'
     GROUP BY c.ID_COMPANY, c.NAME_COMPANY
     ORDER BY TOTAL_ORDERS DESC
     LIMIT 5
   `;
+
   const [rows] = await db.query(query);
   return rows;
 };
+
 const getRevenueStats = async (idCompany) => {
   const params = [];
   let condition = "";
