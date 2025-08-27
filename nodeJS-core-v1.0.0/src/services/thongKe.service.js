@@ -1,4 +1,5 @@
 const db = require("../config/database");
+const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 
 // Thống kê doanh thu theo công ty
 const getTotalCostByCompany = async (id) => {
@@ -153,7 +154,8 @@ const getRevenueByManufacturer = async (id) => {
       SELECT 
         c.ID_COMPANY,
         c.NAME_COMPANY,
-        SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
+        SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE,
+        SUM(oi.QUANTITY_INVENTORY) AS TOTAL_QUANTITY
       FROM order_items oi
       JOIN orders o 
         ON oi.ID_ORDERS_ = o.ID_ORDERS_
@@ -165,7 +167,7 @@ const getRevenueByManufacturer = async (id) => {
 
     // Nếu có id, lọc theo công ty đó
     if (id) {
-      query += `WHERE c.ID_COMPANY = ? `;
+      query += ` WHERE c.ID_COMPANY = ? `;
       params.push(id);
     }
 
@@ -176,7 +178,7 @@ const getRevenueByManufacturer = async (id) => {
 
     const [rows] = await db.query(query, params);
 
-    // Nếu không có dữ liệu, trả về mảng rỗng thay vì null
+    // Nếu không có dữ liệu, trả về mảng rỗng
     return rows || [];
   } catch (error) {
     console.error("Error in getRevenueByManufacturer:", error);
@@ -192,7 +194,6 @@ const getTop10Products = async (id) => {
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
-     
       p.IMAGE_URL_PRODUCTS,
       p.CREATED_AT_PRODUCTS,
       p.UPDATED_AT_PRODUCTS,
@@ -224,7 +225,6 @@ const getTop10Products = async (id) => {
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
       p.PRICE_PRODUCTS,
-   
       p.IMAGE_URL_PRODUCTS,
       p.CREATED_AT_PRODUCTS,
       p.UPDATED_AT_PRODUCTS,
@@ -235,7 +235,17 @@ const getTop10Products = async (id) => {
 
   const [rows] = await db.query(query, params);
 
-  return rows.length > 0 ? rows : null;
+  if (!rows || rows.length === 0) return [];
+
+  // Map lại IMAGE_URL_PRODUCTS
+  const mappedRows = rows.map((item) => ({
+    ...item,
+    IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
+      ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
+      : null,
+  }));
+
+  return mappedRows;
 };
 const getRevenueStatsAll = async (companyId) => {
   const params = [];

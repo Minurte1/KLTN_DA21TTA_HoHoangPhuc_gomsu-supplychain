@@ -49,7 +49,11 @@ const DashboardSanXuatAdmin = () => {
     monthlyRevenue: [],
     yearlyRevenue: [],
   });
-
+  const [productStats, setProductStats] = useState({
+    dailyQuantity: [],
+    monthlyQuantity: [],
+    yearlyQuantity: [],
+  });
   console.table({
     revenueStats,
     topMaterial,
@@ -81,6 +85,16 @@ const DashboardSanXuatAdmin = () => {
             yearlyRevenue: [],
           }
         );
+        const revenueResProduct = await statisticsApi.getProductStatsAll({
+          ID_COMPANY: companyId,
+        });
+        setProductStats(
+          revenueResProduct || {
+            dailyQuantity: [],
+            monthlyQuantity: [],
+            yearlyQuantity: [],
+          }
+        );
       } catch (error) {
         console.error("Error fetching statistics data:", error);
       }
@@ -89,20 +103,26 @@ const DashboardSanXuatAdmin = () => {
     fetchData();
   }, [userInfo]);
 
+  console.log("revenueStats", revenueStats);
   const combinedChartData = {
     labels: [
-      ...revenueStats.dailyRevenue.map((item) =>
-        new Date(item.DATE).toLocaleDateString("vi-VN")
-      ),
+      // dailyRevenue: sắp xếp theo ngày tăng dần
+      ...revenueStats.dailyRevenue
+        .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
+        .map((item) => new Date(item.DAY).toLocaleDateString("vi-VN")),
+      // monthlyRevenue
       ...revenueStats.monthlyRevenue.map(
         (item) => `${item.MONTH}/${item.YEAR}`
       ),
+      // yearlyRevenue
       ...revenueStats.yearlyRevenue.map((item) => item.YEAR),
     ],
     datasets: [
       {
         label: "Doanh thu theo ngày",
-        data: revenueStats.dailyRevenue.map((item) => item.TOTAL_REVENUE),
+        data: revenueStats.dailyRevenue
+          .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
+          .map((item) => item.TOTAL_REVENUE),
         borderColor: "hsl(var(--chart-1))",
         backgroundColor: "hsla(var(--chart-1), 0.1)",
         fill: true,
@@ -127,25 +147,50 @@ const DashboardSanXuatAdmin = () => {
     ],
   };
 
-  const topFiveBestSellers = topMaterial.slice(0, 5);
-
-  const bestSellersChartData = {
-    labels: topFiveBestSellers.map((item) => item.MATERIAL_NAME),
+  // Dữ liệu xu hướng sản phẩm
+  const combinedQuantityChartData = {
+    labels: [
+      // dailyQuantity sắp xếp theo ngày tăng dần
+      ...productStats.dailyQuantity
+        .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
+        .map((item) => new Date(item.DAY).toLocaleDateString("vi-VN")),
+      // monthlyQuantity
+      ...productStats.monthlyQuantity.map(
+        (item) => `${item.MONTH}/${item.YEAR}`
+      ),
+      // yearlyQuantity
+      ...productStats.yearlyQuantity.map((item) => item.YEAR),
+    ],
     datasets: [
       {
-        label: "Số lượng bán",
-        data: topFiveBestSellers.map((item) =>
-          Number.parseInt(item.TOTAL_QUANTITY, 10)
+        label: "Số lượng sản xuất theo ngày",
+        data: productStats.dailyQuantity
+          .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
+          .map((item) => Number(item.TOTAL_QUANTITY)),
+        borderColor: "hsl(var(--chart-1))",
+        backgroundColor: "hsla(var(--chart-1), 0.1)",
+        fill: true,
+        tension: 0.4,
+      },
+      {
+        label: "Số lượng sản xuất theo tháng",
+        data: productStats.monthlyQuantity.map((item) =>
+          Number(item.TOTAL_QUANTITY)
         ),
-        backgroundColor: [
-          "hsl(var(--chart-1))",
-          "hsl(var(--chart-2))",
-          "hsl(var(--chart-3))",
-          "hsl(var(--chart-4))",
-          "hsl(var(--chart-5))",
-        ],
-        borderRadius: 8,
-        borderSkipped: false,
+        borderColor: "hsl(var(--chart-2))",
+        backgroundColor: "hsla(var(--chart-2), 0.1)",
+        fill: true,
+        tension: 0.4,
+      },
+      {
+        label: "Số lượng sản xuất theo năm",
+        data: productStats.yearlyQuantity.map((item) =>
+          Number(item.TOTAL_QUANTITY)
+        ),
+        borderColor: "hsl(var(--chart-3))",
+        backgroundColor: "hsla(var(--chart-3), 0.1)",
+        fill: true,
+        tension: 0.4,
       },
     ],
   };
@@ -193,7 +238,7 @@ const DashboardSanXuatAdmin = () => {
       },
     },
   };
-  console.log("totalSummary", totalSummary);
+  console.log("topMaterial", topMaterial);
   return (
     <Box sx={{ padding: "40px" }}>
       {" "}
@@ -275,13 +320,13 @@ const DashboardSanXuatAdmin = () => {
                     className="card-title mb-0 fw-semibold"
                     style={{ color: "#15803d" }}
                   >
-                    Sản phẩm bán chạy
+                    Số sản phẩm đã bán được
                   </h6>
                   <Package style={{ color: "#84cc16" }} size={18} />
                 </div>
                 <div className="card-body">
                   <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {topMaterial.length}
+                    {totalSummary?.TOTAL_QUANTITY || "0"}
                   </h4>
                   <p className="small mb-0" style={{ color: "#374151" }}>
                     Loại vật liệu khác nhau
@@ -300,16 +345,18 @@ const DashboardSanXuatAdmin = () => {
                     className="card-title mb-0 fw-semibold"
                     style={{ color: "#15803d" }}
                   >
-                    Dữ liệu doanh thu
+                    Doanh thu tháng
                   </h6>
                   <TrendingUp style={{ color: "#84cc16" }} size={18} />
                 </div>
                 <div className="card-body">
                   <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {revenueStats.monthlyRevenue.length}
+                    {revenueStats.monthlyRevenue[0]?.TOTAL_REVENUE.toLocaleString()}{" "}
+                    VNĐ
                   </h4>
                   <p className="small mb-0" style={{ color: "#374151" }}>
-                    Tháng có dữ liệu
+                    Tháng {revenueStats.monthlyRevenue[0]?.MONTH}/
+                    {revenueStats.monthlyRevenue[0]?.YEAR}
                   </p>
                 </div>
               </div>
@@ -320,23 +367,52 @@ const DashboardSanXuatAdmin = () => {
           <div className="row g-4 mb-4">
             <div className="col-12 col-lg-6">
               <div className="card shadow-sm border-0">
+                {/* Header */}
                 <div className="card-header bg-white border-0">
                   <h5
                     className="card-title mb-1 fw-semibold"
                     style={{ color: "#15803d" }}
                   >
-                    Top 5 sản phẩm bán chạy nhất
+                    Top sản phẩm bán chạy nhất
                   </h5>
                   <p className="small mb-0" style={{ color: "#374151" }}>
                     Thống kê số lượng bán theo từng loại vật liệu
                   </p>
                 </div>
-                <div className="card-body" style={{ height: "320px" }}>
-                  <Bar data={bestSellersChartData} options={chartOptions} />
+
+                {/* Body */}
+                <div className="card-body">
+                  {/* Chart */}
+                  {/* <div style={{ height: "300px" }}>
+                    <Bar data={topMaterial} options={chartOptions} />
+                  </div> */}
+
+                  {/* Table chi tiết */}
+                  <div className="mt-3 table-responsive">
+                    <table className="table table-hover align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th className="fw-semibold">#</th>
+                          <th className="fw-semibold">Tên sản phẩm</th>
+                          <th className="fw-semibold text-end">Số lượng bán</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {topMaterial.map((item, index) => (
+                          <tr key={item.MATERIAL_ID || index}>
+                            <td>{index + 1}</td>
+                            <td>{item.NAME_PRODUCTS}</td>
+                            <td className="text-end">
+                              {Number(item.TOTAL_QUANTITY).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
-
             <div className="col-12 col-lg-6">
               <div className="card shadow-sm border-0">
                 <div className="card-header bg-white border-0">
@@ -354,68 +430,26 @@ const DashboardSanXuatAdmin = () => {
                   <Line data={combinedChartData} options={chartOptions} />
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Top Materials */}
-          <div className="card shadow-sm border-0">
-            <div className="card-header bg-white border-0">
-              <h5
-                className="card-title mb-1 fw-semibold"
-                style={{ color: "#15803d" }}
-              >
-                Chi tiết vật liệu bán chạy
-              </h5>
-              <p className="small mb-0" style={{ color: "#374151" }}>
-                Danh sách đầy đủ các vật liệu và số lượng bán
-              </p>
-            </div>
-            <div className="card-body">
-              <div className="row g-3">
-                {topMaterial.slice(0, 9).map((material, index) => (
-                  <div className="col-12 col-md-6 col-lg-4" key={index}>
-                    <div
-                      className="d-flex justify-content-between align-items-center p-3 border rounded"
-                      style={{ backgroundColor: "#f0fdf4" }}
-                    >
-                      <div>
-                        <p
-                          className="fw-semibold mb-1"
-                          style={{ color: "#374151" }}
-                        >
-                          {material.MATERIAL_NAME}
-                        </p>
-                        <p className="small mb-0" style={{ color: "#374151" }}>
-                          Số lượng:{" "}
-                          <span
-                            style={{
-                              backgroundColor: "#e5f5eb", // nền nhạt hơn text
-                              color: "#374151", // chữ đậm
-                              padding: "2px 6px",
-                              borderRadius: "6px",
-                              fontWeight: "600",
-                            }}
-                          >
-                            {Number.parseInt(
-                              material.TOTAL_QUANTITY,
-                              10
-                            ).toLocaleString("vi-VN")}
-                          </span>
-                        </p>
-                      </div>
-                      <Badge
-                        variant={index < 3 ? "primary" : "secondary"}
-                        className="fw-semibold"
-                        style={{
-                          backgroundColor: index < 3 ? "#84cc16" : "#15803d",
-                          color: "#ffffff",
-                        }}
-                      >
-                        #{index + 1}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
+            </div>{" "}
+            <div className="col-12 col-lg-6">
+              <div className="card shadow-sm border-0">
+                <div className="card-header bg-white border-0">
+                  <h5
+                    className="card-title mb-1 fw-semibold"
+                    style={{ color: "#15803d" }}
+                  >
+                    Xu hướng sản phẩm sản xuất được
+                  </h5>
+                  <p className="small mb-0" style={{ color: "#374151" }}>
+                    Biểu đồ sản phẩm sản xuất theo ngày, tháng và năm
+                  </p>
+                </div>
+                <div className="card-body" style={{ height: "320px" }}>
+                  <Line
+                    data={combinedQuantityChartData}
+                    options={chartOptions}
+                  />
+                </div>
               </div>
             </div>
           </div>
