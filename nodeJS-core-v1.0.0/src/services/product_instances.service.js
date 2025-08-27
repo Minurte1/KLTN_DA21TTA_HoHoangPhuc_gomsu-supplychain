@@ -214,7 +214,6 @@ const getAllProductInstancesPublic = async (
   SERIAL_CODE
 ) => {
   try {
-    console.log("LIMIT", LIMIT);
     let safeLimit = Number(LIMIT);
     if (isNaN(safeLimit) || safeLimit <= 0) {
       safeLimit = 1;

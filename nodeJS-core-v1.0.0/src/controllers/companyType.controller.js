@@ -79,7 +79,6 @@ const deleteCompanyType = async (req, res) => {
 const getCompaniesByRouter = async (req, res) => {
   try {
     const { filters } = req.body;
-    console.log("filters", filters);
 
     if (!filters || !Array.isArray(filters) || filters.length === 0) {
       return res.status(400).json({ error: "Filters array is required" });

@@ -103,7 +103,6 @@ const DashboardSanXuatAdmin = () => {
     fetchData();
   }, [userInfo]);
 
-  console.log("revenueStats", revenueStats);
   const combinedChartData = {
     labels: [
       // dailyRevenue: sắp xếp theo ngày tăng dần
@@ -238,7 +237,7 @@ const DashboardSanXuatAdmin = () => {
       },
     },
   };
-  console.log("topMaterial", topMaterial);
+
   return (
     <Box sx={{ padding: "40px" }}>
       {" "}

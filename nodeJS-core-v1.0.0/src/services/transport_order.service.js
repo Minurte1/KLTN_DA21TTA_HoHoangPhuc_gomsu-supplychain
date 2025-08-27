@@ -177,7 +177,6 @@ const create = async (data) => {
 
 // Lấy tất cả đơn, có thể lọc theo STATUS nếu được truyền vào
 const getAll = async (status) => {
-  console.log("status", status);
   let query = `
     SELECT 
       todr.ID_TRANSPORT_ORDER,

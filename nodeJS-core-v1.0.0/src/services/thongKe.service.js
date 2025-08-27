@@ -149,7 +149,6 @@ const getYearlyRevenue = async (id) => {
 
 // Thống kê doanh thu bán ra
 const getRevenueByManufacturer = async (id) => {
-  console.log("id", id);
   try {
     let query = `
       SELECT 

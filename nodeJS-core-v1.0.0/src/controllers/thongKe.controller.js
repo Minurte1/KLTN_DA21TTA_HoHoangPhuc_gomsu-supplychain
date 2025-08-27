@@ -55,7 +55,7 @@ const getMonthlyRevenue = async (req, res) => {
 const getRevenueByManufacturer = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("id", id);
+
     const data = await thongKeService.getRevenueByManufacturer(id);
 
     if (!data) {
@@ -172,7 +172,6 @@ const getRevenueStatsController = async (req, res) => {
 };
 const getTop5TransportCompaniesController = async (req, res) => {
   try {
-    console.log("oke ");
     const { id } = req.params; // optional
     const data = await thongKeService.getTop5TransportCompanies(id || null);
     res.json(data);

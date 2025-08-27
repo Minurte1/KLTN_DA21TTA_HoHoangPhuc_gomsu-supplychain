@@ -193,7 +193,7 @@ const DashboardMaterialAdmin = () => {
       },
     },
   };
-  console.log("totalSummary", totalSummary);
+
   return (
     <Box sx={{ padding: "40px" }}>
       {" "}
