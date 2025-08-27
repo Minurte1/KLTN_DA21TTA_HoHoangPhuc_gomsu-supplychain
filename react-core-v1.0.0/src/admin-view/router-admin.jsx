@@ -30,6 +30,7 @@ import ProductionPlans from "./pages/productionPlans-page";
 import ProductInstances from "./pages/product_instances-page";
 import Orders from "./pages/orders-page";
 import DashboardMaterialAdmin from "./pages/dashboardAdmin/material-dashboadrd";
+import DashboardSanXuatAdmin from "./pages/dashboardAdmin/sanXuat-dashboadrd";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -49,7 +50,7 @@ const RouterAdmin = () => {
       path: "/thong-ke-san-xuat",
       element: (
         <PrivateRoute>
-          <DashboardAdmin />
+          <DashboardSanXuatAdmin />
         </PrivateRoute>
       ),
     },

@@ -147,33 +147,41 @@ const getYearlyRevenue = async (id) => {
 
 // Thống kê doanh thu bán ra
 const getRevenueByManufacturer = async (id) => {
-  let query = `
-    SELECT 
-      c.ID_COMPANY,
-      c.NAME_COMPANY,
-      SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
-    FROM order_items oi
-    JOIN orders o 
-      ON oi.ID_ORDERS_ = o.ID_ORDERS_
-    JOIN companies c 
-      ON oi.ID_COMPANY = c.ID_COMPANY
-  `;
+  console.log("id", id);
+  try {
+    let query = `
+      SELECT 
+        c.ID_COMPANY,
+        c.NAME_COMPANY,
+        SUM(oi.QUANTITY_INVENTORY * oi.PRICE_ORDER_ITEMS) AS TOTAL_REVENUE
+      FROM order_items oi
+      JOIN orders o 
+        ON oi.ID_ORDERS_ = o.ID_ORDERS_
+      LEFT JOIN companies c 
+        ON oi.ID_COMPANY = c.ID_COMPANY
+    `;
 
-  const params = [];
+    const params = [];
 
-  if (id) {
-    query += ` WHERE c.ID_COMPANY = ? `;
-    params.push(id);
+    // Nếu có id, lọc theo công ty đó
+    if (id) {
+      query += `WHERE c.ID_COMPANY = ? `;
+      params.push(id);
+    }
+
+    query += `
+      GROUP BY c.ID_COMPANY, c.NAME_COMPANY
+      ORDER BY TOTAL_REVENUE DESC
+    `;
+
+    const [rows] = await db.query(query, params);
+
+    // Nếu không có dữ liệu, trả về mảng rỗng thay vì null
+    return rows || [];
+  } catch (error) {
+    console.error("Error in getRevenueByManufacturer:", error);
+    throw error;
   }
-
-  query += `
-    GROUP BY c.ID_COMPANY, c.NAME_COMPANY
-    ORDER BY TOTAL_REVENUE DESC
-  `;
-
-  const [rows] = await db.query(query, params);
-
-  return rows.length > 0 ? rows : null;
 };
 // Thống kê top 10 sản phẩm bán chạy (lấy đầy đủ thông tin sản phẩm)
 const getTop10Products = async (id) => {
@@ -348,8 +356,6 @@ const getProductStatsAll = async (companyId) => {
     dailyQuantity: dayRows,
   };
 };
-
-module.exports = { getProductStatsAll };
 
 module.exports = {
   getTotalCostByCompany,
