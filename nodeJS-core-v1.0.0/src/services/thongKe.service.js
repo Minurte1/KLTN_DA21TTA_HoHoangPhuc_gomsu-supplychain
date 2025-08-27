@@ -144,6 +144,7 @@ const getYearlyRevenue = async (id) => {
 };
 
 // ====================CTY SẢN XUẤT=======================================
+
 // Thống kê doanh thu bán ra
 const getRevenueByManufacturer = async (id) => {
   let query = `
@@ -289,6 +290,67 @@ const getRevenueStatsAll = async (companyId) => {
   };
 };
 
+// Số lượng gốm sứ được tạo ra theo ngày, tháng, năm
+const getProductStatsAll = async (companyId) => {
+  const params = [];
+  const paramsMonth = [];
+  const paramsDay = [];
+
+  let whereClause = "";
+  if (companyId) {
+    whereClause = "WHERE pi.ID_COMPANY = ?";
+    params.push(companyId);
+    paramsMonth.push(companyId);
+    paramsDay.push(companyId);
+  }
+
+  // Số lượng sản phẩm theo năm
+  const queryYear = `
+    SELECT 
+      YEAR(pi.DATE_CREATED) AS YEAR,
+      SUM(pi.QUANTITY) AS TOTAL_QUANTITY
+    FROM product_instances pi
+    ${whereClause}
+    GROUP BY YEAR(pi.DATE_CREATED)
+    ORDER BY YEAR(pi.DATE_CREATED) DESC
+  `;
+
+  // Số lượng sản phẩm theo tháng
+  const queryMonth = `
+    SELECT 
+      YEAR(pi.DATE_CREATED) AS YEAR,
+      MONTH(pi.DATE_CREATED) AS MONTH,
+      SUM(pi.QUANTITY) AS TOTAL_QUANTITY
+    FROM product_instances pi
+    ${whereClause}
+    GROUP BY YEAR(pi.DATE_CREATED), MONTH(pi.DATE_CREATED)
+    ORDER BY YEAR(pi.DATE_CREATED) DESC, MONTH(pi.DATE_CREATED) DESC
+  `;
+
+  // Số lượng sản phẩm theo ngày
+  const queryDay = `
+    SELECT 
+      DATE(pi.DATE_CREATED) AS DAY,
+      SUM(pi.QUANTITY) AS TOTAL_QUANTITY
+    FROM product_instances pi
+    ${whereClause}
+    GROUP BY DATE(pi.DATE_CREATED)
+    ORDER BY DAY DESC
+  `;
+
+  const [yearRows] = await db.query(queryYear, params);
+  const [monthRows] = await db.query(queryMonth, paramsMonth);
+  const [dayRows] = await db.query(queryDay, paramsDay);
+
+  return {
+    yearlyQuantity: yearRows,
+    monthlyQuantity: monthRows,
+    dailyQuantity: dayRows,
+  };
+};
+
+module.exports = { getProductStatsAll };
+
 module.exports = {
   getTotalCostByCompany,
   getTop10MaterialByCompany,
@@ -299,4 +361,5 @@ module.exports = {
   getRevenueByManufacturer,
   getTop10Products,
   getRevenueStatsAll,
+  getProductStatsAll,
 };

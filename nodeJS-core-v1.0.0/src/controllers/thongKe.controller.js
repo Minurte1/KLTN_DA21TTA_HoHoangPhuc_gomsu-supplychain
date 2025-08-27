@@ -90,7 +90,16 @@ const getRevenueStatsAllController = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-
+const getProductStatsAllController = async (req, res) => {
+  try {
+    const { companyId } = req.query; // optional
+    const data = await thongKeService.getProductStatsAll(companyId || null);
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 module.exports = {
   getThongKeByCompanyId,
   getTopMaterialByCompany,
@@ -99,4 +108,5 @@ module.exports = {
   getRevenueByManufacturer,
   getTop10Products,
   getRevenueStatsAllController,
+  getProductStatsAllController,
 };

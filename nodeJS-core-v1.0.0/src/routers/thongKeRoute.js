@@ -8,6 +8,7 @@ const {
   getRevenueByManufacturer,
   getTop10Products,
   getRevenueStatsAllController,
+  getProductStatsAllController,
 } = require("../controllers/thongKe.controller");
 
 // Nếu có id thì lọc theo công ty, nếu không thì lấy all
@@ -19,4 +20,5 @@ router.get("/:id?", getThongKeByCompanyId);
 router.get("/revenue-manufacturer/:id?", getRevenueByManufacturer);
 router.get("/top-products/:id?", getTop10Products);
 router.get("/revenue-stats-ss/:id?", getRevenueStatsAllController);
+router.get("/product-stats-ss/:id?", getProductStatsAllController);
 module.exports = router;
