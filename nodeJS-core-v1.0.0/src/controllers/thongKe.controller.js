@@ -101,6 +101,69 @@ const getProductStatsAllController = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// Doanh thu vận chuyển
+const getTotalTransportRevenueController = async (req, res) => {
+  try {
+    const { companyId } = req.query; // optional
+    const data = await thongKeService.getTotalTransportRevenue(
+      companyId || null
+    );
+    res.json(data);
+  } catch (err) {
+    console.error("Error in getTotalTransportRevenueController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+// ========================CTY VẬN CHUYỂN ===========================================
+// Số lần sử dụng dịch vụ vận chuyển
+const getTotalTransportUsageController = async (req, res) => {
+  try {
+    const { companyId } = req.query; // optional
+    const data = await thongKeService.getTotalTransportUsage(companyId || null);
+    res.json(data);
+  } catch (err) {
+    console.error("Error in getTotalTransportUsageController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Doanh thu theo ngày
+const getRevenueByDayController = async (req, res) => {
+  try {
+    const { companyId } = req.query; // optional
+    const data = await thongKeService.getRevenueByDay(companyId || null);
+    res.json(data);
+  } catch (err) {
+    console.error("Error in getRevenueByDayController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Doanh thu theo tháng
+const getRevenueByMonthController = async (req, res) => {
+  try {
+    const { companyId } = req.query; // optional
+    const data = await thongKeService.getRevenueByMonth(companyId || null);
+    res.json(data);
+  } catch (err) {
+    console.error("Error in getRevenueByMonthController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Doanh thu theo năm
+const getRevenueByYearController = async (req, res) => {
+  try {
+    const { companyId } = req.query; // optional
+    const data = await thongKeService.getRevenueByYear(companyId || null);
+    res.json(data);
+  } catch (err) {
+    console.error("Error in getRevenueByYearController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 module.exports = {
   getThongKeByCompanyId,
   getTopMaterialByCompany,
@@ -110,4 +173,10 @@ module.exports = {
   getTop10Products,
   getRevenueStatsAllController,
   getProductStatsAllController,
+  // =================CTY VẬN CHUYỂN =====================================
+  getRevenueByYearController,
+  getRevenueByMonthController,
+  getRevenueByDayController,
+  getTotalTransportUsageController,
+  getTotalTransportRevenueController,
 };

@@ -368,6 +368,146 @@ const getProductStatsAll = async (companyId) => {
   };
 };
 
+// =======================CTY VẬN CHUYỂN ==================================
+// Tổng doanh thu
+const getTotalTransportRevenue = async (idCompany) => {
+  let query = `
+    SELECT 
+      c.ID_COMPANY,
+      c.NAME_COMPANY,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'COMPLETED'
+  `;
+  const params = [];
+
+  if (idCompany) {
+    query += ` AND c.ID_COMPANY = ?`;
+    params.push(idCompany);
+  }
+
+  query += ` GROUP BY c.ID_COMPANY, c.NAME_COMPANY`;
+
+  const [rows] = await db.query(query, params);
+  return idCompany ? rows[0] || null : rows;
+};
+
+// Số lần sử dụng dịch vụ vận chuyển
+const getTotalTransportUsage = async (idCompany) => {
+  let query = `
+    SELECT 
+      c.ID_COMPANY,
+      c.NAME_COMPANY,
+      COUNT(t.ID_TRANSPORT_ORDER) AS TOTAL_TRANSPORT_ORDERS
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'COMPLETED'
+  `;
+  const params = [];
+
+  if (idCompany) {
+    query += ` AND c.ID_COMPANY = ?`;
+    params.push(idCompany);
+  }
+
+  query += ` GROUP BY c.ID_COMPANY, c.NAME_COMPANY`;
+
+  const [rows] = await db.query(query, params);
+  return idCompany ? rows[0] || null : rows;
+};
+
+// Doanh thu theo ngày
+const getRevenueByDay = async (idCompany) => {
+  let query = `
+    SELECT 
+      DATE(t.DELIVERY_DATE) AS DAY,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'COMPLETED'
+  `;
+  const params = [];
+
+  if (idCompany) {
+    query += ` AND c.ID_COMPANY = ?`;
+    params.push(idCompany);
+  }
+
+  query += ` GROUP BY DATE(t.DELIVERY_DATE)
+             ORDER BY DAY ASC`;
+
+  const [rows] = await db.query(query, params);
+  return rows;
+};
+
+// Doanh thu theo tháng
+const getRevenueByMonth = async (idCompany) => {
+  let query = `
+    SELECT 
+      YEAR(t.DELIVERY_DATE) AS YEAR,
+      MONTH(t.DELIVERY_DATE) AS MONTH,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'COMPLETED'
+  `;
+  const params = [];
+
+  if (idCompany) {
+    query += ` AND c.ID_COMPANY = ?`;
+    params.push(idCompany);
+  }
+
+  query += ` GROUP BY YEAR(t.DELIVERY_DATE), MONTH(t.DELIVERY_DATE)
+             ORDER BY YEAR ASC, MONTH ASC`;
+
+  const [rows] = await db.query(query, params);
+  return rows;
+};
+
+// Doanh thu theo năm
+const getRevenueByYear = async (idCompany) => {
+  let query = `
+    SELECT 
+      YEAR(t.DELIVERY_DATE) AS YEAR,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'COMPLETED'
+  `;
+  const params = [];
+
+  if (idCompany) {
+    query += ` AND c.ID_COMPANY = ?`;
+    params.push(idCompany);
+  }
+
+  query += ` GROUP BY YEAR(t.DELIVERY_DATE)
+             ORDER BY YEAR ASC`;
+
+  const [rows] = await db.query(query, params);
+  return rows;
+};
+
+// Top 5 công ty vận chuyển
+const getTop5TransportCompanies = async () => {
+  const query = `
+    SELECT 
+      c.ID_COMPANY,
+      c.NAME_COMPANY,
+      COUNT(t.ID_TRANSPORT_ORDER) AS TOTAL_ORDERS,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'COMPLETED'
+    GROUP BY c.ID_COMPANY, c.NAME_COMPANY
+    ORDER BY TOTAL_ORDERS DESC
+    LIMIT 5
+  `;
+  const [rows] = await db.query(query);
+  return rows;
+};
 module.exports = {
   getTotalCostByCompany,
   getTop10MaterialByCompany,
@@ -379,4 +519,12 @@ module.exports = {
   getTop10Products,
   getRevenueStatsAll,
   getProductStatsAll,
+
+  //==================== CTY VẬN CHUYỂN ================================
+  getTop5TransportCompanies,
+  getRevenueByYear,
+  getRevenueByMonth,
+  getRevenueByDay,
+  getTotalTransportUsage,
+  getTotalTransportRevenue,
 };
