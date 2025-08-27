@@ -53,6 +53,15 @@ const productInstancesServices = {
     const res = await axiosInstance.delete(`${PRODUCT_INSTANCES_API}/${id}`);
     return res.data;
   },
+
+  // 🔎 Search sản phẩm & công ty (global search)
+  globalSearch: async (keyword) => {
+    if (!keyword) return [];
+    const res = await axiosInstance.get(`${PRODUCT_INSTANCES_API}/search`, {
+      params: { keyword },
+    });
+    return res.data;
+  },
 };
 
 export default productInstancesServices;

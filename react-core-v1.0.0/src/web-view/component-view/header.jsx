@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../component-view/scss/header.scss";
 import logo from "../../public/images/logo.png";
@@ -9,15 +9,17 @@ import { useDispatch } from "react-redux";
 import Cookies from "js-cookie";
 import { Menu, MenuItem } from "@mui/material";
 import useAuthInit from "../../hook/useAuthInit";
+import productInstancesServices from "../../services/product_instancesServices";
+const api = process.env.REACT_APP_URL_SERVER;
+
 const Header = () => {
+  useAuthInit();
   const navigate = useNavigate();
   const location = useLocation();
   const { userInfo } = ReduxExportUseAuthState();
-  useAuthInit();
   const dispatch = useDispatch();
   const isActive = (path) => location.pathname === path;
-
-  const api = process.env.REACT_APP_URL_SERVER;
+  const wrapperRef = useRef(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -29,6 +31,31 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const [keyword, setKeyword] = useState("");
+  const [results, setResults] = useState([]);
+
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setKeyword(value);
+    if (value.trim() !== "") {
+      const data = await productInstancesServices.globalSearch(value);
+      setResults(data);
+    } else {
+      setResults([]);
+    }
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setResults([]); // Clear dữ liệu khi click ra ngoài
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wrapperRef]);
 
   const handleLogout = async () => {
     try {
@@ -40,6 +67,17 @@ const Header = () => {
       console.error("Error during logout:", error);
     }
   };
+
+  const handleNavigate = (item) => {
+    if (item.type === "product") {
+      navigate(`/product-details/${item?.SERIAL_CODE}`);
+    } else if (item.type === "company") {
+      navigate(`/companies/${item.id}`);
+    }
+    setResults([]); // clear dropdown sau khi chọn
+    setKeyword(""); // clear input nếu muốn
+  };
+
   return (
     <header className="main-header">
       <div className="container">
@@ -83,12 +121,58 @@ const Header = () => {
         </nav>
 
         {/* Search + Account */}
-        <div className="header-actions">
-          <input type="text" placeholder="Tìm kiếm..." />
+        <div className="header-actions d-flex align-items-center gap-3">
+          <div className="position-relative" ref={wrapperRef}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Tìm kiếm..."
+              value={keyword}
+              onChange={handleSearch}
+            />
+
+            {results.length > 0 && (
+              <ul
+                className="list-group position-absolute w-100 mt-1 shadow-sm"
+                style={{ zIndex: 1050, maxHeight: "300px", overflowY: "auto" }}
+              >
+                {results.map((item) => (
+                  <li
+                    key={item.id}
+                    className="list-group-item list-group-item-action d-flex align-items-center"
+                    onClick={() => handleNavigate(item)} // <-- thêm navigate
+                    style={{ cursor: "pointer" }}
+                  >
+                    <img
+                      src={item.IMAGE_URL_PRODUCTS || "/default-image.png"}
+                      alt={item.name}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        objectFit: "cover",
+                        borderRadius: 4,
+                        marginRight: 10,
+                      }}
+                    />
+                    <span
+                      className="flex-grow-1"
+                      style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {item.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           {userInfo ? (
-            <div className="account-dropdown" style={{ position: "relative" }}>
-              <button onClick={handleClick} className="account-btn">
+            <div className="account-dropdown position-relative">
+              <button onClick={handleClick} className="btn btn-outline-primary">
                 {userInfo?.HO_TEN || "Không xác định"}
               </button>
 
@@ -121,10 +205,6 @@ const Header = () => {
               Tài khoản
             </button>
           )}
-          {/* 
-          <button onClick={() => navigate("/cart")} className="cart-btn">
-            Giỏ hàng
-          </button> */}
         </div>
       </div>
     </header>

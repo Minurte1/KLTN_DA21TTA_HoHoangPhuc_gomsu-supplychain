@@ -54,12 +54,13 @@
         gap: 10px;
 
         input {
-            padding: 5px 10px;
+            padding: 5px 15px;
             border: 1px solid #d2b48c; // Nâu nhạt
             border-radius: 20px;
             outline: none;
             background-color: #fdf7f2;
             color: #333;
+            min-width: 250px; // tăng độ dài ô search
 
             &:focus {
                 border-color: #ffd28f;

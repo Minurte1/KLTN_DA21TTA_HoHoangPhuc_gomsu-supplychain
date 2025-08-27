@@ -8,6 +8,7 @@ const {
   updateProductInstance,
   deleteProductInstance,
   getAllProductInstancesPublic,
+  globalSearchController,
 } = require("../controllers/product_instances.controller");
 
 const {
@@ -16,6 +17,8 @@ const {
 } = require("../middleware/JWTaction");
 
 // Lấy tất cả bản ghi product_instances
+router.get("/search", globalSearchController);
+
 router.get(
   "/",
   // checkUserJWT,

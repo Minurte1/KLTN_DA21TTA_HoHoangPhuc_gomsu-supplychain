@@ -267,6 +267,59 @@ const getAllProductInstancesPublic = async (
     throw error;
   }
 };
+const globalSearch = async (keyword) => {
+  const likeKeyword = `%${keyword}%`;
+
+  // Search company
+  const companyQuery = `
+    SELECT 
+      c.ID_COMPANY AS id,
+      c.NAME_COMPANY AS name,
+      c.TYPE_COMPANY,
+      c.ADDRESS,
+      c.EMAIL,
+      c.PHONE,
+    c.AVATAR AS IMAGE_URL_PRODUCTS, -- thêm cột này để đồng bộ với product
+      'company' AS type
+    FROM companies c
+    WHERE c.NAME_COMPANY LIKE ?
+    LIMIT 5
+  `;
+  const [companies] = await db.query(companyQuery, [likeKeyword]);
+
+  // Search product
+  const productQuery = `
+  SELECT 
+    p.ID_PRODUCT AS id,
+    CONCAT(p.NAME_PRODUCTS, ' - ', pi.SERIAL_CODE) AS name, -- ghép name + serial code
+    p.DESCRIPTION_PRODUCTS,
+    p.PRICE_PRODUCTS,
+    p.IMAGE_URL_PRODUCTS,
+    pi.SERIAL_CODE, -- lấy serial code instance
+    c.NAME_COMPANY,
+    'product' AS type
+  FROM products p
+  JOIN companies c ON p.ID_COMPANY = c.ID_COMPANY
+  JOIN product_instances pi ON pi.ID_PRODUCT = p.ID_PRODUCT
+  WHERE p.NAME_PRODUCTS LIKE ?
+  LIMIT 5
+`;
+
+  const [products] = await db.query(productQuery, [likeKeyword]);
+
+  // Merge results và chỉ lấy 5 kết quả đầu tiên
+  const merged = [...companies, ...products].slice(0, 5);
+
+  // Map IMAGE_URL_PRODUCTS
+  const results = merged.map((item) => ({
+    ...item,
+    IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
+      ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
+      : null,
+  }));
+
+  return results;
+};
 
 module.exports = {
   create,
@@ -275,4 +328,5 @@ module.exports = {
   update,
   delete: deleteProductInstance,
   getAllProductInstancesPublic,
+  globalSearch,
 };

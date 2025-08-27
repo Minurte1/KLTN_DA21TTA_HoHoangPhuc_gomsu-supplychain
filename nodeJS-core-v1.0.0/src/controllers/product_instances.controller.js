@@ -119,6 +119,19 @@ const getAllProductInstancesPublic = async (req, res) => {
   }
 };
 
+const globalSearchController = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    if (!keyword) {
+      return res.status(400).json({ error: "Missing keyword" });
+    }
+    const results = await ProductInstancesService.globalSearch(keyword);
+    res.json(results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
 module.exports = {
   getAllProductInstances,
   createProductInstance,
@@ -126,4 +139,5 @@ module.exports = {
   updateProductInstance,
   deleteProductInstance,
   getAllProductInstancesPublic,
+  globalSearchController,
 };
