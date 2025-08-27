@@ -79,4 +79,72 @@ export const statisticsApi = {
     });
     return res.data;
   },
+
+  // ================= VẬN CHUYỂN ======================
+  // Doanh thu vận chuyển
+  getTransportRevenue: async ({ ID_COMPANY } = {}) => {
+    const params = {};
+    if (ID_COMPANY) params.companyId = ID_COMPANY;
+
+    const res = await axiosInstance.get(`${statistic_URL}/transport-revenue`, {
+      params,
+    });
+    return res.data;
+  },
+
+  // Số lần sử dụng dịch vụ vận chuyển
+  getTransportUsage: async ({ ID_COMPANY } = {}) => {
+    const params = {};
+    if (ID_COMPANY) params.companyId = ID_COMPANY;
+
+    const res = await axiosInstance.get(`${statistic_URL}/transport-usage`, {
+      params,
+    });
+    return res.data;
+  },
+
+  // Doanh thu theo ngày
+  getRevenueByDay: async ({ ID_COMPANY } = {}) => {
+    const params = {};
+    if (ID_COMPANY) params.companyId = ID_COMPANY;
+
+    const res = await axiosInstance.get(`${statistic_URL}/revenue-by-day`, {
+      params,
+    });
+    return res.data;
+  },
+
+  // Doanh thu theo tháng
+  getRevenueByMonth: async ({ ID_COMPANY } = {}) => {
+    const params = {};
+    if (ID_COMPANY) params.companyId = ID_COMPANY;
+
+    const res = await axiosInstance.get(`${statistic_URL}/revenue-by-month`, {
+      params,
+    });
+    return res.data;
+  },
+
+  // Doanh thu theo năm
+  getRevenueByYear: async ({ ID_COMPANY } = {}) => {
+    const params = {};
+    if (ID_COMPANY) params.companyId = ID_COMPANY;
+
+    const res = await axiosInstance.get(`${statistic_URL}/revenue-by-year`, {
+      params,
+    });
+    return res.data;
+  },
+  revenueStatsTransport: async ({ ID_COMPANY } = {}) => {
+    const params = {};
+    if (ID_COMPANY) params.companyId = ID_COMPANY;
+
+    const res = await axiosInstance.get(
+      `${statistic_URL}/revenue-stats-transport`,
+      {
+        params,
+      }
+    );
+    return res.data;
+  },
 };

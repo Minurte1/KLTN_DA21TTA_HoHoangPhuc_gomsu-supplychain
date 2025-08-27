@@ -101,26 +101,23 @@ const getProductStatsAllController = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-
+// ========================CTY VẬN CHUYỂN ===========================================
 // Doanh thu vận chuyển
 const getTotalTransportRevenueController = async (req, res) => {
   try {
-    const { companyId } = req.query; // optional
-    const data = await thongKeService.getTotalTransportRevenue(
-      companyId || null
-    );
+    const { id } = req.params; // optional
+    const data = await thongKeService.getTotalTransportRevenue(id || null);
     res.json(data);
   } catch (err) {
     console.error("Error in getTotalTransportRevenueController:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
-// ========================CTY VẬN CHUYỂN ===========================================
 // Số lần sử dụng dịch vụ vận chuyển
 const getTotalTransportUsageController = async (req, res) => {
   try {
-    const { companyId } = req.query; // optional
-    const data = await thongKeService.getTotalTransportUsage(companyId || null);
+    const { id } = req.params; // optional
+    const data = await thongKeService.getTotalTransportUsage(id || null);
     res.json(data);
   } catch (err) {
     console.error("Error in getTotalTransportUsageController:", err);
@@ -131,8 +128,8 @@ const getTotalTransportUsageController = async (req, res) => {
 // Doanh thu theo ngày
 const getRevenueByDayController = async (req, res) => {
   try {
-    const { companyId } = req.query; // optional
-    const data = await thongKeService.getRevenueByDay(companyId || null);
+    const { id } = req.params; // optional
+    const data = await thongKeService.getRevenueByDay(id || null);
     res.json(data);
   } catch (err) {
     console.error("Error in getRevenueByDayController:", err);
@@ -143,8 +140,8 @@ const getRevenueByDayController = async (req, res) => {
 // Doanh thu theo tháng
 const getRevenueByMonthController = async (req, res) => {
   try {
-    const { companyId } = req.query; // optional
-    const data = await thongKeService.getRevenueByMonth(companyId || null);
+    const { id } = req.params; // optional
+    const data = await thongKeService.getRevenueByMonth(id || null);
     res.json(data);
   } catch (err) {
     console.error("Error in getRevenueByMonthController:", err);
@@ -155,11 +152,21 @@ const getRevenueByMonthController = async (req, res) => {
 // Doanh thu theo năm
 const getRevenueByYearController = async (req, res) => {
   try {
-    const { companyId } = req.query; // optional
-    const data = await thongKeService.getRevenueByYear(companyId || null);
+    const { id } = req.params; // optional
+    const data = await thongKeService.getRevenueByYear(id || null);
     res.json(data);
   } catch (err) {
     console.error("Error in getRevenueByYearController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+}; // Thống kê doanh thu theo ngày, tháng, năm
+const getRevenueStatsController = async (req, res) => {
+  try {
+    const { id } = req.params; // optional
+    const data = await thongKeService.getRevenueStats(id || null);
+    res.json(data);
+  } catch (err) {
+    console.error("Error in getRevenueStatsController:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -179,4 +186,5 @@ module.exports = {
   getRevenueByDayController,
   getTotalTransportUsageController,
   getTotalTransportRevenueController,
+  getRevenueStatsController,
 };

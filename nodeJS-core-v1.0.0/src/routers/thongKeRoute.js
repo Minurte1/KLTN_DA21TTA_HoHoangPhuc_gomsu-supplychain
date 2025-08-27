@@ -16,6 +16,7 @@ const {
   getRevenueByDayController,
   getRevenueByYearController,
   getRevenueByMonthController,
+  getRevenueStatsController,
 } = require("../controllers/thongKe.controller");
 // ====================CTY SẢN XUẤT=======================================
 router.get("/revenue-manufacturer/:id?", getRevenueByManufacturer);
@@ -34,6 +35,7 @@ router.get("/revenue-by-day/:id?", getRevenueByDayController);
 router.get("/revenue-by-month/:id?", getRevenueByMonthController);
 // Doanh thu theo năm
 router.get("/revenue-by-year/:id?", getRevenueByYearController);
+router.get("/revenue-stats-transport/:id?", getRevenueStatsController);
 
 // ================= CTY CUNG CẤP =========================================
 // Nếu có id thì lọc theo công ty, nếu không thì lấy all

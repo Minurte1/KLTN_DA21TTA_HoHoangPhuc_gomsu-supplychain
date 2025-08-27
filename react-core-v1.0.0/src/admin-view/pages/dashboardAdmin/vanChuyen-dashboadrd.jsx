@@ -40,20 +40,16 @@ ChartJS.register(
   PointElement
 );
 
-const DashboardSanXuatAdmin = () => {
+const DashboardVanChuyenAdmin = () => {
   const { userInfo } = ReduxExportUseAuthState();
   const [totalSummary, setTotalSummary] = useState(null);
   const [topMaterial, setTopMaterial] = useState([]);
   const [revenueStats, setRevenueStats] = useState({
-    dailyRevenue: [],
-    monthlyRevenue: [],
-    yearlyRevenue: [],
+    byDay: [],
+    byMonth: [],
+    byYear: [],
   });
-  const [productStats, setProductStats] = useState({
-    dailyQuantity: [],
-    monthlyQuantity: [],
-    yearlyQuantity: [],
-  });
+
   console.table({
     revenueStats,
     topMaterial,
@@ -65,34 +61,24 @@ const DashboardSanXuatAdmin = () => {
       try {
         const companyId = userInfo?.ID_COMPANY;
 
-        const ordersRes = await statisticsApi.getRevenueByManufacturer({
+        const ordersRes = await statisticsApi.getTransportRevenue({
           ID_COMPANY: companyId,
         });
         setTotalSummary(ordersRes[0] || {});
 
-        const topMaterialRes = await statisticsApi.getTopProducts({
+        const topMaterialRes = await statisticsApi.getTransportUsage({
           ID_COMPANY: companyId,
         });
         setTopMaterial(topMaterialRes || []);
 
-        const revenueRes = await statisticsApi.getRevenueStatsAll({
+        const revenueRes = await statisticsApi.revenueStatsTransport({
           ID_COMPANY: companyId,
         });
         setRevenueStats(
           revenueRes || {
-            dailyRevenue: [],
-            monthlyRevenue: [],
-            yearlyRevenue: [],
-          }
-        );
-        const revenueResProduct = await statisticsApi.getProductStatsAll({
-          ID_COMPANY: companyId,
-        });
-        setProductStats(
-          revenueResProduct || {
-            dailyQuantity: [],
-            monthlyQuantity: [],
-            yearlyQuantity: [],
+            byDay: [],
+            byMonth: [],
+            byYear: [],
           }
         );
       } catch (error) {
@@ -103,25 +89,22 @@ const DashboardSanXuatAdmin = () => {
     fetchData();
   }, [userInfo]);
 
-  console.log("revenueStats", revenueStats);
   const combinedChartData = {
     labels: [
       // dailyRevenue: sắp xếp theo ngày tăng dần
-      ...revenueStats.dailyRevenue
-        .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
-        .map((item) => new Date(item.DAY).toLocaleDateString("vi-VN")),
+      ...revenueStats?.byDay
+        .sort((a, b) => new Date(a.TIME_UNIT) - new Date(b.TIME_UNIT))
+        .map((item) => new Date(item.TIME_UNIT).toLocaleDateString("vi-VN")),
       // monthlyRevenue
-      ...revenueStats.monthlyRevenue.map(
-        (item) => `${item.MONTH}/${item.YEAR}`
-      ),
+      ...revenueStats?.byMonth.map((item) => `${item.MONTH}/${item.YEAR}`),
       // yearlyRevenue
-      ...revenueStats.yearlyRevenue.map((item) => item.YEAR),
+      ...revenueStats?.byYear.map((item) => item.YEAR),
     ],
     datasets: [
       {
         label: "Doanh thu theo ngày",
-        data: revenueStats.dailyRevenue
-          .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
+        data: revenueStats?.byDay
+          .sort((a, b) => new Date(a.TIME_UNIT) - new Date(b.TIME_UNIT))
           .map((item) => item.TOTAL_REVENUE),
         borderColor: "hsl(var(--chart-1))",
         backgroundColor: "hsla(var(--chart-1), 0.1)",
@@ -130,7 +113,7 @@ const DashboardSanXuatAdmin = () => {
       },
       {
         label: "Doanh thu theo tháng",
-        data: revenueStats.monthlyRevenue.map((item) => item.TOTAL_REVENUE),
+        data: revenueStats?.byMonth.map((item) => item.TOTAL_REVENUE),
         borderColor: "hsl(var(--chart-2))",
         backgroundColor: "hsla(var(--chart-2), 0.1)",
         fill: true,
@@ -138,55 +121,7 @@ const DashboardSanXuatAdmin = () => {
       },
       {
         label: "Doanh thu theo năm",
-        data: revenueStats.yearlyRevenue.map((item) => item.TOTAL_REVENUE),
-        borderColor: "hsl(var(--chart-3))",
-        backgroundColor: "hsla(var(--chart-3), 0.1)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  // Dữ liệu xu hướng sản phẩm
-  const combinedQuantityChartData = {
-    labels: [
-      // dailyQuantity sắp xếp theo ngày tăng dần
-      ...productStats.dailyQuantity
-        .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
-        .map((item) => new Date(item.DAY).toLocaleDateString("vi-VN")),
-      // monthlyQuantity
-      ...productStats.monthlyQuantity.map(
-        (item) => `${item.MONTH}/${item.YEAR}`
-      ),
-      // yearlyQuantity
-      ...productStats.yearlyQuantity.map((item) => item.YEAR),
-    ],
-    datasets: [
-      {
-        label: "Số lượng sản xuất theo ngày",
-        data: productStats.dailyQuantity
-          .sort((a, b) => new Date(a.DAY) - new Date(b.DAY))
-          .map((item) => Number(item.TOTAL_QUANTITY)),
-        borderColor: "hsl(var(--chart-1))",
-        backgroundColor: "hsla(var(--chart-1), 0.1)",
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: "Số lượng sản xuất theo tháng",
-        data: productStats.monthlyQuantity.map((item) =>
-          Number(item.TOTAL_QUANTITY)
-        ),
-        borderColor: "hsl(var(--chart-2))",
-        backgroundColor: "hsla(var(--chart-2), 0.1)",
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: "Số lượng sản xuất theo năm",
-        data: productStats.yearlyQuantity.map((item) =>
-          Number(item.TOTAL_QUANTITY)
-        ),
+        data: revenueStats?.byYear.map((item) => item?.TOTAL_REVENUE),
         borderColor: "hsl(var(--chart-3))",
         backgroundColor: "hsla(var(--chart-3), 0.1)",
         fill: true,
@@ -238,7 +173,7 @@ const DashboardSanXuatAdmin = () => {
       },
     },
   };
-  console.log("topMaterial", topMaterial);
+
   return (
     <Box sx={{ padding: "40px" }}>
       {" "}
@@ -351,12 +286,12 @@ const DashboardSanXuatAdmin = () => {
                 </div>
                 <div className="card-body">
                   <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {revenueStats.monthlyRevenue[0]?.TOTAL_REVENUE.toLocaleString()}{" "}
+                    {revenueStats?.byMonth?.[0]?.TOTAL_REVENUE?.toLocaleString()}{" "}
                     VNĐ
                   </h4>
                   <p className="small mb-0" style={{ color: "#374151" }}>
-                    Tháng {revenueStats.monthlyRevenue[0]?.MONTH}/
-                    {revenueStats.monthlyRevenue[0]?.YEAR}
+                    Tháng {revenueStats?.byMonth?.[0]?.MONTH}/
+                    {revenueStats?.byMonth?.[0]?.YEAR}
                   </p>
                 </div>
               </div>
@@ -381,36 +316,6 @@ const DashboardSanXuatAdmin = () => {
                 </div>
 
                 {/* Body */}
-                <div className="card-body">
-                  {/* Chart */}
-                  {/* <div style={{ height: "300px" }}>
-                    <Bar data={topMaterial} options={chartOptions} />
-                  </div> */}
-
-                  {/* Table chi tiết */}
-                  <div className="mt-3 table-responsive">
-                    <table className="table table-hover align-middle mb-0">
-                      <thead>
-                        <tr>
-                          <th className="fw-semibold">#</th>
-                          <th className="fw-semibold">Tên sản phẩm</th>
-                          <th className="fw-semibold text-end">Số lượng bán</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {topMaterial.map((item, index) => (
-                          <tr key={item.MATERIAL_ID || index}>
-                            <td>{index + 1}</td>
-                            <td>{item.NAME_PRODUCTS}</td>
-                            <td className="text-end">
-                              {Number(item.TOTAL_QUANTITY).toLocaleString()}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
               </div>
             </div>
             <div className="col-12 col-lg-6">
@@ -430,27 +335,6 @@ const DashboardSanXuatAdmin = () => {
                   <Line data={combinedChartData} options={chartOptions} />
                 </div>
               </div>
-            </div>{" "}
-            <div className="col-12 col-lg-6">
-              <div className="card shadow-sm border-0">
-                <div className="card-header bg-white border-0">
-                  <h5
-                    className="card-title mb-1 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Xu hướng sản phẩm sản xuất được
-                  </h5>
-                  <p className="small mb-0" style={{ color: "#374151" }}>
-                    Biểu đồ sản phẩm sản xuất theo ngày, tháng và năm
-                  </p>
-                </div>
-                <div className="card-body" style={{ height: "320px" }}>
-                  <Line
-                    data={combinedQuantityChartData}
-                    options={chartOptions}
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -459,4 +343,4 @@ const DashboardSanXuatAdmin = () => {
   );
 };
 
-export default DashboardSanXuatAdmin;
+export default DashboardVanChuyenAdmin;

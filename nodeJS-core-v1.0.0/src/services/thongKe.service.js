@@ -369,16 +369,19 @@ const getProductStatsAll = async (companyId) => {
 };
 
 // =======================CTY VẬN CHUYỂN ==================================
-// Tổng doanh thu
+
+// Tổng doanh thu + tổng số đơn hàng thành công + thất bại
 const getTotalTransportRevenue = async (idCompany) => {
   let query = `
     SELECT 
       c.ID_COMPANY,
       c.NAME_COMPANY,
-      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
+      SUM(CASE WHEN t.STATUS = 'SUCCESS' THEN t.SHIPPING_COST ELSE 0 END) AS TOTAL_REVENUE,
+      COUNT(CASE WHEN t.STATUS = 'SUCCESS' THEN 1 END) AS TOTAL_SUCCESS_ORDERS,
+      COUNT(CASE WHEN t.STATUS = 'FAILED' THEN 1 END) AS TOTAL_FAILED_ORDERS
     FROM transport_orders t
     JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
-    WHERE t.STATUS = 'COMPLETED'
+    WHERE 1=1
   `;
   const params = [];
 
@@ -402,7 +405,7 @@ const getTotalTransportUsage = async (idCompany) => {
       COUNT(t.ID_TRANSPORT_ORDER) AS TOTAL_TRANSPORT_ORDERS
     FROM transport_orders t
     JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
-    WHERE t.STATUS = 'COMPLETED'
+    
   `;
   const params = [];
 
@@ -425,7 +428,7 @@ const getRevenueByDay = async (idCompany) => {
       SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
     FROM transport_orders t
     JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
-    WHERE t.STATUS = 'COMPLETED'
+    WHERE t.STATUS = 'SUCCESS'
   `;
   const params = [];
 
@@ -450,7 +453,7 @@ const getRevenueByMonth = async (idCompany) => {
       SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
     FROM transport_orders t
     JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
-    WHERE t.STATUS = 'COMPLETED'
+    WHERE t.STATUS = 'SUCCESS'
   `;
   const params = [];
 
@@ -474,7 +477,7 @@ const getRevenueByYear = async (idCompany) => {
       SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
     FROM transport_orders t
     JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
-    WHERE t.STATUS = 'COMPLETED'
+    WHERE t.STATUS = 'SUCCESS'
   `;
   const params = [];
 
@@ -500,7 +503,7 @@ const getTop5TransportCompanies = async () => {
       SUM(t.SHIPPING_COST) AS TOTAL_REVENUE
     FROM transport_orders t
     JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
-    WHERE t.STATUS = 'COMPLETED'
+    WHERE t.STATUS = 'SUCCESS'
     GROUP BY c.ID_COMPANY, c.NAME_COMPANY
     ORDER BY TOTAL_ORDERS DESC
     LIMIT 5
@@ -508,6 +511,66 @@ const getTop5TransportCompanies = async () => {
   const [rows] = await db.query(query);
   return rows;
 };
+const getRevenueStats = async (idCompany) => {
+  const params = [];
+  let condition = "";
+
+  if (idCompany) {
+    condition = ` AND c.ID_COMPANY = ?`;
+    params.push(idCompany);
+  }
+
+  // Doanh thu theo ngày
+  const queryDay = `
+    SELECT 
+      DATE(t.CREATED_AT) AS TIME_UNIT,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE,
+      COUNT(t.ID_ORDER) AS TOTAL_SUCCESS_ORDERS
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'SUCCESS' ${condition}
+    GROUP BY DATE(t.CREATED_AT)
+    ORDER BY DATE(t.CREATED_AT)
+  `;
+
+  // Doanh thu theo tháng
+  const queryMonth = `
+    SELECT 
+      YEAR(t.CREATED_AT) AS YEAR,
+      MONTH(t.CREATED_AT) AS MONTH,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE,
+      COUNT(t.ID_ORDER) AS TOTAL_SUCCESS_ORDERS
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'SUCCESS' ${condition}
+    GROUP BY YEAR(t.CREATED_AT), MONTH(t.CREATED_AT)
+    ORDER BY YEAR(t.CREATED_AT), MONTH(t.CREATED_AT)
+  `;
+
+  // Doanh thu theo năm
+  const queryYear = `
+    SELECT 
+      YEAR(t.CREATED_AT) AS YEAR,
+      SUM(t.SHIPPING_COST) AS TOTAL_REVENUE,
+      COUNT(t.ID_ORDER) AS TOTAL_SUCCESS_ORDERS
+    FROM transport_orders t
+    JOIN companies c ON t.ID_COMPANY_SHIP = c.ID_COMPANY
+    WHERE t.STATUS = 'SUCCESS' ${condition}
+    GROUP BY YEAR(t.CREATED_AT)
+    ORDER BY YEAR(t.CREATED_AT)
+  `;
+
+  const [rowsDay] = await db.query(queryDay, params);
+  const [rowsMonth] = await db.query(queryMonth, params);
+  const [rowsYear] = await db.query(queryYear, params);
+
+  return {
+    byDay: rowsDay,
+    byMonth: rowsMonth,
+    byYear: rowsYear,
+  };
+};
+
 module.exports = {
   getTotalCostByCompany,
   getTop10MaterialByCompany,
@@ -527,4 +590,5 @@ module.exports = {
   getRevenueByDay,
   getTotalTransportUsage,
   getTotalTransportRevenue,
+  getRevenueStats,
 };
