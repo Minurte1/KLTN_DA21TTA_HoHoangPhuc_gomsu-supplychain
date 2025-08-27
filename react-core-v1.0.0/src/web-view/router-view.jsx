@@ -8,6 +8,7 @@ import ThanhToan from "./page/thanhToan";
 import CompaniesPage from "./page/compoanies-page";
 import CeramicPage from "./page/ceramic-page";
 import ProductAllPage from "./page/product-all";
+import CompanyDetails from "./page/companies-details-page";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -18,6 +19,10 @@ const RouterView = () => {
     {
       path: "/companies",
       element: <CompaniesPage />,
+    },
+    {
+      path: "/companies-details/:ID_COMPANY",
+      element: <CompanyDetails />,
     },
     {
       path: "/san-pham",

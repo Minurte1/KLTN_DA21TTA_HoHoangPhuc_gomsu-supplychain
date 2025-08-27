@@ -35,7 +35,14 @@ const getCompanyById = async (id) => {
     "SELECT * FROM companies WHERE ID_COMPANY = ?",
     [id]
   );
-  return rows[0] || null;
+  const mappedRows = rows.map((company) => ({
+    ...company,
+    AVATAR: company.AVATAR ? `${URL_IMAGE_BASE}/${company.AVATAR}` : null,
+    BACKGROUND: company.BACKGROUND
+      ? `${URL_IMAGE_BASE}/${company.BACKGROUND}`
+      : null,
+  }));
+  return mappedRows;
 };
 const createCompany = async (data) => {
   const {

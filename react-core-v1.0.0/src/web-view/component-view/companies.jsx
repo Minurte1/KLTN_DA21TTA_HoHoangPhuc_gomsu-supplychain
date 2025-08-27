@@ -10,10 +10,11 @@ import {
 } from "@mui/material";
 import "./scss/companies.scss";
 import companyServices from "../../services/companies-service";
+import { useNavigate } from "react-router-dom";
 
 export default function CompaniesLandingPage() {
   const [companies, setCompanies] = useState([]);
-
+  const navigate = useNavigate();
   const fetchCompanies = async () => {
     const data = await companyServices.getCompanies(null, "ACTIVE");
     setCompanies(data.DT || []);
@@ -32,7 +33,10 @@ export default function CompaniesLandingPage() {
     }
     return avatar;
   };
-
+  const handleNavigate = (item) => {
+    if (!item) return;
+    navigate(`/companies-details/${item?.ID_COMPANY}`);
+  };
   return (
     <div>
       {/* Banner */}
@@ -52,7 +56,10 @@ export default function CompaniesLandingPage() {
         <Grid container spacing={3}>
           {ceramicCompanies.map((company) => (
             <Grid item xs={12} sm={6} md={4} key={company.ID_COMPANY}>
-              <Card className="company-card">
+              <Card
+                className="company-card"
+                onClick={() => handleNavigate(company)}
+              >
                 <CardMedia
                   component="img"
                   height="200"
@@ -92,7 +99,10 @@ export default function CompaniesLandingPage() {
         <Grid container spacing={3}>
           {otherCompanies.map((company) => (
             <Grid item xs={12} sm={6} md={4} key={company.ID_COMPANY}>
-              <Card className="company-card">
+              <Card
+                className="company-card"
+                onClick={() => handleNavigate(company)}
+              >
                 <CardMedia
                   component="img"
                   height="200"
