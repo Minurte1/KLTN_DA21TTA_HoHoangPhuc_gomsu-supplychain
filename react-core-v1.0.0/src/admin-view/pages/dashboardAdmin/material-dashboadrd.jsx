@@ -281,7 +281,7 @@ const DashboardMaterialAdmin = () => {
                 </div>
                 <div className="card-body">
                   <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {topMaterial.length}
+                    {totalSummary?.TOTAL_QUANTITY || "0"}
                   </h4>
                   <p className="small mb-0" style={{ color: "#374151" }}>
                     Loại vật liệu khác nhau
@@ -300,16 +300,18 @@ const DashboardMaterialAdmin = () => {
                     className="card-title mb-0 fw-semibold"
                     style={{ color: "#15803d" }}
                   >
-                    Dữ liệu doanh thu
+                    Doanh thu tháng
                   </h6>
                   <TrendingUp style={{ color: "#84cc16" }} size={18} />
                 </div>
                 <div className="card-body">
                   <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {revenueStats.monthlyRevenue.length}
+                    {revenueStats.monthlyRevenue[0]?.TOTAL_REVENUE.toLocaleString()}{" "}
+                    VNĐ
                   </h4>
                   <p className="small mb-0" style={{ color: "#374151" }}>
-                    Tháng có dữ liệu
+                    Tháng {revenueStats.monthlyRevenue[0]?.MONTH}/
+                    {revenueStats.monthlyRevenue[0]?.YEAR}
                   </p>
                 </div>
               </div>

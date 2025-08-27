@@ -1,13 +1,14 @@
 const db = require("../config/database");
 const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 
-// Thống kê doanh thu theo công ty
+// Thống kê doanh thu và số lượng sản phẩm theo công ty
 const getTotalCostByCompany = async (id) => {
   let query = `
     SELECT 
       c.ID_COMPANY,
       c.NAME_COMPANY,
-      SUM(mo.TOTAL_COST) AS TOTAL_REVENUE
+      SUM(mo.TOTAL_COST) AS TOTAL_REVENUE,
+      SUM(mo.QUANTITY_ORDERED) AS TOTAL_QUANTITY
     FROM material_orders mo
     JOIN material_order_master mom 
       ON mo.ID_MATERIAL_ORDER_MASTER = mom.ID_MATERIAL_ORDER_MASTER
