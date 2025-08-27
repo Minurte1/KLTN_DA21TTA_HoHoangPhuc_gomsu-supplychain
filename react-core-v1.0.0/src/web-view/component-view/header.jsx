@@ -69,10 +69,11 @@ const Header = () => {
   };
 
   const handleNavigate = (item) => {
+    const ID_COMPANY = item?.id ? item.id : item.ID_COMPANY;
     if (item.type === "product") {
       navigate(`/product-details/${item?.SERIAL_CODE}`);
     } else if (item.type === "company") {
-      navigate(`/companies-details/${item.ID_COMPANY}`);
+      navigate(`/companies-details/${ID_COMPANY}`);
     }
     setResults([]); // clear dropdown sau khi chọn
     setKeyword(""); // clear input nếu muốn
