@@ -1,21 +1,41 @@
 /* src/components/ProductCard.module.scss */
 .product-card {
     width: 100%;
-    /* cố định chiều rộng */
     height: 403px;
-    /* cố định chiều cao */
-    border: 1px solid #ddd;
+    border: 1px solid #e0e0e0;
+    /* viền nổi bật */
     border-radius: 8px;
     padding: 16px;
-    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
     background-color: #fff;
     display: flex;
     flex-direction: column;
-    transition: box-shadow 0.3s ease;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    position: relative;
 
+    /* thêm để logo absolute */
     &:hover {
-        box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+        box-shadow: 0 6px 20px rgb(0 0 0 / 0.15);
+        transform: translateY(-2px);
+        /* nâng nhẹ khi hover */
     }
+}
+
+.company-logo {
+    width: 32px;
+    /* logo nhỏ */
+    height: 32px;
+    border-radius: 50%;
+    /* hình tròn */
+    position: absolute;
+    /* để đặt góc */
+    top: 8px;
+    right: 8px;
+    border: 1px solid #e0e0e0;
+    /* viền nhẹ */
+    background-color: #fff;
+    object-fit: cover;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
 }
 
 .product-img {

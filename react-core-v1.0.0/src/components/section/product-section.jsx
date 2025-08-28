@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import styles from "./scss/productSection.module.scss";
+import Tooltip from "@mui/material/Tooltip";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
@@ -16,6 +17,17 @@ const ProductCard = ({ product }) => {
       onClick={handleClick}
       style={{ cursor: "pointer" }}
     >
+      {/* Logo công ty */}
+      {product.AVATAR && (
+        <Tooltip title={product.NAME_COMPANY || "Tên công ty"} arrow>
+          <img
+            src={product.AVATAR}
+            alt={product.NAME_COMPANY || "Logo công ty"}
+            className={styles["company-logo"]}
+          />
+        </Tooltip>
+      )}
+
       <img
         src={product.IMAGE_URL_PRODUCTS}
         alt={product.NAME_PRODUCTS}
@@ -31,11 +43,6 @@ const ProductCard = ({ product }) => {
           currency: "VND",
         })}
       </div>
-      {/* <div className={styles["product-stock"]}>
-        {product.STOCK_PRODUCTS > 0
-          ? `Còn hàng: ${product.STOCK_PRODUCTS}`
-          : "Hết hàng"}
-      </div> */}
       <div className={styles["product-category"]}>
         {product.NAME_CATEGORIES_}
       </div>

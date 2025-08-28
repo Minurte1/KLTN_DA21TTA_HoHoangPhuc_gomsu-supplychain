@@ -19,6 +19,7 @@ const ProductList = ({
     gridTemplateColumns: `repeat(${itemsPerRow}, 1fr)`,
   };
 
+  console.log("displayProducts", displayProducts);
   return (
     <div className={styles["product-list"]} style={gridStyle}>
       {displayProducts.map((product) => (

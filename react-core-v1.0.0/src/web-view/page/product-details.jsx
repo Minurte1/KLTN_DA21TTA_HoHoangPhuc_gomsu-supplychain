@@ -89,7 +89,7 @@ const ProductDetails = () => {
 
   const stylePadding = {
     marginTop: "20px",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#ffffffff",
     width: "100%",
     borderRadius: "8px",
     padding: "16px 0px",
@@ -121,9 +121,13 @@ const ProductDetails = () => {
         {" "}
         <Box
           sx={{
-            maxWidth: 1000,
+            // maxWidth: 100%,
+            width: "100%",
             margin: "20px auto",
             borderRadius: 3,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             bgcolor: theme.palette.background.paper,
           }}
         >
@@ -145,7 +149,7 @@ const ProductDetails = () => {
             </Grid>
             {/* Nội dung */}
             <Grid item xs={12} md={7}>
-              <CardContent>
+              <CardContent sx={{ padding: "40px" }}>
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
                   {product.NAME_PRODUCTS}
                 </Typography>
@@ -201,9 +205,17 @@ const ProductDetails = () => {
                   <Grid item>
                     <Button
                       variant="contained"
-                      color="primary"
                       onClick={handleAddToCart}
-                      sx={{ px: 3, py: 1.2, borderRadius: 2 }}
+                      sx={{
+                        px: 3,
+                        py: 1.2,
+                        borderRadius: 2,
+                        backgroundColor: "#8b5e3c",
+                        color: "#fff",
+                        "&:hover": {
+                          backgroundColor: "#7a5230", // đậm hơn khi hover
+                        },
+                      }}
                     >
                       Thêm vào giỏ hàng
                     </Button>
