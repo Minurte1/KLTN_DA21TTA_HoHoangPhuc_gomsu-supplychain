@@ -439,9 +439,8 @@ const createUser = async (req, res) => {
     ID_ROLE,
     HO_TEN,
     EMAIL,
-    _PASSWORD_HASH_USERS, // mật khẩu người dùng nhập
+    _PASSWORD_HASH_USERS,
     SO_DIEN_THOAI,
-    AVATAR,
     DIA_CHI_Provinces,
     DIA_CHI_Districts,
     DIA_CHI_Wards,
@@ -450,22 +449,20 @@ const createUser = async (req, res) => {
     ID_COMPANY,
   } = req.body;
 
-  // Kiểm tra đầu vào
-  if (!EMAIL || !_PASSWORD_HASH_USERS || !HO_TEN) {
-    return res.status(400).json({
-      EM: "Vui lòng nhập đầy đủ: Họ tên, Email và Mật khẩu",
-      EC: 0,
-      DT: [],
-    });
-  }
-
   try {
-    // Kiểm tra Email đã tồn tại chưa
+    if (!EMAIL || !_PASSWORD_HASH_USERS || !HO_TEN) {
+      return res.status(400).json({
+        EM: "Vui lòng nhập đầy đủ: Họ tên, Email và Mật khẩu",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // kiểm tra email
     const [emailCheck] = await pool.query(
       "SELECT ID_USERS FROM users WHERE EMAIL = ? AND IS_DELETE_USERS = 0",
       [EMAIL]
     );
-
     if (emailCheck.length > 0) {
       return res.status(409).json({
         EM: "Email đã tồn tại trong hệ thống",
@@ -474,15 +471,13 @@ const createUser = async (req, res) => {
       });
     }
 
-    // Hash mật khẩu
+    // hash password
     const hashPassword = await bcrypt.hash(_PASSWORD_HASH_USERS, saltRounds);
 
-    // Tạo địa chỉ đầy đủ
-    const DIA_CHI = `${DIA_CHI_STREETNAME || ""}, ${DIA_CHI_Wards || ""}, ${
-      DIA_CHI_Districts || ""
-    }, ${DIA_CHI_Provinces || ""}`;
+    // lấy đường dẫn avatar (nếu có upload)
+    const avatarPath = req.file ? `/images/${req.file.filename}` : null;
 
-    // Thêm user vào database
+    // insert
     const [result] = await pool.query(
       `INSERT INTO users (
         ID_ROLE, HO_TEN, EMAIL, _PASSWORD_HASH_USERS, SO_DIEN_THOAI,
@@ -496,11 +491,11 @@ const createUser = async (req, res) => {
         EMAIL,
         hashPassword,
         SO_DIEN_THOAI,
-        AVATAR,
-        DIA_CHI_Provinces,
-        DIA_CHI_Districts,
-        DIA_CHI_Wards,
-        DIA_CHI_STREETNAME,
+        avatarPath, // ✅ avatar link
+        DIA_CHI_Provinces || null,
+        DIA_CHI_Districts || null,
+        DIA_CHI_Wards || null,
+        DIA_CHI_STREETNAME || null,
         TRANG_THAI_USER,
         ID_COMPANY,
       ]
@@ -513,6 +508,7 @@ const createUser = async (req, res) => {
         ID_USERS: result.insertId,
         EMAIL,
         HO_TEN,
+        AVATAR: avatarPath,
       },
     });
   } catch (error) {

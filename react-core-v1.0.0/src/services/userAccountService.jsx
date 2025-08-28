@@ -2,6 +2,8 @@ import { toast } from "react-toastify";
 import axiosInstance from "../authentication/axiosInstance";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { enqueueSnackbar } from "notistack";
+import spService from "../share-service/spService";
 const apiUrl = process.env.REACT_APP_URL_SERVER;
 
 // Login User
@@ -16,6 +18,7 @@ export const login = async (account) => {
         expires: 7,
         path: "",
       });
+      spService.handleAxiosResponse(response);
       return response.data;
     } else {
       return response.data;
@@ -32,7 +35,7 @@ export const getAllUsers = async (ID_COMPANY) => {
     const response = await axiosInstance.get(`${apiUrl}/user`, {
       params: ID_COMPANY ? { ID_COMPANY } : {},
     });
-
+    //    spService.handleAxiosResponse(response);
     if (response.data.EC === 1) {
       return response.data.DT;
     }
@@ -47,6 +50,7 @@ export const getAllUsers = async (ID_COMPANY) => {
 export const getUserById = async (id) => {
   try {
     const response = await axiosInstance.get(`${apiUrl}/user/${id}`);
+    //    spService.handleAxiosResponse(response);
     if (response.data.EC === 1) {
       return response.data.DT; // Returns the list of users
     }
@@ -59,10 +63,18 @@ export const getUserById = async (id) => {
 // Create New User
 export const createUser = async (newUser) => {
   try {
+    const formData = new FormData();
+
+    // Append các field thông tin user
+    for (const key in newUser) {
+      formData.append(key, newUser[key]);
+    }
+
     const response = await axiosInstance.post(
       `${apiUrl}/create-users`,
-      newUser
+      formData
     );
+    spService.handleAxiosResponse(response);
     if (response.data.EC === 201) {
       return true; // User created successfully
     }
@@ -94,7 +106,7 @@ export const updateUserById = async (id, updatedUser, avatarFile) => {
         "Content-Type": "multipart/form-data",
       },
     });
-
+    spService.handleAxiosResponse(response);
     return response.data;
   } catch (error) {
     console.error("Error updating user:", error);
@@ -108,6 +120,7 @@ export const deleteUserById = async (userId) => {
     const response = await axiosInstance.delete(
       `${apiUrl}/user/delete/${userId}`
     );
+    spService.handleAxiosResponse(response);
     if (response.data.EC === 200) {
       return true; // User deleted successfully
     }
@@ -129,7 +142,7 @@ export const verifyAdmin = async (accessToken) => {
         token: accessToken,
       }
     );
-
+    spService.handleAxiosResponse(response);
     // Kết quả phản hồi từ backend
 
     if (response.data.DT.isAdmin) {

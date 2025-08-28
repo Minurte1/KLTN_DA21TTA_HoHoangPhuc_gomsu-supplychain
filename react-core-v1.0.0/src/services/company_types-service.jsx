@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const COMPANY_TYPE_API = `${process.env.REACT_APP_URL_SERVER}/company-types`;
 
 const companyTypeServices = {
@@ -7,6 +7,7 @@ const companyTypeServices = {
   getCompanyTypes: async () => {
     try {
       const res = await axiosInstance.get(COMPANY_TYPE_API);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching company types:", error);
@@ -21,6 +22,7 @@ const companyTypeServices = {
         `${COMPANY_TYPE_API}/getCompaniesByRouter`,
         { filters }
       );
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching companies by router:", error);
@@ -34,6 +36,7 @@ const companyTypeServices = {
   getCompanyTypeById: async (id) => {
     try {
       const res = await axiosInstance.get(`${COMPANY_TYPE_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error fetching company type ${id}:`, error);
@@ -45,6 +48,7 @@ const companyTypeServices = {
   createCompanyType: async (data) => {
     try {
       const res = await axiosInstance.post(COMPANY_TYPE_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating company type:", error);
@@ -56,6 +60,7 @@ const companyTypeServices = {
   updateCompanyType: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${COMPANY_TYPE_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating company type ${id}:`, error);
@@ -67,6 +72,7 @@ const companyTypeServices = {
   deleteCompanyType: async (id) => {
     try {
       const res = await axiosInstance.delete(`${COMPANY_TYPE_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting company type ${id}:`, error);

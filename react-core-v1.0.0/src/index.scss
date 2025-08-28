@@ -47,51 +47,51 @@ code {
   /* Khi hover */
 }
 
-// .custom-outline-btn {
-//   border: 1px solid #4caf50; // xanh lá
-//   color: #4caf50;
-//   background-color: #fff;
-//   border-radius: 9999px; // bo tròn
-//   padding: 6px 16px;
-//   text-transform: none; // giữ nguyên chữ
-//   font-weight: 500;
-//   z-index: 2222;
+.custom-outline-btn {
+  border: 1px solid #4caf50; // xanh lá
+  color: #4caf50;
+  background-color: #fff;
+  border-radius: 9999px; // bo tròn
+  padding: 6px 16px;
+  text-transform: none; // giữ nguyên chữ
+  font-weight: 500;
+  z-index: 2222;
 
-//   &:hover {
-//     background-color: rgba(76, 175, 80, 0.1); // nền xanh nhạt khi hover
-//     border-color: #388e3c; // xanh đậm hơn
-//     color: #388e3c;
-//   }
-// }
+  &:hover {
+    background-color: rgba(76, 175, 80, 0.1); // nền xanh nhạt khi hover
+    border-color: #388e3c; // xanh đậm hơn
+    color: #388e3c;
+  }
+}
 
-// .custom-outline-btn-cancel {
-//   border: 1px solid #64b5f6; // xanh dương nhẹ
-//   color: #64b5f6;
-//   background-color: #fff;
-//   border-radius: 9999px; // bo tròn
-//   padding: 6px 16px;
-//   text-transform: none; // giữ nguyên chữ
-//   font-weight: 500;
+.custom-outline-btn-cancel {
+  border: 1px solid #64b5f6; // xanh dương nhẹ
+  color: #64b5f6;
+  background-color: #fff;
+  border-radius: 9999px; // bo tròn
+  padding: 6px 16px;
+  text-transform: none; // giữ nguyên chữ
+  font-weight: 500;
 
-//   &:hover {
-//     background-color: rgba(100, 181, 246, 0.1); // nền xanh dương nhạt khi hover
-//     border-color: #1976d2; // xanh dương đậm hơn
-//     color: #1976d2;
-//   }
-// }
+  &:hover {
+    background-color: rgba(100, 181, 246, 0.1); // nền xanh dương nhạt khi hover
+    border-color: #1976d2; // xanh dương đậm hơn
+    color: #1976d2;
+  }
+}
 
-// .custom-outline-btn-danger {
-//   border: 1px solid #e57373; // đỏ nhạt
-//   color: #e57373;
-//   background-color: #fff;
-//   border-radius: 18px; // bo tròn
-//   padding: 6px 16px;
-//   text-transform: none; // giữ nguyên chữ
-//   font-weight: 500;
+.custom-outline-btn-danger {
+  border: 1px solid #e57373; // đỏ nhạt
+  color: #e57373;
+  background-color: #fff;
+  border-radius: 18px; // bo tròn
+  padding: 6px 16px;
+  text-transform: none; // giữ nguyên chữ
+  font-weight: 500;
 
-//   &:hover {
-//     background-color: rgba(229, 115, 115, 0.1); // nền đỏ nhạt khi hover
-//     border-color: #d32f2f; // đỏ đậm hơn
-//     color: #d32f2f;
-//   }
-// }
+  &:hover {
+    background-color: rgba(229, 115, 115, 0.1); // nền đỏ nhạt khi hover
+    border-color: #d32f2f; // đỏ đậm hơn
+    color: #d32f2f;
+  }
+}

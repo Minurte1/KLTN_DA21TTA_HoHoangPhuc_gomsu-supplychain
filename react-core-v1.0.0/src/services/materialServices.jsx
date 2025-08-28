@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const MATERIAL_API = `${process.env.REACT_APP_URL_SERVER}/materials`;
 
 const materialServices = {
@@ -33,6 +33,7 @@ const materialServices = {
   createMaterial: async (data) => {
     try {
       const res = await axiosInstance.post(MATERIAL_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating material:", error);
@@ -44,6 +45,7 @@ const materialServices = {
   updateMaterial: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${MATERIAL_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating material with ID ${id}:`, error);
@@ -55,6 +57,7 @@ const materialServices = {
   deleteMaterial: async (id) => {
     try {
       const res = await axiosInstance.delete(`${MATERIAL_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting material with ID ${id}:`, error);

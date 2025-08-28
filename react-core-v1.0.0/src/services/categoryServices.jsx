@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const CATEGORY_API = `${process.env.REACT_APP_URL_SERVER}/categories`;
 
 const categoryServices = {
@@ -9,6 +9,7 @@ const categoryServices = {
       if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
 
       const res = await axiosInstance.get(CATEGORY_API, { params });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -19,6 +20,7 @@ const categoryServices = {
   getCategoryById: async (id) => {
     try {
       const res = await axiosInstance.get(`${CATEGORY_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error fetching category ${id}:`, error);
@@ -29,6 +31,7 @@ const categoryServices = {
   createCategory: async (data) => {
     try {
       const res = await axiosInstance.post(CATEGORY_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating category:", error);
@@ -39,6 +42,7 @@ const categoryServices = {
   updateCategory: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${CATEGORY_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating category ${id}:`, error);
@@ -51,6 +55,7 @@ const categoryServices = {
   deleteCategory: async (id) => {
     try {
       const res = await axiosInstance.delete(`${CATEGORY_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting category ${id}:`, error);

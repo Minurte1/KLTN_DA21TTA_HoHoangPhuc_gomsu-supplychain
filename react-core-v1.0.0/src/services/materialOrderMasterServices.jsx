@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const MATERIAL_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/material-orders-master`;
 
 const materialOrderMasterServices = {
@@ -62,6 +62,7 @@ const materialOrderMasterServices = {
   createMaterialOrderMaster: async (data) => {
     try {
       const res = await axiosInstance.post(MATERIAL_ORDER_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi tạo đơn hàng nguyên liệu:", error);
@@ -76,6 +77,7 @@ const materialOrderMasterServices = {
         `${MATERIAL_ORDER_API}/material-orders/create`,
         data
       );
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi tạo đơn hàng đầy đủ:", error);
@@ -87,6 +89,7 @@ const materialOrderMasterServices = {
   updateMaterialOrderMaster: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${MATERIAL_ORDER_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi cập nhật đơn hàng nguyên liệu:", error);
@@ -101,6 +104,7 @@ const materialOrderMasterServices = {
         `${MATERIAL_ORDER_API}/confirm-order`,
         data
       );
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi xác nhận đơn hàng:", error);
@@ -112,6 +116,7 @@ const materialOrderMasterServices = {
   deleteMaterialOrderMaster: async (id) => {
     try {
       const res = await axiosInstance.delete(`${MATERIAL_ORDER_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi xóa đơn hàng nguyên liệu:", error);
@@ -131,6 +136,7 @@ const materialOrderMasterServices = {
         `${MATERIAL_ORDER_API}/update-status/${id}`,
         { status, data, isTransportOrders }
       );
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái đơn hàng nguyên liệu:", error);

@@ -1,4 +1,5 @@
 import CryptoJS from "crypto-js";
+import { enqueueSnackbar } from "notistack";
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || "my-secret-key";
 
 const spService = {
@@ -546,6 +547,64 @@ const spService = {
     } catch (error) {
       console.error("Lỗi giải mã:", error);
       return null;
+    }
+  },
+
+  isValidUrl: (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  handleAxiosResponse: (response) => {
+    if (!response) {
+      enqueueSnackbar("Không có phản hồi từ server", { variant: "error" });
+      return;
+    }
+
+    switch (response.status) {
+      case 200:
+        enqueueSnackbar("Thao tác thành công!", { variant: "success" });
+        break;
+
+      case 201:
+        enqueueSnackbar("Tạo mới thành công!", { variant: "success" });
+        break;
+
+      case 204:
+        enqueueSnackbar("Xóa thành công!", { variant: "success" });
+        break;
+
+      case 400:
+        enqueueSnackbar("Yêu cầu không hợp lệ!", { variant: "warning" });
+        break;
+
+      case 401:
+        enqueueSnackbar("Bạn chưa đăng nhập!", { variant: "warning" });
+        break;
+
+      case 403:
+        enqueueSnackbar("Bạn không có quyền thực hiện thao tác này!", {
+          variant: "warning",
+        });
+        break;
+
+      case 404:
+        enqueueSnackbar("Không tìm thấy dữ liệu!", { variant: "error" });
+        break;
+
+      case 500:
+        enqueueSnackbar("Lỗi server, vui lòng thử lại!", { variant: "error" });
+        break;
+
+      default:
+        enqueueSnackbar(`Có lỗi xảy ra (status ${response.status})`, {
+          variant: "error",
+        });
+        break;
     }
   },
 };

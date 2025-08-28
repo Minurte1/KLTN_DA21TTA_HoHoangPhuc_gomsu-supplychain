@@ -350,7 +350,7 @@ const PermissionManagerModal = ({
           sx={{ mt: 2, display: "flex", justifyContent: "flex-end", gap: 2 }}
         >
           <button
-            className="btn btn-primary admin-btn"
+            className="custom-outline-btn"
             onClick={() => {
               const finalPermissions = syncPermissionsBeforeSubmit();
               // console.log("🚀 permissions to submit:", finalPermissions);
@@ -360,7 +360,7 @@ const PermissionManagerModal = ({
           >
             <i className="fa-solid fa-floppy-disk mr-5"></i> Lưu thay đổi
           </button>
-          <button className="btn btn-danger admin-btn" onClick={onClose}>
+          <button className="custom-outline-btn-danger" onClick={onClose}>
             <i className="fa-solid fa-ban mr-5"></i> Huỷ
           </button>
         </Box>

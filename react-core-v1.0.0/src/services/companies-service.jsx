@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const COMPANY_API = `${process.env.REACT_APP_URL_SERVER}/companies`;
 
 const companyServices = {
@@ -40,6 +40,7 @@ const companyServices = {
           "Content-Type": "multipart/form-data",
         },
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating company:", error);
@@ -59,6 +60,7 @@ const companyServices = {
           "Content-Type": "multipart/form-data",
         },
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating company ${id}:`, error);
@@ -71,6 +73,7 @@ const companyServices = {
   deleteCompany: async (id) => {
     try {
       const res = await axiosInstance.delete(`${COMPANY_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting company ${id}:`, error);

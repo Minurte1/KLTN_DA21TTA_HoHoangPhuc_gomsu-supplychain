@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const ORDER_ITEM_API = `${process.env.REACT_APP_URL_SERVER}/order-items`;
 
 const orderItemServices = {
@@ -18,6 +18,7 @@ const orderItemServices = {
   getOrderItemById: async (id) => {
     try {
       const res = await axiosInstance.get(`${ORDER_ITEM_API}/${id}`);
+
       return res.data;
     } catch (error) {
       console.error(`Error fetching order item with ID ${id}:`, error);
@@ -29,6 +30,7 @@ const orderItemServices = {
   createOrderItem: async (data) => {
     try {
       const res = await axiosInstance.post(ORDER_ITEM_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating order item:", error);
@@ -40,6 +42,7 @@ const orderItemServices = {
   updateOrderItem: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${ORDER_ITEM_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating order item with ID ${id}:`, error);
@@ -51,6 +54,7 @@ const orderItemServices = {
   deleteOrderItem: async (id) => {
     try {
       const res = await axiosInstance.delete(`${ORDER_ITEM_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting order item with ID ${id}:`, error);

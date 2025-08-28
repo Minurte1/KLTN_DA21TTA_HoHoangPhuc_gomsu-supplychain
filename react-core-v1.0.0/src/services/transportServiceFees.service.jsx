@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const FEE_API = `${process.env.REACT_APP_URL_SERVER}/transport-service-fees`;
 
 const transportServiceFeesService = {
@@ -11,6 +11,7 @@ const transportServiceFeesService = {
       if (STATUS) params.STATUS = STATUS;
 
       const res = await axiosInstance.get(FEE_API, { params });
+      // spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách phí dịch vụ vận chuyển:", error);
@@ -22,6 +23,7 @@ const transportServiceFeesService = {
   getFeeById: async (id) => {
     try {
       const res = await axiosInstance.get(`${FEE_API}/${id}`);
+      //    spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi lấy phí theo ID:", error);
@@ -33,6 +35,7 @@ const transportServiceFeesService = {
   createFee: async (data) => {
     try {
       const res = await axiosInstance.post(FEE_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi tạo phí dịch vụ:", error);
@@ -44,6 +47,7 @@ const transportServiceFeesService = {
   updateFee: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${FEE_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi cập nhật phí dịch vụ:", error);
@@ -55,6 +59,7 @@ const transportServiceFeesService = {
   deleteFee: async (id) => {
     try {
       const res = await axiosInstance.delete(`${FEE_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi xóa phí dịch vụ:", error);

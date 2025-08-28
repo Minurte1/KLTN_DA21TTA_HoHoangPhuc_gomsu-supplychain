@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const TRANSPORT_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/transport-orders`;
 
 const transportOrderServices = {
@@ -9,6 +9,7 @@ const transportOrderServices = {
       const res = await axiosInstance.get(TRANSPORT_ORDER_API, {
         params: { STATUS },
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách đơn vận chuyển:", error);
@@ -20,6 +21,7 @@ const transportOrderServices = {
   getTransportOrderById: async (id) => {
     try {
       const res = await axiosInstance.get(`${TRANSPORT_ORDER_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi lấy đơn vận chuyển theo ID:", error);
@@ -31,6 +33,7 @@ const transportOrderServices = {
   createTransportOrder: async (data) => {
     try {
       const res = await axiosInstance.post(TRANSPORT_ORDER_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi tạo đơn vận chuyển:", error);
@@ -42,6 +45,7 @@ const transportOrderServices = {
   updateTransportOrder: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${TRANSPORT_ORDER_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi cập nhật đơn vận chuyển:", error);
@@ -53,6 +57,7 @@ const transportOrderServices = {
   deleteTransportOrder: async (id) => {
     try {
       const res = await axiosInstance.delete(`${TRANSPORT_ORDER_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi xóa đơn vận chuyển:", error);

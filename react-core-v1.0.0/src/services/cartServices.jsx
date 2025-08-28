@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const CART_API = `${process.env.REACT_APP_URL_SERVER}/cart`;
 
 const cartServices = {
@@ -27,6 +27,7 @@ const cartServices = {
   createCart: async (data) => {
     try {
       const res = await axiosInstance.post(CART_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi createCart:", error);
@@ -39,6 +40,7 @@ const cartServices = {
   updateCart: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${CART_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi updateCart:", error);
@@ -51,6 +53,7 @@ const cartServices = {
   deleteCart: async (id) => {
     try {
       const res = await axiosInstance.delete(`${CART_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi deleteCart:", error);

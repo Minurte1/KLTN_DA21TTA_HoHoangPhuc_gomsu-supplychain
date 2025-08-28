@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const PRODUCTION_MATERIAL_API = `${process.env.REACT_APP_URL_SERVER}/production-materials`;
 
 const productionMaterialServices = {
@@ -7,6 +7,7 @@ const productionMaterialServices = {
   getProductionMaterials: async () => {
     try {
       const res = await axiosInstance.get(PRODUCTION_MATERIAL_API);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductionMaterials:", error);
@@ -18,6 +19,7 @@ const productionMaterialServices = {
   getProductionMaterialById: async (id) => {
     try {
       const res = await axiosInstance.get(`${PRODUCTION_MATERIAL_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductionMaterialById:", error);
@@ -29,6 +31,7 @@ const productionMaterialServices = {
   createProductionMaterial: async (data) => {
     try {
       const res = await axiosInstance.post(PRODUCTION_MATERIAL_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error createProductionMaterial:", error);
@@ -43,6 +46,7 @@ const productionMaterialServices = {
         `${PRODUCTION_MATERIAL_API}/${id}`,
         data
       );
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error updateProductionMaterial:", error);
@@ -56,6 +60,7 @@ const productionMaterialServices = {
       const res = await axiosInstance.delete(
         `${PRODUCTION_MATERIAL_API}/${id}`
       );
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error deleteProductionMaterial:", error);

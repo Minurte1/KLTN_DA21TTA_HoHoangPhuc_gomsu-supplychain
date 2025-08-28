@@ -33,7 +33,7 @@ const {
 
 router.get("/user", getAllUser_Admin);
 router.get("/user/:id", getUser_ById);
-router.post("/create-users", createUser);
+router.post("/create-users", upload.single("AVATAR"), createUser);
 router.post("/logout", logoutUser);
 router.post("/login/google", loginUserGoogle);
 router.post(

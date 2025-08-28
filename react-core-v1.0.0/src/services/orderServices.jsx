@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const ORDER_API = `${process.env.REACT_APP_URL_SERVER}/orders`;
 
 const orderServices = {
@@ -44,6 +44,7 @@ const orderServices = {
   createOrder: async (data) => {
     try {
       const res = await axiosInstance.post(ORDER_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating order:", error);
@@ -55,6 +56,7 @@ const orderServices = {
   updateOrder: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${ORDER_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating order with ID ${id}:`, error);
@@ -66,6 +68,7 @@ const orderServices = {
   deleteOrder: async (id) => {
     try {
       const res = await axiosInstance.delete(`${ORDER_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting order with ID ${id}:`, error);

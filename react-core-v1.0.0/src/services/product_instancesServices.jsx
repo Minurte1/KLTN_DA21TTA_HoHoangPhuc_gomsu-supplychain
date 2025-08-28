@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const PRODUCT_INSTANCES_API = `${process.env.REACT_APP_URL_SERVER}/product_instances`;
 
 const productInstancesServices = {
@@ -11,6 +11,7 @@ const productInstancesServices = {
       if (STATUS) params.STATUS = STATUS;
 
       const res = await axiosInstance.get(PRODUCT_INSTANCES_API, { params });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching product instances:", error);
@@ -35,6 +36,7 @@ const productInstancesServices = {
       const res = await axiosInstance.get(`${PRODUCT_INSTANCES_API}/public`, {
         params,
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching public product instances:", error);
@@ -57,6 +59,7 @@ const productInstancesServices = {
   createProductInstance: async (data) => {
     try {
       const res = await axiosInstance.post(PRODUCT_INSTANCES_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating product instance:", error);
@@ -71,6 +74,7 @@ const productInstancesServices = {
         `${PRODUCT_INSTANCES_API}/${id}`,
         data
       );
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating product instance with ID ${id}:`, error);
@@ -82,6 +86,7 @@ const productInstancesServices = {
   deleteProductInstance: async (id) => {
     try {
       const res = await axiosInstance.delete(`${PRODUCT_INSTANCES_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting product instance with ID ${id}:`, error);
@@ -96,6 +101,7 @@ const productInstancesServices = {
       const res = await axiosInstance.get(`${PRODUCT_INSTANCES_API}/search`, {
         params: { keyword },
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error searching product instances:", error);

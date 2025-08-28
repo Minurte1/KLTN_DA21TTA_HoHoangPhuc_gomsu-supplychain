@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const PRODUCT_API = `${process.env.REACT_APP_URL_SERVER}/products`;
 
 const productServices = {
@@ -10,6 +10,7 @@ const productServices = {
       if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
 
       const res = await axiosInstance.get(PRODUCT_API, { params });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProducts:", error);
@@ -21,6 +22,7 @@ const productServices = {
   getProductById: async (id) => {
     try {
       const res = await axiosInstance.get(`${PRODUCT_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductById:", error);
@@ -41,6 +43,7 @@ const productServices = {
           "Content-Type": "multipart/form-data",
         },
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error createProduct:", error);
@@ -61,6 +64,7 @@ const productServices = {
           "Content-Type": "multipart/form-data",
         },
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error updateProduct:", error);
@@ -72,6 +76,7 @@ const productServices = {
   deleteProduct: async (id) => {
     try {
       const res = await axiosInstance.delete(`${PRODUCT_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error deleteProduct:", error);

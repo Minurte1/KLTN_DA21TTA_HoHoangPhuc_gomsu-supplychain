@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const MATERIAL_TYPE_API = `${process.env.REACT_APP_URL_SERVER}/material-types`;
 
 const materialTypeServices = {
@@ -31,6 +31,7 @@ const materialTypeServices = {
   createMaterialType: async (data) => {
     try {
       const res = await axiosInstance.post(MATERIAL_TYPE_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error creating material type:", error);
@@ -42,6 +43,7 @@ const materialTypeServices = {
   updateMaterialType: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${MATERIAL_TYPE_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error updating material type with ID ${id}:`, error);
@@ -53,6 +55,7 @@ const materialTypeServices = {
   deleteMaterialType: async (id) => {
     try {
       const res = await axiosInstance.delete(`${MATERIAL_TYPE_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error deleting material type with ID ${id}:`, error);

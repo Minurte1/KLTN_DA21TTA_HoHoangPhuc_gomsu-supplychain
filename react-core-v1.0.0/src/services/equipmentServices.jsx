@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const EQUIPMENT_API = `${process.env.REACT_APP_URL_SERVER}/equipment`;
 
 const equipmentServices = {
@@ -34,6 +34,7 @@ const equipmentServices = {
   createEquipment: async (data) => {
     try {
       const res = await axiosInstance.post(EQUIPMENT_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi tạo thiết bị:", error);
@@ -45,6 +46,7 @@ const equipmentServices = {
   updateEquipment: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${EQUIPMENT_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi cập nhật thiết bị:", error);
@@ -56,6 +58,7 @@ const equipmentServices = {
   deleteEquipment: async (id) => {
     try {
       const res = await axiosInstance.delete(`${EQUIPMENT_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi xóa thiết bị:", error);

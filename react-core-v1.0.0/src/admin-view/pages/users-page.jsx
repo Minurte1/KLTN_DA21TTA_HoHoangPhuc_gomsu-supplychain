@@ -58,6 +58,33 @@ const User = () => {
         data={users}
         columns={[
           { key: "HO_TEN", label: "Họ tên" },
+          {
+            key: "AVATAR",
+            label: "Logo",
+            render: (value) => (
+              <img
+                src={
+                  value ||
+                  "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+                }
+                alt="Avatar"
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+                onError={(e) => {
+                  // Nếu lỗi thì thay thế src bằng null để không lặp vô hạn
+                  e.target.onerror = null;
+                  // Hiển thị đường dẫn hình ảnh (fallback text)
+                  e.target.replaceWith(
+                    document.createTextNode(value || "Không có hình ảnh")
+                  );
+                }}
+              />
+            ),
+          },
           { key: "EMAIL", label: "Email" },
           { key: "SO_DIEN_THOAI", label: "Số điện thoại" },
           { key: "DIA_CHI_Provinces", label: "Tỉnh/Thành phố" },
@@ -84,7 +111,10 @@ const User = () => {
 
       <UsersFormModal
         open={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {
+          setOpenModal(false);
+          fetchUsers();
+        }}
         user={selectedUser}
         onSuccess={fetchUsers}
       />

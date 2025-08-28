@@ -1,6 +1,6 @@
 import { enqueueSnackbar } from "notistack";
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const PRODUCTION_PLAN_API = `${process.env.REACT_APP_URL_SERVER}/production-plans`;
 
 const productionPlanServices = {
@@ -10,6 +10,7 @@ const productionPlanServices = {
       const res = await axiosInstance.get(PRODUCTION_PLAN_API, {
         params: { ID_COMPANY },
       });
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       const message =
@@ -25,6 +26,7 @@ const productionPlanServices = {
   getProductionPlanById: async (id) => {
     try {
       const res = await axiosInstance.get(`${PRODUCTION_PLAN_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       const message =
@@ -39,6 +41,7 @@ const productionPlanServices = {
   createProductionPlan: async (data) => {
     try {
       const res = await axiosInstance.post(PRODUCTION_PLAN_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       const message =
@@ -53,6 +56,7 @@ const productionPlanServices = {
   updateProductionPlan: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${PRODUCTION_PLAN_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       const message =
@@ -67,6 +71,7 @@ const productionPlanServices = {
   deleteProductionPlan: async (id) => {
     try {
       const res = await axiosInstance.delete(`${PRODUCTION_PLAN_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       const message =

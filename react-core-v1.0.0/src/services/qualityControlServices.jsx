@@ -1,5 +1,5 @@
 import axiosInstance from "../authentication/axiosInstance";
-
+import spService from "../share-service/spService";
 const QUALITY_CONTROL_API = `${process.env.REACT_APP_URL_SERVER}/quality-control`;
 
 const qualityControlServices = {
@@ -7,6 +7,7 @@ const qualityControlServices = {
   getQualityControls: async () => {
     try {
       const res = await axiosInstance.get(QUALITY_CONTROL_API);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getQualityControls:", error);
@@ -18,6 +19,7 @@ const qualityControlServices = {
   getQualityControlById: async (id) => {
     try {
       const res = await axiosInstance.get(`${QUALITY_CONTROL_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getQualityControlById:", error);
@@ -29,6 +31,7 @@ const qualityControlServices = {
   createQualityControl: async (data) => {
     try {
       const res = await axiosInstance.post(QUALITY_CONTROL_API, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error createQualityControl:", error);
@@ -40,6 +43,7 @@ const qualityControlServices = {
   updateQualityControl: async (id, data) => {
     try {
       const res = await axiosInstance.put(`${QUALITY_CONTROL_API}/${id}`, data);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error updateQualityControl:", error);
@@ -51,6 +55,7 @@ const qualityControlServices = {
   deleteQualityControl: async (id) => {
     try {
       const res = await axiosInstance.delete(`${QUALITY_CONTROL_API}/${id}`);
+      spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error deleteQualityControl:", error);
