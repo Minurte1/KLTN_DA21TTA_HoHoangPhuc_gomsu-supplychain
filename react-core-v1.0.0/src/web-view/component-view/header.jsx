@@ -173,7 +173,26 @@ const Header = () => {
 
           {userInfo ? (
             <div className="account-dropdown position-relative">
-              <button onClick={handleClick} className="btn btn-outline-primary">
+              <button
+                onClick={handleClick}
+                className="account-btn"
+                style={{
+                  backgroundColor: "#8b5e3c", // nền giống header
+                  color: "#fff", // chữ trắng
+                  border: "1px solid #8b5e3c", // viền đồng bộ
+                  borderRadius: "4px",
+                  padding: "6px 12px",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = "#7a5230"; // hover đậm hơn
+                  e.currentTarget.style.borderColor = "#7a5230";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "#8b5e3c";
+                  e.currentTarget.style.borderColor = "#8b5e3c";
+                }}
+              >
                 {userInfo?.HO_TEN || "Không xác định"}
               </button>
 
@@ -202,7 +221,26 @@ const Header = () => {
               </Menu>
             </div>
           ) : (
-            <button onClick={() => navigate("/login")} className="account-btn">
+            <button
+              onClick={() => navigate("/login")}
+              className="account-btn"
+              style={{
+                backgroundColor: "#8b5e3c",
+                color: "#fff",
+                border: "1px solid #8b5e3c",
+                borderRadius: "4px",
+                padding: "6px 12px",
+                transition: "all 0.2s ease",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#7a5230";
+                e.currentTarget.style.borderColor = "#7a5230";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#8b5e3c";
+                e.currentTarget.style.borderColor = "#8b5e3c";
+              }}
+            >
               Tài khoản
             </button>
           )}

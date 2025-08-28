@@ -12,6 +12,7 @@ import {
   TextField,
   useTheme,
   Box,
+  Tooltip,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import productInstancesServices from "../../services/product_instancesServices";
@@ -105,6 +106,7 @@ const ProductDetails = () => {
     setProductInstances(data);
   };
 
+  console.log("product", product);
   if (loading)
     return (
       <Grid container justifyContent="center" mt={5}>
@@ -121,7 +123,6 @@ const ProductDetails = () => {
         {" "}
         <Box
           sx={{
-            // maxWidth: 100%,
             width: "100%",
             margin: "20px auto",
             borderRadius: 3,
@@ -131,8 +132,8 @@ const ProductDetails = () => {
             bgcolor: theme.palette.background.paper,
           }}
         >
-          <Grid container>
-            {/* Hình ảnh */}
+          <Grid container spacing={2} direction={{ xs: "column", md: "row" }}>
+            {/* Hình ảnh sản phẩm */}
             <Grid item xs={12} md={5}>
               <CardMedia
                 component="img"
@@ -141,15 +142,15 @@ const ProductDetails = () => {
                 sx={{
                   objectFit: "contain",
                   height: { xs: 250, md: 400 },
-
                   borderRadius: 12,
                   border: `1px solid ${theme.palette.divider}`,
                 }}
               />
             </Grid>
-            {/* Nội dung */}
+
+            {/* Thông tin sản phẩm */}
             <Grid item xs={12} md={7}>
-              <CardContent sx={{ padding: "40px" }}>
+              <CardContent sx={{ padding: { xs: 2, md: 4 } }}>
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
                   {product.NAME_PRODUCTS}
                 </Typography>
@@ -182,12 +183,41 @@ const ProductDetails = () => {
                 <Typography variant="body2" color="text.secondary">
                   Mã sản phẩm: {product.SERIAL_CODE}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Công ty: {product.NAME_COMPANY}
-                </Typography>
+
+                {/* Logo công ty + tên */}
+                <Divider sx={{ my: 2 }} />
+                <Grid container alignItems="center" spacing={1}>
+                  {product.AVATAR && (
+                    <Grid item>
+                      <Tooltip
+                        title={product.NAME_COMPANY || "Tên công ty"}
+                        arrow
+                      >
+                        <Box
+                          component="img"
+                          src={product.AVATAR}
+                          alt={product.NAME_COMPANY || "Logo công ty"}
+                          sx={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: "50%",
+                            border: "1px solid #e0e0e0",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </Tooltip>
+                    </Grid>
+                  )}
+                  <Grid item>
+                    <Typography variant="body2" color="text.secondary">
+                      Công ty: {product.NAME_COMPANY}
+                    </Typography>
+                  </Grid>
+                </Grid>
 
                 <Divider sx={{ my: 2 }} />
 
+                {/* Số lượng + button */}
                 <Grid container spacing={2} alignItems="center">
                   <Grid item>
                     <TextField
@@ -205,15 +235,15 @@ const ProductDetails = () => {
                   <Grid item>
                     <Button
                       variant="contained"
-                      onClick={handleAddToCart}
+                      onClick={() => handleAddToCart(quantity)}
                       sx={{
                         px: 3,
                         py: 1.2,
-                        borderRadius: 2,
+                        borderRadius: 5,
                         backgroundColor: "#8b5e3c",
                         color: "#fff",
                         "&:hover": {
-                          backgroundColor: "#7a5230", // đậm hơn khi hover
+                          backgroundColor: "#7a5230",
                         },
                       }}
                     >
@@ -222,8 +252,8 @@ const ProductDetails = () => {
                   </Grid>
                 </Grid>
               </CardContent>
-            </Grid>{" "}
-          </Grid>{" "}
+            </Grid>
+          </Grid>
         </Box>
       </div>{" "}
       <div style={stylePadding}>
