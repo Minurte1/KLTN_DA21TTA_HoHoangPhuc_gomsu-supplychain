@@ -66,7 +66,7 @@ const createCompany = async (data) => {
     `INSERT INTO companies 
    (NAME_COMPANY, TYPE_COMPANY, ADDRESS, DIA_CHI_Provinces, DIA_CHI_Districts,
     DIA_CHI_Wards, DIA_CHI_STREETNAME, PHONE, EMAIL, AVATAR, BACKGROUND, SLUG, STATUS, ID_COMPANY_TYPE)
-   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, // <-- 14 dấu hỏi
     [
       NAME_COMPANY || null,
       TYPE_COMPANY || null,

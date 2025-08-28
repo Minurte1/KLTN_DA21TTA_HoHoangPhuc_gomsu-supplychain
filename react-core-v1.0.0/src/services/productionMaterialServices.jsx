@@ -5,35 +5,62 @@ const PRODUCTION_MATERIAL_API = `${process.env.REACT_APP_URL_SERVER}/production-
 const productionMaterialServices = {
   // Lấy danh sách tất cả nguyên liệu sản xuất
   getProductionMaterials: async () => {
-    const res = await axiosInstance.get(PRODUCTION_MATERIAL_API);
-    return res.data;
+    try {
+      const res = await axiosInstance.get(PRODUCTION_MATERIAL_API);
+      return res.data;
+    } catch (error) {
+      console.error("Error getProductionMaterials:", error);
+      return { error: true, message: "Không thể tải danh sách nguyên liệu" };
+    }
   },
 
   // Lấy nguyên liệu sản xuất theo ID
   getProductionMaterialById: async (id) => {
-    const res = await axiosInstance.get(`${PRODUCTION_MATERIAL_API}/${id}`);
-    return res.data;
+    try {
+      const res = await axiosInstance.get(`${PRODUCTION_MATERIAL_API}/${id}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error getProductionMaterialById:", error);
+      return { error: true, message: "Không thể tải nguyên liệu" };
+    }
   },
 
   // Tạo nguyên liệu sản xuất mới
   createProductionMaterial: async (data) => {
-    const res = await axiosInstance.post(PRODUCTION_MATERIAL_API, data);
-    return res.data;
+    try {
+      const res = await axiosInstance.post(PRODUCTION_MATERIAL_API, data);
+      return res.data;
+    } catch (error) {
+      console.error("Error createProductionMaterial:", error);
+      return { error: true, message: "Không thể tạo nguyên liệu mới" };
+    }
   },
 
   // Cập nhật nguyên liệu sản xuất
   updateProductionMaterial: async (id, data) => {
-    const res = await axiosInstance.put(
-      `${PRODUCTION_MATERIAL_API}/${id}`,
-      data
-    );
-    return res.data;
+    try {
+      const res = await axiosInstance.put(
+        `${PRODUCTION_MATERIAL_API}/${id}`,
+        data
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Error updateProductionMaterial:", error);
+      return { error: true, message: "Không thể cập nhật nguyên liệu" };
+    }
   },
 
   // Xóa nguyên liệu sản xuất
   deleteProductionMaterial: async (id) => {
-    const res = await axiosInstance.delete(`${PRODUCTION_MATERIAL_API}/${id}`);
-    return res.data;
+    try {
+      const res = await axiosInstance.delete(
+        `${PRODUCTION_MATERIAL_API}/${id}`
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Error deleteProductionMaterial:", error);
+      return { error: true, message: "Không thể xóa nguyên liệu" };
+    }
   },
 };
 

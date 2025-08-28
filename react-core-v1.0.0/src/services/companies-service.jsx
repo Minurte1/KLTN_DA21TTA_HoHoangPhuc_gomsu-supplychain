@@ -3,57 +3,79 @@ import axiosInstance from "../authentication/axiosInstance";
 const COMPANY_API = `${process.env.REACT_APP_URL_SERVER}/companies`;
 
 const companyServices = {
-  // Lấy danh sách tất cả công ty
-  // services/companyServices.js
   getCompanies: async (ID_COMPANY, STATUS) => {
-    const params = {};
-    if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
-    if (STATUS) params.STATUS = STATUS;
+    try {
+      const params = {};
+      if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
+      if (STATUS) params.STATUS = STATUS;
 
-    const res = await axiosInstance.get(COMPANY_API, { params });
-    return res.data;
+      const res = await axiosInstance.get(COMPANY_API, { params });
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      // Có thể trả về mặc định hoặc thông báo lỗi
+      return { error: error.response?.data || "Lỗi kết nối server" };
+    }
   },
 
-  // Lấy công ty theo ID
   getCompanyById: async (id) => {
-    const res = await axiosInstance.get(`${COMPANY_API}/${id}`);
-    return res.data;
+    try {
+      const res = await axiosInstance.get(`${COMPANY_API}/${id}`);
+      return res.data;
+    } catch (error) {
+      console.error(`Error fetching company ${id}:`, error);
+      return { error: error.response?.data || "Lỗi kết nối server" };
+    }
   },
 
-  // Tạo công ty mới
   createCompany: async (data) => {
-    const formData = new FormData();
-    for (const key in data) {
-      formData.append(key, data[key]);
-    }
+    try {
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
 
-    const res = await axiosInstance.post(`${COMPANY_API}/`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return res.data;
+      const res = await axiosInstance.post(`${COMPANY_API}/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (error) {
+      console.error("Error creating company:", error);
+      return { error: error.response?.data || "Lỗi server khi tạo công ty" };
+    }
   },
 
-  // Cập nhật công ty
   updateCompany: async (id, data) => {
-    const formData = new FormData();
-    for (const key in data) {
-      formData.append(key, data[key]);
-    }
+    try {
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
 
-    const res = await axiosInstance.put(`${COMPANY_API}/${id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return res.data;
+      const res = await axiosInstance.put(`${COMPANY_API}/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (error) {
+      console.error(`Error updating company ${id}:`, error);
+      return {
+        error: error.response?.data || "Lỗi server khi cập nhật công ty",
+      };
+    }
   },
 
-  // Xóa công ty
   deleteCompany: async (id) => {
-    const res = await axiosInstance.delete(`${COMPANY_API}/${id}`);
-    return res.data;
+    try {
+      const res = await axiosInstance.delete(`${COMPANY_API}/${id}`);
+      return res.data;
+    } catch (error) {
+      console.error(`Error deleting company ${id}:`, error);
+      return { error: error.response?.data || "Lỗi server khi xóa công ty" };
+    }
   },
 };
 
