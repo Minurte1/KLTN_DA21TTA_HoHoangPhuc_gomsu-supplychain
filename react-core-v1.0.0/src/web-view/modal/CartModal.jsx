@@ -12,6 +12,7 @@ import {
   Divider,
   Button,
   Checkbox,
+  Fab,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
@@ -19,7 +20,7 @@ import cartServices from "../../services/cartServices";
 import CryptoJS from "crypto-js";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-
+import imageCart from "../../public/images/cart.png";
 import spService from "../../share-service/spService";
 // Khóa bí mật để mã hóa (nên lưu trong .env để bảo mật hơn)
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || "my-secret-key";
@@ -29,8 +30,8 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 600,
-  maxHeight: "80vh",
+  width: 1100,
+  // height: "80vh",
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 3,
@@ -112,7 +113,50 @@ export default function CartModal({ open, handleClose }) {
         </Box>
 
         {safeCart.length === 0 ? (
-          <Typography>Giỏ hàng của bạn đang trống.</Typography>
+          <>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              sx={{ height: "100%" }}
+              gap={2}
+              py={4}
+            >
+              {/* Giữ lại tấm hình cũ */}
+              <img
+                src={
+                  imageCart ||
+                  "https://dev.chothongminh.com/_next/static/media/noproduct.424263ad.png"
+                }
+                alt="Giỏ hàng trống"
+                style={{ width: 200, height: "auto" }}
+              />
+
+              <Typography variant="h6" color="text.secondary">
+                Giỏ hàng của bạn đang trống
+              </Typography>
+
+              {/* Nút tròn mua sắm ngay */}
+              <Fab
+                variant="extended"
+                onClick={() => {
+                  handleClose();
+                  navigate("/san-pham");
+                }}
+                sx={{
+                  mt: 3,
+                  backgroundColor: "#8b5e3c",
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#7a5230", // đậm hơn khi hover
+                  },
+                }}
+              >
+                🛍️ Mua sắm ngay
+              </Fab>
+            </Box>
+          </>
         ) : (
           <>
             {/* ✅ Checkbox chọn tất cả */}
