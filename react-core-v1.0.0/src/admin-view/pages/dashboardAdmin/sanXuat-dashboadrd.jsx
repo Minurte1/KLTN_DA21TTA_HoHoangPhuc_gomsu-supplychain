@@ -54,11 +54,6 @@ const DashboardSanXuatAdmin = () => {
     monthlyQuantity: [],
     yearlyQuantity: [],
   });
-  console.table({
-    revenueStats,
-    topMaterial,
-    totalSummary,
-  });
 
   useEffect(() => {
     const fetchData = async () => {

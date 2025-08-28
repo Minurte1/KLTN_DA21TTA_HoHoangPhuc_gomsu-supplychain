@@ -50,12 +50,6 @@ const DashboardMaterialAdmin = () => {
     yearlyRevenue: [],
   });
 
-  console.table({
-    revenueStats,
-    topMaterial,
-    totalSummary,
-  });
-
   useEffect(() => {
     const fetchData = async () => {
       try {

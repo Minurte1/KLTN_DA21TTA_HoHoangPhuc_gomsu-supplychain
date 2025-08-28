@@ -50,7 +50,7 @@ export const getAllUsers = async (ID_COMPANY) => {
 export const getUserById = async (id) => {
   try {
     const response = await axiosInstance.get(`${apiUrl}/user/${id}`);
-    //    spService.handleAxiosResponse(response);
+    spService.handleAxiosResponse(response);
     if (response.data.EC === 1) {
       return response.data.DT; // Returns the list of users
     }

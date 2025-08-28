@@ -7,7 +7,7 @@ const companyTypeServices = {
   getCompanyTypes: async () => {
     try {
       const res = await axiosInstance.get(COMPANY_TYPE_API);
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching company types:", error);
@@ -22,7 +22,7 @@ const companyTypeServices = {
         `${COMPANY_TYPE_API}/getCompaniesByRouter`,
         { filters }
       );
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching companies by router:", error);
