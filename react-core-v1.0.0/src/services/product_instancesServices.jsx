@@ -11,7 +11,7 @@ const productInstancesServices = {
       if (STATUS) params.STATUS = STATUS;
 
       const res = await axiosInstance.get(PRODUCT_INSTANCES_API, { params });
-      spService.handleAxiosResponse(res);
+      //  spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching product instances:", error);
@@ -36,7 +36,7 @@ const productInstancesServices = {
       const res = await axiosInstance.get(`${PRODUCT_INSTANCES_API}/public`, {
         params,
       });
-      spService.handleAxiosResponse(res);
+      //     spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching public product instances:", error);
@@ -101,7 +101,7 @@ const productInstancesServices = {
       const res = await axiosInstance.get(`${PRODUCT_INSTANCES_API}/search`, {
         params: { keyword },
       });
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error searching product instances:", error);

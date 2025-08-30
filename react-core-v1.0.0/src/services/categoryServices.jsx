@@ -9,7 +9,7 @@ const categoryServices = {
       if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
 
       const res = await axiosInstance.get(CATEGORY_API, { params });
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -20,7 +20,7 @@ const categoryServices = {
   getCategoryById: async (id) => {
     try {
       const res = await axiosInstance.get(`${CATEGORY_API}/${id}`);
-      spService.handleAxiosResponse(res);
+      //  spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error(`Error fetching category ${id}:`, error);

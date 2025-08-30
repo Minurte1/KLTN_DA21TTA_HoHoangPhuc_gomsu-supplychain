@@ -7,7 +7,7 @@ const productionMaterialServices = {
   getProductionMaterials: async () => {
     try {
       const res = await axiosInstance.get(PRODUCTION_MATERIAL_API);
-      spService.handleAxiosResponse(res);
+      // spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductionMaterials:", error);
@@ -19,7 +19,7 @@ const productionMaterialServices = {
   getProductionMaterialById: async (id) => {
     try {
       const res = await axiosInstance.get(`${PRODUCTION_MATERIAL_API}/${id}`);
-      spService.handleAxiosResponse(res);
+      //    spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductionMaterialById:", error);

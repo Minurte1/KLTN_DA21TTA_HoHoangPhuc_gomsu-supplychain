@@ -12,7 +12,7 @@ const productionStepServices = {
       if (ID_USERS) params.ID_USERS = ID_USERS;
 
       const res = await axiosInstance.get(PRODUCTION_STEP_API, { params });
-      spService.handleAxiosResponse(res);
+      //     spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductionSteps:", error);
@@ -24,7 +24,7 @@ const productionStepServices = {
   getProductionStepById: async (id) => {
     try {
       const res = await axiosInstance.get(`${PRODUCTION_STEP_API}/${id}`);
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductionStepById:", error);

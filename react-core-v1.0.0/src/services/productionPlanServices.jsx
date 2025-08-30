@@ -10,7 +10,7 @@ const productionPlanServices = {
       const res = await axiosInstance.get(PRODUCTION_PLAN_API, {
         params: { ID_COMPANY },
       });
-      spService.handleAxiosResponse(res);
+      //  spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       const message =
@@ -26,7 +26,7 @@ const productionPlanServices = {
   getProductionPlanById: async (id) => {
     try {
       const res = await axiosInstance.get(`${PRODUCTION_PLAN_API}/${id}`);
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       const message =

@@ -7,7 +7,7 @@ const qualityControlServices = {
   getQualityControls: async () => {
     try {
       const res = await axiosInstance.get(QUALITY_CONTROL_API);
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getQualityControls:", error);
@@ -19,7 +19,7 @@ const qualityControlServices = {
   getQualityControlById: async (id) => {
     try {
       const res = await axiosInstance.get(`${QUALITY_CONTROL_API}/${id}`);
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getQualityControlById:", error);

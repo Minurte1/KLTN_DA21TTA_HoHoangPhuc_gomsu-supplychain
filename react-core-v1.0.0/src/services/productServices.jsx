@@ -10,7 +10,7 @@ const productServices = {
       if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
 
       const res = await axiosInstance.get(PRODUCT_API, { params });
-      spService.handleAxiosResponse(res);
+      //    spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProducts:", error);
@@ -22,7 +22,7 @@ const productServices = {
   getProductById: async (id) => {
     try {
       const res = await axiosInstance.get(`${PRODUCT_API}/${id}`);
-      spService.handleAxiosResponse(res);
+      //   spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Error getProductById:", error);

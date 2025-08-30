@@ -9,7 +9,7 @@ const transportOrderServices = {
       const res = await axiosInstance.get(TRANSPORT_ORDER_API, {
         params: { STATUS },
       });
-      spService.handleAxiosResponse(res);
+      //  spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách đơn vận chuyển:", error);
@@ -21,7 +21,7 @@ const transportOrderServices = {
   getTransportOrderById: async (id) => {
     try {
       const res = await axiosInstance.get(`${TRANSPORT_ORDER_API}/${id}`);
-      spService.handleAxiosResponse(res);
+      //  spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi lấy đơn vận chuyển theo ID:", error);
