@@ -7,6 +7,7 @@ import productInstancesServices from "../../services/product_instancesServices";
 import ProductList from "../../components/productList";
 import Footer from "../../components/footer";
 import Home from "../component-view/homePage";
+import { styleBackground, stylePadding } from "../../share-service/spStyle";
 
 const ProductAllPage = () => {
   const [productInstances, setProductInstances] = useState([]);
@@ -46,14 +47,6 @@ const ProductAllPage = () => {
     setProductInstances(data);
   };
 
-  const stylePadding = {
-    marginTop: "20px",
-    backgroundColor: "#ffffff",
-    width: "100%",
-    borderRadius: "8px",
-    padding: "16px 0px",
-  };
-
   return (
     <>
       <div
@@ -65,7 +58,7 @@ const ProductAllPage = () => {
         }}
       >
         {" "}
-        <div style={stylePadding}>
+        <div style={styleBackground}>
           <ProductList products={productInstances} rows={20} />
         </div>
         <BannerSlider items={items} />

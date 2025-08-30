@@ -20,6 +20,11 @@ import cartServices from "../../services/cartServices";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import ProductList from "../../components/productList";
 import Footer from "../../components/footer";
+import {
+  styleBackground,
+  styleHeading,
+  stylePadding,
+} from "../../share-service/spStyle";
 
 const ProductDetails = () => {
   const { serialCode } = useParams();
@@ -88,14 +93,6 @@ const ProductDetails = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const stylePadding = {
-    marginTop: "20px",
-    backgroundColor: "#ffffffff",
-    width: "100%",
-    borderRadius: "8px",
-    padding: "16px 0px",
-  };
-
   // Hàm lấy danh sách product instances theo company
   const fetchProductInstances = async () => {
     const data = await productInstancesServices.getProductInstancesPublic({
@@ -106,7 +103,6 @@ const ProductDetails = () => {
     setProductInstances(data);
   };
 
-  console.log("product", product);
   if (loading)
     return (
       <Grid container justifyContent="center" mt={5}>
@@ -256,7 +252,8 @@ const ProductDetails = () => {
           </Grid>
         </Box>
       </div>{" "}
-      <div style={stylePadding}>
+      <div style={styleBackground}>
+        <span style={styleHeading}>Sản phẩm cùng danh mục </span>
         <ProductList products={productInstances} rows={20} />{" "}
       </div>{" "}
       <div style={stylePadding}>
