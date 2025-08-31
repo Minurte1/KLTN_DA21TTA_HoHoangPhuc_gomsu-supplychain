@@ -8,7 +8,7 @@ import ProductList from "../../components/productList";
 import Footer from "../../components/footer";
 import Home from "../component-view/homePage";
 import { styleBackground, stylePadding } from "../../share-service/spStyle";
-
+import "../css-page/product-all.scss";
 const ProductAllPage = () => {
   const [productInstances, setProductInstances] = useState([]);
   const items = [
@@ -49,22 +49,27 @@ const ProductAllPage = () => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center", // Căn giữa theo chiều ngang
-          width: "100%", // Đảm bảo full rộng
-        }}
-      >
-        {" "}
-        <div style={styleBackground}>
-          <ProductList products={productInstances} rows={20} />
-        </div>
-        <BannerSlider items={items} />
-        <div style={stylePadding}>
-          {" "}
-          <Footer />
+      <div className="page-container">
+        <div className="sidebar">
+          <ul>
+            <li>Nhà Sách Tiki</li>
+            <li>Nhà Cửa - Đời Sống</li>
+            <li>Điện Thoại - Máy Tính Bảng</li>
+            <li>Đồ Chơi - Mẹ & Bé</li>
+            <li>Thiết Bị Số - Phụ Kiện Số</li>
+            {/* Thêm các danh mục khác */}
+          </ul>
+        </div>{" "}
+        {/* Nội dung sản phẩm */}
+        <div className="content">
+          <div style={styleBackground}>
+            <ProductList products={productInstances} rows={20} />
+          </div>
+          <BannerSlider items={items} />
+          <div style={stylePadding}>
+            {" "}
+            <Footer />
+          </div>{" "}
         </div>
       </div>
     </>

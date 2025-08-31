@@ -1,0 +1,37 @@
+.page-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+
+    /* Sidebar cố định khi scroll */
+    .sidebar {
+        margin-top: 20px;
+        width: 250px;
+        position: sticky;
+        top: 100px;
+        /* Khoảng cách từ top khi sticky */
+        height: fit-content;
+        /* chiều cao tự động */
+        background-color: #fff;
+        border: 1px solid #eee;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        padding: 8px 0;
+        cursor: pointer;
+    }
+
+    /* Nội dung sản phẩm */
+    .content {
+        flex: 1;
+        /* chiếm toàn bộ không gian còn lại */
+    }
+}
