@@ -1,11 +1,11 @@
 const db = require("../config/database");
 const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 
-const getAllCompanies = async (ID_COMPANY, STATUS) => {
+const getAllCompanies = async (ID_COMPANY, STATUS, ID_COMPANY_TYPE) => {
   let query = "SELECT * FROM companies";
   let params = [];
 
-  if (ID_COMPANY || STATUS) {
+  if (ID_COMPANY || STATUS || ID_COMPANY_TYPE) {
     query += " WHERE 1=1";
     if (ID_COMPANY) {
       query += " AND ID_COMPANY = ?";
@@ -14,6 +14,11 @@ const getAllCompanies = async (ID_COMPANY, STATUS) => {
     if (STATUS) {
       query += " AND STATUS = ?";
       params.push(STATUS);
+    }
+    if (ID_COMPANY_TYPE) {
+      // bổ sung
+      query += " AND ID_COMPANY_TYPE = ?";
+      params.push(ID_COMPANY_TYPE);
     }
   }
 

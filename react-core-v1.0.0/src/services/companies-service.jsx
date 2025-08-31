@@ -3,21 +3,20 @@ import spService from "../share-service/spService";
 const COMPANY_API = `${process.env.REACT_APP_URL_SERVER}/companies`;
 
 const companyServices = {
-  getCompanies: async (ID_COMPANY, STATUS) => {
+  getCompanies: async (ID_COMPANY, STATUS, ID_COMPANY_TYPE) => {
     try {
       const params = {};
       if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
       if (STATUS) params.STATUS = STATUS;
+      if (ID_COMPANY_TYPE) params.ID_COMPANY_TYPE = ID_COMPANY_TYPE; // bổ sung
 
       const res = await axiosInstance.get(COMPANY_API, { params });
       return res.data;
     } catch (error) {
       console.error("Error fetching companies:", error);
-      // Có thể trả về mặc định hoặc thông báo lỗi
       return { error: error.response?.data || "Lỗi kết nối server" };
     }
   },
-
   getCompanyById: async (id) => {
     try {
       const res = await axiosInstance.get(`${COMPANY_API}/${id}`);

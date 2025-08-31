@@ -10,13 +10,18 @@ const create = async (data) => {
 };
 
 const getAll = async (companyId) => {
-  // Nếu có truyền companyId thì lấy theo công ty đó, không thì lấy hết
-  let query = `SELECT * FROM categories`;
+  let query = `
+    SELECT c.*, comp.NAME_COMPANY
+    FROM categories c
+    JOIN companies comp ON c.ID_COMPANY = comp.ID_COMPANY
+  `;
   let params = [];
+
   if (companyId) {
-    query += ` WHERE ID_COMPANY = ?`;
+    query += ` WHERE c.ID_COMPANY = ?`;
     params.push(companyId);
   }
+
   const [rows] = await db.query(query, params);
   return rows;
 };

@@ -38,6 +38,7 @@ const Category = () => {
     fetchCategories();
   };
 
+  console.log("categories", categories);
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
@@ -59,6 +60,7 @@ const Category = () => {
         data={categories}
         columns={[
           { key: "NAME_CATEGORIES_", label: "Tên danh mục" },
+          { key: "NAME_COMPANY", label: "Tên công ty" },
           {
             key: "actions",
             label: "Hành động",

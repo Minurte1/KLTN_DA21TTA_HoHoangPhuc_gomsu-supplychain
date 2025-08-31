@@ -4,19 +4,28 @@
     gap: 20px;
     padding: 20px;
 
-    /* Sidebar cố định khi scroll */
     .sidebar {
         margin-top: 20px;
         width: 250px;
         position: sticky;
         top: 100px;
-        /* Khoảng cách từ top khi sticky */
-        height: fit-content;
-        /* chiều cao tự động */
+        max-height: calc(100vh - 120px); // chiều cao tối đa = viewport - top
+        overflow-y: auto; // scroll dọc khi dài
         background-color: #fff;
         border: 1px solid #eee;
         padding: 10px;
         border-radius: 6px;
+
+        /* Ẩn scroll nhưng vẫn scroll được */
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+
+        /* IE 10+ */
+        &::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
     }
 
     .sidebar ul {
@@ -29,9 +38,7 @@
         cursor: pointer;
     }
 
-    /* Nội dung sản phẩm */
     .content {
         flex: 1;
-        /* chiếm toàn bộ không gian còn lại */
     }
 }

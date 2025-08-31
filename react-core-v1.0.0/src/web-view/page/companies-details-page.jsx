@@ -50,27 +50,6 @@ export default function CompanyDetails() {
     });
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "ACTIVE":
-        return "success";
-      case "INACTIVE":
-        return "error";
-      default:
-        return "default";
-    }
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case "ACTIVE":
-        return "Đang hoạt động";
-      case "INACTIVE":
-        return "Ngừng hoạt động";
-      default:
-        return status;
-    }
-  };
   const stylePadding = {
     marginTop: "20px",
     backgroundColor: "#ffffff",

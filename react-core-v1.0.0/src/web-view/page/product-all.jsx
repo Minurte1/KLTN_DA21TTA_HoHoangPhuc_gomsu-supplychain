@@ -7,10 +7,15 @@ import productInstancesServices from "../../services/product_instancesServices";
 import ProductList from "../../components/productList";
 import Footer from "../../components/footer";
 import Home from "../component-view/homePage";
-import { styleBackground, stylePadding } from "../../share-service/spStyle";
+import {
+  styleBackground,
+  styleHeading,
+  stylePadding,
+} from "../../share-service/spStyle";
 import "../css-page/product-all.scss";
+import companyServices from "../../services/companies-service";
+import categoryServices from "../../services/categoryServices";
 const ProductAllPage = () => {
-  const [productInstances, setProductInstances] = useState([]);
   const items = [
     {
       name: "Banner 1",
@@ -33,10 +38,23 @@ const ProductAllPage = () => {
     },
   ];
 
+  const [productInstances, setProductInstances] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const [selectCompanies, setSelectCompanies] = useState(null);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+
   useEffect(() => {
     fetchProductInstances();
+    fetchCompanies();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  useEffect(() => {
+    if (selectCompanies) {
+      fetchCategories(selectCompanies);
+    }
+  }, [selectCompanies]);
+
   // Hàm lấy danh sách product instances theo company
   const fetchProductInstances = async () => {
     const data = await productInstancesServices.getProductInstancesPublic({
@@ -46,20 +64,59 @@ const ProductAllPage = () => {
 
     setProductInstances(data);
   };
+  const fetchCompanies = async () => {
+    const data = await companyServices.getCompanies(null, "ACTIVE", 3);
+    setCompanies(data.DT || []);
+  };
+
+  const fetchCategories = async (company) => {
+    try {
+      if (!company) return;
+      const companyId = company.ID_COMPANY || null;
+      const data = await categoryServices.getCategories({
+        ID_COMPANY: companyId,
+      });
+      setCategoryOptions(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const [openCompanyId, setOpenCompanyId] = useState(null);
+  const handleToggleCompany = (companyId) => {
+    setOpenCompanyId((prev) => (prev === companyId ? null : companyId));
+  };
 
   return (
     <>
       <div className="page-container">
         <div className="sidebar">
           <ul>
-            <li>Nhà Sách Tiki</li>
-            <li>Nhà Cửa - Đời Sống</li>
-            <li>Điện Thoại - Máy Tính Bảng</li>
-            <li>Đồ Chơi - Mẹ & Bé</li>
-            <li>Thiết Bị Số - Phụ Kiện Số</li>
-            {/* Thêm các danh mục khác */}
+            <h5>Danh mục công ty</h5>
+            {companies.map((company) => (
+              <li key={company.ID_COMPANY}>
+                <div
+                  onClick={() => {
+                    setSelectCompanies(company);
+                    handleToggleCompany(company?.ID_COMPANY);
+                  }}
+                  style={{ fontWeight: "bold" }}
+                >
+                  {company?.NAME_COMPANY}
+                </div>
+
+                {/* Nếu công ty này đang mở thì show danh mục con */}
+                {openCompanyId === company.ID_COMPANY && (
+                  <ul className="sub-menu">
+                    {categoryOptions?.map((cat) => (
+                      <li key={cat.ID_CATEGORIES_}>{cat.NAME_CATEGORIES_}</li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
           </ul>
-        </div>{" "}
+        </div>
         {/* Nội dung sản phẩm */}
         <div className="content">
           <div style={styleBackground}>
