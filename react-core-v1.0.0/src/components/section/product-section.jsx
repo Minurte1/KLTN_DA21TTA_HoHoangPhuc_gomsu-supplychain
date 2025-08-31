@@ -44,7 +44,7 @@ const ProductCard = ({ product }) => {
       style={{ cursor: "pointer" }}
     >
       {/* Logo công ty */}
-      {product.AVATAR && (
+      {/* {product.AVATAR && (
         <Tooltip title={product.NAME_COMPANY || "Tên công ty"} arrow>
           <img
             src={product.AVATAR}
@@ -52,7 +52,7 @@ const ProductCard = ({ product }) => {
             className={styles["company-logo"]}
           />
         </Tooltip>
-      )}
+      )} */}
 
       <img
         src={product.IMAGE_URL_PRODUCTS}
