@@ -4,6 +4,7 @@
     gap: 20px;
     padding: 20px;
 
+
     .sidebar {
         margin-top: 20px;
         width: 250px;
@@ -50,7 +51,7 @@
         font-size: 14px;
         font-weight: 400;
         color: #444;
-        transition: all 0.2s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, font-weight 0.3s ease;
 
         &:hover {
             background-color: rgba(0, 123, 255, 0.08);
@@ -59,25 +60,25 @@
         }
     }
 
-    .sub-menu {
-        list-style: none;
-        padding-left: 15px;
-        margin-top: 6px;
+    .sub-menu li {
+        font-size: 13px;
+        color: #555;
+        padding: 6px;
+        border-radius: 6px;
+        transition: color 0.3s ease, background-color 0.3s ease;
 
-        li {
-            font-size: 13px;
-            color: #555;
-            padding: 6px;
-            border-radius: 6px;
-
-            &:hover {
-                background: rgba(0, 123, 255, 0.05);
-                color: #007bff;
-            }
+        &:hover {
+            background: rgba(0, 123, 255, 0.05);
+            color: #007bff;
         }
     }
 
     .content {
+
         flex: 1;
+
+        .list-product {
+            //       min-height: 80vh;
+        }
     }
 }

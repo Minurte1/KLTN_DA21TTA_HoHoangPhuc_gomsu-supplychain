@@ -25,6 +25,7 @@ const productInstancesServices = {
     STATUS = "AVAILABLE",
     SERIAL_CODE = null,
     LIMIT = null,
+    ID_CATEGORIES_ = null,
   } = {}) => {
     try {
       const params = {};
@@ -32,11 +33,12 @@ const productInstancesServices = {
       if (STATUS) params.STATUS = STATUS;
       if (SERIAL_CODE) params.SERIAL_CODE = SERIAL_CODE;
       if (LIMIT) params.LIMIT = LIMIT;
+      if (ID_CATEGORIES_) params.ID_CATEGORIES_ = ID_CATEGORIES_;
 
       const res = await axiosInstance.get(`${PRODUCT_INSTANCES_API}/public`, {
         params,
       });
-      //     spService.handleAxiosResponse(res);
+
       return res.data;
     } catch (error) {
       console.error("Error fetching public product instances:", error);

@@ -211,7 +211,8 @@ const deleteProductInstance = async (id) => {
 const getAllProductInstancesPublic = async (
   STATUS = "AVAILABLE",
   LIMIT = 12,
-  SERIAL_CODE
+  SERIAL_CODE,
+  ID_CATEGORIES_
 ) => {
   try {
     let safeLimit = Number(LIMIT);
@@ -227,16 +228,25 @@ const getAllProductInstancesPublic = async (
       ? `AND pi.STATUS = '${STATUS.replace(/'/g, "''")}'`
       : "";
 
+    const categoryCondition = ID_CATEGORIES_
+      ? `AND p.ID_CATEGORIES_ = '${ID_CATEGORIES_.replace(/'/g, "''")}'`
+      : "";
+
     const query = `
       SELECT 
         pi.*,
-        p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS, p.PRICE_PRODUCTS,  p.IMAGE_URL_PRODUCTS, p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
+        p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS, 
+        p.PRICE_PRODUCTS, p.IMAGE_URL_PRODUCTS, 
+        p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
         c.ID_CATEGORIES_, c.NAME_CATEGORIES_, c.ID_COMPANY AS CATEGORY_ID_COMPANY,
-        comp.ID_COMPANY, comp.NAME_COMPANY, comp.TYPE_COMPANY, comp.ADDRESS, comp.DIA_CHI_Provinces, comp.DIA_CHI_Districts, comp.DIA_CHI_Wards, comp.DIA_CHI_STREETNAME,
+        comp.ID_COMPANY, comp.NAME_COMPANY, comp.TYPE_COMPANY, comp.ADDRESS, 
+        comp.DIA_CHI_Provinces, comp.DIA_CHI_Districts, comp.DIA_CHI_Wards, comp.DIA_CHI_STREETNAME,
         comp.PHONE, comp.EMAIL, comp.AVATAR, comp.SLUG, comp.CREATED_AT, comp.UPDATED_AT, comp.STATUS, comp.ID_COMPANY_TYPE,
-        pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS,
+        pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, 
+        pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS,
         mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES,
-        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, m.QUANTITY, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.COST_PER_UNIT_, m.ORIGIN, m.EXPIRY_DATE,
+        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, 
+        m.QUANTITY, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.COST_PER_UNIT_, m.ORIGIN, m.EXPIRY_DATE,
         pp.NAME_PRODUCTION_PLAN
       FROM product_instances pi
       JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT AND pi.ID_COMPANY = p.ID_COMPANY
@@ -249,6 +259,7 @@ const getAllProductInstancesPublic = async (
       WHERE 1=1
         ${statusCondition}
         ${serialCodeCondition}
+        ${categoryCondition}
       ORDER BY pi.ID_PRODUCT_INSTANCE DESC
       LIMIT ${safeLimit}
     `;
@@ -267,6 +278,7 @@ const getAllProductInstancesPublic = async (
     throw error;
   }
 };
+
 const globalSearch = async (keyword) => {
   const likeKeyword = `%${keyword}%`;
 

@@ -40,8 +40,7 @@ const ProductAllPage = () => {
 
   const [productInstances, setProductInstances] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [selectCompanies, setSelectCompanies] = useState(null);
-  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [selectCategory, setSelectCategory] = useState(null);
 
   useEffect(() => {
     fetchProductInstances();
@@ -50,16 +49,17 @@ const ProductAllPage = () => {
   }, []);
 
   useEffect(() => {
-    if (selectCompanies) {
-      fetchCategories(selectCompanies);
+    if (selectCategory) {
+      fetchProductInstances(selectCategory);
     }
-  }, [selectCompanies]);
+  }, [selectCategory]);
 
   // Hàm lấy danh sách product instances theo company
-  const fetchProductInstances = async () => {
+  const fetchProductInstances = async (category) => {
     const data = await productInstancesServices.getProductInstancesPublic({
       LIMIT: 1000000000,
       STATUS: "AVAILABLE",
+      ID_CATEGORIES_: category ? category?.ID_CATEGORIES_ : null,
     });
 
     setProductInstances(data);
@@ -69,24 +69,6 @@ const ProductAllPage = () => {
       "categories",
     ]);
     setCompanies(data.DT || []);
-  };
-
-  const fetchCategories = async (company) => {
-    try {
-      if (!company) return;
-      const companyId = company.ID_COMPANY || null;
-      const data = await categoryServices.getCategories({
-        ID_COMPANY: companyId,
-      });
-      setCategoryOptions(data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
-  const [openCompanyId, setOpenCompanyId] = useState(null);
-  const handleToggleCompany = (companyId) => {
-    setOpenCompanyId((prev) => (prev === companyId ? null : companyId));
   };
 
   return (
@@ -99,13 +81,7 @@ const ProductAllPage = () => {
               <>
                 {company.categories.length > 0 && (
                   <li key={company.ID_COMPANY}>
-                    <div
-                      onClick={() => {
-                        setSelectCompanies(company);
-                        handleToggleCompany(company?.ID_COMPANY);
-                      }}
-                      style={{ fontWeight: "bold", cursor: "pointer" }}
-                    >
+                    <div style={{ fontWeight: "bold", cursor: "pointer" }}>
                       {company?.NAME_COMPANY}
                     </div>
 
@@ -113,7 +89,12 @@ const ProductAllPage = () => {
 
                     <ul className="sub-menu">
                       {company.categories.map((cat) => (
-                        <li key={cat.ID_CATEGORIES_}>{cat.NAME_CATEGORIES_}</li>
+                        <li
+                          key={cat.ID_CATEGORIES_}
+                          onClick={() => setSelectCategory(cat)}
+                        >
+                          {cat.NAME_CATEGORIES_}
+                        </li>
                       ))}
                     </ul>
                   </li>
@@ -125,7 +106,8 @@ const ProductAllPage = () => {
 
         {/* Nội dung sản phẩm */}
         <div className="content">
-          <div style={styleBackground}>
+          <div style={styleBackground} className="list-product">
+            <span style={styleHeading}>{selectCategory?.NAME_CATEGORIES_}</span>
             <ProductList products={productInstances} rows={20} />
           </div>
           <BannerSlider items={items} />
