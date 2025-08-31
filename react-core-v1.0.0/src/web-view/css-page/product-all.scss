@@ -9,33 +9,72 @@
         width: 250px;
         position: sticky;
         top: 100px;
-        max-height: calc(100vh - 120px); // chiều cao tối đa = viewport - top
-        overflow-y: auto; // scroll dọc khi dài
-        background-color: #fff;
-        border: 1px solid #eee;
-        padding: 10px;
-        border-radius: 6px;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+        background: #fff;
+        backdrop-filter: blur(10px); // hiệu ứng mờ kính
+        border: 1px solid rgba(200, 200, 200, 0.3);
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
-        /* Ẩn scroll nhưng vẫn scroll được */
+        font-family: "Segoe UI", Roboto, sans-serif;
+
         scrollbar-width: none;
-        /* Firefox */
         -ms-overflow-style: none;
 
-        /* IE 10+ */
         &::-webkit-scrollbar {
             display: none;
-            /* Chrome, Safari, Opera */
         }
+    }
+
+    .sidebar h5 {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 12px;
+        color: #333;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding-bottom: 6px;
     }
 
     .sidebar ul {
         list-style: none;
         padding: 0;
+        margin: 0;
     }
 
     .sidebar li {
-        padding: 8px 0;
+        padding: 8px 6px;
         cursor: pointer;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 400;
+        color: #444;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: rgba(0, 123, 255, 0.08);
+            color: #007bff;
+            font-weight: 500;
+        }
+    }
+
+    .sub-menu {
+        list-style: none;
+        padding-left: 15px;
+        margin-top: 6px;
+
+        li {
+            font-size: 13px;
+            color: #555;
+            padding: 6px;
+            border-radius: 6px;
+
+            &:hover {
+                background: rgba(0, 123, 255, 0.05);
+                color: #007bff;
+            }
+        }
     }
 
     .content {

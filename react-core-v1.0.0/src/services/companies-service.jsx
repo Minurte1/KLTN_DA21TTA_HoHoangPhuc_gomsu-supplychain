@@ -3,13 +3,13 @@ import spService from "../share-service/spService";
 const COMPANY_API = `${process.env.REACT_APP_URL_SERVER}/companies`;
 
 const companyServices = {
-  getCompanies: async (ID_COMPANY, STATUS, ID_COMPANY_TYPE) => {
+  getCompanies: async (ID_COMPANY, STATUS, ID_COMPANY_TYPE, TABLE) => {
     try {
       const params = {};
       if (ID_COMPANY) params.ID_COMPANY = ID_COMPANY;
       if (STATUS) params.STATUS = STATUS;
       if (ID_COMPANY_TYPE) params.ID_COMPANY_TYPE = ID_COMPANY_TYPE; // bổ sung
-
+      if (TABLE) params.TABLE = TABLE;
       const res = await axiosInstance.get(COMPANY_API, { params });
       return res.data;
     } catch (error) {

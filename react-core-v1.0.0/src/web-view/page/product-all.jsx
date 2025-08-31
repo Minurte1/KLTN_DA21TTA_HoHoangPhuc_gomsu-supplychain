@@ -65,7 +65,9 @@ const ProductAllPage = () => {
     setProductInstances(data);
   };
   const fetchCompanies = async () => {
-    const data = await companyServices.getCompanies(null, "ACTIVE", 3);
+    const data = await companyServices.getCompanies(null, "ACTIVE", 3, [
+      "categories",
+    ]);
     setCompanies(data.DT || []);
   };
 
@@ -91,32 +93,36 @@ const ProductAllPage = () => {
     <>
       <div className="page-container">
         <div className="sidebar">
+          <h5>Danh mục công ty</h5>
           <ul>
-            <h5>Danh mục công ty</h5>
             {companies.map((company) => (
-              <li key={company.ID_COMPANY}>
-                <div
-                  onClick={() => {
-                    setSelectCompanies(company);
-                    handleToggleCompany(company?.ID_COMPANY);
-                  }}
-                  style={{ fontWeight: "bold" }}
-                >
-                  {company?.NAME_COMPANY}
-                </div>
+              <>
+                {company.categories.length > 0 && (
+                  <li key={company.ID_COMPANY}>
+                    <div
+                      onClick={() => {
+                        setSelectCompanies(company);
+                        handleToggleCompany(company?.ID_COMPANY);
+                      }}
+                      style={{ fontWeight: "bold", cursor: "pointer" }}
+                    >
+                      {company?.NAME_COMPANY}
+                    </div>
 
-                {/* Nếu công ty này đang mở thì show danh mục con */}
-                {openCompanyId === company.ID_COMPANY && (
-                  <ul className="sub-menu">
-                    {categoryOptions?.map((cat) => (
-                      <li key={cat.ID_CATEGORIES_}>{cat.NAME_CATEGORIES_}</li>
-                    ))}
-                  </ul>
+                    {/* Chỉ render categories khi có dữ liệu và đang mở */}
+
+                    <ul className="sub-menu">
+                      {company.categories.map((cat) => (
+                        <li key={cat.ID_CATEGORIES_}>{cat.NAME_CATEGORIES_}</li>
+                      ))}
+                    </ul>
+                  </li>
                 )}
-              </li>
+              </>
             ))}
           </ul>
         </div>
+
         {/* Nội dung sản phẩm */}
         <div className="content">
           <div style={styleBackground}>

@@ -1,38 +1,72 @@
 const db = require("../config/database");
 const URL_IMAGE_BASE = `http://localhost:` + process.env.PORT + ``; // hoặc lấy từ config/env
 
-const getAllCompanies = async (ID_COMPANY, STATUS, ID_COMPANY_TYPE) => {
-  let query = "SELECT * FROM companies";
-  let params = [];
+const getAllCompanies = async (ID_COMPANY, STATUS, ID_COMPANY_TYPE, TABLE) => {
+  try {
+    let query = "SELECT * FROM companies";
+    let params = [];
 
-  if (ID_COMPANY || STATUS || ID_COMPANY_TYPE) {
-    query += " WHERE 1=1";
-    if (ID_COMPANY) {
-      query += " AND ID_COMPANY = ?";
-      params.push(ID_COMPANY);
+    if (ID_COMPANY || STATUS || ID_COMPANY_TYPE) {
+      query += " WHERE 1=1";
+      if (ID_COMPANY) {
+        query += " AND ID_COMPANY = ?";
+        params.push(ID_COMPANY);
+      }
+      if (STATUS) {
+        query += " AND STATUS = ?";
+        params.push(STATUS);
+      }
+      if (ID_COMPANY_TYPE) {
+        query += " AND ID_COMPANY_TYPE = ?";
+        params.push(ID_COMPANY_TYPE);
+      }
     }
-    if (STATUS) {
-      query += " AND STATUS = ?";
-      params.push(STATUS);
-    }
-    if (ID_COMPANY_TYPE) {
-      // bổ sung
-      query += " AND ID_COMPANY_TYPE = ?";
-      params.push(ID_COMPANY_TYPE);
-    }
+
+    const [rows] = await db.query(query, params);
+
+    const mappedRows = await Promise.all(
+      rows.map(async (company) => {
+        try {
+          // Query bảng phụ
+          const [childRows] = await db.query(
+            `SELECT * FROM ${TABLE} WHERE ID_COMPANY = ?`,
+            [company.ID_COMPANY]
+          );
+
+          return {
+            ...company,
+            AVATAR: company.AVATAR
+              ? `${URL_IMAGE_BASE}/${company.AVATAR}`
+              : null,
+            BACKGROUND: company.BACKGROUND
+              ? `${URL_IMAGE_BASE}/${company.BACKGROUND}`
+              : null,
+            [TABLE]: childRows,
+          };
+        } catch (err) {
+          console.error(
+            `Lỗi khi query bảng ${TABLE} cho công ty ${company.ID_COMPANY}:`,
+            err
+          );
+          return {
+            ...company,
+            AVATAR: company.AVATAR
+              ? `${URL_IMAGE_BASE}/${company.AVATAR}`
+              : null,
+            BACKGROUND: company.BACKGROUND
+              ? `${URL_IMAGE_BASE}/${company.BACKGROUND}`
+              : null,
+            [TABLE]: [], // fallback rỗng
+          };
+        }
+      })
+    );
+
+    return mappedRows;
+  } catch (error) {
+    console.error("Lỗi trong getAllCompanies:", error);
+    return []; // fallback rỗng nếu lỗi toàn bộ
   }
-
-  const [rows] = await db.query(query, params);
-
-  const mappedRows = rows.map((company) => ({
-    ...company,
-    AVATAR: company.AVATAR ? `${URL_IMAGE_BASE}/${company.AVATAR}` : null,
-    BACKGROUND: company.BACKGROUND
-      ? `${URL_IMAGE_BASE}/${company.BACKGROUND}`
-      : null,
-  }));
-
-  return mappedRows;
 };
 
 const getCompanyById = async (id) => {
