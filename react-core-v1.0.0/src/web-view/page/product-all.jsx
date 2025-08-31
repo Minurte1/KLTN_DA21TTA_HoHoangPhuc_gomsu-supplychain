@@ -41,9 +41,9 @@ const ProductAllPage = () => {
   const [productInstances, setProductInstances] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [selectCategory, setSelectCategory] = useState(null);
-
+  const [listProductAll, setListProductAll] = useState([]);
   useEffect(() => {
-    fetchProductInstances();
+    fetchProductInstances(null);
     fetchCompanies();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -63,6 +63,9 @@ const ProductAllPage = () => {
     });
 
     setProductInstances(data);
+    if (!category) {
+      setListProductAll(data);
+    }
   };
   const fetchCompanies = async () => {
     const data = await companyServices.getCompanies(null, "ACTIVE", 3, [
@@ -92,6 +95,12 @@ const ProductAllPage = () => {
                         <li
                           key={cat.ID_CATEGORIES_}
                           onClick={() => setSelectCategory(cat)}
+                          className={
+                            selectCategory?.ID_CATEGORIES_ ===
+                            cat.ID_CATEGORIES_
+                              ? "active"
+                              : ""
+                          }
                         >
                           {cat.NAME_CATEGORIES_}
                         </li>
@@ -110,6 +119,15 @@ const ProductAllPage = () => {
             <span style={styleHeading}>{selectCategory?.NAME_CATEGORIES_}</span>
             <ProductList products={productInstances} rows={20} />
           </div>
+          {selectCategory && (
+            <>
+              {" "}
+              <div style={styleBackground} className="list-product">
+                <span style={styleHeading}>Tất cả sản phẩm</span>
+                <ProductList products={listProductAll} rows={20} />
+              </div>
+            </>
+          )}
           <BannerSlider items={items} />
           <div style={stylePadding}>
             {" "}

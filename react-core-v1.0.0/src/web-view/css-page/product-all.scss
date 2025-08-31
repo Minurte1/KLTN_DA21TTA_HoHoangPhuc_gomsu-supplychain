@@ -58,6 +58,12 @@
             color: #007bff;
             font-weight: 500;
         }
+
+        &.active {
+            font-weight: 600;
+            color: #007bff;
+            background: rgba(0, 123, 255, 0.1);
+        }
     }
 
     .sub-menu li {
