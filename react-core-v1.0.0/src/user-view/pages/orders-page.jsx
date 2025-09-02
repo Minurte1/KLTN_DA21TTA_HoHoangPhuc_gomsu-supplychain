@@ -36,12 +36,10 @@ const Input = styled("input")({
 const OrdersUsers = () => {
   const { userInfo } = ReduxExportUseAuthState();
   const [infoUser, setInfoUser] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+
   const [formData, setFormData] = useState({});
   const [avatarPreview, setAvatarPreview] = useState("");
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+
   const [orders, setOrders] = useState([]);
 
   const [open, setOpen] = useState(false);
