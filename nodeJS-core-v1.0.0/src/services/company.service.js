@@ -27,11 +27,15 @@ const getAllCompanies = async (ID_COMPANY, STATUS, ID_COMPANY_TYPE, TABLE) => {
     const mappedRows = await Promise.all(
       rows.map(async (company) => {
         try {
-          // Query bảng phụ
-          const [childRows] = await db.query(
-            `SELECT * FROM ${TABLE} WHERE ID_COMPANY = ?`,
-            [company.ID_COMPANY]
-          );
+          let childRows = [];
+
+          if (TABLE) {
+            const [result] = await db.query(
+              `SELECT * FROM ${TABLE} WHERE ID_COMPANY = ?`,
+              [company.ID_COMPANY]
+            );
+            childRows = result;
+          }
 
           return {
             ...company,
@@ -41,7 +45,7 @@ const getAllCompanies = async (ID_COMPANY, STATUS, ID_COMPANY_TYPE, TABLE) => {
             BACKGROUND: company.BACKGROUND
               ? `${URL_IMAGE_BASE}/${company.BACKGROUND}`
               : null,
-            [TABLE]: childRows,
+            [TABLE || "CHILD"]: childRows, // fallback tên field
           };
         } catch (err) {
           console.error(
@@ -56,7 +60,7 @@ const getAllCompanies = async (ID_COMPANY, STATUS, ID_COMPANY_TYPE, TABLE) => {
             BACKGROUND: company.BACKGROUND
               ? `${URL_IMAGE_BASE}/${company.BACKGROUND}`
               : null,
-            [TABLE]: [], // fallback rỗng
+            [TABLE || "CHILD"]: [],
           };
         }
       })
