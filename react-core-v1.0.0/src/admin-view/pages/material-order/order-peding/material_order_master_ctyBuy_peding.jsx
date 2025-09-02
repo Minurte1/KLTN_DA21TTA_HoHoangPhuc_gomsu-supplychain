@@ -78,16 +78,7 @@ const MaterialOrderMaster_BuyPending = () => {
         data,
         true
       );
-    if (response.status === 200) {
-      enqueueSnackbar("Cập nhật trạng thái đơn hàng thành công", {
-        variant: "success",
-      });
-      setOpenViewOrdersModal(false);
-    } else {
-      enqueueSnackbar("Cập nhật trạng thái đơn hàng thất bại", {
-        variant: "error",
-      });
-    }
+    setOpenViewOrdersModal(false);
     fetchOrders();
   };
   return (

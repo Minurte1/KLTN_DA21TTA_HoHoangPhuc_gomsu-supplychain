@@ -9,6 +9,7 @@ import materialServices from "../../services/materialServices";
 import MaterialsFormModal from "../modal/materials-modal";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import moment from "moment";
+import spService from "../../share-service/spService";
 const Material = () => {
   const [materials, setMaterials] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -35,24 +36,32 @@ const Material = () => {
     await materialServices.deleteMaterial(id);
     fetchMaterials();
   };
-
+  const create = spService.hasPermission(
+    userInfo?.LIST_PERMISION,
+    "material",
+    "create"
+  );
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
         Quản lý Vật Liệu
       </Typography>
-      <Button
-        variant="contained"
-        startIcon={<AddIcon />}
-        sx={{ mb: 2 }}
-        onClick={() => {
-          setSelectedMaterial(null);
-          setOpenModal(true);
-        }}
-      >
-        Thêm Vật Liệu
-      </Button>
-
+      {create && (
+        <>
+          {" "}
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{ mb: 2 }}
+            onClick={() => {
+              setSelectedMaterial(null);
+              setOpenModal(true);
+            }}
+          >
+            Thêm Vật Liệu
+          </Button>{" "}
+        </>
+      )}
       <DynamicTable
         data={materials}
         keyStatus={"materials"}

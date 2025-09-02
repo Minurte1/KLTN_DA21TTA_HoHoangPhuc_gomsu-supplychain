@@ -234,7 +234,13 @@ const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
     </>
   );
 
-  const onUpdateStatus = () => {};
+  const onUpdateStatus = async (ID_ORDERS_, STATUS) => {
+    try {
+      await orderServices.onUpdateStatus(ID_ORDERS_, STATUS);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
   return (
     <>
       {/* <DynamicModal

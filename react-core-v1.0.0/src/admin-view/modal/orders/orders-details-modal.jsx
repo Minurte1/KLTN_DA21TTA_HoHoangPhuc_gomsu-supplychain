@@ -17,6 +17,7 @@ import moment from "moment";
 const OrderDetailsViewModal = ({ open, onClose, order, onUpdateStatus }) => {
   if (!order) return null;
 
+  console.log("order", order);
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>Chi tiết đơn hàng #{order.ID_ORDERS_}</DialogTitle>
@@ -132,16 +133,41 @@ const OrderDetailsViewModal = ({ open, onClose, order, onUpdateStatus }) => {
         ))}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          Đóng
-        </Button>
-        <Button
-          onClick={() => onUpdateStatus(order.ID_ORDERS_)}
-          variant="contained"
-          color="primary"
-        >
-          Cập nhật trạng thái
-        </Button>
+        {order.STATUS === "PENDING" ? (
+          <>
+            {" "}
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 2,
+              }}
+            >
+              <button
+                className="custom-outline-btn"
+                onClick={() => onUpdateStatus(order.ID_ORDERS_, "DELIVERING")}
+              >
+                <i className="fa-solid fa-floppy-disk mr-5"></i> Xác nhận giao
+                hàng
+              </button>{" "}
+              <button
+                className="custom-outline-btn-danger"
+                onClick={() => onUpdateStatus(order.ID_ORDERS_, "CANCELLED")}
+              >
+                <i className="fa-solid fa-ban mr-5"></i> Hủy đơn hàng
+              </button>
+            </Box>
+          </>
+        ) : (
+          <>
+            {" "}
+            <button className="custom-outline-btn-cancel">
+              Đơn hàng ở trạng thái {order?.STATUS} nên không thể thực hiện thao
+              tác
+            </button>{" "}
+          </>
+        )}
       </DialogActions>
     </Dialog>
   );

@@ -43,7 +43,7 @@ const Orders = () => {
         Đơn Hàng Gốm Sứ
       </Typography>
 
-      <Button
+      {/* <Button
         variant="contained"
         startIcon={<AddIcon />}
         sx={{ mb: 2 }}
@@ -53,7 +53,7 @@ const Orders = () => {
         }}
       >
         Thêm Đơn Hàng
-      </Button>
+      </Button> */}
 
       <DynamicTable
         data={orders}

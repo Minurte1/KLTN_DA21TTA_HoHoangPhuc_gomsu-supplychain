@@ -65,7 +65,21 @@ const deleteOrder = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params; // lấy ID_ORDERS_
+    const { STATUS } = req.body; // lấy STATUS từ body
 
+    const updated = await OrderService.updateStatus(id, STATUS);
+
+    if (!updated) return res.status(404).json({ message: "Order not found" });
+
+    res.json({ message: "Order status updated successfully" });
+  } catch (err) {
+    console.error("orders", err);
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   getAllOrders,
   createOrder,
@@ -73,4 +87,5 @@ module.exports = {
   updateOrder,
   deleteOrder,
   getOrderUsersById,
+  updateOrderStatus,
 };

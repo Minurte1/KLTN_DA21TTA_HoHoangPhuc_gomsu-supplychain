@@ -7,6 +7,7 @@ const {
   updateOrder,
   deleteOrder,
   getOrderUsersById,
+  updateOrderStatus,
 } = require("../controllers/orders.controller");
 
 const {
@@ -42,6 +43,8 @@ router.get(
   // checkUserPermission("orders", "view"),
   getOrderById
 );
+
+router.put("/:id/status", updateOrderStatus);
 
 // Cập nhật đơn hàng
 router.put(

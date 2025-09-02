@@ -287,7 +287,7 @@ const getAll = async ({ ID_COMPANY, ID_USERS }) => {
       uo.ID_USERS,
       uo.DATE_CREATED,
       uo.TOTAL_AMOUNT,
-   
+      o.STATUS,
       o.ID_ORDERS_,
       o.ID_COMPANY,
       o.DATE_ORDER,
@@ -338,7 +338,7 @@ const getById = async (id) => {
       o.FULLNAME_ORDER,
       o.PHONE_ORDER,
       o.PAYMENT_METHOD,
-
+      o.STATUS ,
       uo.ID_USER_ORDER,
       uo.ID_USERS,
       uo.DATE_CREATED,
@@ -394,7 +394,7 @@ const getById = async (id) => {
     ID_TRANSPORT_ORDER: rows[0].ID_TRANSPORT_ORDER,
     FULLNAME_ORDER: rows[0].FULLNAME_ORDER,
     PHONE_ORDER: rows[0].PHONE_ORDER,
-
+    STATUS: rows[0].STATUS,
     userOrder: {
       ID_USER_ORDER: rows[0].ID_USER_ORDER,
       DATE_CREATED: rows[0].DATE_CREATED,
@@ -489,7 +489,7 @@ const getOrdersByUserId = async (id) => {
       o.FULLNAME_ORDER,
       o.PHONE_ORDER,
       o.PAYMENT_METHOD,
-
+      o.STATUS,
       uo.ID_USER_ORDER,
       uo.ID_USERS AS USER_ID,
       uo.DATE_CREATED,
@@ -551,6 +551,7 @@ const getOrdersByUserId = async (id) => {
         ID_TRANSPORT_ORDER: r.ID_TRANSPORT_ORDER,
         FULLNAME_ORDER: r.FULLNAME_ORDER,
         PHONE_ORDER: r.PHONE_ORDER,
+        STATUS: r.STATUS,
         userOrder: {
           ID_USER_ORDER: r.ID_USER_ORDER,
           DATE_CREATED: r.DATE_CREATED,
@@ -589,7 +590,15 @@ const getOrdersByUserId = async (id) => {
 
   return Array.from(ordersMap.values());
 };
-
+const updateStatus = async (id, status) => {
+  const [result] = await db.query(
+    `UPDATE orders 
+     SET STATUS = ?
+     WHERE ID_ORDERS_ = ?`,
+    [status, id]
+  );
+  return result.affectedRows > 0;
+};
 module.exports = {
   create,
   getAll,
@@ -597,4 +606,5 @@ module.exports = {
   update,
   delete: deleteRecord,
   getOrdersByUserId,
+  updateStatus,
 };

@@ -8,6 +8,7 @@ import DynamicTable from "../../share-view/dynamic/table/table";
 import materialTypeServices from "../../services/materialTypeServices";
 import MaterialTypeFormModal from "../modal/material_types-modal";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import spService from "../../share-service/spService";
 
 // import MaterialTypeFormModal from "../modal/material-type-modal";
 
@@ -36,24 +37,32 @@ const MaterialType = () => {
     await materialTypeServices.deleteMaterialType(id);
     fetchMaterialTypes();
   };
-
+  const create = spService.hasPermission(
+    userInfo?.LIST_PERMISION,
+    "material_type",
+    "create"
+  );
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
         Quản lý Loại Vật Liệu
       </Typography>
-      <Button
-        variant="contained"
-        startIcon={<AddIcon />}
-        sx={{ mb: 2 }}
-        onClick={() => {
-          setSelectedMaterialType(null);
-          setOpenModal(true);
-        }}
-      >
-        Thêm Loại Vật Liệu
-      </Button>
-
+      {create && (
+        <>
+          {" "}
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{ mb: 2 }}
+            onClick={() => {
+              setSelectedMaterialType(null);
+              setOpenModal(true);
+            }}
+          >
+            Thêm Loại Vật Liệu
+          </Button>
+        </>
+      )}
       <DynamicTable
         data={materialTypes}
         columns={[

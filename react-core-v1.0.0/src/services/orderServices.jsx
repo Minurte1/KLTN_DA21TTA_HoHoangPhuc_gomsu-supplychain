@@ -51,7 +51,16 @@ const orderServices = {
       return null;
     }
   },
-
+  onUpdateStatus: async (ID_ORDERS_, STATUS) => {
+    try {
+      const res = await axiosInstance.put(`${ORDER_API}/${ID_ORDERS_}/status`, {
+        STATUS,
+      });
+      spService.handleAxiosResponse(res);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  },
   // Cập nhật đơn hàng
   updateOrder: async (id, data) => {
     try {
