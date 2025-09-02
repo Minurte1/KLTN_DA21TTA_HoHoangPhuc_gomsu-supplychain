@@ -290,6 +290,7 @@ const getAll = async ({ ID_COMPANY, ID_USERS }) => {
       o.STATUS,
       o.ID_ORDERS_,
       o.ID_COMPANY,
+      o.PAYMENT_METHOD,
       o.DATE_ORDER,
       o.TOTAL_AMOUNT_ORDER,
       o.PAYMENT_STATUS_ORDER,
@@ -593,9 +594,9 @@ const getOrdersByUserId = async (id) => {
 const updateStatus = async (id, status) => {
   const [result] = await db.query(
     `UPDATE orders 
-     SET STATUS = ?
+     SET STATUS = ?, SHIPPING_STATUS_ORDER = ?
      WHERE ID_ORDERS_ = ?`,
-    [status, id]
+    [status, status, id]
   );
   return result.affectedRows > 0;
 };

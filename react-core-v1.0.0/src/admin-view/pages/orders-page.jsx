@@ -61,6 +61,7 @@ const Orders = () => {
           "STATUS",
           "PAYMENT_STATUS_ORDER",
           "SHIPPING_STATUS_ORDER",
+          "PAYMENT_METHOD",
         ]}
         keyStatus={"order"}
         columns={[

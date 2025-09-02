@@ -214,6 +214,12 @@ const spService = {
           bgColor: "#cff4fc",
           borderColor: "#b6effb",
         },
+        COD: {
+          label: "Thanh toán khi nhận hàng",
+          color: "#0f5132",
+          bgColor: "#d1e7dd",
+          borderColor: "#badbcc",
+        },
       },
       productInstanceStatus: {
         AVAILABLE: {
@@ -451,6 +457,7 @@ const spService = {
           borderColor: "#f5c2c7",
         },
       },
+
       default: {
         ACTIVE: {
           label: "Hoạt động",
