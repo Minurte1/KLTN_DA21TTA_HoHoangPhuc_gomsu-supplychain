@@ -97,10 +97,17 @@ const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
   ];
 
   const optionShippingStatus = [
-    { value: "PENDING", label: "Chưa giao hàng" },
-    { value: "SHIPPED", label: "Đang giao" },
-    { value: "DELIVERED", label: "Đã giao" },
+    { value: "PENDING", label: "Chờ xử lý" },
+    { value: "DELIVERING", label: "Đang giao hàng" },
+    { value: "DELIVERED", label: "Đã giao hàng" },
     { value: "CANCELLED", label: "Đã hủy" },
+  ];
+  const Status = [
+    { value: "PENDING", label: "Chờ xử lý" },
+    { value: "DELIVERING", label: "Đang giao hàng" },
+    { value: "DELIVERED", label: "Đã giao hàng" },
+    { value: "CANCELLED", label: "Đã hủy" },
+    { value: "SUCCESS", label: "Giao thành công" },
   ];
 
   const optionPaymentMethod = [

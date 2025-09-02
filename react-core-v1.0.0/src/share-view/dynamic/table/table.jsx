@@ -24,23 +24,40 @@ const DynamicTable = ({
   subStatus = true,
   keyStatus,
   statusColumns,
+  filters = [],
 }) => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
+  const [filterValues, setFilterValues] = useState({});
+
+  // ✅ khi thay đổi filter
+  const handleFilterChange = (key, value) => {
+    setFilterValues((prev) => ({ ...prev, [key]: value }));
+    setPage(0);
+  };
 
   const filteredData = useMemo(() => {
-    return data.filter((row) =>
-      columns.some((column) => {
+    return data.filter((row) => {
+      // ✅ search text
+      const matchSearch = columns.some((column) => {
         const value = row[column.key];
         return (
           value &&
           typeof value === "string" &&
           value.toLowerCase().includes(search.toLowerCase())
         );
-      })
-    );
-  }, [data, search, columns]);
+      });
+
+      // ✅ áp dụng filter
+      const matchFilters = Object.entries(filterValues).every(([key, val]) => {
+        if (!val) return true; // bỏ qua nếu filter chưa chọn
+        return String(row[key]) === String(val);
+      });
+
+      return matchSearch && matchFilters;
+    });
+  }, [data, search, columns, filterValues]);
 
   const paginatedData = useMemo(() => {
     const start = page * rowsPerPage;
@@ -73,49 +90,53 @@ const DynamicTable = ({
           justifyContent: "space-between",
           alignItems: "center",
           mb: 2,
+          gap: 2,
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 500,
-            color: "#1a1a1a",
-            fontSize: "1.125rem",
-          }}
-        >
+        <Typography variant="h6" sx={{ fontWeight: 500, color: "#1a1a1a" }}>
           Danh sách
         </Typography>
-        <TextField
-          variant="outlined"
-          placeholder="Tìm kiếm..."
-          size="small"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: "#999", fontSize: 20 }} />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2,
-              backgroundColor: alpha("#f5f5f5", 0.5),
-              "&:hover": {
-                backgroundColor: "#f5f5f5",
-              },
-              "&.Mui-focused": {
-                backgroundColor: "#ffffff",
-                boxShadow: `0 0 0 2px ${alpha("#1976d2", 0.2)}`,
-              },
-            },
-            "& .MuiInputBase-input": {
-              fontSize: "0.875rem",
-              py: 1,
-            },
-          }}
-        />
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {/* ✅ Filters động */}
+          {filters.map((filter) => (
+            <TextField
+              key={filter.key}
+              select
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label={filter.label}
+              value={filterValues[filter.key] || ""}
+              onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+              SelectProps={{ native: true }}
+            >
+              <option value="">Tất cả</option>
+              {filter.options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </TextField>
+          ))}
+
+          {/* ✅ Search */}
+          <TextField
+            variant="outlined"
+            placeholder="Tìm kiếm..."
+            size="small"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: "#999", fontSize: 20 }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
       </Box>
 
       <TableContainer>

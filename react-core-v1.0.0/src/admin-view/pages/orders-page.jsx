@@ -57,6 +57,27 @@ const Orders = () => {
 
       <DynamicTable
         data={orders}
+        filters={[
+          {
+            key: "STATUS",
+            label: "Trạng thái",
+            options: [
+              { value: "PENDING", label: "Chờ xử lý" },
+              { value: "DELIVERING", label: "Đang giao hàng" },
+              { value: "DELIVERED", label: "Đã giao hàng" },
+              { value: "CANCELLED", label: "Đã hủy" },
+              { value: "SUCCESS", label: "Giao thành công" },
+            ],
+          },
+          {
+            key: "PAYMENT_STATUS_ORDER",
+            label: "Thanh toán",
+            options: [
+              { value: "PAID", label: "Đã thanh toán" },
+              { value: "PENDING", label: "Chờ xử lý" },
+            ],
+          },
+        ]}
         statusColumns={[
           "STATUS",
           "PAYMENT_STATUS_ORDER",
@@ -86,9 +107,6 @@ const Orders = () => {
               <>
                 <IconButton onClick={() => handleEdit(row)}>
                   <EditIcon />
-                </IconButton>
-                <IconButton onClick={() => handleDelete(row.ID_ORDERS_)}>
-                  <DeleteIcon />
                 </IconButton>
               </>
             ),
