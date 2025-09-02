@@ -263,14 +263,24 @@ const PermissionManagerModal = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "90%",
-          maxWidth: 1400,
           bgcolor: "background.paper",
           boxShadow: 24,
-          p: 4,
+          p: { xs: 2, sm: 3, md: 4 }, // padding thay đổi theo màn hình
           borderRadius: 2,
           maxHeight: "90vh",
           overflow: "auto",
+          width: {
+            xs: "95%", // mobile
+            sm: "90%", // tablet
+            md: "80%", // laptop
+            lg: "90%", // desktop lớn
+          },
+          maxWidth: {
+            xs: 400, // mobile
+            sm: 600, // tablet
+            md: 900, // laptop
+            lg: 1600, // desktop lớn
+          },
         }}
       >
         <Typography variant="h6" gutterBottom>
