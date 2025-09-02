@@ -472,12 +472,176 @@ const deleteRecord = async (id) => {
   ]);
   return result.affectedRows > 0;
 };
+// Đơn hàng chưa group của user
+// const getOrdersByUserId = async (id) => {
+//   const [rows] = await db.query(
+//     `
+//     SELECT
+//       o.ID_ORDERS_,
+//       o.ID_USER_ORDER,
+//       o.DATE_ORDER,
+//       o.TOTAL_AMOUNT_ORDER,
+//       o.PAYMENT_STATUS_ORDER,
+//       o.SHIPPING_STATUS_ORDER,
+//       o.SHIPPING_ADDRESS,
+//       o.SHIPPING_METHOD,
+//       o.SHIPPING_COST,
+//       o.ID_COMPANY,
+//       o.ID_TRANSPORT_ORDER,
+//       o.FULLNAME_ORDER,
+//       o.PHONE_ORDER,
+//       o.PAYMENT_METHOD,
+//       o.STATUS,
+
+//       uo.ID_USER_ORDER,
+//       uo.ID_USERS AS USER_ID,
+//       uo.DATE_CREATED,
+//       uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
+
+//       u.HO_TEN,
+//       u.EMAIL,
+
+//       oi.ID_ORDER_ITEMS,
+//       oi.QUANTITY_INVENTORY,
+//       oi.PRICE_ORDER_ITEMS,
+
+//       pi.ID_PRODUCT_INSTANCE,
+//       pi.SERIAL_CODE,
+//       pi.QUANTITY,
+//       pi.PRICE_PRODUCTS,
+
+//       p.ID_PRODUCT,
+//       p.NAME_PRODUCTS,
+//       p.DESCRIPTION_PRODUCTS,
+//       p.IMAGE_URL_PRODUCTS,
+
+//       c.ID_CATEGORIES_,
+//       c.NAME_CATEGORIES_,
+
+//       com.ID_COMPANY AS COMPANY_ID,
+//       com.NAME_COMPANY,
+//       com.TYPE_COMPANY,
+//       com.ADDRESS,
+//       com.DIA_CHI_Provinces,
+//       com.DIA_CHI_Districts,
+//       com.DIA_CHI_Wards,
+//       com.DIA_CHI_STREETNAME,
+//       com.PHONE AS COMPANY_PHONE,
+//       com.EMAIL AS COMPANY_EMAIL,
+//       com.AVATAR AS COMPANY_AVATAR,
+//       com.SLUG AS COMPANY_SLUG,
+//       com.STATUS AS COMPANY_STATUS,
+//       com.ID_COMPANY_TYPE
+
+//     FROM orders o
+//     JOIN user_orders uo ON o.ID_USER_ORDER = uo.ID_USER_ORDER
+//     JOIN users u ON uo.ID_USERS = u.ID_USERS
+//     JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
+//     JOIN product_instances pi ON oi.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
+//     JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT
+//     JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_
+//     LEFT JOIN companies com ON o.ID_COMPANY = com.ID_COMPANY
+//     WHERE uo.ID_USERS = ?
+//     ORDER BY o.DATE_ORDER DESC
+//   `,
+//     [id]
+//   );
+
+//   if (rows.length === 0) return [];
+
+//   const ordersMap = new Map();
+
+//   for (const r of rows) {
+//     if (!ordersMap.has(r.ID_ORDERS_)) {
+//       ordersMap.set(r.ID_ORDERS_, {
+//         ID_ORDERS_: r.ID_ORDERS_,
+//         ID_USER_ORDER: r.ID_USER_ORDER,
+//         DATE_ORDER: r.DATE_ORDER,
+//         TOTAL_AMOUNT_ORDER: r.TOTAL_AMOUNT_ORDER,
+//         PAYMENT_STATUS_ORDER: r.PAYMENT_STATUS_ORDER,
+//         SHIPPING_STATUS_ORDER: r.SHIPPING_STATUS_ORDER,
+//         SHIPPING_ADDRESS: r.SHIPPING_ADDRESS,
+//         SHIPPING_METHOD: r.SHIPPING_METHOD,
+//         SHIPPING_COST: r.SHIPPING_COST,
+//         ID_COMPANY: r.ID_COMPANY,
+//         PAYMENT_METHOD: r.PAYMENT_METHOD,
+//         ID_TRANSPORT_ORDER: r.ID_TRANSPORT_ORDER,
+//         FULLNAME_ORDER: r.FULLNAME_ORDER,
+//         PHONE_ORDER: r.PHONE_ORDER,
+//         STATUS: r.STATUS,
+//         userOrder: {
+//           ID_USER_ORDER: r.ID_USER_ORDER,
+//           DATE_CREATED: r.DATE_CREATED,
+//           TOTAL_AMOUNT: r.TOTAL_AMOUNT_USER_ORDER,
+//         },
+//         user: {
+//           ID_USERS: r.USER_ID,
+//           HO_TEN: r.HO_TEN,
+//           EMAIL: r.EMAIL,
+//           AVATAR: r.HO_TEN,
+//         },
+//         company: r.COMPANY_ID
+//           ? {
+//               ID_COMPANY: r.COMPANY_ID,
+//               NAME_COMPANY: r.NAME_COMPANY,
+//               TYPE_COMPANY: r.TYPE_COMPANY,
+//               ADDRESS: r.ADDRESS,
+//               DIA_CHI_Provinces: r.DIA_CHI_Provinces,
+//               DIA_CHI_Districts: r.DIA_CHI_Districts,
+//               DIA_CHI_Wards: r.DIA_CHI_Wards,
+//               DIA_CHI_STREETNAME: r.DIA_CHI_STREETNAME,
+//               PHONE: r.COMPANY_PHONE,
+//               EMAIL: r.COMPANY_EMAIL,
+//               AVATAR: r.COMPANY_AVATAR
+//                 ? URL_IMAGE_BASE + r.COMPANY_AVATAR
+//                 : null,
+//               SLUG: r.COMPANY_SLUG,
+//               STATUS: r.COMPANY_STATUS,
+//               ID_COMPANY_TYPE: r.ID_COMPANY_TYPE,
+//             }
+//           : null,
+//         products: [],
+//       });
+//     }
+
+//     ordersMap.get(r.ID_ORDERS_).products.push({
+//       ID_ORDER_ITEMS: r.ID_ORDER_ITEMS,
+//       QUANTITY_INVENTORY: r.QUANTITY_INVENTORY,
+//       PRICE_ORDER_ITEMS: r.PRICE_ORDER_ITEMS,
+//       ID_PRODUCT_INSTANCE: r.ID_PRODUCT_INSTANCE,
+//       SERIAL_CODE: r.SERIAL_CODE,
+//       QUANTITY: r.QUANTITY,
+//       ID_PRODUCT: r.ID_PRODUCT,
+//       NAME_PRODUCTS: r.NAME_PRODUCTS,
+//       DESCRIPTION_PRODUCTS: r.DESCRIPTION_PRODUCTS,
+//       PRICE_PRODUCTS: r.PRICE_PRODUCTS,
+//       IMAGE_URL_PRODUCTS: r.IMAGE_URL_PRODUCTS
+//         ? URL_IMAGE_BASE + r.IMAGE_URL_PRODUCTS
+//         : null,
+//       category: {
+//         ID_CATEGORIES_: r.ID_CATEGORIES_,
+//         NAME_CATEGORIES_: r.NAME_CATEGORIES_,
+//       },
+//     });
+//   }
+
+//   return Array.from(ordersMap.values());
+// };
+
+// Đơn hàng đã group của user
 const getOrdersByUserId = async (id) => {
   const [rows] = await db.query(
     `
     SELECT 
+      uo.ID_USER_ORDER,
+      uo.ID_USERS AS USER_ID,
+      uo.DATE_CREATED,
+      uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
+
+      u.HO_TEN,
+      u.EMAIL,
+
       o.ID_ORDERS_,
-      o.ID_USER_ORDER,
       o.DATE_ORDER,
       o.TOTAL_AMOUNT_ORDER,
       o.PAYMENT_STATUS_ORDER,
@@ -489,25 +653,17 @@ const getOrdersByUserId = async (id) => {
       o.ID_TRANSPORT_ORDER,
       o.FULLNAME_ORDER,
       o.PHONE_ORDER,
-      o.PAYMENT_METHOD,
       o.STATUS,
-
-      uo.ID_USER_ORDER,
-      uo.ID_USERS AS USER_ID,
-      uo.DATE_CREATED,
-      uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
-
-      u.HO_TEN,
-      u.EMAIL,
-
+o.PAYMENT_METHOD,
       oi.ID_ORDER_ITEMS,
       oi.QUANTITY_INVENTORY,
       oi.PRICE_ORDER_ITEMS,
+      oi.ID_PRODUCT_INSTANCE,
 
-      pi.ID_PRODUCT_INSTANCE,
       pi.SERIAL_CODE,
       pi.QUANTITY,
       pi.PRICE_PRODUCTS,
+      pi.ID_PRODUCT_INSTANCE,
 
       p.ID_PRODUCT,
       p.NAME_PRODUCTS,
@@ -532,29 +688,54 @@ const getOrdersByUserId = async (id) => {
       com.STATUS AS COMPANY_STATUS,
       com.ID_COMPANY_TYPE
 
-    FROM orders o
-    JOIN user_orders uo ON o.ID_USER_ORDER = uo.ID_USER_ORDER
+    FROM user_orders uo
     JOIN users u ON uo.ID_USERS = u.ID_USERS
+    JOIN orders o ON uo.ID_USER_ORDER = o.ID_USER_ORDER
     JOIN order_items oi ON o.ID_ORDERS_ = oi.ID_ORDERS_
     JOIN product_instances pi ON oi.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
     JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT
     JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_
     LEFT JOIN companies com ON o.ID_COMPANY = com.ID_COMPANY
     WHERE uo.ID_USERS = ?
-    ORDER BY o.DATE_ORDER DESC
+    ORDER BY uo.DATE_CREATED DESC, o.DATE_ORDER DESC
   `,
     [id]
   );
 
   if (rows.length === 0) return [];
 
-  const ordersMap = new Map();
+  // Map user_orders
+  const userOrdersMap = new Map();
 
   for (const r of rows) {
-    if (!ordersMap.has(r.ID_ORDERS_)) {
-      ordersMap.set(r.ID_ORDERS_, {
-        ID_ORDERS_: r.ID_ORDERS_,
+    // Nếu chưa có userOrder thì thêm
+    if (!userOrdersMap.has(r.ID_USER_ORDER)) {
+      userOrdersMap.set(r.ID_USER_ORDER, {
         ID_USER_ORDER: r.ID_USER_ORDER,
+        DATE_CREATED: r.DATE_CREATED,
+        TOTAL_AMOUNT: r.TOTAL_AMOUNT_USER_ORDER,
+        HO_TEN: r.HO_TEN,
+        EMAIL: r.EMAIL,
+        QUANTITY_ORDER: 0, // Khởi tạo tổng số lượng
+        user: {
+          ID_USERS: r.USER_ID,
+          HO_TEN: r.HO_TEN,
+          EMAIL: r.EMAIL,
+        },
+        orders: [],
+      });
+    }
+
+    const currentUserOrder = userOrdersMap.get(r.ID_USER_ORDER);
+
+    // Kiểm tra xem order đã tồn tại chưa
+    let currentOrder = currentUserOrder.orders.find(
+      (o) => o.ID_ORDERS_ === r.ID_ORDERS_
+    );
+
+    if (!currentOrder) {
+      currentOrder = {
+        ID_ORDERS_: r.ID_ORDERS_,
         DATE_ORDER: r.DATE_ORDER,
         TOTAL_AMOUNT_ORDER: r.TOTAL_AMOUNT_ORDER,
         PAYMENT_STATUS_ORDER: r.PAYMENT_STATUS_ORDER,
@@ -562,23 +743,12 @@ const getOrdersByUserId = async (id) => {
         SHIPPING_ADDRESS: r.SHIPPING_ADDRESS,
         SHIPPING_METHOD: r.SHIPPING_METHOD,
         SHIPPING_COST: r.SHIPPING_COST,
-        ID_COMPANY: r.ID_COMPANY,
-        PAYMENT_METHOD: r.PAYMENT_METHOD,
         ID_TRANSPORT_ORDER: r.ID_TRANSPORT_ORDER,
         FULLNAME_ORDER: r.FULLNAME_ORDER,
         PHONE_ORDER: r.PHONE_ORDER,
         STATUS: r.STATUS,
-        userOrder: {
-          ID_USER_ORDER: r.ID_USER_ORDER,
-          DATE_CREATED: r.DATE_CREATED,
-          TOTAL_AMOUNT: r.TOTAL_AMOUNT_USER_ORDER,
-        },
-        user: {
-          ID_USERS: r.USER_ID,
-          HO_TEN: r.HO_TEN,
-          EMAIL: r.EMAIL,
-          AVATAR: r.HO_TEN,
-        },
+        PAYMENT_METHOD: r.PAYMENT_METHOD,
+        NAME_COMPANY: r.NAME_COMPANY,
         company: r.COMPANY_ID
           ? {
               ID_COMPANY: r.COMPANY_ID,
@@ -600,10 +770,13 @@ const getOrdersByUserId = async (id) => {
             }
           : null,
         products: [],
-      });
+      };
+
+      currentUserOrder.orders.push(currentOrder);
     }
 
-    ordersMap.get(r.ID_ORDERS_).products.push({
+    // Thêm product
+    currentOrder.products.push({
       ID_ORDER_ITEMS: r.ID_ORDER_ITEMS,
       QUANTITY_INVENTORY: r.QUANTITY_INVENTORY,
       PRICE_ORDER_ITEMS: r.PRICE_ORDER_ITEMS,
@@ -622,9 +795,12 @@ const getOrdersByUserId = async (id) => {
         NAME_CATEGORIES_: r.NAME_CATEGORIES_,
       },
     });
+
+    // Cộng dồn số lượng sản phẩm vào QUANTITY_ORDER
+    currentUserOrder.QUANTITY_ORDER += r.QUANTITY_INVENTORY || 0;
   }
 
-  return Array.from(ordersMap.values());
+  return Array.from(userOrdersMap.values());
 };
 
 const updateStatus = async (id, status) => {

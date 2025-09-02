@@ -38,6 +38,8 @@ const DynamicTable = ({
   };
 
   const filteredData = useMemo(() => {
+    if (!Array.isArray(data)) return []; // ✅ đảm bảo an toàn
+
     return data.filter((row) => {
       // ✅ search text
       const matchSearch = columns.some((column) => {

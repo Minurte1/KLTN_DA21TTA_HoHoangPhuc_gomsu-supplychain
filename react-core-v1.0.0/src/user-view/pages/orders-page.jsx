@@ -27,6 +27,7 @@ import { enqueueSnackbar } from "notistack";
 import orderServices from "../../services/orderServices";
 import OrderDetailModal from "../modal/orderDetailsModal";
 import DynamicTable from "../../share-view/dynamic/table/table";
+import OrdersUsersModal from "../modal/ordersUser-modal";
 
 const Input = styled("input")({
   display: "none",
@@ -88,49 +89,18 @@ const OrdersUsers = () => {
         {" "}
         <DynamicTable
           data={orders}
-          filters={[
-            {
-              key: "STATUS",
-              label: "Trạng thái",
-              options: [
-                { value: "PENDING", label: "Chờ xử lý" },
-                { value: "DELIVERING", label: "Đang giao hàng" },
-                { value: "DELIVERED", label: "Đã giao hàng" },
-                { value: "CANCELLED", label: "Đã hủy" },
-                { value: "SUCCESS", label: "Giao thành công" },
-              ],
-            },
-            {
-              key: "PAYMENT_STATUS_ORDER",
-              label: "Thanh toán",
-              options: [
-                { value: "PAID", label: "Đã thanh toán" },
-                { value: "PENDING", label: "Chờ xử lý" },
-              ],
-            },
-          ]}
-          statusColumns={[
-            "STATUS",
-            "PAYMENT_STATUS_ORDER",
-            "SHIPPING_STATUS_ORDER",
-            "PAYMENT_METHOD",
-          ]}
           keyStatus={"order"}
           columns={[
-            { key: "FULLNAME_ORDER", label: "Người nhận" },
-            { key: "PHONE_ORDER", label: "SĐT" },
-            { key: "SHIPPING_ADDRESS", label: "Địa chỉ giao hàng" },
+            { key: "HO_TEN", label: "Người nhận" },
+            { key: "EMAIL", label: "Email" },
+            { key: "QUANTITY_ORDER", label: "Số lượng đơn hàng mua" },
             {
-              key: "DATE_ORDER",
+              key: "DATE_CREATED",
               label: "Ngày đặt",
               render: (value) => moment(value).format("DD/MM/YYYY HH:mm"),
             },
-            { key: "TOTAL_AMOUNT_ORDER", label: "Tổng tiền" },
-            { key: "PAYMENT_STATUS_ORDER", label: "Thanh toán" },
-            { key: "SHIPPING_STATUS_ORDER", label: "Vận chuyển" },
 
-            { key: "STATUS", label: "Trạng thái đơn hàng" },
-            { key: "PAYMENT_METHOD", label: "PT Thanh toán" },
+            { key: "TOTAL_AMOUNT", label: "Tổng tiền đơn hàng" },
             {
               key: "actions",
               label: "Hành động",
@@ -152,11 +122,11 @@ const OrdersUsers = () => {
         />
       </Box>
 
-      <OrderDetailModal
+      <OrdersUsersModal
         open={open}
         onClose={() => setOpen(false)}
         order={selectedOrder}
-        onUpdateStatus={onUpdateStatus}
+        getUserOrders={getUserOrders}
       />
     </>
   );
