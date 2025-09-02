@@ -71,14 +71,6 @@ const OrdersUsers = () => {
     }
   };
 
-  const onUpdateStatus = async (ID_ORDERS_, STATUS) => {
-    try {
-      await orderServices.onUpdateStatus(ID_ORDERS_, STATUS);
-      setOpen(false);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
   if (!infoUser) return null;
 
   return (
