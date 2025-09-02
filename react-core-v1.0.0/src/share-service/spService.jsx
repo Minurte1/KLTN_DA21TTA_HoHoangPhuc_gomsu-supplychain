@@ -160,6 +160,12 @@ const spService = {
         },
       },
       order: {
+        PAID: {
+          label: "Đã thanh toán",
+          color: "#0f5132",
+          bgColor: "#d1e7dd",
+          borderColor: "#badbcc",
+        },
         CONFIRMED: {
           label: "Đã xác nhận",
           color: "#084298",

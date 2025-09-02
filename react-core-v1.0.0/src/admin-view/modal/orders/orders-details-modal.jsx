@@ -17,7 +17,6 @@ import moment from "moment";
 const OrderDetailsViewModal = ({ open, onClose, order, onUpdateStatus }) => {
   if (!order) return null;
 
-  console.log("order", order);
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>Chi tiết đơn hàng #{order.ID_ORDERS_}</DialogTitle>
@@ -161,11 +160,26 @@ const OrderDetailsViewModal = ({ open, onClose, order, onUpdateStatus }) => {
           </>
         ) : (
           <>
-            {" "}
-            <button className="custom-outline-btn-cancel">
-              Đơn hàng ở trạng thái {order?.STATUS} nên không thể thực hiện thao
-              tác
-            </button>{" "}
+            {order.STATUS === "DELIVERED" ? (
+              <>
+                {" "}
+                <button
+                  className="custom-outline-btn"
+                  onClick={() => onUpdateStatus(order.ID_ORDERS_, "SUCCESS")}
+                >
+                  <i className="fa-solid fa-floppy-disk mr-5"></i> Giao thành
+                  công
+                </button>{" "}
+              </>
+            ) : (
+              <>
+                {" "}
+                <button className="custom-outline-btn-cancel">
+                  Đơn hàng ở trạng thái {order?.STATUS} nên không thể thực hiện
+                  thao tác
+                </button>{" "}
+              </>
+            )}
           </>
         )}
       </DialogActions>

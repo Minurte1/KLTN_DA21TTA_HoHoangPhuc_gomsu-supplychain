@@ -30,7 +30,6 @@ const createProduct = async (req, res) => {
       ID_CATEGORIES_,
       NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS,
-      PRICE_PRODUCTS,
 
       ID_COMPANY,
     } = req.body;
@@ -42,7 +41,6 @@ const createProduct = async (req, res) => {
       ID_CATEGORIES_,
       NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS,
-      PRICE_PRODUCTS,
 
       IMAGE_URL_PRODUCTS,
       ID_COMPANY,
@@ -60,7 +58,6 @@ const updateProduct = async (req, res) => {
       ID_CATEGORIES_,
       NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS,
-      PRICE_PRODUCTS,
 
       ID_COMPANY,
     } = req.body;
@@ -72,7 +69,6 @@ const updateProduct = async (req, res) => {
       ID_CATEGORIES_,
       NAME_PRODUCTS,
       DESCRIPTION_PRODUCTS,
-      PRICE_PRODUCTS,
 
       ID_COMPANY,
     };

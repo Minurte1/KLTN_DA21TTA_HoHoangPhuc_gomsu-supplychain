@@ -357,11 +357,11 @@ const getById = async (id) => {
       pi.ID_PRODUCT_INSTANCE,
       pi.SERIAL_CODE,
       pi.QUANTITY,
-
+   pi.PRICE_PRODUCTS,
       p.ID_PRODUCT,
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
-      p.PRICE_PRODUCTS,
+   
       p.IMAGE_URL_PRODUCTS,
 
       c.ID_CATEGORIES_,
@@ -491,11 +491,11 @@ const getOrdersByUserId = async (id) => {
       o.PHONE_ORDER,
       o.PAYMENT_METHOD,
       o.STATUS,
+
       uo.ID_USER_ORDER,
       uo.ID_USERS AS USER_ID,
       uo.DATE_CREATED,
       uo.TOTAL_AMOUNT AS TOTAL_AMOUNT_USER_ORDER,
-  
 
       u.HO_TEN,
       u.EMAIL,
@@ -507,15 +507,30 @@ const getOrdersByUserId = async (id) => {
       pi.ID_PRODUCT_INSTANCE,
       pi.SERIAL_CODE,
       pi.QUANTITY,
+      pi.PRICE_PRODUCTS,
 
       p.ID_PRODUCT,
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
-      p.PRICE_PRODUCTS,
       p.IMAGE_URL_PRODUCTS,
 
       c.ID_CATEGORIES_,
-      c.NAME_CATEGORIES_
+      c.NAME_CATEGORIES_,
+
+      com.ID_COMPANY AS COMPANY_ID,
+      com.NAME_COMPANY,
+      com.TYPE_COMPANY,
+      com.ADDRESS,
+      com.DIA_CHI_Provinces,
+      com.DIA_CHI_Districts,
+      com.DIA_CHI_Wards,
+      com.DIA_CHI_STREETNAME,
+      com.PHONE AS COMPANY_PHONE,
+      com.EMAIL AS COMPANY_EMAIL,
+      com.AVATAR AS COMPANY_AVATAR,
+      com.SLUG AS COMPANY_SLUG,
+      com.STATUS AS COMPANY_STATUS,
+      com.ID_COMPANY_TYPE
 
     FROM orders o
     JOIN user_orders uo ON o.ID_USER_ORDER = uo.ID_USER_ORDER
@@ -524,6 +539,7 @@ const getOrdersByUserId = async (id) => {
     JOIN product_instances pi ON oi.ID_PRODUCT_INSTANCE = pi.ID_PRODUCT_INSTANCE
     JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT
     JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_
+    LEFT JOIN companies com ON o.ID_COMPANY = com.ID_COMPANY
     WHERE uo.ID_USERS = ?
     ORDER BY o.DATE_ORDER DESC
   `,
@@ -532,7 +548,6 @@ const getOrdersByUserId = async (id) => {
 
   if (rows.length === 0) return [];
 
-  // Gom nhóm các sản phẩm theo từng đơn hàng
   const ordersMap = new Map();
 
   for (const r of rows) {
@@ -564,6 +579,26 @@ const getOrdersByUserId = async (id) => {
           EMAIL: r.EMAIL,
           AVATAR: r.HO_TEN,
         },
+        company: r.COMPANY_ID
+          ? {
+              ID_COMPANY: r.COMPANY_ID,
+              NAME_COMPANY: r.NAME_COMPANY,
+              TYPE_COMPANY: r.TYPE_COMPANY,
+              ADDRESS: r.ADDRESS,
+              DIA_CHI_Provinces: r.DIA_CHI_Provinces,
+              DIA_CHI_Districts: r.DIA_CHI_Districts,
+              DIA_CHI_Wards: r.DIA_CHI_Wards,
+              DIA_CHI_STREETNAME: r.DIA_CHI_STREETNAME,
+              PHONE: r.COMPANY_PHONE,
+              EMAIL: r.COMPANY_EMAIL,
+              AVATAR: r.COMPANY_AVATAR
+                ? URL_IMAGE_BASE + r.COMPANY_AVATAR
+                : null,
+              SLUG: r.COMPANY_SLUG,
+              STATUS: r.COMPANY_STATUS,
+              ID_COMPANY_TYPE: r.ID_COMPANY_TYPE,
+            }
+          : null,
         products: [],
       });
     }
@@ -591,15 +626,27 @@ const getOrdersByUserId = async (id) => {
 
   return Array.from(ordersMap.values());
 };
+
 const updateStatus = async (id, status) => {
-  const [result] = await db.query(
-    `UPDATE orders 
-     SET STATUS = ?, SHIPPING_STATUS_ORDER = ?
-     WHERE ID_ORDERS_ = ?`,
-    [status, status, id]
-  );
+  let query = `
+    UPDATE orders 
+    SET STATUS = ?, SHIPPING_STATUS_ORDER = ?
+  `;
+  let params = [status, status];
+
+  // ✅ Nếu đã giao hàng => tự động set thanh toán thành PAID
+  if (status === "SUCCESS") {
+    query += `, PAYMENT_STATUS_ORDER = ?`;
+    params.push("PAID");
+  }
+
+  query += ` WHERE ID_ORDERS_ = ?`;
+  params.push(id);
+
+  const [result] = await db.query(query, params);
   return result.affectedRows > 0;
 };
+
 module.exports = {
   create,
   getAll,

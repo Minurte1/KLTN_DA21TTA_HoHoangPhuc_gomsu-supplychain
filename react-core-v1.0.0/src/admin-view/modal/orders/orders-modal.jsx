@@ -244,6 +244,7 @@ const OrdersFormModal = ({ open, onClose, order, onSuccess }) => {
   const onUpdateStatus = async (ID_ORDERS_, STATUS) => {
     try {
       await orderServices.onUpdateStatus(ID_ORDERS_, STATUS);
+      onClose();
     } catch (error) {
       console.log("error", error);
     }

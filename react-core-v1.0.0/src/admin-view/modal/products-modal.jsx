@@ -12,7 +12,6 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
     ID_CATEGORIES_: "",
     NAME_PRODUCTS: "",
     DESCRIPTION_PRODUCTS: "",
-    PRICE_PRODUCTS: "",
 
     IMAGE_URL_PRODUCTS: "",
     ID_COMPANY: "",
@@ -30,7 +29,6 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
               ID_CATEGORIES_: product.ID_CATEGORIES_ || "",
               NAME_PRODUCTS: product.NAME_PRODUCTS || "",
               DESCRIPTION_PRODUCTS: product.DESCRIPTION_PRODUCTS || "",
-              PRICE_PRODUCTS: product.PRICE_PRODUCTS || "",
 
               IMAGE_URL_PRODUCTS: product.IMAGE_URL_PRODUCTS || "",
               ID_COMPANY: product.ID_COMPANY || "",
@@ -39,7 +37,6 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
               ID_CATEGORIES_: "",
               NAME_PRODUCTS: "",
               DESCRIPTION_PRODUCTS: "",
-              PRICE_PRODUCTS: "",
 
               IMAGE_URL_PRODUCTS: "",
               ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
@@ -95,12 +92,6 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
       label: "Mô tả sản phẩm",
       inputType: "text",
     },
-    {
-      key: "PRICE_PRODUCTS",
-      label: "Giá sản phẩm",
-      inputType: "number",
-      required: true,
-    },
 
     {
       key: "IMAGE_URL_PRODUCTS",
@@ -135,8 +126,6 @@ const ProductsFormModal = ({ open, onClose, product, onSuccess }) => {
         DESCRIPTION_PRODUCTS:
           submittedFormData.DESCRIPTION_PRODUCTS ||
           formData.DESCRIPTION_PRODUCTS,
-        PRICE_PRODUCTS:
-          submittedFormData.PRICE_PRODUCTS || formData.PRICE_PRODUCTS,
 
         IMAGE_URL_PRODUCTS:
           submittedFormData.IMAGE_URL_PRODUCTS || formData.IMAGE_URL_PRODUCTS,

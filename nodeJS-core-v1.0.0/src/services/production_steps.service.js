@@ -218,7 +218,7 @@ const update = async (id, data) => {
 
       // Lấy thông tin kế hoạch sản xuất
       const [plans] = await db.query(
-        `SELECT ID_PRODUCT, ID_USERS, QUANTITY_PRODUCT FROM production_plans WHERE ID_PRODUCTION_PLANS = ?`,
+        `SELECT ID_PRODUCT, ID_USERS, QUANTITY_PRODUCT, PRICE_PRODUCTS_PLAN FROM production_plans WHERE ID_PRODUCTION_PLANS = ?`,
         [ID_PRODUCTION_PLANS]
       );
       if (plans.length === 0) throw new Error("Production plan not found");
@@ -290,8 +290,8 @@ const update = async (id, data) => {
       // Insert bản ghi mới vào product_instances với thông tin user chi tiết
       await db.query(
         `INSERT INTO product_instances 
-         (UID, ID_PRODUCT, SERIAL_CODE, ID_USERS, ID_PRODUCTION_PLANS, DATE_CREATED, STATUS, ID_COMPANY,QUANTITY) 
-         VALUES (?, ?, ?, ?, ?, NOW(), ?, ? , ?)`,
+         (UID, ID_PRODUCT, SERIAL_CODE, ID_USERS, ID_PRODUCTION_PLANS, DATE_CREATED, STATUS, ID_COMPANY,QUANTITY, PRICE_PRODUCTS) 
+         VALUES (?, ?, ?, ?, ?, NOW(), ?, ? , ?, ?)`,
         [
           uid,
           product.ID_PRODUCT,
@@ -301,6 +301,7 @@ const update = async (id, data) => {
           STATUS.AVAILABLE,
           product.ID_COMPANY,
           plan?.QUANTITY_PRODUCT,
+          plan?.PRICE_PRODUCTS_PLAN,
         ]
       ); // Lấy danh sách nguyên liệu cần dùng cho kế hoạch sản xuất đó
 

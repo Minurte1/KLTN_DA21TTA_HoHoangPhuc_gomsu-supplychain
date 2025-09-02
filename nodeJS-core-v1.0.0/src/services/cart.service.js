@@ -112,10 +112,10 @@ const getByUser = async (ID_USERS) => {
       pi.ID_COMPANY AS PI_ID_COMPANY,
       pi.QUANTITY AS PI_QUANTITY,
       pi.STATUS AS PI_STATUS,
-
+ pi.PRICE_PRODUCTS,
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
-      p.PRICE_PRODUCTS,
+     
   
       p.IMAGE_URL_PRODUCTS,
       p.CREATED_AT_PRODUCTS,

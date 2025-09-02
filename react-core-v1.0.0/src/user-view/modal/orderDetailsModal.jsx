@@ -13,7 +13,7 @@ import {
   Chip,
 } from "@mui/material";
 
-const OrderDetailModal = ({ open, onClose, order }) => {
+const OrderDetailModal = ({ open, onClose, order, onUpdateStatus }) => {
   if (!order) return null;
 
   return (
@@ -37,7 +37,6 @@ const OrderDetailModal = ({ open, onClose, order }) => {
         <Typography variant="h5" gutterBottom color="primary">
           Thông Tin Đơn Hàng #{order.ID_ORDERS_}
         </Typography>
-
         {/* Thông tin người đặt */}
         <Typography variant="h6" mt={2}>
           Người Đặt Hàng
@@ -56,12 +55,30 @@ const OrderDetailModal = ({ open, onClose, order }) => {
               <strong>SĐT:</strong> {order.PHONE_ORDER}
             </Typography>
           </Box>
-        </Box>
-
+        </Box>{" "}
         {/* Thông tin đơn hàng */}
         <Typography variant="h6" mt={3}>
           Chi Tiết Đơn Hàng
-        </Typography>
+        </Typography>{" "}
+        <Box display="flex" alignItems="center" gap={2} mt={1}>
+          <Avatar
+            src={order.company?.AVATAR}
+            alt={order.company?.NAME_COMPANY}
+          />
+          <Box>
+            {" "}
+            <Typography>
+              <strong>Tên công ty gốm sứ:</strong> {order.company.NAME_COMPANY}
+            </Typography>
+            <Typography>
+              <strong>Địa chỉ công ty:</strong> {order.company.ADDRESS}
+            </Typography>
+            <Typography>
+              <strong>Số điện thoại công ty hỗ trợ:</strong>{" "}
+              {order.company?.PHONE}
+            </Typography>
+          </Box>
+        </Box>
         <Divider />
         <Box mt={1}>
           <Typography>
@@ -106,7 +123,6 @@ const OrderDetailModal = ({ open, onClose, order }) => {
             }).format(order.TOTAL_AMOUNT_ORDER)}
           </Typography>
         </Box>
-
         {/* Bảng sản phẩm */}
         <Typography variant="h6" mt={3}>
           Sản Phẩm
@@ -158,7 +174,41 @@ const OrderDetailModal = ({ open, onClose, order }) => {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </Table>{" "}
+        {order.STATUS === "DELIVERING" ? (
+          <>
+            {" "}
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 2,
+              }}
+            >
+              <button
+                className="custom-outline-btn"
+                onClick={() => onUpdateStatus(order.ID_ORDERS_, "DELIVERED")}
+              >
+                <i className="fa-solid fa-floppy-disk mr-5"></i> Đã nhận hàng
+              </button>{" "}
+              <button
+                className="custom-outline-btn-danger"
+                onClick={() => onUpdateStatus(order.ID_ORDERS_, "FAILED")}
+              >
+                <i className="fa-solid fa-ban mr-5"></i> Không muốn nhận hàng
+              </button>
+            </Box>
+          </>
+        ) : (
+          <>
+            {/* {" "}
+            <button className="custom-outline-btn-cancel">
+              Đơn hàng ở trạng thái {order?.STATUS} nên không thể thực hiện thao
+              tác
+            </button>{" "} */}
+          </>
+        )}
       </Box>
     </Modal>
   );

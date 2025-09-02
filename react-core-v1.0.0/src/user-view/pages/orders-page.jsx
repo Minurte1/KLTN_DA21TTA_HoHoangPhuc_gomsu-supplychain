@@ -22,10 +22,11 @@ import { styled } from "@mui/material/styles";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import { getUserById, updateUserById } from "../../services/userAccountService";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-
+import moment from "moment";
 import { enqueueSnackbar } from "notistack";
 import orderServices from "../../services/orderServices";
 import OrderDetailModal from "../modal/orderDetailsModal";
+import DynamicTable from "../../share-view/dynamic/table/table";
 
 const Input = styled("input")({
   display: "none",
@@ -71,78 +72,91 @@ const OrdersUsers = () => {
     }
   };
 
+  const onUpdateStatus = async (ID_ORDERS_, STATUS) => {
+    try {
+      await orderServices.onUpdateStatus(ID_ORDERS_, STATUS);
+      setOpen(false);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
   if (!infoUser) return null;
 
   return (
     <>
-      {" "}
-      <Box sx={{ maxWidth: 900, margin: "auto", mt: 4, p: 2 }}>
-        <CardContent>
-          {/* Lịch sử đơn hàng */}
-          <Divider sx={{ my: 3 }} />
-          <Typography variant="h6" gutterBottom>
-            Lịch sử đơn hàng
-          </Typography>
-          {Array.isArray(orders) && orders.length > 0 ? (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Mã đơn hàng</TableCell>
-                    <TableCell>Ngày đặt</TableCell>
-                    <TableCell>Tổng tiền</TableCell>
-                    <TableCell>Trạng thái thanh toán</TableCell>
-                    <TableCell>Trạng thái vận chuyển</TableCell>
-                    <TableCell>Hành động</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order.ID_ORDERS_}>
-                      <TableCell>{order.ID_ORDERS_ || "N/A"}</TableCell>
-                      <TableCell>
-                        {order.DATE_ORDER
-                          ? new Date(order.DATE_ORDER).toLocaleDateString(
-                              "vi-VN"
-                            )
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {order.TOTAL_AMOUNT_ORDER != null
-                          ? `${order.TOTAL_AMOUNT_ORDER.toLocaleString()} VNĐ`
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {order.PAYMENT_STATUS_ORDER || "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {order.SHIPPING_STATUS_ORDER || "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          color="primary"
-                          onClick={() => {
-                            setSelectedOrder(order); // lưu đơn hàng được chọn
-                            setOpen(true); // mở modal
-                          }}
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          ) : (
-            <Typography>Không có đơn hàng nào.</Typography>
-          )}
-        </CardContent>
+      <Box mt={4}>
+        {" "}
+        <DynamicTable
+          data={orders}
+          filters={[
+            {
+              key: "STATUS",
+              label: "Trạng thái",
+              options: [
+                { value: "PENDING", label: "Chờ xử lý" },
+                { value: "DELIVERING", label: "Đang giao hàng" },
+                { value: "DELIVERED", label: "Đã giao hàng" },
+                { value: "CANCELLED", label: "Đã hủy" },
+                { value: "SUCCESS", label: "Giao thành công" },
+              ],
+            },
+            {
+              key: "PAYMENT_STATUS_ORDER",
+              label: "Thanh toán",
+              options: [
+                { value: "PAID", label: "Đã thanh toán" },
+                { value: "PENDING", label: "Chờ xử lý" },
+              ],
+            },
+          ]}
+          statusColumns={[
+            "STATUS",
+            "PAYMENT_STATUS_ORDER",
+            "SHIPPING_STATUS_ORDER",
+            "PAYMENT_METHOD",
+          ]}
+          keyStatus={"order"}
+          columns={[
+            { key: "FULLNAME_ORDER", label: "Người nhận" },
+            { key: "PHONE_ORDER", label: "SĐT" },
+            { key: "SHIPPING_ADDRESS", label: "Địa chỉ giao hàng" },
+            {
+              key: "DATE_ORDER",
+              label: "Ngày đặt",
+              render: (value) => moment(value).format("DD/MM/YYYY HH:mm"),
+            },
+            { key: "TOTAL_AMOUNT_ORDER", label: "Tổng tiền" },
+            { key: "PAYMENT_STATUS_ORDER", label: "Thanh toán" },
+            { key: "SHIPPING_STATUS_ORDER", label: "Vận chuyển" },
+
+            { key: "STATUS", label: "Trạng thái đơn hàng" },
+            { key: "PAYMENT_METHOD", label: "PT Thanh toán" },
+            {
+              key: "actions",
+              label: "Hành động",
+              render: (_, row) => (
+                <>
+                  <IconButton
+                    color="primary"
+                    onClick={() => {
+                      setSelectedOrder(row); // lưu đơn hàng được chọn
+                      setOpen(true); // mở modal
+                    }}
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+                </>
+              ),
+            },
+          ]}
+        />
       </Box>
+
       <OrderDetailModal
         open={open}
         onClose={() => setOpen(false)}
         order={selectedOrder}
+        onUpdateStatus={onUpdateStatus}
       />
     </>
   );

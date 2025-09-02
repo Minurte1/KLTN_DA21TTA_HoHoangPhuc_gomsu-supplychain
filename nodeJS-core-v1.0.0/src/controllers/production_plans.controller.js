@@ -32,9 +32,18 @@ const createProductionPlan = async (req, res) => {
       ID_COMPANY,
       NAME_PRODUCTION_PLAN,
       QUANTITY_PRODUCT,
+
       production_material = [],
     } = req.body;
-
+    // ✅ ép kiểu float
+    const PRICE_PRODUCTS_PLAN = parseFloat(req.body.PRICE_PRODUCTS_PLAN) || 0;
+    if (PRICE_PRODUCTS_PLAN < 0) {
+      // Không tìm thấy vật liệu tương ứng
+      await connection.rollback();
+      return res.status(400).json({
+        error: `Giá tiền mỗi sản phẩm phải lớn hơn 0`,
+      });
+    }
     // Format ngày giờ
     const plannedStart = PLANNED_START_PRODUCTION_PLANS
       ? moment(PLANNED_START_PRODUCTION_PLANS).format("YYYY-MM-DD HH:mm:ss")
@@ -87,7 +96,7 @@ const createProductionPlan = async (req, res) => {
     // Nếu qua hết vòng kiểm tra, bắt đầu tạo kế hoạch sản xuất
     const [planResult] = await connection.query(
       `INSERT INTO production_plans 
-        (ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS, ID_COMPANY, QUANTITY_PRODUCT, NAME_PRODUCTION_PLAN)
+        (ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS, ID_COMPANY, QUANTITY_PRODUCT, NAME_PRODUCTION_PLAN, PRICE_PRODUCTS_PLAN)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         parseInt(ID_PRODUCT, 10) || null,
@@ -101,6 +110,7 @@ const createProductionPlan = async (req, res) => {
         parseInt(ID_COMPANY, 10) || null,
         parseInt(QUANTITY_PRODUCT, 10) || null,
         NAME_PRODUCTION_PLAN || null,
+        PRICE_PRODUCTS_PLAN,
       ]
     );
 
@@ -176,6 +186,14 @@ const updateProductionPlan = async (req, res) => {
       production_material = [],
     } = req.body;
 
+    const PRICE_PRODUCTS_PLAN = parseFloat(req.body.PRICE_PRODUCTS_PLAN) || 0;
+    if (PRICE_PRODUCTS_PLAN < 0) {
+      // Không tìm thấy vật liệu tương ứng
+      await connection.rollback();
+      return res.status(400).json({
+        error: `Giá tiền mỗi sản phẩm phải lớn hơn 0`,
+      });
+    }
     // Format ngày giờ
     const plannedStart = PLANNED_START_PRODUCTION_PLANS
       ? moment(PLANNED_START_PRODUCTION_PLANS).format("YYYY-MM-DD HH:mm:ss")
@@ -231,7 +249,7 @@ const updateProductionPlan = async (req, res) => {
     // Nếu qua kiểm tra, thực hiện cập nhật production_plans
     const [updateResult] = await connection.query(
       `UPDATE production_plans
-       SET ID_PRODUCT = ?, ID_USERS = ?, PLANNED_START_PRODUCTION_PLANS = ?, PLANNED_END_PRODUCTION_PLANS = ?, ACTUAL_START_PRODUCTION_PLANS = ?, ACTUAL_END_PRODUCTION_PLANS = ?, STATUS_PRODUCTION_PLANS = ?, NOTE_PRODUCTION_PLANS = ?, ID_COMPANY = ?, QUANTITY_PRODUCT = ?, NAME_PRODUCTION_PLAN = ?
+       SET ID_PRODUCT = ?, ID_USERS = ?, PLANNED_START_PRODUCTION_PLANS = ?, PLANNED_END_PRODUCTION_PLANS = ?, ACTUAL_START_PRODUCTION_PLANS = ?, ACTUAL_END_PRODUCTION_PLANS = ?, STATUS_PRODUCTION_PLANS = ?, NOTE_PRODUCTION_PLANS = ?, ID_COMPANY = ?, QUANTITY_PRODUCT = ?, NAME_PRODUCTION_PLAN = ?, PRICE_PRODUCTS_PLAN = ?
        WHERE ID_PRODUCTION_PLANS = ?`,
       [
         parseInt(ID_PRODUCT, 10) || null,
@@ -246,6 +264,7 @@ const updateProductionPlan = async (req, res) => {
         parseInt(QUANTITY_PRODUCT, 10),
         NAME_PRODUCTION_PLAN || null,
         parseInt(id, 10),
+        PRICE_PRODUCTS_PLAN,
       ]
     );
 
