@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { IconButton, Modal, Box, Typography } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CartModal from "../modal/CartModal";
+import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 
 const CartIcon = () => {
+  const { userInfo } = ReduxExportUseAuthState();
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  if (!userInfo) return;
   return (
     <>
       {/* Icon giỏ hàng cố định */}

@@ -20,10 +20,6 @@ const createOrUpdate = async (data) => {
     QUANTITY,
   } = data;
 
-  if (QUANTITY <= 0) {
-    throw new Error("Số lượng phải lớn hơn 0");
-  }
-
   // Format lại ngày giờ cho MySQL
   const formatDatetimeToMySQL = (datetime) => {
     const d = new Date(datetime);
@@ -124,7 +120,7 @@ const getByUser = async (ID_USERS) => {
 
       cat.NAME_CATEGORIES_,
       cat.ID_COMPANY AS CATEGORY_ID_COMPANY,
-
+comp.ID_COMPANY,
       comp.NAME_COMPANY,
       comp.TYPE_COMPANY,
       comp.ADDRESS,

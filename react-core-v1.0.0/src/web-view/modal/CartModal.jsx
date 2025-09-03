@@ -22,6 +22,7 @@ import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import imageCart from "../../public/images/cart.png";
 import spService from "../../share-service/spService";
+import { Add, Remove } from "@mui/icons-material";
 // Khóa bí mật để mã hóa (nên lưu trong .env để bảo mật hơn)
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || "my-secret-key";
 
@@ -74,12 +75,50 @@ export default function CartModal({ open, handleClose }) {
     }
   };
 
-  const totalPrice = safeCart
-    .filter((item) => selectedItems.includes(item.ID_CART))
-    .reduce(
-      (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
-      0
-    );
+  const handleIncrease = async (item) => {
+    try {
+      const ID_USERS = userInfo?.ID_USERS || null;
+      const data = {
+        ID_PRODUCT_INSTANCE: item.ID_PRODUCT_INSTANCE,
+        ID_USERS: ID_USERS,
+        CREATED_AT_CART: new Date().toISOString(),
+        ID_COMPANY: item.ID_COMPANY,
+        QUANTITY: 1, // tăng thêm 1
+      };
+      await cartServices.createCart(data);
+      fetchCartUser();
+      // cập nhật lại state sau khi gọi API
+      // setListCart((prev) =>
+      //   prev.map((c) =>
+      //     c.ID_CART === item.ID_CART ? { ...c, QUANTITY: c.QUANTITY + 1 } : c
+      //   )
+      // );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const handleDecrease = async (item) => {
+    try {
+      const ID_USERS = userInfo?.ID_USERS || null;
+      const data = {
+        ID_PRODUCT_INSTANCE: item.ID_PRODUCT_INSTANCE,
+        ID_USERS: ID_USERS,
+        CREATED_AT_CART: new Date().toISOString(),
+        ID_COMPANY: item.ID_COMPANY,
+        QUANTITY: -1, // tăng thêm 1
+      };
+      await cartServices.createCart(data);
+      fetchCartUser();
+      // cập nhật lại state sau khi gọi API
+      // setListCart((prev) =>
+      //   prev.map((c) =>
+      //     c.ID_CART === item.ID_CART ? { ...c, QUANTITY: c.QUANTITY - 1 } : c
+      //   )
+      // );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleCheckout = () => {
     const selectedProducts = safeCart.filter((item) =>
@@ -96,7 +135,14 @@ export default function CartModal({ open, handleClose }) {
     handleClose();
     navigate("/thanh-toan");
   };
-
+  const totalPrice = safeCart
+    .filter((item) => selectedItems.includes(Number(item.ID_CART)))
+    .reduce(
+      (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
+      0
+    );
+  console.log("safeCart", safeCart);
+  if (!userInfo) return;
   return (
     <Modal open={open} onClose={handleClose} aria-labelledby="cart-modal-title">
       <Box sx={style}>
@@ -195,8 +241,32 @@ export default function CartModal({ open, handleClose }) {
                       primary={item.NAME_PRODUCTS}
                       secondary={
                         <>
-                          <Typography variant="body2" color="text.primary">
-                            Số lượng: {item.QUANTITY} x{" "}
+                          <Typography
+                            variant="body2"
+                            color="text.primary"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            {/* Nút giảm */}
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDecrease(item)}
+                              disabled={item.QUANTITY <= 1} // không cho giảm dưới 1
+                            >
+                              <Remove fontSize="small" />
+                            </IconButton>
+                            <span>{item.QUANTITY}</span>
+                            {/* Nút tăng */}
+                            <IconButton
+                              size="small"
+                              onClick={() => handleIncrease(item)}
+                            >
+                              <Add fontSize="small" />
+                            </IconButton>
+                            x{" "}
                             {item.PRICE_PRODUCTS.toLocaleString("vi-VN", {
                               style: "currency",
                               currency: "VND",
@@ -223,16 +293,16 @@ export default function CartModal({ open, handleClose }) {
               </Typography>
             </Box>
             <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleCheckout}
-              >
+              <button className="custom-outline-btn" onClick={handleCheckout}>
                 Thanh Toán
-              </Button>
-              <Button variant="outlined" onClick={handleClose}>
+              </button>
+              <button
+                variant="outlined"
+                onClick={handleClose}
+                className="custom-outline-btn-danger"
+              >
                 Đóng
-              </Button>
+              </button>
             </Box>
           </>
         )}
