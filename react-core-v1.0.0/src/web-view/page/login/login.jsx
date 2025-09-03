@@ -21,18 +21,16 @@ import { enqueueSnackbar } from "notistack";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import Footer from "../../../components/footer";
 import useAuthInit from "../../../hook/useAuthInit";
+import ForgotPasswordModal from "../../modal/ForgotPasswordModal";
 
 const Login = () => {
   const api = process.env.REACT_APP_URL_SERVER;
   const initUser = useAuthInit();
-
   const [password, setPassword] = useState("");
-
   const [email, setEmail] = useState("");
-
+  const [isOpenForgetPassword, setIsOpenForgetPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [user, setUser] = useState(null);
   const loginGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -91,97 +89,125 @@ const Login = () => {
       fetchData();
     }
   }, [user, navigate, dispatch]);
+
   const handleLogin = async () => {
     try {
-      // Kiểm tra email và mật khẩu
-      if (!email || !password) {
-        enqueueSnackbar("Email và mật khẩu không được để trống");
+      // Kiểm tra email rỗng
+      if (!email.trim()) {
+        enqueueSnackbar("Vui lòng nhập email", { variant: "warning" });
         return;
       }
 
-      // Reset thông báo lỗi
-      enqueueSnackbar("");
+      // Regex kiểm tra email hợp lệ
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        enqueueSnackbar("Email không hợp lệ", { variant: "warning" });
+        return;
+      }
+
+      // Kiểm tra mật khẩu rỗng
+      if (!password.trim()) {
+        enqueueSnackbar("Vui lòng nhập mật khẩu", { variant: "warning" });
+        return;
+      }
+
+      // Mật khẩu tối thiểu 8 ký tự
+      if (password.length < 8) {
+        enqueueSnackbar("Mật khẩu phải có ít nhất 8 ký tự", {
+          variant: "warning",
+        });
+        return;
+      }
 
       // Gọi API đăng nhập
       const response = await axios.post(`${api}/login`, { email, password });
       const { EC, DT, EM } = response.data;
 
       if (EC === 1) {
-        // Đăng nhập thành công
-        Cookies.set("accessToken", response.data.DT.accessToken, {
-          expires: 7,
-        });
+        Cookies.set("accessToken", DT.accessToken, { expires: 7 });
         initUser();
-        // Chuyển hướng sang trang dashboard hoặc trang khác
         navigate("/");
       } else {
-        // Hiển thị lỗi từ API
-        enqueueSnackbar(EM);
+        enqueueSnackbar(EM, { variant: "error" });
       }
     } catch (error) {
-      // Xử lý lỗi khi gọi API
       console.error("Login error:", error);
-      enqueueSnackbar(error.response.data.EM, { variant: "info" });
+      enqueueSnackbar(
+        error?.response?.data?.EM || "Đã xảy ra lỗi, vui lòng thử lại",
+        { variant: "error" }
+      );
     }
   };
+
   return (
-    <Container maxWidth="sm" className="login-container">
-      <Paper elevation={3} className="login-paper">
-        <Typography variant="h5" align="center" gutterBottom>
-          Đăng nhập
-        </Typography>
+    <>
+      {" "}
+      <div className="signin-container">
+        <div className="signin-box">
+          <h2 className="signin-title">Đăng Nhập</h2>
+          <p className="signin-subtitle">
+            Nhập email và mật khẩu để đăng nhập!
+          </p>
 
-        <Box sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Email người dùng"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <button className="signin-google" onClick={() => loginGoogle()}>
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google"
+            />
+            Đăng nhập với Google
+          </button>
 
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Mật khẩu"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="signin-divider">
+            <span>hoặc</span>
+          </div>
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={() => handleLogin()}
-            sx={{ mt: 2 }}
-          >
-            Đăng nhập
-          </Button>
-        </Box>
+          {/* Thay form bằng div */}
+          <div className="signin-form">
+            <label>Email*</label>
+            <input
+              type="email"
+              placeholder="nguyenvana@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-        <Divider sx={{ my: 2 }}>hoặc</Divider>
+            <label>Mật khẩu*</label>
+            <input
+              type="password"
+              placeholder="Tối thiểu 8 ký tự"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<GoogleIcon />}
-          onClick={() => loginGoogle()}
-        >
-          Đăng nhập với Google
-        </Button>
+            <div className="signin-options">
+              <span
+                className="forgot"
+                onClick={() => setIsOpenForgetPassword(true)}
+              >
+                Quên mật khẩu?
+              </span>
+            </div>
 
-        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-          Chưa có tài khoản?{" "}
-          <a href="#" className="register-link">
-            Đăng ký
-          </a>
-        </Typography>
-      </Paper>
-    </Container>
+            {/* Gọi handleLogin trực tiếp */}
+            <button
+              type="button"
+              className="signin-btn"
+              onClick={() => handleLogin()}
+            >
+              Đăng Nhập
+            </button>
+          </div>
+
+          <p className="signin-footer">
+            Chưa có tài khoản? <a href="/">Tạo tài khoản</a>
+          </p>
+        </div>
+      </div>
+      <ForgotPasswordModal
+        open={isOpenForgetPassword}
+        onClose={() => setIsOpenForgetPassword(false)}
+      />
+    </>
   );
 };
 

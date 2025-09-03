@@ -28,9 +28,6 @@ const SignIn = () => {
           <input type="password" placeholder="Tối thiểu 8 ký tự" />
 
           <div className="signin-options">
-            <label>
-              <input type="checkbox" /> Giữ tôi luôn đăng nhập
-            </label>
             <a href="/" className="forgot">
               Quên mật khẩu?
             </a>
