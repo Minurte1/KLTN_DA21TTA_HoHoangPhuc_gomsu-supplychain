@@ -13,6 +13,7 @@ import {
   Button,
   Checkbox,
   Fab,
+  Tooltip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
@@ -22,7 +23,7 @@ import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import imageCart from "../../public/images/cart.png";
 import spService from "../../share-service/spService";
-import { Add, Remove } from "@mui/icons-material";
+import { Add, Remove, Delete } from "@mui/icons-material";
 // Khóa bí mật để mã hóa (nên lưu trong .env để bảo mật hơn)
 const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || "my-secret-key";
 
@@ -120,6 +121,14 @@ export default function CartModal({ open, handleClose }) {
     }
   };
 
+  const handleRemove = async (ID_CART) => {
+    try {
+      await cartServices.deleteCart(ID_CART);
+      fetchCartUser();
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const handleCheckout = () => {
     const selectedProducts = safeCart.filter((item) =>
       selectedItems.includes(item.ID_CART)
@@ -141,7 +150,7 @@ export default function CartModal({ open, handleClose }) {
       (acc, item) => acc + (item.PRICE_PRODUCTS || 0) * (item.QUANTITY || 0),
       0
     );
-  console.log("safeCart", safeCart);
+
   if (!userInfo) return;
   return (
     <Modal open={open} onClose={handleClose} aria-labelledby="cart-modal-title">
@@ -220,15 +229,31 @@ export default function CartModal({ open, handleClose }) {
               />
               <Typography variant="body1">Chọn tất cả</Typography>
             </Box>
-
             <List>
               {safeCart.map((item) => (
                 <React.Fragment key={item.ID_CART}>
-                  <ListItem alignItems="flex-start">
-                    <Checkbox
-                      checked={selectedItems.includes(item.ID_CART)}
-                      onChange={() => handleSelect(item.ID_CART)}
-                    />
+                  <ListItem
+                    alignItems="flex-start"
+                    secondaryAction={
+                      <Tooltip title="Xóa sản phẩm khỏi giỏ hàng">
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          color="error"
+                          onClick={() => handleRemove(item.ID_CART)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                    }
+                  >
+                    <Tooltip title="Chọn sản phẩm">
+                      <Checkbox
+                        checked={selectedItems.includes(item.ID_CART)}
+                        onChange={() => handleSelect(item.ID_CART)}
+                      />
+                    </Tooltip>
+
                     <ListItemAvatar>
                       <Avatar
                         variant="square"
@@ -237,6 +262,7 @@ export default function CartModal({ open, handleClose }) {
                         sx={{ width: 80, height: 80, mr: 2 }}
                       />
                     </ListItemAvatar>
+
                     <ListItemText
                       primary={item.NAME_PRODUCTS}
                       secondary={
@@ -251,29 +277,36 @@ export default function CartModal({ open, handleClose }) {
                             }}
                           >
                             {/* Nút giảm */}
-                            <IconButton
-                              size="small"
-                              onClick={() => handleDecrease(item)}
-                              disabled={item.QUANTITY <= 1} // không cho giảm dưới 1
-                            >
-                              <Remove fontSize="small" />
-                            </IconButton>
+                            <Tooltip title="Giảm số lượng">
+                              <span>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleDecrease(item)}
+                                  disabled={item.QUANTITY <= 1}
+                                >
+                                  <Remove fontSize="small" />
+                                </IconButton>
+                              </span>
+                            </Tooltip>
                             <span>{item.QUANTITY}</span>
                             {/* Nút tăng */}
-                            <IconButton
-                              size="small"
-                              onClick={() => handleIncrease(item)}
-                            >
-                              <Add fontSize="small" />
-                            </IconButton>
+                            <Tooltip title="Tăng số lượng">
+                              <IconButton
+                                size="small"
+                                onClick={() => handleIncrease(item)}
+                              >
+                                <Add fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
                             x{" "}
                             {item.PRICE_PRODUCTS.toLocaleString("vi-VN", {
                               style: "currency",
                               currency: "VND",
                             })}
                           </Typography>
+
                           <Typography variant="body2" color="text.secondary">
-                            Công ty: {item.NAME_COMPANY} ({item.TYPE_COMPANY})
+                            Công ty: {item.NAME_COMPANY}
                           </Typography>
                         </>
                       }
@@ -283,6 +316,7 @@ export default function CartModal({ open, handleClose }) {
                 </React.Fragment>
               ))}
             </List>
+
             <Box mt={2} textAlign="right">
               <Typography variant="h6">
                 Tổng tiền:{" "}
