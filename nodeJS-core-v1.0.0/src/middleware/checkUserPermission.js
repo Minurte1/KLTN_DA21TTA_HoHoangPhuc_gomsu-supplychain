@@ -142,10 +142,6 @@ const baseListPermission = [
     actions: ["view", "create", "update", "delete", "ship"],
   },
   // Cart: Quản lý giỏ hàng, chủ yếu dành cho RETAILER hoặc người dùng cuối
-  {
-    router: "cart",
-    actions: ["view", "create", "update", "delete"],
-  },
 ];
 
 module.exports = baseListPermission;
