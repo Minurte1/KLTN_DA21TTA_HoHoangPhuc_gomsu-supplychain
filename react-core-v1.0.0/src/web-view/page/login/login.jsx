@@ -22,6 +22,8 @@ import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import Footer from "../../../components/footer";
 import useAuthInit from "../../../hook/useAuthInit";
 import ForgotPasswordModal from "../../modal/ForgotPasswordModal";
+import RegisterModal from "../../modal/registerModal";
+import { stylePadding } from "../../../share-service/spStyle";
 
 const Login = () => {
   const api = process.env.REACT_APP_URL_SERVER;
@@ -29,6 +31,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [isOpenForgetPassword, setIsOpenForgetPassword] = useState(false);
+  const [isOpenRegister, setIsOpenRegister] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
@@ -199,13 +202,22 @@ const Login = () => {
           </div>
 
           <p className="signin-footer">
-            Chưa có tài khoản? <a href="/">Tạo tài khoản</a>
+            Chưa có tài khoản?{" "}
+            <span onClick={() => setIsOpenRegister(true)}>Tạo tài khoản</span>
           </p>
         </div>
-      </div>
+      </div>{" "}
+      <div style={stylePadding}>
+        {" "}
+        <Footer />
+      </div>{" "}
       <ForgotPasswordModal
         open={isOpenForgetPassword}
         onClose={() => setIsOpenForgetPassword(false)}
+      />{" "}
+      <RegisterModal
+        open={isOpenRegister}
+        onClose={() => setIsOpenRegister(false)}
       />
     </>
   );

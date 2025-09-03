@@ -139,4 +139,15 @@
             text-decoration: underline;
         }
     }
+
+    span {
+        color: #4318ff;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
