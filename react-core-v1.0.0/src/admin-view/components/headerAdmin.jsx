@@ -39,7 +39,6 @@ const HeaderAdmin = () => {
   }, [isAuthenticated]);
 
   const handleMenuOpen = (event) => {
-    if (!isAuthenticated) return;
     setAnchorEl(event.currentTarget);
     setIsOpen(true);
   };
@@ -137,7 +136,7 @@ const HeaderAdmin = () => {
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
           {" "}
-          {isAuthenticated ? (
+          {userInfo ? (
             <>
               {" "}
               <p style={{ color: "black" }}>

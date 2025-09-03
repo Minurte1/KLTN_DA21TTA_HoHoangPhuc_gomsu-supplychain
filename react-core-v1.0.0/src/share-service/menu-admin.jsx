@@ -197,11 +197,6 @@ export const adminMenuConfig = [
         label: "Đơn hàng công ty cung cấp bán vật liệu đã xác nhận",
         path: "/admin/material_order_master_seller_confirmed",
       },
-
-      {
-        label: "Giỏ hàng",
-        path: "/admin/cart",
-      },
     ],
   },
   {

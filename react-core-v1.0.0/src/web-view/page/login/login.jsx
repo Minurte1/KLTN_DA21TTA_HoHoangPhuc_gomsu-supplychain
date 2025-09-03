@@ -20,18 +20,19 @@ import { useDispatch } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import Footer from "../../../components/footer";
+import useAuthInit from "../../../hook/useAuthInit";
 
 const Login = () => {
   const api = process.env.REACT_APP_URL_SERVER;
+  const initUser = useAuthInit();
+
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+
   const [email, setEmail] = useState("");
 
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [errorMessage, setErrorMessage] = useState("");
+
   const [user, setUser] = useState(null);
   const loginGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -73,14 +74,9 @@ const Login = () => {
             const accessToken = response.data.DT.accessToken;
             Cookies.set("accessToken", accessToken, { expires: 7 });
             sessionStorage.setItem("userPicture", user.picture);
-            // dispatch(
-            //   login({
-            //     accessToken,
-            //     userInfo: response.data.DT.userInfo, // Thông tin người dùng
-            //   })
-            // );
+
             enqueueSnackbar(response.data.EM, { variant: "success" });
-            // loginIs();
+            initUser();
             navigate("/");
           } else {
             enqueueSnackbar(response.data.EM, { variant: "info" });
@@ -88,7 +84,7 @@ const Login = () => {
         } catch (error) {
           console.error("Đã xảy ra lỗi:", error);
 
-          // enqueueSnackbar(error.response.data.EM, { variant: "info" });
+          enqueueSnackbar(error.response.data.EM, { variant: "info" });
         }
       };
 
@@ -99,12 +95,12 @@ const Login = () => {
     try {
       // Kiểm tra email và mật khẩu
       if (!email || !password) {
-        setErrorMessage("Email và mật khẩu không được để trống");
+        enqueueSnackbar("Email và mật khẩu không được để trống");
         return;
       }
 
       // Reset thông báo lỗi
-      setErrorMessage("");
+      enqueueSnackbar("");
 
       // Gọi API đăng nhập
       const response = await axios.post(`${api}/login`, { email, password });
@@ -115,24 +111,17 @@ const Login = () => {
         Cookies.set("accessToken", response.data.DT.accessToken, {
           expires: 7,
         });
-        // Dispatch action `login` từ Redux
-        // dispatch(
-        //   login({
-        //     accessToken: DT.accessToken,
-        //     userInfo: DT.userInfo,
-        //   })
-        // );
-
+        initUser();
         // Chuyển hướng sang trang dashboard hoặc trang khác
         navigate("/");
       } else {
         // Hiển thị lỗi từ API
-        setErrorMessage(EM);
+        enqueueSnackbar(EM);
       }
     } catch (error) {
       // Xử lý lỗi khi gọi API
       console.error("Login error:", error);
-      setErrorMessage("Đã xảy ra lỗi khi đăng nhập, vui lòng thử lại.");
+      enqueueSnackbar(error.response.data.EM, { variant: "info" });
     }
   };
   return (
@@ -141,12 +130,6 @@ const Login = () => {
         <Typography variant="h5" align="center" gutterBottom>
           Đăng nhập
         </Typography>
-
-        {error && (
-          <Typography color="error" align="center" sx={{ mb: 2 }}>
-            {error}
-          </Typography>
-        )}
 
         <Box sx={{ mt: 1 }}>
           <TextField
