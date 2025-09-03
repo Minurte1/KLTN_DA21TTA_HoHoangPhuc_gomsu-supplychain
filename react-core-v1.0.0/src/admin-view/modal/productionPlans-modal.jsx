@@ -229,7 +229,7 @@ const ProductionPlansFormModal = ({
         inputType: "autocomplete",
         options: companies,
         optionsLabel: "NAME_COMPANY",
-        disabled: userInfo.companyInfo.ID_COMPANY ? true : false,
+        disabled: userInfo?.companyInfo?.ID_COMPANY ? true : false,
       },
     ],
     [

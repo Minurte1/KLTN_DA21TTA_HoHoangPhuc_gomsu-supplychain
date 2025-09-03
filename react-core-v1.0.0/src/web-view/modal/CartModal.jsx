@@ -52,7 +52,7 @@ export default function CartModal({ open, handleClose }) {
 
   const fetchCartUser = async () => {
     if (!userInfo) return;
-    const ID_USERS = userInfo.ID_USERS || null;
+    const ID_USERS = userInfo?.ID_USERS || null;
     const data = await cartServices.getCartsByUser(ID_USERS);
     setListCart(data || []);
     setSelectedItems([]);

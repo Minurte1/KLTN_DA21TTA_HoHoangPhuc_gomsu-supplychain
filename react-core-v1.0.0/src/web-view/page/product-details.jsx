@@ -89,15 +89,18 @@ const ProductDetails = () => {
   };
 
   useEffect(() => {
-    fetchProductInstances();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+    if (product) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      fetchProductInstances();
+    }
+  }, [product]);
 
   // Hàm lấy danh sách product instances theo company
   const fetchProductInstances = async () => {
     const data = await productInstancesServices.getProductInstancesPublic({
       LIMIT: 1000000000,
       STATUS: "AVAILABLE",
+      ID_CATEGORIES_: product ? product.ID_CATEGORIES_ : null,
     });
 
     setProductInstances(data);

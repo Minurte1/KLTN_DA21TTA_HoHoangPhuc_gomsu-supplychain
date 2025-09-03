@@ -28,7 +28,7 @@ const authService = {
 
   // Lấy lại state hiện tại nếu cần dùng ngoài React
   getUserInfo: () => {
-    return store.getState().auth.userInfo;
+    return store.getState().auth?.userInfo;
   },
 };
 
