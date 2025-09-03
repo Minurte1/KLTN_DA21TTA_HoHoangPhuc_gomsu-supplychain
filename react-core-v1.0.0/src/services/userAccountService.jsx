@@ -43,6 +43,68 @@ export const sendOtpEmail = async (email) => {
     toast.error(error.response.data.EM);
   }
 };
+export const checkOtpEmail = async (email, otp) => {
+  try {
+    const response = await axiosInstance.post(`${apiUrl}/check-otp`, {
+      email,
+      otp,
+    });
+
+    if (response.data.EC === 200) {
+      spService.handleAxiosResponse(response);
+      return response.data;
+    } else {
+      return response.data;
+    }
+  } catch (error) {
+    toast.error(error.response.data.EM);
+  }
+};
+export const registerUser = async (
+  fullName,
+  email,
+  password,
+  confirmPassword
+) => {
+  try {
+    const response = await axiosInstance.post(`${apiUrl}/register`, {
+      fullName,
+      email,
+      password,
+      confirmPassword,
+    });
+
+    if (response.data.EC === 200) {
+      spService.handleAxiosResponse(response);
+      return response.data;
+    } else {
+      return response.data;
+    }
+  } catch (error) {
+    toast.error(error.response.data.EM);
+  }
+};
+export const resetPasswordWithOtpEmail = async (email, otp, newPassword) => {
+  try {
+    const response = await axiosInstance.post(
+      `${apiUrl}/reset-password-with-otp`,
+      {
+        email,
+        otp,
+        newPassword,
+      }
+    );
+
+    if (response.data.EC === 200) {
+      spService.handleAxiosResponse(response);
+      return response.data;
+    } else {
+      return response.data;
+    }
+  } catch (error) {
+    toast.error(error.response.data.EM);
+  }
+};
 
 // Get List of Users
 export const getAllUsers = async (ID_COMPANY) => {

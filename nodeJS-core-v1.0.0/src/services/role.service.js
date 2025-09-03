@@ -71,6 +71,11 @@ const updateRole = async (
 // Xóa mềm role
 const deleteRole = async (id) => {
   try {
+    // Không cho phép xóa role có ID_ROLE = 16
+    if (parseInt(id) === 16) {
+      return false; // hoặc throw new Error("Không được phép xóa role mặc định");
+    }
+
     // Thử xóa thẳng (hard delete)
     const [result] = await db.query(
       `DELETE FROM role WHERE ID_ROLE = ? AND IS_DELETE = FALSE`,

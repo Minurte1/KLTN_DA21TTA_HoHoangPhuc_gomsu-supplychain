@@ -1,9 +1,19 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../css-page/forgotPasswordModal.scss";
-import { sendOtpEmail } from "../../services/userAccountService";
+import {
+  resetPasswordWithOtpEmail,
+  sendOtpEmail,
+} from "../../services/userAccountService";
 import { enqueueSnackbar } from "notistack";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const ForgotPasswordModal = ({ open, onClose }) => {
   const [step, setStep] = useState(1); // 1 = nhập email, 2 = nhập OTP
@@ -20,29 +30,52 @@ const ForgotPasswordModal = ({ open, onClose }) => {
     }
   };
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
     if (!otp || !newPassword) {
       return enqueueSnackbar("Vui lòng nhập đầy đủ OTP và mật khẩu mới!", {
         variant: "info",
       });
+    } // Mật khẩu tối thiểu 8 ký tự
+    if (newPassword.length < 8) {
+      enqueueSnackbar("Mật khẩu phải có ít nhất 8 ký tự", {
+        variant: "warning",
+      });
+      return;
     }
-    // TODO: gọi API xác thực OTP và đổi mật khẩu
-    console.log("Xác thực OTP:", otp, "Đổi mật khẩu:", newPassword);
-    onClose();
+    const response = await resetPasswordWithOtpEmail(email, otp, newPassword);
+    if (response.EC === 200) {
+      onClose();
+    }
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle className="forgot-title">
-        Quên mật khẩu
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
-          className="forgot-close"
-        >
+      <DialogTitle
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          pr: 5, // chừa khoảng cho nút đóng
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {step === 2 && (
+            <IconButton
+              aria-label="back"
+              onClick={() => setStep(1)}
+              size="small"
+            >
+              <ArrowBackIosNewIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          )}
+          <span>Quên mật khẩu</span>
+        </Box>
+
+        {/* <IconButton aria-label="close" onClick={onClose}>
           <CloseIcon />
-        </IconButton>
+        </IconButton> */}
       </DialogTitle>
+
       <DialogContent>
         {step === 1 && (
           <>

@@ -981,99 +981,6 @@ const verifyAdmin = async (req, res) => {
   }
 };
 
-const registerUser = async (req, res) => {
-  const {
-    password,
-    email,
-    VAI_TRO = "0", // Giả sử mặc định là "user" nếu không có thông tin
-    fullName,
-    phone,
-    DIA_CHI = null, // Nếu không có địa chỉ thì gán là null
-    TRANG_THAI_USER = "1", // Mặc định người dùng ở trạng thái "active"
-    AVATAR = null, // Mặc định không có avatar
-    NGAY_SINH = null, // Ngày sinh mặc định là null nếu không có
-    DIA_CHI_Provinces = null, // Nếu không có địa chỉ thì gán là null
-    DIA_CHI_Districts = null,
-    DIA_CHI_Wards = null,
-    THEMES = "dark", // Mặc định không có theme
-    LANGUAGE = "vi", // Giả sử mặc định ngôn ngữ là tiếng Việt
-  } = req.body.formData;
-
-  const EMAIL = email;
-  const HO_TEN = fullName;
-  const SO_DIEN_THOAI = phone;
-
-  // Mã hóa mật khẩu trước khi lưu vào database
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Kiểm tra xem có thiếu thông tin cần thiết không
-  if (!EMAIL || !hashedPassword || !HO_TEN || !SO_DIEN_THOAI) {
-    return res.status(400).json({
-      EM: "Missing required fields",
-      EC: 0,
-      DT: [],
-    });
-  }
-
-  try {
-    // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
-    const [existingUser] = await pool.query(
-      `SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?`,
-      [EMAIL]
-    );
-
-    if (existingUser.length > 0) {
-      return res.status(400).json({
-        EM: "Tài khoản email này đã được đăng ký",
-        EC: 0,
-        DT: [],
-      });
-    }
-
-    // Thực hiện đăng ký người dùng mới
-    const [result] = await pool.query(
-      `INSERT INTO NGUOI_DUNG (
-        MAT_KHAU, EMAIL, VAI_TRO, HO_TEN, SO_DIEN_THOAI, DIA_CHI, TRANG_THAI_USER, 
-        NGAY_TAO_USER, NGAY_CAP_NHAT_USER, AVATAR, NGAY_SINH, DIA_CHI_Provinces, 
-        DIA_CHI_Districts, DIA_CHI_Wards, THEMES, LANGUAGE
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        hashedPassword,
-        EMAIL,
-        VAI_TRO,
-        HO_TEN,
-        SO_DIEN_THOAI,
-        DIA_CHI,
-        TRANG_THAI_USER,
-        AVATAR,
-        NGAY_SINH,
-        DIA_CHI_Provinces,
-        DIA_CHI_Districts,
-        DIA_CHI_Wards,
-        THEMES,
-        LANGUAGE,
-      ]
-    );
-
-    return res.status(200).json({
-      EM: "Đăng ký tài khoản thành công",
-      EC: 1,
-      DT: {
-        ID_NGUOI_DUNG: result.insertId, // Trả về ID người dùng mới
-        EMAIL,
-        HO_TEN,
-      },
-    });
-  } catch (error) {
-    console.error("Error in register:", error);
-    return res.status(500).json({
-      EM: `Error: ${error.message}`,
-      EC: -1,
-      DT: [],
-    });
-  }
-};
-
 const logoutUser = (req, res) => {
   res.clearCookie("accessToken");
   return res.status(200).json({ message: "Đăng xuất thành công" });
@@ -1239,7 +1146,7 @@ const checkOtp = async (req, res) => {
   if (parseInt(otp) === storedOtp.otp) {
     return res.status(200).json({
       EM: "OTP hợp lệ",
-      EC: 1,
+      EC: 200,
       DT: [],
     });
   } else {
@@ -1515,11 +1422,162 @@ const deleteUserById = async (req, res) => {
     return res.status(500).json({ message: "Lỗi server." });
   }
 };
+const resetPasswordWithOtp = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  // Kiểm tra dữ liệu đầu vào
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({
+      EM: "Email, OTP và mật khẩu mới là bắt buộc",
+      EC: -1,
+      DT: [],
+    });
+  }
+
+  // Lấy OTP trong bộ nhớ
+  const storedOtp = otpStorage.get(email);
+  if (!storedOtp) {
+    return res.status(400).json({
+      EM: "OTP không tồn tại hoặc đã hết hạn",
+      EC: -1,
+      DT: [],
+    });
+  }
+
+  // Kiểm tra thời gian hết hạn
+  const currentTime = Date.now();
+  if (currentTime > storedOtp.expiresAt) {
+    otpStorage.delete(email);
+    return res.status(400).json({
+      EM: "OTP đã hết hạn",
+      EC: -1,
+      DT: [],
+    });
+  }
+
+  // Kiểm tra OTP có đúng không
+  if (parseInt(otp) !== storedOtp.otp) {
+    return res.status(400).json({
+      EM: "OTP không đúng",
+      EC: -1,
+      DT: [],
+    });
+  }
+
+  try {
+    // Mã hóa mật khẩu
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Cập nhật mật khẩu + ngày cập nhật vào bảng users
+    const result = await pool.query(
+      "UPDATE users SET _PASSWORD_HASH_USERS = ?, NGAY_CAP_NHAT_USER = NOW() WHERE EMAIL = ? AND IS_DELETE_USERS = 0",
+      [hashedPassword, email]
+    );
+
+    if (result[0].affectedRows > 0) {
+      // Xóa OTP đã dùng
+      otpStorage.delete(email);
+
+      return res.status(200).json({
+        EM: "Cập nhật mật khẩu thành công",
+        EC: 200,
+        DT: [],
+      });
+    } else {
+      return res.status(404).json({
+        EM: "Không tìm thấy tài khoản hợp lệ để cập nhật mật khẩu",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra trong quá trình cập nhật mật khẩu",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+const registerUser = async (req, res) => {
+  const { fullName, email, password, confirmPassword } = req.body;
+
+  try {
+    // Kiểm tra dữ liệu đầu vào
+    if (!fullName || !email || !password || !confirmPassword) {
+      return res.status(400).json({
+        EM: "Vui lòng nhập đầy đủ: Họ tên, Email, Mật khẩu và Xác nhận mật khẩu",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Kiểm tra mật khẩu khớp nhau
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        EM: "Mật khẩu xác nhận không khớp",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Kiểm tra email tồn tại chưa
+    const [emailCheck] = await pool.query(
+      "SELECT ID_USERS FROM users WHERE EMAIL = ? AND IS_DELETE_USERS = 0",
+      [email]
+    );
+    if (emailCheck.length > 0) {
+      return res.status(409).json({
+        EM: "Email đã tồn tại trong hệ thống",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const hashPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert vào DB
+    const [result] = await pool.query(
+      `INSERT INTO users (
+        ID_ROLE, HO_TEN, EMAIL, _PASSWORD_HASH_USERS,
+        NGAY_TAO_USER, IS_DELETE_USERS, TRANG_THAI_USER
+      ) VALUES (?, ?, ?, ?, NOW(), 0, ?)
+      `,
+      [
+        16, // giả sử role = 2 là "user thường", bạn có thể đổi cho phù hợp
+        fullName,
+        email,
+        hashPassword,
+        "ACTIVE",
+      ]
+    );
+
+    return res.status(201).json({
+      EM: "Đăng ký tài khoản thành công",
+      EC: 1,
+      DT: {
+        ID_USERS: result.insertId,
+        EMAIL: email,
+        HO_TEN: fullName,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi khi đăng ký người dùng:", error);
+    return res.status(500).json({
+      EM: `Lỗi hệ thống: ${error.message}`,
+      EC: -1,
+      DT: [],
+    });
+  }
+};
 
 module.exports = {
   loginUserGoogle,
   verifyAdmin,
   logoutUser,
+  resetPasswordWithOtp,
 
   updateUserById_Admin,
   getAllUser_Admin,

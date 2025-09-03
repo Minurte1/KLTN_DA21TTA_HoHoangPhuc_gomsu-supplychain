@@ -23,6 +23,7 @@ const {
   loginUser,
   createUser,
   deleteUserById,
+  resetPasswordWithOtp,
 } = require("../controllers/userController");
 
 const upload = require("../config/multerConfig");
@@ -50,6 +51,7 @@ router.put("/user/:id", upload.single("AVATAR"), updateUserById_User);
 router.put("/user/update/:id", updateUserById_Admin);
 
 router.post("/send-otp", sendOtp);
+router.post("/reset-password-with-otp", resetPasswordWithOtp);
 router.post("/check-otp", checkOtp);
 router.post("/update-password", updatePasswordUser);
 
