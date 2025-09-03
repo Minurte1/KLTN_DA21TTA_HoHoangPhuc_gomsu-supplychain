@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "../css-page/forgotPasswordModal.scss";
+import { sendOtpEmail } from "../../services/userAccountService";
+import { enqueueSnackbar } from "notistack";
 
 const ForgotPasswordModal = ({ open, onClose }) => {
   const [step, setStep] = useState(1); // 1 = nhập email, 2 = nhập OTP
@@ -9,16 +11,20 @@ const ForgotPasswordModal = ({ open, onClose }) => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  const handleSendOtp = () => {
-    if (!email) return alert("Vui lòng nhập email!");
-    // TODO: gọi API gửi OTP
-    console.log("Gửi OTP đến:", email);
-    setStep(2);
+  const handleSendOtp = async () => {
+    if (!email)
+      return enqueueSnackbar("Vui lòng nhập email!", { variant: "info" });
+    const response = await sendOtpEmail(email);
+    if (response.EC === 200) {
+      setStep(2);
+    }
   };
 
   const handleResetPassword = () => {
     if (!otp || !newPassword) {
-      return alert("Vui lòng nhập đầy đủ OTP và mật khẩu mới!");
+      return enqueueSnackbar("Vui lòng nhập đầy đủ OTP và mật khẩu mới!", {
+        variant: "info",
+      });
     }
     // TODO: gọi API xác thực OTP và đổi mật khẩu
     console.log("Xác thực OTP:", otp, "Đổi mật khẩu:", newPassword);

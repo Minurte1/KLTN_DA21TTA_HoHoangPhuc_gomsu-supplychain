@@ -1166,35 +1166,34 @@ const sendOtp = async (req, res) => {
       pass: process.env.PASSWORD_OTP,
     },
   });
-
   const mailOptions = {
     from: "hohoangphucjob@gmail.com",
     to: email,
-    subject: "PhucShoe2 - Your OTP Code",
+    subject: "Nền Tảng Quản lý Chuỗi Cung Ứng Gốm Sứ - Mã OTP của bạn",
     html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-        <div style="text-align: center; padding: 10px 0;">
-          <h1 style="color: #007BFF; margin-bottom: 5px;">PhucShoe2</h1>
-          <p style="font-size: 16px; color: #555;">Your Trusted Shoe Store</p>
-        </div>
-        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
-          <h2 style="color: #007BFF;">Your OTP Code</h2>
-          <p style="font-size: 18px; margin: 10px 0; font-weight: bold; color: #000;">${otp}</p>
-          <p style="font-size: 14px; color: #555;">This code will expire in <strong>1 minutes</strong>.</p>
-        </div>
-        <div style="margin-top: 20px; text-align: center; color: #888; font-size: 12px;">
-          <p>If you did not request this code, please ignore this email.</p>
-          <p style="margin-top: 10px;">&copy; 2024 PhucShoe2. All rights reserved.</p>
-        </div>
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #3721c8; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #3721c8; border-radius: 10px; background-color: #f7f7fb;">
+      <div style="text-align: center; padding-bottom: 16px; border-bottom: 3px solid #3721c8;">
+        <h1 style="color: #3721c8; margin: 0;">Nền tảng Quản lý Chuỗi Cung Ứng Gốm Sứ</h1>
+        <p style="font-size: 15px; color: #555; margin-top: 6px;">Kết nối - Quản lý - Phát triển</p>
       </div>
-    `,
+      <div style="padding: 24px; background-color: #fff; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+        <h2 style="color: #3721c8; margin-top: 0; text-align: center;">Mã OTP xác thực</h2>
+        <p style="font-size: 22px; margin: 18px 0; font-weight: bold; color: #3721c8; text-align: center; letter-spacing: 4px;">${otp}</p>
+        <p style="font-size: 14px; color: #555; text-align: center;">Mã OTP sẽ hết hạn sau <strong>3 phút</strong>. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+      </div>
+      <div style="margin-top: 20px; text-align: center; color: #777; font-size: 12px;">
+        <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email.</p>
+        <p style="margin-top: 10px; color: #3721c8;">&copy; 2025 Nền tảng Quản lý Chuỗi Cung Ứng Gốm Sứ. Tất cả các quyền được bảo lưu.</p>
+      </div>
+    </div>
+  `,
   };
 
   try {
     await transporter.sendMail(mailOptions);
     return res.status(200).json({
       EM: "Gửi OTP thành công",
-      EC: 1,
+      EC: 200,
       DT: [],
     });
   } catch (error) {
@@ -1206,6 +1205,7 @@ const sendOtp = async (req, res) => {
     });
   }
 };
+
 const checkOtp = async (req, res) => {
   const { email, otp } = req.body;
 

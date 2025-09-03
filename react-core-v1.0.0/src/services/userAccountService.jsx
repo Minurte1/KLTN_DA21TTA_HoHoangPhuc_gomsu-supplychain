@@ -27,6 +27,22 @@ export const login = async (account) => {
     toast.error(error.response.data.EM);
   }
 };
+export const sendOtpEmail = async (email) => {
+  try {
+    const response = await axiosInstance.post(`${apiUrl}/send-otp`, {
+      email,
+    });
+
+    if (response.data.EC === 200) {
+      spService.handleAxiosResponse(response);
+      return response.data;
+    } else {
+      return response.data;
+    }
+  } catch (error) {
+    toast.error(error.response.data.EM);
+  }
+};
 
 // Get List of Users
 export const getAllUsers = async (ID_COMPANY) => {
