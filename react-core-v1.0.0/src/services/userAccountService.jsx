@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import spService from "../share-service/spService";
+import authService from "../redux/redux-service/authServices";
 const apiUrl = process.env.REACT_APP_URL_SERVER;
 
 // Login User
@@ -231,6 +232,9 @@ export const verifyAdmin = async (accessToken) => {
       return false;
     }
   } catch (error) {
+    Cookies.remove("accessToken");
+    authService.logout();
+    enqueueSnackbar(error?.response?.data?.EM, { variant: "info" });
     console.error("Error verifying admin:", error);
     return false;
   }

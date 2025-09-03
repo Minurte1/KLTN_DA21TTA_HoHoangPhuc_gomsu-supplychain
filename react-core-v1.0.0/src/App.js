@@ -102,10 +102,10 @@ const AdminLayout = () => (
       <HeaderAdmin />
 
       <Grid container style={{ height: "100vh" }}>
-        <Grid item xs={3} md="auto" sx={{ flexBasis: "20.8333%" }}>
+        <Grid item xs={3} md="auto" sx={{ flexBasis: "15%" }}>
           <NavBarAdmin />
         </Grid>
-        <Grid item xs={9} md="auto" sx={{ flexBasis: "79.1667%" }}>
+        <Grid item xs={9} md="auto" sx={{ flexBasis: "75%" }}>
           <Routes>
             <Route path="/*" element={<RouterAdmin />} />
           </Routes>

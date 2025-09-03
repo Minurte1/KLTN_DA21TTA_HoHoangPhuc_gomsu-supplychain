@@ -19,11 +19,13 @@ const verifyToken = (token) => {
   let decoded = null;
   try {
     decoded = jwt.verify(token, key);
+    console.log("decoded", decoded);
   } catch (e) {
     console.log(e);
   }
   return decoded;
 };
+
 //-- Giải nén cookie
 const extractToken = (req) => {
   if (
@@ -51,14 +53,14 @@ const checkUserJWT = (req, res, next) => {
       return res.status(401).json({
         EC: -1,
         DT: "",
-        EM: "không xác thực được user",
+        EM: "Đăng nhập thất bại!",
       });
     }
   } else {
     return res.status(401).json({
       EC: -1,
       DT: "",
-      EM: "không thể xác thực được user này",
+      EM: "Không thể xác thực được người dùng này",
     });
   }
 };

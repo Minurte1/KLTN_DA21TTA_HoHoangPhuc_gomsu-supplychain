@@ -1,5 +1,5 @@
 // src/redux/services/authService.js
-import { store } from "../../redux-config/store";
+import store from "../store";
 import { login, logout, setUserInfo, setTotalCart } from "../authSlice";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";

@@ -32,12 +32,13 @@ import Orders from "./pages/orders-page";
 import DashboardMaterialAdmin from "./pages/dashboardAdmin/material-dashboadrd";
 import DashboardSanXuatAdmin from "./pages/dashboardAdmin/sanXuat-dashboadrd";
 import DashboardVanChuyenAdmin from "./pages/dashboardAdmin/vanChuyen-dashboadrd";
+import WelcomeAdmin from "./pages/welcome-page";
 
 const RouterAdmin = () => {
   const element = useRoutes([
     {
       path: "/",
-      element: <DashboardAdmin />,
+      element: <WelcomeAdmin />,
     },
     {
       path: "/thong-ke-vat-lieu",
