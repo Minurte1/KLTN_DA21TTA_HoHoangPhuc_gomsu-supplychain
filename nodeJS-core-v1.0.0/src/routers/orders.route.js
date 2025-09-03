@@ -8,6 +8,7 @@ const {
   deleteOrder,
   getOrderUsersById,
   updateOrderStatus,
+  updatePAYMENT_STATUS_ORDER,
 } = require("../controllers/orders.controller");
 
 const {
@@ -43,7 +44,7 @@ router.get(
   // checkUserPermission("orders", "view"),
   getOrderById
 );
-
+router.put("/:id/status-payment", updatePAYMENT_STATUS_ORDER);
 router.put("/:id/status", updateOrderStatus);
 
 // Cập nhật đơn hàng

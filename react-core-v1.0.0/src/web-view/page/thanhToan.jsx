@@ -159,25 +159,18 @@ export default function ThanhToan() {
             <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel>Phương thức thanh toán</InputLabel>
               <Select
-                value={paymentMethod}
+                value={"COD"}
+                disabled
+                label="Phương thức thanh toán"
                 onChange={(e) => setPaymentMethod(e.target.value)}
               >
                 <MenuItem value="COD">Thanh toán khi nhận hàng (COD)</MenuItem>
-                <MenuItem value="MOMO">Momo</MenuItem>
-                <MenuItem value="VNPAY">VNPay</MenuItem>
+                {/* <MenuItem value="VNPAY">VNPay</MenuItem> */}
               </Select>
             </FormControl>
           </Box>
 
           <Box textAlign="right" mt={2}>
-            <Typography variant="h6">
-              Tổng tiền hàng:{" "}
-              {totalPrice.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}
-            </Typography>
-
             <Typography variant="h5" mt={1}>
               Tổng cộng:{" "}
               {(totalPrice + shippingCost).toLocaleString("vi-VN", {

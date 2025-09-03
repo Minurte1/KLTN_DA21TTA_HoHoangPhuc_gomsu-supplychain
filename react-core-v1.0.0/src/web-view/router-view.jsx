@@ -46,6 +46,10 @@ const RouterView = () => {
       element: <ThanhToan />,
     },
     {
+      path: "/payment-return",
+      element: <SignIn />,
+    },
+    {
       path: "/test",
       element: <SignIn />,
     },

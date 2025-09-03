@@ -823,6 +823,18 @@ const updateStatus = async (id, status) => {
   return result.affectedRows > 0;
 };
 
+const updatePAYMENT_STATUS_ORDER = async (id, status) => {
+  const query = `
+    UPDATE orders 
+    SET PAYMENT_STATUS_ORDER = ?
+    WHERE ID_ORDERS_ = ?
+  `;
+  const params = [status, id];
+
+  const [result] = await db.query(query, params);
+  return result.affectedRows > 0;
+};
+
 module.exports = {
   create,
   getAll,
@@ -831,4 +843,5 @@ module.exports = {
   delete: deleteRecord,
   getOrdersByUserId,
   updateStatus,
+  updatePAYMENT_STATUS_ORDER,
 };

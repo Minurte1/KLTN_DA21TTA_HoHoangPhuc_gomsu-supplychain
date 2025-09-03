@@ -28,6 +28,7 @@ const transportServiceFeesRoutes = require("./transportServiceFees.router.js");
 const equipmentRoute = require("./equipment.route.js");
 const productInstancesRoute = require("./product_instances.route.js");
 const thongKeRoute = require("./thongKeRoute.js");
+const paymentOnline = require("./thanhToanOnlineRoute.js");
 // Kết nối tất cả các router
 router.use("/api/permissions", permissionRoutes);
 router.use("/material-orders-master", materialOrdersMasterRoute);
@@ -59,5 +60,5 @@ router.use("/material-types", materialTypesRoute);
 router.use("/address", addressRoute);
 router.use("/transport-service-fees", transportServiceFeesRoutes);
 router.use("/thong-ke/companies", thongKeRoute);
-
+router.use("/online", paymentOnline);
 module.exports = router;
