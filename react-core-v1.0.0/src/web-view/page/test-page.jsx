@@ -1,49 +1,69 @@
 import React from "react";
+import { Avatar } from "@mui/material";
+import { Email, Lock, Phone } from "@mui/icons-material";
 import "../css-page/test-page.scss";
-
-const SignIn = () => {
+const UserProfile = () => {
   return (
-    <div className="signin-container">
-      <div className="signin-box">
-        <h2 className="signin-title">Đăng Nhập</h2>
-        <p className="signin-subtitle">Nhập email và mật khẩu để đăng nhập!</p>
+    <div className="user-profile">
+      {/* Avatar + Name */}
+      <div className="profile-card">
+        <Avatar
+          alt="Faroz Akhtar"
+          src="https://i.pravatar.cc/100"
+          sx={{ width: 80, height: 80 }}
+        />
+        <h3 className="name">Faroz Akhtar</h3>
+        <p className="phone">+965 1234 5678</p>
+      </div>
 
-        <button className="signin-google">
-          <img
-            src="https://developers.google.com/identity/images/g-logo.png"
-            alt="Google"
-          />
-          Đăng nhập với Google
-        </button>
-
-        <div className="signin-divider">
-          <span>hoặc</span>
-        </div>
-
-        <form className="signin-form">
-          <label>Email*</label>
-          <input type="email" placeholder="mail@simmmpel.com" />
-
-          <label>Mật khẩu*</label>
-          <input type="password" placeholder="Tối thiểu 8 ký tự" />
-
-          <div className="signin-options">
-            <a href="/" className="forgot">
-              Quên mật khẩu?
-            </a>
+      {/* General Info */}
+      <div className="general-info">
+        <h4>General information</h4>
+        <div className="form-row">
+          <div className="form-group">
+            <label>First name</label>
+            <input type="text" defaultValue="Faroz" />
           </div>
+          <div className="form-group">
+            <label>Last name</label>
+            <input type="text" defaultValue="Akhtar" />
+          </div>
+        </div>
+        <button className="btn update" disabled>
+          Update
+        </button>
+      </div>
 
-          <button type="submit" className="signin-btn">
-            Đăng Nhập
-          </button>
-        </form>
-
-        <p className="signin-footer">
-          Chưa có tài khoản? <a href="/">Tạo tài khoản</a>
-        </p>
+      {/* Security */}
+      <div className="security">
+        <h4>Security</h4>
+        <div className="form-row">
+          <div className="form-group">
+            <label>
+              <Email fontSize="small" /> Email
+            </label>
+            <input type="email" value="address@email.com" disabled />
+          </div>
+          <div className="form-group">
+            <label>
+              <Lock fontSize="small" /> Password
+            </label>
+            <input type="password" value="123456" disabled />
+          </div>
+          <div className="form-group">
+            <label>
+              <Phone fontSize="small" /> Phone number
+            </label>
+            <input type="text" value="+965 1234 5678" disabled />
+          </div>
+        </div>
+        <div className="action-buttons">
+          <button className="btn">Change password</button>
+          <button className="btn">Change phone number</button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default SignIn;
+export default UserProfile;
