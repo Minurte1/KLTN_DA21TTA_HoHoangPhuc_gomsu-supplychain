@@ -17,6 +17,7 @@ import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
 import orderServices from "../../services/orderServices";
 import { enqueueSnackbar } from "notistack";
 import Footer from "../../components/footer";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 export default function ThanhToan() {
   const [orderData, setOrderData] = useState([]);
@@ -26,6 +27,7 @@ export default function ThanhToan() {
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { userInfo } = ReduxExportUseAuthState();
@@ -63,27 +65,38 @@ export default function ThanhToan() {
       return;
     }
 
-    const newOrder = {
-      ID_USERS: userInfo?.ID_USERS,
-      DATE_ORDER: new Date(),
-      TOTAL_AMOUNT_ORDER: totalPrice + shippingCost,
-      PAYMENT_STATUS_ORDER: "PENDING",
-      SHIPPING_STATUS_ORDER: "PENDING",
-      SHIPPING_ADDRESS: shippingAddress,
-      SHIPPING_METHOD: shippingMethod,
-      SHIPPING_COST: shippingCost,
-      ID_COMPANY: orderData[0]?.ID_COMPANY || null,
-      ID_TRANSPORT_ORDER: null,
-      PAYMENT_METHOD: paymentMethod,
-      FULLNAME_ORDER: fullName, // 📌 Họ tên người mua
-      PHONE_ORDER: phone, // 📌 Số điện thoại
-      orderItems: orderData,
-    };
+    setLoading(true); // 🔥 hiện overlay
 
-    await orderServices.createOrder(newOrder);
-    enqueueSnackbar("Đơn hàng đã được tạo thành công!", { variant: "success" });
-    navigate("/");
+    try {
+      const newOrder = {
+        ID_USERS: userInfo?.ID_USERS,
+        DATE_ORDER: new Date(),
+        TOTAL_AMOUNT_ORDER: totalPrice + shippingCost,
+        PAYMENT_STATUS_ORDER: "PENDING",
+        SHIPPING_STATUS_ORDER: "PENDING",
+        SHIPPING_ADDRESS: shippingAddress,
+        SHIPPING_METHOD: shippingMethod,
+        SHIPPING_COST: shippingCost,
+        ID_COMPANY: orderData[0]?.ID_COMPANY || null,
+        ID_TRANSPORT_ORDER: null,
+        PAYMENT_METHOD: paymentMethod,
+        FULLNAME_ORDER: fullName,
+        PHONE_ORDER: phone,
+        orderItems: orderData,
+      };
+
+      await orderServices.createOrder(newOrder);
+      enqueueSnackbar("Đơn hàng đã được tạo thành công!", {
+        variant: "success",
+      });
+      navigate("/");
+    } catch (error) {
+      enqueueSnackbar("Có lỗi xảy ra khi tạo đơn hàng", { variant: "error" });
+    } finally {
+      setLoading(false); // 🔥 tắt overlay
+    }
   };
+
   const stylePadding = {
     marginTop: "20px",
     backgroundColor: "#ffffff",
@@ -193,6 +206,12 @@ export default function ThanhToan() {
       <div style={stylePadding}>
         <Footer />
       </div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

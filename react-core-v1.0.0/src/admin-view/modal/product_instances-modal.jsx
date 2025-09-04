@@ -21,8 +21,9 @@ const ProductsInstanceFormModal = ({
     SERIAL_CODE: "",
     ID_USERS: "",
     ID_PRODUCTION_PLANS: "",
-    STATUS: "IN_STOCK",
+    STATUS: "AVAILABLE",
     ID_COMPANY: "",
+    QUANTITY: 0,
   });
 
   const [productsOptions, setProductsOptions] = useState([]);
@@ -40,8 +41,9 @@ const ProductsInstanceFormModal = ({
               SERIAL_CODE: productInstance.SERIAL_CODE || "",
               ID_USERS: productInstance.ID_USERS || "",
               ID_PRODUCTION_PLANS: productInstance.ID_PRODUCTION_PLANS || "",
-              STATUS: productInstance.STATUS || "IN_STOCK",
+              STATUS: productInstance.STATUS || "AVAILABLE",
               ID_COMPANY: productInstance.ID_COMPANY || "",
+              QUANTITY: productInstance?.QUANTITY || 0,
             }
           : {
               UID: "",
@@ -49,7 +51,8 @@ const ProductsInstanceFormModal = ({
               SERIAL_CODE: "",
               ID_USERS: "",
               ID_PRODUCTION_PLANS: "",
-              STATUS: "IN_STOCK",
+              STATUS: "AVAILABLE",
+              QUANTITY: 0,
               ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
             }
       );
@@ -93,8 +96,7 @@ const ProductsInstanceFormModal = ({
     { value: "AVAILABLE", label: "Còn hàng" },
     { value: "OUT_OF_STOCK", label: "Hết hàng" },
     { value: "DISCONTINUED", label: "Ngừng kinh doanh" },
-    { value: "SOLD", label: "Đã bán" },
-    { value: "RESERVED", label: "Đã đặt trước" },
+
     { value: "DAMAGED", label: "Bị hư hỏng" },
   ];
 
@@ -135,6 +137,12 @@ const ProductsInstanceFormModal = ({
       required: false,
     },
     {
+      key: "QUANTITY",
+      label: "Số lượng",
+      inputType: "text",
+      required: true,
+    },
+    {
       key: "ID_COMPANY",
       label: "Công ty",
       inputType: "autocomplete",
@@ -172,6 +180,7 @@ const ProductsInstanceFormModal = ({
           submittedFormData.ID_PRODUCTION_PLANS || formData.ID_PRODUCTION_PLANS,
         STATUS: submittedFormData.STATUS || formData.STATUS,
         ID_COMPANY: submittedFormData.ID_COMPANY || formData.ID_COMPANY,
+        QUANTITY: submittedFormData.QUANTITY | formData.QUANTITY,
       };
 
       if (productInstance) {

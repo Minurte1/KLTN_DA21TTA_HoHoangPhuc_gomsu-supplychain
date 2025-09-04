@@ -63,6 +63,9 @@ const OrdersUsers = () => {
 
   const getUserOrders = async (ID_USERS) => {
     try {
+      if (!ID_USERS) {
+        ID_USERS = userInfo?.ID_USERS;
+      }
       const response = await orderServices.getOrderByUsers(ID_USERS); // New service call to get orders
       setOrders(response || []);
     } catch (err) {

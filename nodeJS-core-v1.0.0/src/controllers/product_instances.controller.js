@@ -24,6 +24,7 @@ const createProductInstance = async (req, res) => {
       DATE_CREATED,
       STATUS,
       ID_COMPANY,
+      QUANTITY,
     } = req.body;
 
     const id = await ProductInstancesService.create({
@@ -35,6 +36,7 @@ const createProductInstance = async (req, res) => {
       DATE_CREATED,
       STATUS,
       ID_COMPANY,
+      QUANTITY,
     });
 
     res.status(201).json({ message: "Product instance created", id });
@@ -68,6 +70,7 @@ const updateProductInstance = async (req, res) => {
       DATE_CREATED,
       STATUS,
       ID_COMPANY,
+      QUANTITY,
     } = req.body;
 
     const updated = await ProductInstancesService.update(id, {
@@ -79,6 +82,7 @@ const updateProductInstance = async (req, res) => {
       DATE_CREATED,
       STATUS,
       ID_COMPANY,
+      QUANTITY,
     });
 
     if (!updated) {

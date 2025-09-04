@@ -11,8 +11,9 @@ const create = async (data) => {
       ID_USERS,
       ID_PRODUCTION_PLANS,
       DATE_CREATED,
-      STATUS = "IN_STOCK",
+      STATUS = "AVAILABLE",
       ID_COMPANY,
+      QUANTITY,
     } = data;
 
     // Format ngày nếu có, nếu không lấy giá trị mặc định CURRENT_TIMESTAMP
@@ -38,8 +39,8 @@ const create = async (data) => {
 
     const [result] = await db.query(
       `INSERT INTO product_instances 
-        (UID, ID_PRODUCT, SERIAL_CODE, ID_USERS, ID_PRODUCTION_PLANS, DATE_CREATED, STATUS, ID_COMPANY) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        (UID, ID_PRODUCT, SERIAL_CODE, ID_USERS, ID_PRODUCTION_PLANS, DATE_CREATED, STATUS, ID_COMPANY,QUANTITY) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)`,
       [
         UID,
         idProduct,
@@ -49,6 +50,7 @@ const create = async (data) => {
         dateCreatedFormatted,
         STATUS,
         idCompany,
+        QUANTITY,
       ]
     );
 
@@ -61,15 +63,28 @@ const create = async (data) => {
 
 const getAll = async (ID_COMPANY, STATUS) => {
   try {
+    // ✅ Đồng bộ trạng thái sản phẩm trước khi lấy dữ liệu
+    await db.query(`
+      UPDATE product_instances 
+      SET STATUS = 'OUT_OF_STOCK' 
+      WHERE QUANTITY <= 0
+    `);
+
+    await db.query(`
+      UPDATE product_instances 
+      SET STATUS = 'AVAILABLE' 
+      WHERE QUANTITY > 0
+    `);
+
     let query = `
       SELECT 
         pi.*, 
-        p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS,   p.IMAGE_URL_PRODUCTS, p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
+        p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS, p.IMAGE_URL_PRODUCTS, p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
         c.ID_CATEGORIES_, c.NAME_CATEGORIES_, c.ID_COMPANY AS CATEGORY_ID_COMPANY,
         pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS, pm.ID_COMPANY AS PROD_MATERIALS_COMPANY,
         mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES, mt.ID_COMPANY AS MATERIAL_TYPES_COMPANY,
-        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE,  m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.QUANTITY AS MATERIAL_QUANTITY, m.COST_PER_UNIT_, m.CREATED_AT_PRODUCTS AS MATERIAL_CREATED_AT, m.UPDATED_AT_PRODUCTS AS MATERIAL_UPDATED_AT, m.ORIGIN, m.EXPIRY_DATE, m.ID_COMPANY AS MATERIAL_COMPANY,
-        pp.NAME_PRODUCTION_PLAN  -- Thêm tên kế hoạch sản xuất
+        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.QUANTITY AS MATERIAL_QUANTITY, m.COST_PER_UNIT_, m.CREATED_AT_PRODUCTS AS MATERIAL_CREATED_AT, m.UPDATED_AT_PRODUCTS AS MATERIAL_UPDATED_AT, m.ORIGIN, m.EXPIRY_DATE, m.ID_COMPANY AS MATERIAL_COMPANY,
+        pp.NAME_PRODUCTION_PLAN
       FROM product_instances pi
       JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT AND pi.ID_COMPANY = p.ID_COMPANY
       JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_ AND p.ID_COMPANY = c.ID_COMPANY
@@ -116,14 +131,36 @@ const getAll = async (ID_COMPANY, STATUS) => {
 
 const getById = async (id) => {
   try {
+    // ✅ Đồng bộ trạng thái sản phẩm trước khi lấy dữ liệu
+    await db.query(`
+      UPDATE product_instances 
+      SET STATUS = 'OUT_OF_STOCK' 
+      WHERE QUANTITY <= 0
+    `);
+
+    await db.query(`
+      UPDATE product_instances 
+      SET STATUS = 'AVAILABLE' 
+      WHERE QUANTITY > 0
+    `);
+
     const query = `
       SELECT 
         pi.*, 
-        p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS,  p.IMAGE_URL_PRODUCTS, p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
+        p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS,  
+        p.IMAGE_URL_PRODUCTS, p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, 
+        p.ID_COMPANY AS PRODUCT_ID_COMPANY,
         c.ID_CATEGORIES_, c.NAME_CATEGORIES_, c.ID_COMPANY AS CATEGORY_ID_COMPANY,
-        pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS, pm.ID_COMPANY AS PROD_MATERIALS_COMPANY,
-        mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES, mt.ID_COMPANY AS MATERIAL_TYPES_COMPANY,
-        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, m.QUANTITY, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.QUANTITY AS MATERIAL_QUANTITY, m.COST_PER_UNIT_, m.CREATED_AT_PRODUCTS AS MATERIAL_CREATED_AT, m.UPDATED_AT_PRODUCTS AS MATERIAL_UPDATED_AT, m.ORIGIN, m.EXPIRY_DATE, m.ID_COMPANY AS MATERIAL_COMPANY
+        pm.ID_PRODUCT_MATERIALS, pm.ID_PRODUCTION_PLANS, pm.ID_MATERIALS_, 
+        pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS, 
+        pm.ID_COMPANY AS PROD_MATERIALS_COMPANY,
+        mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES, 
+        mt.ID_COMPANY AS MATERIAL_TYPES_COMPANY,
+        m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, 
+        m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.QUANTITY AS MATERIAL_QUANTITY, 
+        m.COST_PER_UNIT_, m.CREATED_AT_PRODUCTS AS MATERIAL_CREATED_AT, 
+        m.UPDATED_AT_PRODUCTS AS MATERIAL_UPDATED_AT, m.ORIGIN, m.EXPIRY_DATE, 
+        m.ID_COMPANY AS MATERIAL_COMPANY
       FROM product_instances pi
       JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT AND pi.ID_COMPANY = p.ID_COMPANY
       JOIN categories c ON p.ID_CATEGORIES_ = c.ID_CATEGORIES_ AND p.ID_COMPANY = c.ID_COMPANY
@@ -133,13 +170,15 @@ const getById = async (id) => {
       WHERE pi.ID_PRODUCT_INSTANCE = ?
     `;
 
-    const [rows] = await db.query(query, [id]); // Map lại IMAGE_URL_PRODUCTS thành đường dẫn đầy đủ
+    const [rows] = await db.query(query, [id]);
+
     const results = rows.map((item) => ({
       ...item,
       IMAGE_URL_PRODUCTS: item.IMAGE_URL_PRODUCTS
         ? URL_IMAGE_BASE + item.IMAGE_URL_PRODUCTS
         : null,
     }));
+
     return results;
   } catch (error) {
     console.error("Error in getById product_instance:", error);
@@ -158,6 +197,7 @@ const update = async (id, data) => {
       DATE_CREATED,
       STATUS,
       ID_COMPANY,
+      QUANTITY,
     } = data;
 
     const dateCreatedFormatted = DATE_CREATED
@@ -172,7 +212,7 @@ const update = async (id, data) => {
 
     const [result] = await db.query(
       `UPDATE product_instances
-       SET UID = ?, ID_PRODUCT = ?, SERIAL_CODE = ?, ID_USERS = ?, ID_PRODUCTION_PLANS = ?, DATE_CREATED = ?, STATUS = ?, ID_COMPANY = ?
+       SET UID = ?, ID_PRODUCT = ?, SERIAL_CODE = ?, ID_USERS = ?, ID_PRODUCTION_PLANS = ?, DATE_CREATED = ?, STATUS = ?, ID_COMPANY = ?, QUANTITY = ?
        WHERE ID_PRODUCT_INSTANCE = ?`,
       [
         UID,
@@ -183,6 +223,7 @@ const update = async (id, data) => {
         dateCreatedFormatted,
         STATUS,
         idCompany,
+        QUANTITY,
         id,
       ]
     );
@@ -220,6 +261,19 @@ const getAllProductInstancesPublic = async (
       safeLimit = 1;
     }
 
+    // ✅ Đồng bộ trạng thái sản phẩm trước khi lấy dữ liệu
+    await db.query(`
+      UPDATE product_instances 
+      SET STATUS = 'OUT_OF_STOCK' 
+      WHERE QUANTITY <= 0
+    `);
+
+    await db.query(`
+      UPDATE product_instances 
+      SET STATUS = 'AVAILABLE' 
+      WHERE QUANTITY > 0
+    `);
+
     const serialCodeCondition = SERIAL_CODE
       ? `AND pi.SERIAL_CODE = '${SERIAL_CODE.replace(/'/g, "''")}'`
       : "";
@@ -236,7 +290,7 @@ const getAllProductInstancesPublic = async (
       SELECT 
         pi.*,
         p.ID_PRODUCT, p.ID_CATEGORIES_, p.NAME_PRODUCTS, p.DESCRIPTION_PRODUCTS, 
-       p.IMAGE_URL_PRODUCTS, 
+        p.IMAGE_URL_PRODUCTS, 
         p.CREATED_AT_PRODUCTS, p.UPDATED_AT_PRODUCTS, p.ID_COMPANY AS PRODUCT_ID_COMPANY,
         c.ID_CATEGORIES_, c.NAME_CATEGORIES_, c.ID_COMPANY AS CATEGORY_ID_COMPANY,
         comp.ID_COMPANY, comp.NAME_COMPANY, comp.TYPE_COMPANY, comp.ADDRESS, 
@@ -246,7 +300,7 @@ const getAllProductInstancesPublic = async (
         pm.QUANTITY_PER_UNIT_PRODUCT_MATERIALS, pm.UNIT_PRODUCT_MATERIALS,
         mt.ID_MATERIAL_TYPES, mt.NAME_MATERIAL_TYPES,
         m.ID_MATERIALS_, m.ID_MATERIAL_TYPES AS MATERIAL_MATERIAL_TYPE, 
-        m.QUANTITY, m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.COST_PER_UNIT_, m.ORIGIN, m.EXPIRY_DATE,
+        m.NAME_ AS MATERIAL_NAME_, m.UNIT_, m.COST_PER_UNIT_, m.ORIGIN, m.EXPIRY_DATE,
         pp.NAME_PRODUCTION_PLAN
       FROM product_instances pi
       JOIN products p ON pi.ID_PRODUCT = p.ID_PRODUCT AND pi.ID_COMPANY = p.ID_COMPANY

@@ -61,6 +61,19 @@ const ProductInstances = () => {
         keyStatus={"productInstanceStatus"}
         statusColumns={["STATUS"]}
         subStatus={true}
+        filters={[
+          {
+            key: "STATUS",
+            label: "Trạng thái",
+            options: [
+              { value: "AVAILABLE", label: "Còn hàng" },
+              { value: "OUT_OF_STOCK", label: "Hết hàng" },
+              { value: "DISCONTINUED", label: "Ngừng kinh doanh" },
+
+              { value: "DAMAGED", label: "Bị hư hỏng" },
+            ],
+          },
+        ]}
         columns={[
           { key: "UID", label: "UID" },
           { key: "SERIAL_CODE", label: "Mã Serial" },
