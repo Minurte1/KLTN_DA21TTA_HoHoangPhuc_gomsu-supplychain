@@ -64,6 +64,12 @@ export default function ThanhToan() {
       });
       return;
     }
+    // ✅ Validate số điện thoại Việt Nam
+    const phoneRegex = /^(0|\+84)(3|5|7|8|9|1[2|6|8|9])[0-9]{7,8}$/;
+    if (!phoneRegex.test(phone)) {
+      enqueueSnackbar("Số điện thoại không hợp lệ", { variant: "warning" });
+      return;
+    }
 
     setLoading(true); // 🔥 hiện overlay
 
@@ -110,39 +116,44 @@ export default function ThanhToan() {
       {" "}
       <div style={stylePadding}>
         {" "}
-        <Box p={3}>
-          <Typography variant="h5" mb={2}>
+        <Box p={3} maxWidth={600} mx="auto">
+          <Typography variant="h5" mb={3} textAlign="center">
             Xác Nhận Thanh Toán
           </Typography>
-
-          {orderData.map((item) => (
-            <React.Fragment key={item.ID_CART}>
-              <Box display="flex" alignItems="center" mb={2}>
-                <Avatar
-                  variant="square"
-                  src={item.IMAGE_URL_PRODUCTS}
-                  alt={item.NAME_PRODUCTS}
-                  sx={{ width: 80, height: 80, mr: 2 }}
-                />
-                <Box flex={1}>
-                  <Typography variant="subtitle1">
-                    {item.NAME_PRODUCTS}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Số lượng: {item.QUANTITY} x{" "}
-                    {item.PRICE_PRODUCTS.toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Công ty: {item.NAME_COMPANY}
-                  </Typography>
+          <Box
+            maxHeight={500} // chiều cao tối đa trước khi scroll
+            overflow="auto" // bật scroll khi nội dung vượt quá
+            mb={3} // khoảng cách với phần khác
+          >
+            {orderData.map((item) => (
+              <Box key={item.ID_CART} mb={2}>
+                <Box display="flex" alignItems="center" mb={1}>
+                  <Avatar
+                    variant="square"
+                    src={item.IMAGE_URL_PRODUCTS}
+                    alt={item.NAME_PRODUCTS}
+                    sx={{ width: 60, height: 60, mr: 2 }}
+                  />
+                  <Box flex={1}>
+                    <Typography variant="subtitle1" fontWeight={500}>
+                      {item.NAME_PRODUCTS}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.QUANTITY} x{" "}
+                      {item.PRICE_PRODUCTS.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Công ty: {item.NAME_COMPANY}
+                    </Typography>
+                  </Box>
                 </Box>
+                <Divider />
               </Box>
-              <Divider />
-            </React.Fragment>
-          ))}
+            ))}
+          </Box>
 
           <Box mt={3}>
             <TextField
@@ -151,6 +162,7 @@ export default function ThanhToan() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               sx={{ mb: 2 }}
+              size="small"
             />
 
             <TextField
@@ -159,6 +171,7 @@ export default function ThanhToan() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               sx={{ mb: 2 }}
+              size="small"
             />
 
             <TextField
@@ -167,24 +180,19 @@ export default function ThanhToan() {
               value={shippingAddress}
               onChange={(e) => setShippingAddress(e.target.value)}
               sx={{ mb: 2 }}
+              size="small"
             />
 
-            <FormControl fullWidth sx={{ mb: 2 }}>
+            <FormControl fullWidth sx={{ mb: 2 }} size="small">
               <InputLabel>Phương thức thanh toán</InputLabel>
-              <Select
-                value={"COD"}
-                disabled
-                label="Phương thức thanh toán"
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              >
+              <Select value="COD" disabled label="Phương thức thanh toán">
                 <MenuItem value="COD">Thanh toán khi nhận hàng (COD)</MenuItem>
-                {/* <MenuItem value="VNPAY">VNPay</MenuItem> */}
               </Select>
             </FormControl>
           </Box>
 
           <Box textAlign="right" mt={2}>
-            <Typography variant="h5" mt={1}>
+            <Typography variant="h6" fontWeight={600}>
               Tổng cộng:{" "}
               {(totalPrice + shippingCost).toLocaleString("vi-VN", {
                 style: "currency",
@@ -194,12 +202,15 @@ export default function ThanhToan() {
           </Box>
 
           <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-            <Button variant="outlined" onClick={() => navigate(-1)}>
+            <button
+              className="custom-outline-btn-cancel"
+              onClick={() => navigate(-1)}
+            >
               Quay lại
-            </Button>
-            <Button variant="contained" color="primary" onClick={handleConfirm}>
+            </button>
+            <button className="custom-outline-btn" onClick={handleConfirm}>
               Xác nhận thanh toán
-            </Button>
+            </button>
           </Box>
         </Box>
       </div>
