@@ -148,19 +148,22 @@ const ViewOrderModal = ({
           </Grid>
         </Grid>
       </DialogContent>
-      <Box p={2} display="flex" justifyContent="flex-end">
+      <Box
+        p={2}
+        display="flex"
+        justifyContent="flex-end"
+        gap={2} // thêm khoảng cách giữa các nút
+      >
         {data.STATUS_DETAIL === "DELIVERED" && (
-          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() =>
-                handleConfirmOrder(data?.ID_MATERIAL_ORDER_MASTER, data)
-              }
-            >
-              {title}
-            </Button>
-          </Stack>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() =>
+              handleConfirmOrder(data?.ID_MATERIAL_ORDER_MASTER, data)
+            }
+          >
+            {title}
+          </Button>
         )}
         <Button onClick={onClose} variant="outlined" color="primary">
           Đóng

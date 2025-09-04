@@ -8,6 +8,7 @@ import DynamicTable from "../../share-view/dynamic/table/table";
 import roleServices from "../../services/role-service";
 import RoleFormModal from "../modal/role-modal";
 import ReduxExportUseAuthState from "../../redux/redux-export/useAuthServices";
+import spService from "../../share-service/spService";
 
 const Role = () => {
   const [roles, setRoles] = useState([]);
@@ -34,23 +35,34 @@ const Role = () => {
     await roleServices.deleteRole(id);
     fetchRoles();
   };
-
+  const create = spService.hasPermission(
+    userInfo?.LIST_PERMISION,
+    "role",
+    "create"
+  );
+  const canDelete = spService.hasPermission(
+    userInfo?.LIST_PERMISION,
+    "role",
+    "delete"
+  );
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
         Quản lý phân quyền
       </Typography>
-      <Button
-        variant="contained"
-        startIcon={<AddIcon />}
-        sx={{ mb: 2 }}
-        onClick={() => {
-          setSelectedRole(null);
-          setOpenModal(true);
-        }}
-      >
-        Thêm phân quyền
-      </Button>
+      {create && (
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{ mb: 2 }}
+          onClick={() => {
+            setSelectedRole(null);
+            setOpenModal(true);
+          }}
+        >
+          Thêm phân quyền
+        </Button>
+      )}
 
       <DynamicTable
         data={roles}
@@ -72,9 +84,11 @@ const Role = () => {
                 <IconButton onClick={() => handleEdit(row)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton onClick={() => handleDelete(row.ID_ROLE)}>
-                  <DeleteIcon />
-                </IconButton>
+                {canDelete && (
+                  <IconButton onClick={() => handleDelete(row.ID_ROLE)}>
+                    <DeleteIcon />
+                  </IconButton>
+                )}
               </>
             ),
           },

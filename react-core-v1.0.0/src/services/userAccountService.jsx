@@ -15,10 +15,10 @@ export const login = async (account) => {
     });
 
     if (response.data.EC === 200) {
-      Cookies.set("accessToken", response.data.DT.accessToken, {
-        expires: 7,
-        path: "",
-      });
+      // Cookies.set("accessToken", response.data.DT.accessToken, {
+      //   expires: 7,
+      //   path: "",
+      // });
       spService.handleAxiosResponse(response);
       return response.data;
     } else {
@@ -232,7 +232,8 @@ export const verifyAdmin = async (accessToken) => {
       return false;
     }
   } catch (error) {
-    Cookies.remove("accessToken");
+    localStorage.removeItem("accessToken");
+
     authService.logout();
     enqueueSnackbar(error?.response?.data?.EM, { variant: "info" });
     console.error("Error verifying admin:", error);

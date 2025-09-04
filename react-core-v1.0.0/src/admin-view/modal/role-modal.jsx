@@ -142,6 +142,11 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
       rows: 3,
     },
   ];
+  const update = spService.hasPermission(
+    userInfo?.LIST_PERMISION,
+    "role",
+    "update"
+  );
   // Custom renderActions function
   const customActions = ({ handleSubmit, onClose }) => (
     <>
@@ -155,9 +160,11 @@ const RoleFormModal = ({ open, onClose, role, onSuccess }) => {
       <Button onClick={onClose} color="secondary">
         Hủy
       </Button>
-      <Button onClick={handleSubmit} variant="contained" color="primary">
-        Lưu
-      </Button>
+      {update && (
+        <Button onClick={handleSubmit} variant="contained" color="primary">
+          Lưu
+        </Button>
+      )}
     </>
   );
 

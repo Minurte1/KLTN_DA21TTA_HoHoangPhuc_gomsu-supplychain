@@ -84,7 +84,7 @@ const MaterialOrderMaster_BuyPending = () => {
   return (
     <Box>
       <Typography variant="h5" gutterBottom mt={4}>
-        Đơn hàng Cty SS mua vật liệu đang xử lý
+        Đơn hàng Cty SS mua vật liệu đang trong quá trình vận chuyển và xử lý
       </Typography>
       <DynamicTable
         data={orders}
@@ -96,6 +96,7 @@ const MaterialOrderMaster_BuyPending = () => {
           { key: "QUANTITY_ORDERED", label: "Số lượng đặt" },
 
           { key: "NAME_COMPANY_SHIP", label: "Công ty vận chuyển" },
+
           {
             key: "ORDER_DATE",
             label: "Ngày đặt hàng",

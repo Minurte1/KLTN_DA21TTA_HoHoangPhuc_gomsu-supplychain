@@ -14,7 +14,7 @@ const useAuthInit = () => {
   const navigate = useNavigate();
 
   const initializeUser = useCallback(async () => {
-    const token = Cookies.get("accessToken");
+    const token = localStorage.getItem("accessToken"); // 🔑 lấy từ localStorage
 
     if (!token) {
       console.warn("Không tìm thấy accessToken");

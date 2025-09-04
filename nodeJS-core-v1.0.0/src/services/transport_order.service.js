@@ -176,7 +176,7 @@ const create = async (data) => {
 // };
 
 // Lấy tất cả đơn, có thể lọc theo STATUS nếu được truyền vào
-const getAll = async (status) => {
+const getAll = async (status, companyShipId) => {
   let query = `
     SELECT 
       todr.ID_TRANSPORT_ORDER,
@@ -278,10 +278,20 @@ LEFT JOIN transport_service_fees tsf ON todr.ID_FEE = tsf.ID_FEE
   `;
 
   const values = [];
+  const conditions = [];
 
   if (status) {
-    query += ` WHERE todr.STATUS = ?`;
+    conditions.push(`todr.STATUS = ?`);
     values.push(status);
+  }
+
+  if (companyShipId) {
+    conditions.push(`todr.ID_COMPANY_SHIP = ?`);
+    values.push(companyShipId);
+  }
+
+  if (conditions.length > 0) {
+    query += ` WHERE ` + conditions.join(" AND ");
   }
 
   const [rows] = await db.query(query, values);

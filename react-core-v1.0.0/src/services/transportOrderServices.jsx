@@ -4,12 +4,11 @@ const TRANSPORT_ORDER_API = `${process.env.REACT_APP_URL_SERVER}/transport-order
 
 const transportOrderServices = {
   // Lấy danh sách tất cả đơn vận chuyển
-  getTransportOrders: async (STATUS) => {
+  getTransportOrders: async (STATUS, ID_COMPANY_SHIP) => {
     try {
       const res = await axiosInstance.get(TRANSPORT_ORDER_API, {
-        params: { STATUS },
+        params: { STATUS, ID_COMPANY_SHIP },
       });
-      //  spService.handleAxiosResponse(res);
       return res.data;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách đơn vận chuyển:", error);

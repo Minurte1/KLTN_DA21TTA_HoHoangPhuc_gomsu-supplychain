@@ -115,7 +115,7 @@ const ProductionSteps = () => {
     await productionStepServices.deleteProductionStep(id);
     fetchSteps();
   };
-  console.log("previousSteps", previousSteps);
+
   return (
     <Box>
       {canViewRole && (

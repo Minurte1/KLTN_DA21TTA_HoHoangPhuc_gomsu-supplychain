@@ -60,7 +60,8 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await axios.post(`${api}/logout`);
-      Cookies.remove("accessToken");
+      localStorage.removeItem("accessToken");
+
       dispatch(logout());
       navigate("/login");
     } catch (error) {

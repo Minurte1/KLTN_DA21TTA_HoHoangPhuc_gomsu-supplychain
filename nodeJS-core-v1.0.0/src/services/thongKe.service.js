@@ -194,7 +194,7 @@ const getTop10Products = async (id) => {
       p.ID_CATEGORIES_,
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
-      p.PRICE_PRODUCTS,
+      pi.PRICE_PRODUCTS,
       p.IMAGE_URL_PRODUCTS,
       p.CREATED_AT_PRODUCTS,
       p.UPDATED_AT_PRODUCTS,
@@ -225,7 +225,7 @@ const getTop10Products = async (id) => {
       p.ID_CATEGORIES_,
       p.NAME_PRODUCTS,
       p.DESCRIPTION_PRODUCTS,
-      p.PRICE_PRODUCTS,
+      pi.PRICE_PRODUCTS,
       p.IMAGE_URL_PRODUCTS,
       p.CREATED_AT_PRODUCTS,
       p.UPDATED_AT_PRODUCTS,
@@ -393,7 +393,7 @@ const getTotalTransportRevenue = async (idCompany) => {
   query += ` GROUP BY c.ID_COMPANY, c.NAME_COMPANY`;
 
   const [rows] = await db.query(query, params);
-  return idCompany ? rows[0] || null : rows;
+  return idCompany ? rows || null : rows;
 };
 
 // Số lần sử dụng dịch vụ vận chuyển

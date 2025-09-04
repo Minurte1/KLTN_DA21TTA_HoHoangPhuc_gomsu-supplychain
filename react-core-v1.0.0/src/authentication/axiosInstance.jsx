@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 // Thêm interceptor để tự động thêm token vào headers
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("accessToken");
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

@@ -28,6 +28,7 @@ import { Building2, TrendingUp, Package, DollarSign } from "lucide-react";
 import ReduxExportUseAuthState from "../../../redux/redux-export/useAuthServices";
 import { statisticsApi } from "../../../services/thongKeServices";
 import { Box } from "@mui/material";
+import { CheckCircle } from "@mui/icons-material";
 
 ChartJS.register(
   ArcElement,
@@ -59,7 +60,7 @@ const DashboardVanChuyenAdmin = () => {
         const ordersRes = await statisticsApi.getTransportRevenue({
           ID_COMPANY: companyId,
         });
-        setTotalSummary(ordersRes[0] || {});
+        setTotalSummary(ordersRes || {});
 
         const topMaterialRes = await statisticsApi.getTransportUsage({
           ID_COMPANY: companyId,
@@ -188,114 +189,167 @@ const DashboardVanChuyenAdmin = () => {
             </p>
           </div>
 
-          {/* 4 cards */}
-          <div className="row g-4 mb-4">
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Công ty
-                  </h6>
-                  <Building2 style={{ color: "#84cc16" }} size={18} />
-                </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {totalSummary?.NAME_COMPANY || "N/A"}
-                  </h4>
+          {Array.isArray(totalSummary) && totalSummary.length === 1 ? (
+            // ----- Render 4 cards -----
+            <div className="row g-4 mb-4">
+              {/* Tên công ty */}
+              <div className="col-12 col-md-6 col-lg-4">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Công ty
+                    </h6>
+                    <Building2 style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#374151" }}>
+                      {totalSummary[0]?.NAME_COMPANY || "N/A"}
+                    </h4>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Tổng doanh thu
-                  </h6>
-                  <DollarSign style={{ color: "#84cc16" }} size={18} />
-                </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#15803d" }}>
-                    {totalSummary?.TOTAL_REVENUE?.toLocaleString("vi-VN") ||
-                      "0"}{" "}
-                    đ
-                  </h4>
-                  <Badge
-                    variant="secondary"
-                    className="mt-2 fw-semibold"
-                    style={{ backgroundColor: "#84cc16", color: "#374151" }}
-                  >
-                    <TrendingUp className="me-1" size={12} />
-                    Tăng trưởng
-                  </Badge>
-                </div>
-              </div>
-            </div>
+              {/* Tổng số đơn hàng vận chuyển */}
+              <div className="col-12 col-md-6 col-lg-4">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Tổng số tiền
+                    </h6>
+                    <Package style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#15803d" }}>
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(Number(totalSummary[0]?.TOTAL_REVENUE || 0))}
+                    </h4>
 
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Số dịch vụ đã được thuê thành công
-                  </h6>
-                  <Package style={{ color: "#84cc16" }} size={18} />
-                </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {totalSummary?.TOTAL_SUCCESS_ORDERS || "0"}
-                  </h4>
-                  <p className="small mb-0" style={{ color: "#374151" }}>
-                    Dịch vụ
-                  </p>
+                    <p className="small mb-0" style={{ color: "#374151" }}>
+                      Đơn vận chuyển
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Doanh thu tháng
-                  </h6>
-                  <TrendingUp style={{ color: "#84cc16" }} size={18} />
+              {/* Đơn hàng thành công */}
+              <div className="col-12 col-md-6 col-lg-4">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Số đơn hàng thành công
+                    </h6>
+                    <CheckCircle style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#374151" }}>
+                      {totalSummary[0]?.TOTAL_SUCCESS_ORDERS || "0"}
+                    </h4>
+                    <p className="small mb-0" style={{ color: "#374151" }}>
+                      Hoàn tất vận chuyển
+                    </p>
+                  </div>
                 </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {revenueStats?.byMonth?.[0]?.TOTAL_REVENUE?.toLocaleString()}{" "}
-                    VNĐ
-                  </h4>
-                  <p className="small mb-0" style={{ color: "#374151" }}>
-                    Tháng {revenueStats?.byMonth?.[0]?.MONTH}/
-                    {revenueStats?.byMonth?.[0]?.YEAR}
-                  </p>
+              </div>
+
+              {/* Doanh thu tháng */}
+              {/* <div className="col-12 col-md-6 col-lg-3">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Doanh thu tháng
+                    </h6>
+                    <TrendingUp style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#374151" }}>
+                      {revenueStats?.byMonth?.[0]?.TOTAL_REVENUE?.toLocaleString(
+                        "vi-VN"
+                      ) || 0}{" "}
+                      VNĐ
+                    </h4>
+                    <p className="small mb-0" style={{ color: "#374151" }}>
+                      Tháng {revenueStats?.byMonth?.[0]?.MONTH}/
+                      {revenueStats?.byMonth?.[0]?.YEAR}
+                    </p>
+                  </div>
+                </div>
+              </div> */}
+            </div>
+          ) : (
+            // ----- Render Table -----
+            <div className="card shadow-sm border-0 mb-3">
+              <div className="card-header bg-white border-0">
+                <h5
+                  className="card-title mb-1 fw-semibold"
+                  style={{ color: "#15803d" }}
+                >
+                  Danh sách công ty
+                </h5>
+                <p className="small mb-0" style={{ color: "#374151" }}>
+                  Thống kê theo từng công ty
+                </p>
+              </div>
+              <div className="card-body">
+                <div className="table-responsive">
+                  <table className="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Công ty</th>
+                        <th className="text-end">Tổng số tiền dịch vụ</th>
+                        <th className="text-end">Đơn hàng thành công</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.isArray(totalSummary) &&
+                        totalSummary.map((item, index) => (
+                          <tr key={item.ID_COMPANY}>
+                            <td>{index + 1}</td>
+                            <td>{item.NAME_COMPANY}</td>
+                            <td className="text-end">
+                              {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(Number(item?.TOTAL_REVENUE || 0))}
+                            </td>
+
+                            <td className="text-end">
+                              {item.TOTAL_SUCCESS_ORDERS || 0}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Charts */}
           <div className="row g-4 mb-4">

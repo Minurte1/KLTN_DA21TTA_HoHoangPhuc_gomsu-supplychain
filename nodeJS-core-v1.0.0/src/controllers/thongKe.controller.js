@@ -118,7 +118,9 @@ const getProductStatsAllController = async (req, res) => {
 // Doanh thu vận chuyển
 const getTotalTransportRevenueController = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
+    const { companyId } = req.query;
+
+    const ID_COMPANY = companyId;
     const data = await thongKeService.getTotalTransportRevenue(
       ID_COMPANY || null
     );
@@ -132,7 +134,9 @@ const getTotalTransportRevenueController = async (req, res) => {
 // Số lần sử dụng dịch vụ vận chuyển
 const getTotalTransportUsageController = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
+    const { companyId } = req.query;
+
+    const ID_COMPANY = companyId;
     const data = await thongKeService.getTotalTransportUsage(
       ID_COMPANY || null
     );
@@ -146,7 +150,9 @@ const getTotalTransportUsageController = async (req, res) => {
 // Doanh thu theo ngày
 const getRevenueByDayController = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
+    const { companyId } = req.query;
+
+    const ID_COMPANY = companyId;
     const data = await thongKeService.getRevenueByDay(ID_COMPANY || null);
     res.json(data);
   } catch (err) {
@@ -158,7 +164,9 @@ const getRevenueByDayController = async (req, res) => {
 // Doanh thu theo tháng
 const getRevenueByMonthController = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
+    const { companyId } = req.query;
+
+    const ID_COMPANY = companyId;
     const data = await thongKeService.getRevenueByMonth(ID_COMPANY || null);
     res.json(data);
   } catch (err) {
@@ -170,7 +178,9 @@ const getRevenueByMonthController = async (req, res) => {
 // Doanh thu theo năm
 const getRevenueByYearController = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
+    const { companyId } = req.query;
+
+    const ID_COMPANY = companyId;
     const data = await thongKeService.getRevenueByYear(ID_COMPANY || null);
     res.json(data);
   } catch (err) {
@@ -182,7 +192,9 @@ const getRevenueByYearController = async (req, res) => {
 // Thống kê doanh thu theo ngày, tháng, năm
 const getRevenueStatsController = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
+    const { companyId } = req.query;
+
+    const ID_COMPANY = companyId;
     const data = await thongKeService.getRevenueStats(ID_COMPANY || null);
     res.json(data);
   } catch (err) {
@@ -194,7 +206,9 @@ const getRevenueStatsController = async (req, res) => {
 // Top 5 công ty vận chuyển
 const getTop5TransportCompaniesController = async (req, res) => {
   try {
-    const { ID_COMPANY } = req.query;
+    const { companyId } = req.query;
+
+    const ID_COMPANY = companyId;
     const data = await thongKeService.getTop5TransportCompanies(
       ID_COMPANY || null
     );

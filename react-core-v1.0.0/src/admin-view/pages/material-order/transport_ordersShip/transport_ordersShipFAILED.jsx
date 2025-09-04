@@ -34,7 +34,11 @@ const Transport_ordersShipFAILED = () => {
 
   const fetchOrders = async () => {
     try {
-      const data = await transportOrderServices.getTransportOrders(STATUS);
+      const ID_COMPANY_SHIP = userInfo?.companyInfo?.ID_COMPANY || null;
+      const data = await transportOrderServices.getTransportOrders(
+        STATUS,
+        ID_COMPANY_SHIP
+      );
       setOrders(data);
     } catch (error) {
       console.error("Lỗi khi tải đơn đặt hàng:", error);
@@ -124,11 +128,11 @@ const Transport_ordersShipFAILED = () => {
                 <IconButton onClick={() => handleViewOrders(row)}>
                   <VisibilityIcon />
                 </IconButton>
-                <IconButton
+                {/* <IconButton
                   onClick={() => handleDelete(row.ID_TRANSPORT_ORDER)}
                 >
                   <DeleteIcon />
-                </IconButton>
+                </IconButton> */}
               </>
             ),
           },
