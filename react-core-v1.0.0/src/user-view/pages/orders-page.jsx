@@ -67,7 +67,14 @@ const OrdersUsers = () => {
         ID_USERS = userInfo?.ID_USERS;
       }
       const response = await orderServices.getOrderByUsers(ID_USERS); // New service call to get orders
-      setOrders(response || []);
+
+      // Làm tròn TOTAL_AMOUNT
+      const roundedOrders = (response || []).map((order) => ({
+        ...order,
+        TOTAL_AMOUNT: Math.round(Number(order.TOTAL_AMOUNT)), // Làm tròn lên/sang số nguyên gần nhất
+      }));
+
+      setOrders(roundedOrders);
     } catch (err) {
       console.error("Error fetching orders:", err);
       enqueueSnackbar("Không thể tải danh sách đơn hàng", { variant: "error" });
