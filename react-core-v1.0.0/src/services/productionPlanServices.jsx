@@ -45,7 +45,7 @@ const productionPlanServices = {
       return res.data;
     } catch (error) {
       const message =
-        error.response?.data?.message || "Lỗi khi tạo kế hoạch sản xuất";
+        error.response?.data?.error || "Lỗi khi tạo kế hoạch sản xuất";
       enqueueSnackbar(message, { variant: "error" });
       console.error("Error createProductionPlan:", error);
       return null;

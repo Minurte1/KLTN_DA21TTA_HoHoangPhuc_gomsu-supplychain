@@ -802,7 +802,7 @@ o.PAYMENT_METHOD,
 
   return Array.from(userOrdersMap.values());
 };
-
+//
 const updateStatus = async (id, status) => {
   let query = `
     UPDATE orders 
@@ -819,8 +819,45 @@ const updateStatus = async (id, status) => {
   query += ` WHERE ID_ORDERS_ = ?`;
   params.push(id);
 
-  const [result] = await db.query(query, params);
-  return result.affectedRows > 0;
+  const conn = await db.getConnection(); // lấy connection (nếu bạn dùng pool)
+  try {
+    await conn.beginTransaction();
+
+    // Cập nhật trạng thái đơn hàng
+    const [result] = await conn.query(query, params);
+    if (result.affectedRows === 0) {
+      await conn.rollback();
+      return false;
+    }
+
+    // Nếu SUCCESS thì trừ số lượng tồn kho
+    if (status === "SUCCESS") {
+      // Lấy danh sách sản phẩm trong đơn hàng
+      const [items] = await conn.query(
+        `SELECT ID_PRODUCT_INSTANCE, QUANTITY_INVENTORY 
+         FROM order_items 
+         WHERE ID_ORDERS_ = ?`,
+        [id]
+      );
+
+      for (const item of items) {
+        await conn.query(
+          `UPDATE product_instances 
+           SET QUANTITY = QUANTITY - ? 
+           WHERE ID_PRODUCT_INSTANCE = ?`,
+          [item.QUANTITY_INVENTORY, item.ID_PRODUCT_INSTANCE]
+        );
+      }
+    }
+
+    await conn.commit();
+    return true;
+  } catch (err) {
+    await conn.rollback();
+    throw err;
+  } finally {
+    conn.release();
+  }
 };
 
 const updatePAYMENT_STATUS_ORDER = async (id, status) => {

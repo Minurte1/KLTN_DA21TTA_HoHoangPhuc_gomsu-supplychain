@@ -87,7 +87,7 @@ const ProductionSteps = () => {
     },
 
     { key: "NAME_PRODUCTION_PLAN", label: "ID kế hoạch sản xuất" },
-    { key: "USER_HO_TEN", label: "ID người dùng" },
+    { key: "USER_HO_TEN", label: "Người thực hiện" },
     { key: "NAME_EQUIPMENT", label: "ID thiết bị" },
     { key: "STATUS_PRODUCTION_STEPS", label: "Trạng thái" },
     {
@@ -115,7 +115,7 @@ const ProductionSteps = () => {
     await productionStepServices.deleteProductionStep(id);
     fetchSteps();
   };
-
+  console.log("previousSteps", previousSteps);
   return (
     <Box>
       {canViewRole && (

@@ -44,7 +44,7 @@ const ProductionPlansFormModal = ({
     ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
     NAME_PRODUCTION_PLAN: "",
     QUANTITY_PRODUCT: 0,
-    PRICE_PRODUCTS: 0,
+    PRICE_PRODUCTS_PLAN: 0,
   });
 
   const [materialsData, setMaterialsData] = useState({
@@ -136,7 +136,7 @@ const ProductionPlansFormModal = ({
                 "",
               NAME_PRODUCTION_PLAN: productionPlan.NAME_PRODUCTION_PLAN || "",
               QUANTITY_PRODUCT: productionPlan.QUANTITY_PRODUCT || 0,
-              PRICE_PRODUCTS: productionPlan.PRICE_PRODUCTS || 0,
+              PRICE_PRODUCTS_PLAN: productionPlan.PRICE_PRODUCTS_PLAN || 0,
             }
           : {
               ID_PRODUCT: "",
@@ -149,7 +149,7 @@ const ProductionPlansFormModal = ({
               NOTE_PRODUCTION_PLANS: "",
               ID_COMPANY: userInfo?.companyInfo?.ID_COMPANY || "",
               NAME_PRODUCTION_PLAN: "",
-              PRICE_PRODUCTS: 0,
+              PRICE_PRODUCTS_PLAN: 0,
             }
       );
     }
@@ -188,7 +188,7 @@ const ProductionPlansFormModal = ({
         required: true,
       },
       {
-        key: "PRICE_PRODUCTS",
+        key: "PRICE_PRODUCTS_PLAN",
         label: "Giá tiền trên mỗi sản phẩm",
         inputType: "text",
         required: true,

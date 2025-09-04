@@ -115,12 +115,6 @@ const Login = () => {
       }
 
       // Mật khẩu tối thiểu 8 ký tự
-      if (password.length < 8) {
-        enqueueSnackbar("Mật khẩu phải có ít nhất 8 ký tự", {
-          variant: "warning",
-        });
-        return;
-      }
 
       // Gọi API đăng nhập
       const response = await axios.post(`${api}/login`, { email, password });

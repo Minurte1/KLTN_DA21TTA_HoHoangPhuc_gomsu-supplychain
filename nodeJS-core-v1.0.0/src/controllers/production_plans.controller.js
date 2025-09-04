@@ -97,7 +97,7 @@ const createProductionPlan = async (req, res) => {
     const [planResult] = await connection.query(
       `INSERT INTO production_plans 
         (ID_PRODUCT, ID_USERS, PLANNED_START_PRODUCTION_PLANS, PLANNED_END_PRODUCTION_PLANS, ACTUAL_START_PRODUCTION_PLANS, ACTUAL_END_PRODUCTION_PLANS, STATUS_PRODUCTION_PLANS, NOTE_PRODUCTION_PLANS, ID_COMPANY, QUANTITY_PRODUCT, NAME_PRODUCTION_PLAN, PRICE_PRODUCTS_PLAN)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?)`,
       [
         parseInt(ID_PRODUCT, 10) || null,
         parseInt(ID_USERS, 10) || null,
@@ -115,24 +115,35 @@ const createProductionPlan = async (req, res) => {
     );
 
     const newProductionPlanId = planResult.insertId;
+    console.log("production_material", production_material);
+    console.log("newProductionPlanId", newProductionPlanId);
 
+    console.log("production_material", production_material);
     // Thêm dữ liệu vào production_materials
+
     for (const material of production_material) {
       const ID_MATERIALS = material.ID_MATERIALS_
         ? material.ID_MATERIALS_
         : material.ID_MATERIALS;
-
+      console.log("ID_MATERIALS", ID_MATERIALS);
       await connection.query(
         `INSERT INTO production_materials 
-          (ID_PRODUCT_MATERIALS, ID_PRODUCTION_PLANS, ID_MATERIALS_, QUANTITY_PER_UNIT_PRODUCT_MATERIALS, UNIT_PRODUCT_MATERIALS, ID_COMPANY)
-        VALUES (?, ?, ?, ?, ?, ?)`,
+      ( ID_PRODUCTION_PLANS, ID_MATERIALS_, 
+       QUANTITY_PER_UNIT_PRODUCT_MATERIALS, UNIT_PRODUCT_MATERIALS, ID_COMPANY)
+     VALUES ( ?, ?, ?, ?, ?)`,
         [
-          parseInt(material.ID_PRODUCT_MATERIALS, 10) || null,
+          // material.ID_PRODUCT_MATERIALS !== undefined
+          //   ? parseInt(material.ID_PRODUCT_MATERIALS, 10)
+          //   : null,
           newProductionPlanId,
-          parseInt(ID_MATERIALS, 10) || null,
-          material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS || null,
+          ID_MATERIALS !== undefined ? parseInt(ID_MATERIALS, 10) : null,
+          material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS !== undefined
+            ? parseFloat(material.QUANTITY_PER_UNIT_PRODUCT_MATERIALS)
+            : null,
           material.UNIT_PRODUCT_MATERIALS || null,
-          parseInt(material.ID_COMPANY, 10),
+          material.ID_COMPANY !== undefined
+            ? parseInt(material.ID_COMPANY, 10)
+            : null,
         ]
       );
     }
@@ -263,8 +274,8 @@ const updateProductionPlan = async (req, res) => {
         parseInt(ID_COMPANY, 10),
         parseInt(QUANTITY_PRODUCT, 10),
         NAME_PRODUCTION_PLAN || null,
-        parseInt(id, 10),
         PRICE_PRODUCTS_PLAN,
+        parseInt(id, 10),
       ]
     );
 

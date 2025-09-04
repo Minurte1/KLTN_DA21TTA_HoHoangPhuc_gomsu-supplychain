@@ -134,7 +134,9 @@ export default function CartModal({ open, handleClose }) {
       selectedItems.includes(item.ID_CART)
     );
     if (selectedProducts.length === 0) {
-      enqueueSnackbar("Vui lòng chọn sản phẩm để thanh toán");
+      enqueueSnackbar("Vui lòng chọn sản phẩm để thanh toán", {
+        variant: "info",
+      });
       return;
     }
 

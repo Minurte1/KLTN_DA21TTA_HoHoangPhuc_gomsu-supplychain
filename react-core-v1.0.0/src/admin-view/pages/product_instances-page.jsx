@@ -64,8 +64,8 @@ const ProductInstances = () => {
         columns={[
           { key: "UID", label: "UID" },
           { key: "SERIAL_CODE", label: "Mã Serial" },
-          { key: "Danh mục", label: "NAME_CATEGORIES_" },
-          { key: "NAME_PRODUCTS", label: "ID Sản phẩm" },
+          // { key: "Danh mục", label: "NAME_CATEGORIES_" },
+          { key: "NAME_PRODUCTS", label: "Tên Sản phẩm" },
           {
             key: "IMAGE_URL_PRODUCTS",
             label: "Ảnh sản phẩm",
@@ -81,8 +81,9 @@ const ProductInstances = () => {
           { key: "NAME_PRODUCTION_PLAN", label: "Kế hoạch sản xuất" },
           { key: "DATE_CREATED", label: "Ngày tạo" },
           { key: "DESCRIPTION_PRODUCTS", label: "Mô tả sản phẩm" },
+          { key: "PRICE_PRODUCTS", label: "Giá tiền" },
           { key: "STATUS", label: "Trạng thái" },
-          { key: "ID_COMPANY", label: "ID Công ty" },
+          { key: "QUANTITY", label: "Số lượng" },
           {
             key: "actions",
             label: "Hành động",
