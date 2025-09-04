@@ -85,6 +85,8 @@ const MaterialOrderMaster_SellerPending = () => {
 
       <DynamicTable
         data={orders}
+        keyStatus={"order"}
+        statusColumns={["STATUS"]}
         columns={[
           { key: "ID_MATERIAL_ORDER_MASTER", label: "Mã Đơn Hàng" },
           { key: "NAME_COMPANY_SELLER", label: "Công ty bán" },

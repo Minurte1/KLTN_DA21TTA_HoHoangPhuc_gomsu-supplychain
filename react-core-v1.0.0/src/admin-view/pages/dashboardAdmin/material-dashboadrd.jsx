@@ -58,7 +58,7 @@ const DashboardMaterialAdmin = () => {
         const ordersRes = await statisticsApi.getSummary({
           ID_COMPANY: companyId,
         });
-        setTotalSummary(ordersRes[0] || {});
+        setTotalSummary(ordersRes || {});
 
         const topMaterialRes = await statisticsApi.getTopMaterials({
           ID_COMPANY: companyId,
@@ -204,113 +204,151 @@ const DashboardMaterialAdmin = () => {
           </div>
 
           {/* 4 cards */}
-          <div className="row g-4 mb-4">
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Công ty
-                  </h6>
-                  <Building2 style={{ color: "#84cc16" }} size={18} />
-                </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {totalSummary?.NAME_COMPANY || "N/A"}
-                  </h4>
+          {Array.isArray(totalSummary) && totalSummary.length === 1 ? (
+            // ----- Render 4 cards -----
+            <div className="row g-4 mb-4">
+              <div className="col-12 col-md-6 col-lg-3">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Công ty
+                    </h6>
+                    <Building2 style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#374151" }}>
+                      {totalSummary[0].NAME_COMPANY || "N/A"}
+                    </h4>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Tổng doanh thu
-                  </h6>
-                  <DollarSign style={{ color: "#84cc16" }} size={18} />
-                </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#15803d" }}>
-                    {totalSummary?.TOTAL_REVENUE?.toLocaleString("vi-VN") ||
-                      "0"}{" "}
-                    đ
-                  </h4>
-                  <Badge
-                    variant="secondary"
-                    className="mt-2 fw-semibold"
-                    style={{ backgroundColor: "#84cc16", color: "#374151" }}
-                  >
-                    <TrendingUp className="me-1" size={12} />
-                    Tăng trưởng
-                  </Badge>
+              <div className="col-12 col-md-6 col-lg-3">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Tổng doanh thu
+                    </h6>
+                    <DollarSign style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#15803d" }}>
+                      {totalSummary[0].TOTAL_REVENUE?.toLocaleString("vi-VN") ||
+                        0}{" "}
+                      đ
+                    </h4>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Sản phẩm bán chạy
-                  </h6>
-                  <Package style={{ color: "#84cc16" }} size={18} />
-                </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {totalSummary?.TOTAL_QUANTITY || "0"}
-                  </h4>
-                  <p className="small mb-0" style={{ color: "#374151" }}>
-                    Loại vật liệu khác nhau
-                  </p>
+              <div className="col-12 col-md-6 col-lg-3">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Sản phẩm bán chạy
+                    </h6>
+                    <Package style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#374151" }}>
+                      {totalSummary[0].TOTAL_QUANTITY || 0}
+                    </h4>
+                    <p className="small mb-0" style={{ color: "#374151" }}>
+                      Loại vật liệu khác nhau
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-12 col-md-6 col-lg-3">
-              <div
-                className="card shadow-sm border-0"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                  <h6
-                    className="card-title mb-0 fw-semibold"
-                    style={{ color: "#15803d" }}
-                  >
-                    Doanh thu tháng
-                  </h6>
-                  <TrendingUp style={{ color: "#84cc16" }} size={18} />
-                </div>
-                <div className="card-body">
-                  <h4 className="fw-bold" style={{ color: "#374151" }}>
-                    {revenueStats.monthlyRevenue[0]?.TOTAL_REVENUE.toLocaleString()}{" "}
-                    VNĐ
-                  </h4>
-                  <p className="small mb-0" style={{ color: "#374151" }}>
-                    Tháng {revenueStats.monthlyRevenue[0]?.MONTH}/
-                    {revenueStats.monthlyRevenue[0]?.YEAR}
-                  </p>
+              <div className="col-12 col-md-6 col-lg-3">
+                <div
+                  className="card shadow-sm border-0"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <div className="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                    <h6
+                      className="card-title mb-0 fw-semibold"
+                      style={{ color: "#15803d" }}
+                    >
+                      Doanh thu tháng
+                    </h6>
+                    <TrendingUp style={{ color: "#84cc16" }} size={18} />
+                  </div>
+                  <div className="card-body">
+                    <h4 className="fw-bold" style={{ color: "#374151" }}>
+                      {revenueStats?.monthlyRevenue?.[0]?.TOTAL_REVENUE?.toLocaleString(
+                        "vi-VN"
+                      ) || 0}{" "}
+                      VNĐ
+                    </h4>
+                    <p className="small mb-0" style={{ color: "#374151" }}>
+                      Tháng {revenueStats?.monthlyRevenue?.[0]?.MONTH}/
+                      {revenueStats?.monthlyRevenue?.[0]?.YEAR}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            // ----- Render Table -----
+            <div className="card shadow-sm border-0">
+              <div className="card-header bg-white border-0">
+                <h5
+                  className="card-title mb-1 fw-semibold"
+                  style={{ color: "#15803d" }}
+                >
+                  Danh sách công ty
+                </h5>
+                <p className="small mb-0" style={{ color: "#374151" }}>
+                  Thống kê theo từng công ty
+                </p>
+              </div>
+              <div className="card-body table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Công ty</th>
+                      <th className="text-end">Tổng doanh thu</th>
+                      <th className="text-end">Số sản phẩm</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(totalSummary) &&
+                      totalSummary.map((item, index) => (
+                        <tr key={item.ID_COMPANY}>
+                          <td>{index + 1}</td>
+                          <td>{item.NAME_COMPANY}</td>
+                          <td className="text-end">
+                            {Number(item.TOTAL_REVENUE).toLocaleString("vi-VN")}{" "}
+                            đ
+                          </td>
+                          <td className="text-end">{item.TOTAL_QUANTITY}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* Charts */}
           <div className="row g-4 mb-4">

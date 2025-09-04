@@ -71,6 +71,8 @@ const Transport_ordersShipDELIVERED = () => {
 
       <DynamicTable
         data={orders}
+        keyStatus={"order"}
+        statusColumns={["STATUS"]}
         columns={[
           { key: "ID_MATERIAL_ORDER_MASTER", label: "Mã Đơn Hàng" },
 
