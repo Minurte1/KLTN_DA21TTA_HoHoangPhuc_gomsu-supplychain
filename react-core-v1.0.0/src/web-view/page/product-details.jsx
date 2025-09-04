@@ -25,6 +25,7 @@ import {
   styleHeading,
   stylePadding,
 } from "../../share-service/spStyle";
+import NotFoundProduct from "../../share-view/component/NotFoundProduct";
 
 const ProductDetails = () => {
   const { serialCode } = useParams();
@@ -112,9 +113,9 @@ const ProductDetails = () => {
         <CircularProgress color="primary" />
       </Grid>
     );
-  if (error) return <Typography color="error">{error}</Typography>;
-  if (!product) return <Typography>Không tìm thấy sản phẩm</Typography>;
 
+  if (error) return <Typography color="error">{error}</Typography>;
+  if (!product) return <NotFoundProduct />;
   return (
     <>
       {" "}
@@ -235,6 +236,7 @@ const ProductDetails = () => {
                     <Button
                       variant="contained"
                       onClick={() => handleAddToCart(quantity)}
+                      disabled={product.QUANTITY < 1} // ✅ disable nếu số lượng < 1
                       sx={{
                         px: 3,
                         py: 1.2,
@@ -243,6 +245,10 @@ const ProductDetails = () => {
                         color: "#fff",
                         "&:hover": {
                           backgroundColor: "#7a5230",
+                        },
+                        "&.Mui-disabled": {
+                          backgroundColor: "#ccc", // màu khi disable
+                          color: "#666",
                         },
                       }}
                     >
