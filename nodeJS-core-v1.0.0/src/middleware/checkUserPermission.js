@@ -59,29 +59,29 @@ const baseListPermission = [
   // Material Order: Quản lý đơn đặt hàng nguyên vật liệu, dành cho MANUFACTURER (đặt hàng) và SUPPLIER (cung cấp)
   // {
   //   router: "material_order",
-  //   actions: ["view", "create", "update", "delete", "approve"],
+  //   actions: ["view", "create", "update", "delete", ],
   // },
   {
     router: "material_order_master",
-    actions: ["view", "create", "update", "delete", "approve"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "material_order_master_pending",
-    actions: ["view", "create", "update", "delete", "approve"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "material_order_master_buy_pending",
-    actions: ["view", "create", "update", "delete", "approve"],
+    actions: ["view", "create", "update", "delete"],
   },
 
   // ==========================Confirmed================================
   {
     router: "material_order_master_ship_confirmed",
-    actions: ["view", "create", "update", "delete", "approve"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "material_order_master_seller_confirmed",
-    actions: ["view", "create", "update", "delete", "approve"],
+    actions: ["view", "create", "update", "delete"],
   },
 
   // ==========================Confirmed================================
@@ -89,7 +89,7 @@ const baseListPermission = [
   // Order: Quản lý đơn hàng, chủ yếu dành cho RETAILER (xử lý bán hàng), TRANSPORT có thể xem để sắp xếp vận chuyển
   {
     router: "order_item",
-    actions: ["view", "create", "update", "delete", "ship"],
+    actions: ["view", "create", "update", "delete"],
   },
   // Order Item: Quản lý chi tiết đơn hàng, chủ yếu dành cho RETAILER
   // {
@@ -99,12 +99,12 @@ const baseListPermission = [
   // Production Plan: Quản lý kế hoạch sản xuất, chỉ dành cho MANUFACTURER
   {
     router: "production_plans",
-    actions: ["view", "create", "update", "delete", "start", "complete"],
+    actions: ["view", "create", "update", "delete"],
   },
   // Production Step: Quản lý các bước sản xuất, chỉ dành cho MANUFACTURER
   {
     router: "production_steps",
-    actions: ["view", "create", "update", "delete", "start", "complete"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "equipment",
@@ -123,23 +123,23 @@ const baseListPermission = [
   // Transport Order: Quản lý đơn vận chuyển, chủ yếu dành cho TRANSPORT, MANUFACTURER và RETAILER có thể xem để theo dõi
   {
     router: "transport_orders",
-    actions: ["view", "create", "update", "delete", "ship"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "transport_service_fees",
-    actions: ["view", "create", "update", "delete", "ship"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "transport_orders_delivered",
-    actions: ["view", "create", "update", "delete", "ship"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "transport_orders_success",
-    actions: ["view", "create", "update", "delete", "ship"],
+    actions: ["view", "create", "update", "delete"],
   },
   {
     router: "transport_orders_failed",
-    actions: ["view", "create", "update", "delete", "ship"],
+    actions: ["view", "create", "update", "delete"],
   },
   // Cart: Quản lý giỏ hàng, chủ yếu dành cho RETAILER hoặc người dùng cuối
 ];
